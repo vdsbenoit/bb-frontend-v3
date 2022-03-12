@@ -7,6 +7,10 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/folder/Inbox'
   },
   {
+    path: '/player',
+    component: () => import ('../views/PlayerPage.vue')
+  },
+  {
     path: '/folder/:id',
     component: () => import ('../views/FolderPage.vue')
   }
