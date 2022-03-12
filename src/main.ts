@@ -29,10 +29,19 @@ import { defineCustomElements } from '@ionic/pwa-elements/loader';
 // Call the element loader after the platform has been bootstrapped
 defineCustomElements(window);
 
+import { createPinia } from "pinia";
+import { useAuthStore } from "./store";
+const pina = createPinia();
+
 const app = createApp(App)
   .use(IonicVue)
-  .use(router);
+  .use(router)
+  .use(pina);
 
-router.isReady().then(() => {
-  app.mount('#app');
+const store = useAuthStore();
+
+store.initializeAuthListener().then(() => {
+  router.isReady().then(() => {
+    app.mount('#app');
+  });
 });

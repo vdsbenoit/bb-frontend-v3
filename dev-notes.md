@@ -9,3 +9,23 @@
 
 
 Pour appliquer des css à toute l'app, le faire dans `App.vue`.
+
+# Tech stack
+
+- vue 3 : frontend engine
+- ionic 6 : UI 
+
+- firebase : auth & db
+- pinia : state management
+
+
+
+Auth management : https://dev.to/aaronksaunders/ionic-framework-v6-vuejs-and-firebase-authentication-flow-using-pinia-for-state-management-5aia
+
+
+
+# To do 
+
+- [ ] Lire & comprendre `firebase.ts` et `user.ts`
+- [ ] Continuer à parser les pages d'auth management depuis "vue-firebase-auth-tuto"
+- [ ] parser & adapter le popup manager depuis BadenBattle/frontend

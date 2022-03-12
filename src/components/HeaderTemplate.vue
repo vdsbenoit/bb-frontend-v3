@@ -13,6 +13,7 @@
 import { IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar } from '@ionic/vue';
 
 export default {
+  name: "HeaderTemplate",
   components: {
     IonButtons,
     IonHeader,

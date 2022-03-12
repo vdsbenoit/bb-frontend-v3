@@ -68,8 +68,8 @@ export default defineComponent({
         mdIcon: paperPlaneSharp
       },
       {
-        title: 'Outbox',
-        url: '/folder/Outbox',
+        title: 'Animateur',
+        url: '/leader',
         iosIcon: paperPlaneOutline,
         mdIcon: paperPlaneSharp
       },
@@ -92,14 +92,15 @@ export default defineComponent({
         mdIcon: trashSharp
       },
       {
-        title: 'Spam',
-        url: '/folder/Spam',
+        title: 'Login',
+        url: '/login',
         iosIcon: warningOutline,
         mdIcon: warningSharp
       }
     ];
     const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
     
+    //todo: improve following lines
     const path = window.location.pathname.split('folder/')[1];
     if (path !== undefined) {
       selectedIndex.value = appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
