@@ -8,7 +8,7 @@
             <ion-note>🐺</ion-note>
   
             <ion-menu-toggle auto-hide="false" v-for="(p, i) in appPages" :key="i">
-              <ion-item @click="selectedIndex = i" router-direction="root" :router-link="p.url" lines="none" detail="false" class="hydrated" :class="{ selected: selectedIndex === i }">
+              <ion-item router-direction="root" :router-link="p.url" lines="none" detail="false" class="hydrated" :class="{ 'selected': isSelected(p.url) }">
                 <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
@@ -89,11 +89,6 @@ export default defineComponent({
         mdIcon: warningSharp
       }
     ];    
-    //todo: improve following lines 
-    const path = window.location.pathname.split('folder/')[1];
-    if (path !== undefined) {
-      selectedIndex.value = appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
-    }
     
     const route = useRoute();
     
@@ -114,7 +109,7 @@ export default defineComponent({
       trashSharp, 
       warningOutline, 
       warningSharp,
-      isSelected: (url: string) => url === route.path ? 'selected' : ''
+      isSelected: (url: string) => url === route.path
     }
   }
 });
@@ -150,6 +145,10 @@ ion-menu.md ion-list#menu-list ion-list-header {
   font-weight: 600;
 
   min-height: 20px;
+}
+
+ion-item {
+  cursor: pointer;
 }
 
 ion-menu.md ion-item {
