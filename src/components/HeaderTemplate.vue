@@ -9,20 +9,8 @@
     </ion-header>
 </template>
 
-<script lang="ts">
+<script setup>
 import { IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar } from '@ionic/vue';
-
-export default {
-  name: "HeaderTemplate",
-  components: {
-    IonButtons,
-    IonHeader,
-    IonMenuButton,
-    IonTitle,
-    IonToolbar
-  },
-  props: [
-      "pageTitle",
-  ],
-}
+import { defineProps } from "vue";
+const props = defineProps(['pageTitle']);
 </script>
