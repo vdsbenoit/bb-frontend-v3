@@ -1,54 +1,70 @@
 <template>
   <ion-page>
     <header-template pageTitle="Connexion"></header-template>
-    <ion-content :fullscreen="true">
-      <div id="container">
-        <strong class="capitalize">Login</strong><br>
+    <ion-content :fullscreen="true" class="ion-padding">
+        <div class="login-logo">
+          <img src="@/assets/img/Logo-bb-2022.png" alt="Logo Baden Battle" />
+        </div>
 
-        <!-- todo: transformer cette phrase en popup -->
-        Tu dois te connecter pour accéder à cette page.<br>
-        
-      </div>
+        <ion-text class="ion-padding" color="danger">
+              <p :hidden="!store.error" class="ion-padding-start">{{ store.error }}</p>
+        </ion-text>
+
+        <form class="login-form">
+          <ion-list>
+          <ion-item lines="full">
+            <ion-label position="floating">Email</ion-label>
+            <ion-input v-model="email" type="email" required></ion-input>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-label position="floating">Password</ion-label>
+            <ion-input v-model="password" type="password" required></ion-input>
+          </ion-item>
+          <ion-button expand="block" @click="doLogin">Log In</ion-button>
+          </ion-list>
+        </form>
     </ion-content>
   </ion-page>
 </template>
 
-<script lang="ts">
-import { IonContent, IonPage } from '@ionic/vue';
-import HeaderTemplate from '@/components/HeaderTemplate.vue'
+<script setup>
+import { IonContent, IonPage } from "@ionic/vue";
+import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import { useAuthStore } from "@/store";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
 
-export default {
-  components: {
-    IonContent,
-    IonPage,
-    HeaderTemplate
-  }
-}
+const store = useAuthStore();
+const { logInUser } = store;
+const router = useRouter();
+const email = ref("");
+const password = ref("");
+
+const doLogin = async () => {
+  await logInUser(email.value, password.value);
+  router.replace("/home");
+};
 </script>
 
 <style scoped>
-#container {
+.login-logo {
+  background-color:  var(--ion-background-color, lightgray);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  padding: min(1%, 20px);
+  width: 100%;
+  height: 30%;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.login-logo img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-  color: #8c8c8c;
-  margin: 0;
+ion-button {
+  margin: 15px;
 }
 
-#container a {
-  text-decoration: none;
-}
 </style>

@@ -10,17 +10,10 @@
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup>
 import { IonContent, IonPage } from '@ionic/vue';
 import HeaderTemplate from '@/components/HeaderTemplate.vue'
 
-export default {
-  components: {
-    IonContent,
-    IonPage,
-    HeaderTemplate
-  }
-}
 </script>
 
 <style scoped>

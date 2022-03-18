@@ -26,6 +26,7 @@ Auth management : https://dev.to/aaronksaunders/ionic-framework-v6-vuejs-and-fir
 
 # To do 
 
-- [ ] Lire & comprendre `firebase.ts` et `user.ts`
+- [x] Lire & comprendre `firebase.ts` et `user.ts`
+- [ ] Lire https://ionicframework.com/docs/vue/your-first-app & comprendre les base de la composition API
 - [ ] Continuer à parser les pages d'auth management depuis "vue-firebase-auth-tuto"
 - [ ] parser & adapter le popup manager depuis BadenBattle/frontend
