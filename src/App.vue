@@ -21,98 +21,67 @@
   </ion-app>
 </template>
 
-<script lang="ts">
+<script setup>
 import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane } from '@ionic/vue';
 import { defineComponent, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { archiveOutline, archiveSharp, bookmarkOutline, bookmarkSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp } from 'ionicons/icons';
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    IonApp, 
-    IonContent, 
-    IonIcon, 
-    IonItem, 
-    IonLabel, 
-    IonList, 
-    IonListHeader, 
-    IonMenu, 
-    IonMenuToggle, 
-    IonNote, 
-    IonRouterOutlet, 
-    IonSplitPane,
-  },
-  setup() {
-    const selectedIndex = ref(0);
-    const appPages = [
-      {
-        title: 'Home',
-        url: '/folder/Home',
-        iosIcon: mailOutline,
-        mdIcon: mailSharp
-      },
-      {
-        title: 'Joueur',
-        url: '/player',
-        iosIcon: paperPlaneOutline,
-        mdIcon: paperPlaneSharp
-      },
-      {
-        title: 'Animateur',
-        url: '/leader',
-        iosIcon: paperPlaneOutline,
-        mdIcon: paperPlaneSharp
-      },
-      {
-        title: 'Favorites',
-        url: '/folder/Favorites',
-        iosIcon: heartOutline,
-        mdIcon: heartSharp
-      },
-      {
-        title: 'Archived',
-        url: '/folder/Archived',
-        iosIcon: archiveOutline,
-        mdIcon: archiveSharp
-      },
-      {
-        title: 'Trash',
-        url: '/folder/Trash',
-        iosIcon: trashOutline,
-        mdIcon: trashSharp
-      },
-      {
-        title: 'Login',
-        url: '/login',
-        iosIcon: warningOutline,
-        mdIcon: warningSharp
-      }
-    ];    
-    
-    const route = useRoute();
-    
-    return { 
-      selectedIndex,
-      appPages, 
-      archiveOutline, 
-      archiveSharp, 
-      bookmarkOutline, 
-      bookmarkSharp, 
-      heartOutline, 
-      heartSharp, 
-      mailOutline, 
-      mailSharp, 
-      paperPlaneOutline, 
-      paperPlaneSharp, 
-      trashOutline, 
-      trashSharp, 
-      warningOutline, 
-      warningSharp,
-      isSelected: (url: string) => url === route.path
+  const selectedIndex = ref(0);
+  const appPages = [
+    {
+      title: 'Home',
+      url: '/folder/Home',
+      iosIcon: mailOutline,
+      mdIcon: mailSharp
+    },
+    {
+      title: 'Scores',
+      url: '/scores',
+      iosIcon: paperPlaneOutline,
+      mdIcon: paperPlaneSharp
+    },
+    {
+      title: 'Animateur',
+      url: '/leader',
+      iosIcon: paperPlaneOutline,
+      mdIcon: paperPlaneSharp
+    },
+    {
+      title: 'Favorites',
+      url: '/folder/Favorites',
+      iosIcon: heartOutline,
+      mdIcon: heartSharp
+    },
+    {
+      title: 'Archived',
+      url: '/folder/Archived',
+      iosIcon: archiveOutline,
+      mdIcon: archiveSharp
+    },
+    {
+      title: 'Trash',
+      url: '/folder/Trash',
+      iosIcon: trashOutline,
+      mdIcon: trashSharp
+    },
+    {
+      title: 'Login',
+      url: '/login',
+      iosIcon: warningOutline,
+      mdIcon: warningSharp
+    },
+    {
+      title: 'A propos',
+      url: '/about',
+      iosIcon: informationCircleOutline,
+      mdIcon: informationCircleSharp
     }
-  }
-});
+  ];    
+  
+  const route = useRoute();
+
+  let isSelected = (url) => url === route.path
 </script>
 
 <style scoped>

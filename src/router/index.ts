@@ -33,8 +33,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'player',
-    path: '/player',
-    component: () => import ('../views/PlayerPage.vue')
+    path: '/scores',
+    component: () => import ('../views/ScoresPage.vue')
   },
   {
     name: 'login',
@@ -46,6 +46,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/leader',
     component: () => import ('../views/LeaderPage.vue'),
     beforeEnter: authCheck,
+  },
+  {
+    name: 'about',
+    path: '/about',
+    component: () => import ('../views/AboutPage.vue'),
   },
   {
     path: '/folder/:id',

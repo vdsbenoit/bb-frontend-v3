@@ -3,7 +3,7 @@
     <header-template pageTitle="Connexion"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
         <div class="login-logo">
-          <img src="@/assets/img/Logo-bb-2022.png" alt="Logo Baden Battle" />
+          <img src="@/assets/img/Logo-bb.png" alt="Logo Baden Battle" />
         </div>
 
         <ion-text class="ion-padding" color="danger">
@@ -48,7 +48,7 @@ const doLogin = async () => {
 
 <style scoped>
 .login-logo {
-  background-color:  var(--ion-background-color, lightgray);
+  background-color: var(--ion-background-color, lightgray);
   display: flex;
   justify-content: center;
   align-items: center;
