@@ -2,15 +2,15 @@
   <ion-page>
     <header-template pageTitle="Connexion"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
-        <div class="login-logo">
+        <div class="logo">
           <img src="@/assets/img/Logo-bb.png" alt="Logo Baden Battle" />
         </div>
 
-        <ion-text class="ion-padding" color="danger">
-              <p :hidden="!store.error" class="ion-padding-start">{{ store.error }}</p>
+        <ion-text class="ion-padding" color="danger" :hidden="!store.error">
+              <p class="ion-padding-start">{{ store.error }}</p>
         </ion-text>
 
-        <form class="login-form">
+        <form>
           <ion-list>
           <ion-item lines="full">
             <ion-label position="floating">Email</ion-label>
@@ -47,8 +47,8 @@ const doLogin = async () => {
 </script>
 
 <style scoped>
-.login-logo {
-  background-color: var(--ion-background-color, lightgray);
+.logo {
+  background-color: var(--ion-background-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,9 +56,10 @@ const doLogin = async () => {
   padding: min(1%, 20px);
   width: 100%;
   height: 30%;
+  margin-bottom: 20px;
 }
 
-.login-logo img {
+.logo img {
   max-width: 100%;
   max-height: 100%;
 }

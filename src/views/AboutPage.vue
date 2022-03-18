@@ -1,8 +1,8 @@
 <template>
   <ion-page>
     <header-template pageTitle="A propos"></header-template>
-    <ion-content :fullscreen="true">
-      <div class="about-header">
+    <ion-content :fullscreen="true" class="ion-padding">
+      <div class="logo">
         <img src="@/assets/img/Logo-bb.png" alt="Logo Baden Battle" />
       </div>
       <div class="about-info">
@@ -57,15 +57,20 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 </script>
 
 <style scoped>
-.about-header {
-  background-color: var(--ion-background-color, lightgray);
-  padding: 30px;
+.logo {
+  background-color: var(--ion-background-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: min(1%, 20px);
   width: 100%;
   height: 30%;
-  text-align: center;
+  margin-bottom: 20px;
 }
 
-.about-header img {
+.logo img {
+  max-width: 100%;
   max-height: 100%;
 }
 
