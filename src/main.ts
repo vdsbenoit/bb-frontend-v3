@@ -30,7 +30,7 @@ import { defineCustomElements } from '@ionic/pwa-elements/loader';
 defineCustomElements(window);
 
 import { createPinia } from "pinia";
-import { useAuthStore } from "./store";
+import { useAuthStore } from "./services";
 const pina = createPinia();
 
 const app = createApp(App)

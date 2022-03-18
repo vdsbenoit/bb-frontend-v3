@@ -8,10 +8,19 @@ import {
   fbSignOut,
 } from "./firebase";
 
+
+//fixme: no used
 export interface User {
   user: any;
   profile: any;
   userError: any;
+}
+
+export interface Profile {
+  username: string;
+  email: string;
+  permissions: string[];
+  inscription: Date;
 }
 
 interface State {
