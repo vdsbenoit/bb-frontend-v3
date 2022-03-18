@@ -81,7 +81,7 @@ import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, ma
   
   const route = useRoute();
 
-  let isSelected = (url) => url === route.path
+  const isSelected = (url) => url === route.path
 </script>
 
 <style scoped>

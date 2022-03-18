@@ -28,9 +28,9 @@
 </template>
 
 <script setup>
-import { IonContent, IonPage } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore } from "@/store";
+import { useAuthStore } from "@/services";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 
