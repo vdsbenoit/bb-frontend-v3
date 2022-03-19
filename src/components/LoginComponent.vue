@@ -29,7 +29,7 @@ const sendEmail = async () => {
   const loading = await loadingPopup();
   await sendSignInEmail(email.value);
   loading.dismiss()
-  toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve", 10000);
+  toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 10000);
 };
 
 </script>

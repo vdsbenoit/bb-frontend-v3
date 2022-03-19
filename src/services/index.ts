@@ -1,5 +1,6 @@
 import { infoPopup, errorPopup, confirmPopup, toastPopup, loadingPopup } from './popup';
-import { useAuthStore } from "./user";
+import { useAuthStore, Profile} from "./user";
+import { fbGetUserProfile, fbSetUserProfile } from "./firebase";
 
 export  {
     useAuthStore,
@@ -8,4 +9,7 @@ export  {
     confirmPopup,
     loadingPopup,
     toastPopup,
+    fbGetUserProfile,
+    fbSetUserProfile,
+    Profile,
 }

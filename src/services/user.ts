@@ -2,6 +2,7 @@ import { User as fbUser } from "firebase/auth";
 import { defineStore } from "pinia";
 import {
   fbAuthStateListener,
+  fbResetUserProfile,
   fbSetUserProfile,
   fbGetUserProfile,
   fbCreateAccount,
@@ -28,7 +29,7 @@ export interface Profile {
   settings: any[];
 }
 
-const emptyProfile = (email: string): Profile => ({
+export const emptyProfile = (email=""): Profile => ({
   email: email,
   totem: "",
   firstName: "",
@@ -46,12 +47,13 @@ interface State {
 export const useAuthStore = defineStore("authStore", {
   state: (): State => ({
     user: null,
-    profile: null,
+    profile: emptyProfile(),
     error: null,
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null,
     userError: (state) => state.error,
+    uid: (state): string => state.user ? state.user.uid : "",
   },
   actions: {
     /**
@@ -65,7 +67,7 @@ export const useAuthStore = defineStore("authStore", {
           this.user = user ? user : null;
 
           if (user) {
-            const profile = (await fbGetUserProfile()) as Profile;
+            const profile = (await fbGetUserProfile(user.uid as string)) as Profile;
             this.profile = profile;
           }
           resolve(true);
@@ -97,9 +99,10 @@ export const useAuthStore = defineStore("authStore", {
           console.error(response);
           throw "undefined user in sign in response" ;
         }
-        const profile = await fbGetUserProfile();
+        const profile = await fbGetUserProfile(this.user.uid as string);
         if (!profile) {
-          const profile = await fbSetUserProfile(emptyProfile(this.user.email!));
+          console.debug("Create a new profile for a new user");
+          const profile = await fbResetUserProfile();
           this.profile = profile ? profile : null;
         }
         this.error = null;

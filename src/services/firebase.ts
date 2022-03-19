@@ -20,7 +20,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
-import { Profile } from "./user";
+import { Profile, emptyProfile } from "./user";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBPS9sBLuX7ULxwqxVLI9e431w9ggmKiaM",
@@ -36,7 +36,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-
+const USER_DB_NAME = "users";
 
 // fixme: remove unused method
 /**
@@ -54,7 +54,7 @@ export const fbCreateAccount = async (
   const response = await createUserWithEmailAndPassword(auth, email, password);
   console.log(response);
   if (response) {
-    const profile = await fbGetUserProfile();
+    const profile = await fbGetUserProfile(response.user.uid);
     return {
       user: response.user,
       profile,
@@ -138,34 +138,48 @@ export const fbAuthStateListener = (callback: any) => {
   });
 };
 
-export const fbSetUserProfile = async (profile: Profile) => {
+/**
+ * Reset the user profile to the intial state
+ * Used for new users
+ */
+export const fbResetUserProfile = async () => {
+  const user = auth.currentUser;
+  const profile = emptyProfile(user?.email as string);
+
+  const ref = doc(db, USER_DB_NAME, user?.uid as string);
+  await setDoc(ref, profile );
+  return profile;
+};
+
+/**
+ * Set some of the profile data
+ */
+export const fbSetUserProfile = async (profileData: any) => {
   const user = auth.currentUser;
   console.log(user);
 
-  const ref = doc(db, "profiles", user?.uid as string);
-  await setDoc(ref, profile, { merge: true });
-  return profile;
+  const ref = doc(db, USER_DB_NAME, user?.uid as string);
+  await setDoc(ref, profileData, { merge: true });
 };
 
 /**
  *
  * @returns
  */
-export const fbGetUserProfile = async () => {
-  const user = auth.currentUser;
-  console.log("Getting user profile", user); //fixme
+export const fbGetUserProfile = async (uid: string) => {
+  console.log("Getting user profile", uid); //fixme
 
-  const ref = doc(db, "profiles", user?.uid as string);
+  const ref = doc(db, USER_DB_NAME, uid);
   const docSnap = await getDoc(ref);
 
   if (docSnap.exists()) {
-    console.log("Profile data:", docSnap.data());
+    console.log("Firebase service fetched profile data:", docSnap.data());
     return {
       ...docSnap.data() as Profile
     };
   } else {
     // doc.data() will be undefined in this case
-    console.log("Profile not found", user?.uid);
+    console.log("Profile not found", uid);
     return null;
   }
 };

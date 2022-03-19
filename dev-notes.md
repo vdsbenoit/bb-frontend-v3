@@ -30,8 +30,8 @@ Auth management : https://dev.to/aaronksaunders/ionic-framework-v6-vuejs-and-fir
 - [ ] Lire https://ionicframework.com/docs/vue/your-first-app 
 - [x] comprendre les base de la composition API
 - [x] Continuer à parser les pages d'auth management depuis "vue-firebase-auth-tuto"
-- [ ] parser & adapter le popup manager depuis BadenBattle/frontend
-- [ ] merger login & settings page into ProfilePage
+- [x] parser & adapter le popup manager depuis BadenBattle/frontend
+- [x] merger login & settings page into ProfilePage
 
 
 

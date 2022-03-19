@@ -42,6 +42,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/ProfilePage.vue')
   },
   {
+    name: 'userProfile',
+    path: '/profile/:id',
+    component: () => import ('../views/ProfilePage.vue')
+  },
+  {
     name: 'validation',
     path: '/validation',
     component: () => import ('../views/ProfilePage.vue'),
