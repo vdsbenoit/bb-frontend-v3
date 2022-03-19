@@ -1,5 +1,11 @@
+import { infoPopup, errorPopup, confirmPopup, toastPopup, loadingPopup } from './popup';
 import { useAuthStore } from "./user";
 
 export  {
-    useAuthStore
+    useAuthStore,
+    infoPopup,
+    errorPopup,
+    confirmPopup,
+    loadingPopup,
+    toastPopup,
 }

@@ -1,6 +1,6 @@
-import { alertController } from '@ionic/vue';
+import { alertController, loadingController, toastController } from '@ionic/vue';
 
-export const error = async (text: string, title='Erreur') => {
+export const errorPopup = async (text: string, title='Erreur') => {
   const alert = await alertController.create({
     header: title,
     message: text,
@@ -10,7 +10,7 @@ export const error = async (text: string, title='Erreur') => {
   await alert.present();
 }
 
-export const info = async (text: string, title?: string) => {
+export const infoPopup = async (text: string, title?: string) => {
   const alert = await alertController.create({
     header: title,
     message: text,
@@ -20,7 +20,7 @@ export const info = async (text: string, title?: string) => {
   await alert.present();
 }
 
-export const confirm = async (text: string, confirmHandler: any, declineHandler?: any) => {
+export const confirmPopup = async (text: string, confirmHandler: any, declineHandler?: any) => {
   const alert = await alertController.create({
     header: 'Tu confirmes ?',
     message: text,
@@ -45,4 +45,24 @@ export const confirm = async (text: string, confirmHandler: any, declineHandler?
   });
   
   await alert.present();
+}
+
+export const loadingPopup =async (timeout=60000, message='Chargement') => {
+  const loading = await loadingController
+    .create({
+      message: message,
+      duration: timeout,
+    });
+  setTimeout(() => loading.dismiss(), timeout);
+  return loading;
+}
+
+export const toastPopup = async (message: string, duration=3000) => {
+    const toast = await toastController
+      .create({
+        message: message,
+        duration: duration,
+        cssClass: "ion-text-center",
+      })
+    toast.present();
 }

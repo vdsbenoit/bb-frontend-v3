@@ -3,7 +3,7 @@
     <header-template pageTitle="Connexion"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
       <div v-if="store.isLoggedIn">
-        <p>You are logged as {{ store.user.email }}</p>
+        <p>You are logged as {{ store.user?.email }}</p>
 
         <ion-button expand="block" @click="logOut" color="danger">Se déconnnecter</ion-button>
       </div>
@@ -30,7 +30,6 @@ const props = defineProps(['validation']);
 const store = useAuthStore();
 const { processSignInLink, logoutUser } = store;
 const router = useRouter();
-const route = useRoute();
 
 onMounted(async () => {
   if (props.validation) {

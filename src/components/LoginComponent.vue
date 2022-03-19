@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { IonList, IonItem, IonLabel, IonInput, IonText, IonButton, loadingController } from "@ionic/vue";
-import { useAuthStore } from "@/services";
+import { useAuthStore, loadingPopup, toastPopup } from "@/services";
 import { ref } from "vue";
 
 const store = useAuthStore();
@@ -26,15 +26,10 @@ const { sendSignInEmail } = store;
 const email = ref("");
 
 const sendEmail = async () => {
-  const timeout = 120;
-  const loading = await loadingController
-    .create({
-      message: 'Chargement...',
-      duration: timeout,
-    });
-  setTimeout(() => loading.dismiss(), timeout);
+  const loading = await loadingPopup();
   await sendSignInEmail(email.value);
   loading.dismiss()
+  toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve", 10000);
 };
 
 </script>
