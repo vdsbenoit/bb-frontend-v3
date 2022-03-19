@@ -21,13 +21,11 @@
   </ion-app>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane } from '@ionic/vue';
-import { defineComponent, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp } from 'ionicons/icons';
 
-  const selectedIndex = ref(0);
   const appPages = [
     {
       title: 'Home',
@@ -66,8 +64,8 @@ import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, ma
       mdIcon: trashSharp
     },
     {
-      title: 'Login',
-      url: '/login',
+      title: 'Profil',
+      url: '/profile',
       iosIcon: warningOutline,
       mdIcon: warningSharp
     },
@@ -81,7 +79,7 @@ import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, ma
   
   const route = useRoute();
 
-  const isSelected = (url) => url === route.path
+  const isSelected = (url: string) => url === route.path
 </script>
 
 <style scoped>

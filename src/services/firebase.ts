@@ -13,27 +13,32 @@ import {
 import {
   getAuth,
   signOut,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
+  isSignInWithEmailLink,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
+import { Profile } from "./user";
 
-console.debug(process.env);
 const firebaseConfig = {
-  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
-  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VUE_APP_FIREBASE_APP_ID,
-  measurementId: process.env.VUE_APP_MEASUREMENT_ID,
+  apiKey: "AIzaSyBPS9sBLuX7ULxwqxVLI9e431w9ggmKiaM",
+  authDomain: "badenbattle-a0dec.firebaseapp.com",
+  databaseURL: "https://badenbattle-a0dec.firebaseio.com",
+  projectId: "badenbattle-a0dec",
+  storageBucket: "badenbattle-a0dec.appspot.com",
+  messagingSenderId: "855454974300",
+  appId: "1:855454974300:web:9904d0ea27239000038199",
+  measurementId: "G-9SGHK33E8H",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+
+// fixme: remove unused method
 /**
  *
  * @param email
@@ -49,7 +54,6 @@ export const fbCreateAccount = async (
   const response = await createUserWithEmailAndPassword(auth, email, password);
   console.log(response);
   if (response) {
-    await fbSetUserProfile({ first, last, age: 67 });
     const profile = await fbGetUserProfile();
     return {
       user: response.user,
@@ -63,6 +67,7 @@ export const fbCreateAccount = async (
   }
 };
 
+// fixme: remove unused method
 /**
  *
  * @param email
@@ -73,6 +78,38 @@ export const fbSignIn = async (email: string, password: string) => {
   const response = await signInWithEmailAndPassword(auth, email, password);
   console.log(response);
   return response;
+};
+
+/**
+ *
+ * @param email
+ * @returns
+ */
+ export const fbSendSignInEmail = async (email: string) => {
+  const actionCodeSettings = {
+    // URL you want to redirect back to.
+    url: `https://${location.host}/profile`,
+    // This must be true.
+    handleCodeInApp: true
+  };
+  await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+
+};
+
+/**
+ *
+ * @param email
+ * @param href
+ * @returns
+ */
+ export const fbSignInWithEmailLink = async (email: string, href: string) => {
+  if (isSignInWithEmailLink(auth, href)) {
+    const response = signInWithEmailLink(auth, email, href);
+    console.debug(response);
+    return response;
+  } else {
+    throw "Incorrect validation url";
+  }  
 };
 
 /**
@@ -101,30 +138,13 @@ export const fbAuthStateListener = (callback: any) => {
   });
 };
 
-export const fbSetUserProfile = async ({
-  first,
-  last,
-  age,
-}: {
-  first: string;
-  last: string;
-  age: number;
-}) => {
+export const fbSetUserProfile = async (profile: Profile) => {
   const user = auth.currentUser;
   console.log(user);
 
   const ref = doc(db, "profiles", user?.uid as string);
-  await setDoc(
-    ref,
-    {
-      first,
-      last,
-      age,
-      uid: user?.uid,
-    },
-    { merge: true }
-  );
-  return true;
+  await setDoc(ref, profile, { merge: true });
+  return profile;
 };
 
 /**
@@ -133,20 +153,19 @@ export const fbSetUserProfile = async ({
  */
 export const fbGetUserProfile = async () => {
   const user = auth.currentUser;
-  console.log(user);
+  console.log("Getting user profile", user); //fixme
 
   const ref = doc(db, "profiles", user?.uid as string);
   const docSnap = await getDoc(ref);
 
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
+    console.log("Profile data:", docSnap.data());
     return {
-      ...docSnap.data(),
-      uid: user?.uid,
+      ...docSnap.data() as Profile
     };
   } else {
     // doc.data() will be undefined in this case
-    console.log("No such document!", user?.uid);
+    console.log("Profile not found", user?.uid);
     return null;
   }
 };

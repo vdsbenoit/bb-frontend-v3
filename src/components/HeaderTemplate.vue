@@ -4,12 +4,12 @@
         <ion-buttons slot="start">
           <ion-menu-button color="primary"></ion-menu-button>
         </ion-buttons>
-        <ion-title>{{ this.pageTitle }}</ion-title>
+        <ion-title>{{ props.pageTitle }}</ion-title>
       </ion-toolbar>
     </ion-header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar } from '@ionic/vue';
 import { defineProps } from "vue";
 const props = defineProps(['pageTitle']);

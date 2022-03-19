@@ -31,12 +31,11 @@ defineCustomElements(window);
 
 import { createPinia } from "pinia";
 import { useAuthStore } from "./services";
-const pina = createPinia();
 
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
-  .use(pina);
+  .use(createPinia());
 
 const store = useAuthStore();
 

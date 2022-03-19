@@ -2,8 +2,11 @@ import { User as fbUser } from "firebase/auth";
 import { defineStore } from "pinia";
 import {
   fbAuthStateListener,
-  fbCreateAccount,
+  fbSetUserProfile,
   fbGetUserProfile,
+  fbCreateAccount,
+  fbSendSignInEmail,
+  fbSignInWithEmailLink,
   fbSignIn,
   fbSignOut,
 } from "./firebase";
@@ -17,20 +20,30 @@ export interface User {
 }
 
 export interface Profile {
-  username: string;
   email: string;
-  permissions: string[];
-  inscription: Date;
+  totem: string;
+  firstName: string;
+  lastName: string;
+  role: number;
+  settings: any[];
 }
+
+const emptyProfile = (email: string): Profile => ({
+  email: email,
+  totem: "",
+  firstName: "",
+  lastName: "",
+  role: 0,
+  settings: [],
+})
 
 interface State {
   user: fbUser | null;
-  profile: any;
-  error: null;
+  profile: Profile | null;
+  error: any;
 }
 
 export const useAuthStore = defineStore("authStore", {
-  // convert to a function
   state: (): State => ({
     user: null,
     profile: null,
@@ -52,13 +65,53 @@ export const useAuthStore = defineStore("authStore", {
           this.user = user ? user : null;
 
           if (user) {
-            const profile = (await fbGetUserProfile()) as any;
+            const profile = (await fbGetUserProfile()) as Profile;
             this.profile = profile;
           }
           resolve(true);
         });
       });
     },
+    async sendSignInEmail(email: string) {
+      try {
+        await fbSendSignInEmail(email);
+        window.localStorage.setItem('emailForSignIn', email);
+      } catch (e: any) {
+        this.user = null;
+        this.error = e;
+        console.error(e);
+      }
+    },
+    async processSignInLink(href: string) {
+      //fixme: replace this with an error, it should not happen
+      let email = window.localStorage.getItem('emailForSignIn');
+      if (!email) {
+        email = window.prompt('Quel email as-tu utilisé pour te connecter ?')!;
+      }
+      try {
+        if(!email) throw "Impossible de récupérer l'email d'authentification"
+        const response = await fbSignInWithEmailLink(email, href);
+        console.debug("auth response", response); //fixme
+        this.user = response.user ? response.user as fbUser : null;
+        if (!this.user) {
+          console.error(response);
+          throw "undefined user in sign in response" ;
+        }
+        const profile = await fbGetUserProfile();
+        if (!profile) {
+          const profile = await fbSetUserProfile(emptyProfile(this.user.email!));
+          this.profile = profile ? profile : null;
+        }
+        this.error = null;
+      } catch (e: any) {
+        this.user = null;
+        this.profile = null;
+        this.error = e;
+      } finally {
+        window.localStorage.removeItem('emailForSignIn');
+      }
+    },
+    // fixme: remove unused method
     /**
      *
      * @param data
@@ -92,7 +145,7 @@ export const useAuthStore = defineStore("authStore", {
       }
     },
 
-
+   // fixme: remove unused method
     /**
      *
      * @param data
