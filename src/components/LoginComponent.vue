@@ -17,8 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonList, IonItem, IonLabel, IonInput, IonText, IonButton } from "@ionic/vue";
-import { defineProps } from "vue";
+import { IonList, IonItem, IonLabel, IonInput, IonText, IonButton, loadingController } from "@ionic/vue";
 import { useAuthStore } from "@/services";
 import { ref } from "vue";
 
@@ -27,7 +26,15 @@ const { sendSignInEmail } = store;
 const email = ref("");
 
 const sendEmail = async () => {
+  const timeout = 120;
+  const loading = await loadingController
+    .create({
+      message: 'Chargement...',
+      duration: timeout,
+    });
+  setTimeout(() => loading.dismiss(), timeout);
   await sendSignInEmail(email.value);
+  loading.dismiss()
 };
 
 </script>
