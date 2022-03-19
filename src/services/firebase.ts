@@ -154,11 +154,8 @@ export const fbResetUserProfile = async () => {
 /**
  * Set some of the profile data
  */
-export const fbSetUserProfile = async (profileData: any) => {
-  const user = auth.currentUser;
-  console.log(user);
-
-  const ref = doc(db, USER_DB_NAME, user?.uid as string);
+export const fbSetUserProfile = async (uid: string, profileData: any) => {
+  const ref = doc(db, USER_DB_NAME, uid);
   await setDoc(ref, profileData, { merge: true });
 };
 

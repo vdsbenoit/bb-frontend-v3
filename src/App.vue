@@ -16,7 +16,7 @@
           </ion-list>
         </ion-content>
         <ion-menu-toggle auto-hide="false">
-        <ion-footer collapse="fade" class="ion-padding" @click="router.push('/profile')">
+        <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">
             <div v-if="store.isLoggedIn">
               <ion-text>Connecté en tant que {{name}}</ion-text>
             </div>

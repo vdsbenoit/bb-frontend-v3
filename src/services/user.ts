@@ -12,12 +12,12 @@ import {
   fbSignOut,
 } from "./firebase";
 
-
-//fixme: no used
-export interface User {
-  user: any;
-  profile: any;
-  userError: any;
+export const ROLES = {
+  0: "Anonyme",
+  2: "Participant",
+  4: "Animateurs",
+  8: "Moderateur",
+  10: "Administrateur",
 }
 
 export interface Profile {

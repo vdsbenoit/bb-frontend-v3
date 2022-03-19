@@ -22,6 +22,8 @@ Pour appliquer des css à toute l'app, le faire dans `App.vue`.
 
 Auth management : https://dev.to/aaronksaunders/ionic-framework-v6-vuejs-and-firebase-authentication-flow-using-pinia-for-state-management-5aia
 
+ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations/blob/master/src/app/form/form.page.html
+
 
 
 # To do 
@@ -32,9 +34,13 @@ Auth management : https://dev.to/aaronksaunders/ionic-framework-v6-vuejs-and-fir
 - [x] Continuer à parser les pages d'auth management depuis "vue-firebase-auth-tuto"
 - [x] parser & adapter le popup manager depuis BadenBattle/frontend
 - [x] merger login & settings page into ProfilePage
-- [ ] 
+- [ ] popup enregistrement settings
+- [ ] erreurs enregistrement settings
 
+# Règles db
 
+- tous les users peuvent modifier leur profile sauf leur role
+- seuls les admins peuvent modifier le profile des autres
 
 # Avant de mettre en prod
 

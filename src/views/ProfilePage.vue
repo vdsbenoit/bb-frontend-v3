@@ -6,13 +6,29 @@
         <form>
           <ion-list>
             <ion-item lines="full">
-              <ion-label position="floating">totem</ion-label>
+              <ion-label position="stacked">Totem</ion-label>
               <ion-input v-model="profile.totem" name="totem" type="text"></ion-input>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked">Prénom</ion-label>
+              <ion-input v-model="profile.firstName" name="firstName" type="text"></ion-input>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked">Nom de famille</ion-label>
+              <ion-input v-model="profile.lastName" name="lastName" type="text"></ion-input>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked" color="primary">Role</ion-label>
+              <ion-select v-model="profile.role" cancel-text="Cancel" ok-text="OK">
+                <ion-select-option v-for="(role, value) in ROLES" :key="value" :value="value">{{role}}</ion-select-option>
+              </ion-select>
             </ion-item>
           </ion-list>
         </form>
-
-        <ion-button v-if="!props.id || props.id != store.uid" expand="block" @click="logOut" color="danger">
+        <ion-button @click="saveProfile" expand="block" color="success">
+          Enregistrer
+        </ion-button>
+        <ion-button v-if="isOwnProfile" expand="block" @click="logOut" color="danger">
           Se déconnnecter
         </ion-button>
       </div>
@@ -27,10 +43,10 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import LoginComponent from "@/components/LoginComponent.vue";
-import { useAuthStore, fbGetUserProfile, Profile, emptyProfile} from "@/services";
+import { useAuthStore, fbGetUserProfile, Profile, emptyProfile, ROLES, fbSetUserProfile} from "@/services";
 import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import { defineProps } from "vue";
@@ -45,6 +61,10 @@ const profile = ref<Profile>(emptyProfile());
 
 const isOwnProfile = computed(() => {
   return !route.params.id || route.params.id === store.uid;
+});
+
+const activeUserId = computed(() : string => {
+  return route.params.id ? route.params.id as string : store.uid
 });
 
 const pageTitle = computed(() => {
@@ -63,7 +83,6 @@ const pageTitle = computed(() => {
     return `Profil de ${name}`;
   }
 });
-
 onMounted(async () => {
   if (props.validation) {
     await processSignInLink(window.location.href);
@@ -79,9 +98,11 @@ onMounted(async () => {
     }
   }
 });
-
 const logOut = async () => {
   await logoutUser();
+};
+const saveProfile = async () => {
+  fbSetUserProfile(activeUserId.value, profile.value);
 };
 </script>
 
