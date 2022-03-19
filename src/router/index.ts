@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: 'home',
     path: '',
-    redirect: '/folder/Inbox'
+    redirect: '/scores'
   },
   {
     name: 'player',
@@ -37,9 +37,15 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/ScoresPage.vue')
   },
   {
-    name: 'login',
-    path: '/login',
-    component: () => import ('../views/LoginPage.vue')
+    name: 'profile',
+    path: '/profile',
+    component: () => import ('../views/ProfilePage.vue')
+  },
+  {
+    name: 'validation',
+    path: '/validation',
+    component: () => import ('../views/ProfilePage.vue'),
+    props: { validation: true }
   },
   {
     name: 'leader',
@@ -55,6 +61,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/folder/:id',
     component: () => import ('../views/FolderPage.vue')
+  },
+  { 
+    path: "/:catchAll(.*)",
+    component: () => import ('../views/NotFoundPage.vue')
   }
 ]
 
