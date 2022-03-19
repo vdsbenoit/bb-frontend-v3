@@ -15,6 +15,16 @@
             </ion-menu-toggle>
           </ion-list>
         </ion-content>
+        <ion-menu-toggle auto-hide="false">
+        <ion-footer collapse="fade" class="ion-padding" @click="router.push('/profile')">
+            <div v-if="store.isLoggedIn">
+              <ion-text>Connecté en tant que {{name}}</ion-text>
+            </div>
+            <div v-else>
+              <ion-text>Pas authentifié</ion-text>
+            </div>
+        </ion-footer>
+        </ion-menu-toggle>
       </ion-menu>
       <ion-router-outlet id="main-content"></ion-router-outlet>
     </ion-split-pane>
@@ -22,64 +32,78 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane } from '@ionic/vue';
+import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonFooter, IonToolbar} from '@ionic/vue';
 import { useRoute } from 'vue-router';
 import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp } from 'ionicons/icons';
+import { computed } from "vue";
+import { useAuthStore} from "@/services";import { useRouter } from 'vue-router';
+const router = useRouter();
 
-  const appPages = [
-    {
-      title: 'Home',
-      url: '/folder/Home',
-      iosIcon: mailOutline,
-      mdIcon: mailSharp
-    },
-    {
-      title: 'Scores',
-      url: '/scores',
-      iosIcon: paperPlaneOutline,
-      mdIcon: paperPlaneSharp
-    },
-    {
-      title: 'Animateur',
-      url: '/leader',
-      iosIcon: paperPlaneOutline,
-      mdIcon: paperPlaneSharp
-    },
-    {
-      title: 'Favorites',
-      url: '/folder/Favorites',
-      iosIcon: heartOutline,
-      mdIcon: heartSharp
-    },
-    {
-      title: 'Archived',
-      url: '/folder/Archived',
-      iosIcon: archiveOutline,
-      mdIcon: archiveSharp
-    },
-    {
-      title: 'Trash',
-      url: '/folder/Trash',
-      iosIcon: trashOutline,
-      mdIcon: trashSharp
-    },
-    {
-      title: 'Profil',
-      url: '/profile',
-      iosIcon: warningOutline,
-      mdIcon: warningSharp
-    },
-    {
-      title: 'A propos',
-      url: '/about',
-      iosIcon: informationCircleOutline,
-      mdIcon: informationCircleSharp
-    }
-  ];    
+const appPages = [
+  {
+    title: 'Home',
+    url: '/folder/Home',
+    iosIcon: mailOutline,
+    mdIcon: mailSharp
+  },
+  {
+    title: 'Scores',
+    url: '/scores',
+    iosIcon: paperPlaneOutline,
+    mdIcon: paperPlaneSharp
+  },
+  {
+    title: 'Animateur',
+    url: '/leader',
+    iosIcon: paperPlaneOutline,
+    mdIcon: paperPlaneSharp
+  },
+  {
+    title: 'Favorites',
+    url: '/folder/Favorites',
+    iosIcon: heartOutline,
+    mdIcon: heartSharp
+  },
+  {
+    title: 'Archived',
+    url: '/folder/Archived',
+    iosIcon: archiveOutline,
+    mdIcon: archiveSharp
+  },
+  {
+    title: 'Trash',
+    url: '/folder/Trash',
+    iosIcon: trashOutline,
+    mdIcon: trashSharp
+  },
+  {
+    title: 'Profil',
+    url: '/profile',
+    iosIcon: warningOutline,
+    mdIcon: warningSharp
+  },
+  {
+    title: 'A propos',
+    url: '/about',
+    iosIcon: informationCircleOutline,
+    mdIcon: informationCircleSharp
+  }
+];    
   
-  const route = useRoute();
-
-  const isSelected = (url: string) => url === route.path
+const route = useRoute();
+const isSelected = (url: string) => url === route.path;
+const store = useAuthStore();
+const name = computed(() => {
+  let name = "undefined";
+  if (store.profile.totem) {
+    name = store.profile.totem;
+  } else if (store.profile.firstName) {
+    name = store.profile.firstName;
+  } else if (store.profile.email) {
+    name = store.profile.email;
+  }
+  return name;
+});
 </script>
 
 <style scoped>

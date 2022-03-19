@@ -40,7 +40,7 @@ export const emptyProfile = (email=""): Profile => ({
 
 interface State {
   user: fbUser | null;
-  profile: Profile | null;
+  profile: Profile;
   error: any;
 }
 
@@ -103,12 +103,12 @@ export const useAuthStore = defineStore("authStore", {
         if (!profile) {
           console.debug("Create a new profile for a new user");
           const profile = await fbResetUserProfile();
-          this.profile = profile ? profile : null;
+          this.profile = profile ? profile : this.profile;
         }
         this.error = null;
       } catch (e: any) {
         this.user = null;
-        this.profile = null;
+        this.profile = emptyProfile();
         this.error = e;
       } finally {
         window.localStorage.removeItem('emailForSignIn');
@@ -139,7 +139,7 @@ export const useAuthStore = defineStore("authStore", {
       try {
         await fbSignOut();
         this.user = null;
-        this.profile = null;
+        this.profile = emptyProfile();
         this.error = null;
         return true;
       } catch (e: any) {
@@ -157,7 +157,7 @@ export const useAuthStore = defineStore("authStore", {
         try {
           const {user, profile} = await fbCreateAccount(email, password, first,last);
           this.user = user ? user : null;
-          this.profile = profile ? profile : null;
+          this.profile = profile ? profile : this.profile;
           this.error = null;
           return true;
         } catch (e: any) {

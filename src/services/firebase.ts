@@ -180,7 +180,7 @@ export const fbGetUserProfile = async (uid: string) => {
   } else {
     // doc.data() will be undefined in this case
     console.log("Profile not found", uid);
-    return null;
+    return emptyProfile();
   }
 };
 

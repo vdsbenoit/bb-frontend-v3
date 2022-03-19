@@ -3,8 +3,14 @@
     <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
       <div v-if="store.isLoggedIn">
-        <p>Tu es connecté avec {{ store.user?.email }}</p>
-
+        <form>
+          <ion-list>
+            <ion-item lines="full">
+              <ion-label position="floating">totem</ion-label>
+              <ion-input v-model="profile.totem" name="totem" type="text"></ion-input>
+            </ion-item>
+          </ion-list>
+        </form>
 
         <ion-button v-if="!props.id || props.id != store.uid" expand="block" @click="logOut" color="danger">
           Se déconnnecter
@@ -24,51 +30,49 @@
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import LoginComponent from "@/components/LoginComponent.vue";
-import { useAuthStore, fbGetUserProfile, Profile } from "@/services";
+import { useAuthStore, fbGetUserProfile, Profile, emptyProfile} from "@/services";
 import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import { defineProps } from "vue";
 
-const props = defineProps(['validation', 'id']);
+const props = defineProps(["validation", "id"]);
 const store = useAuthStore();
 const { processSignInLink, logoutUser } = store;
 const router = useRouter();
 const route = useRoute();
 
-const profile = ref<Profile|null>(null);
+const profile = ref<Profile>(emptyProfile());
 
 const isOwnProfile = computed(() => {
-  console.log("uid", store.uid);
   return !route.params.id || route.params.id === store.uid;
 });
 
-const name = computed(() => {
-  let name = "undefined";
-  if (profile.value?.totem){
-    name = profile.value.totem;
-  } else if (profile.value?.firstName){
-    name = profile.value.firstName;
-  } else if (profile.value?.email){
-    name = profile.value.email;
-  }
-  return name;
-});
-
 const pageTitle = computed(() => {
-  return isOwnProfile.value ? "Ton profil" : `Profil de ${name.value}`
+  if (!store.isLoggedIn) return "Connexion";
+  if (isOwnProfile.value){
+    return "Ton profil"
+  } else {
+    let name = "undefined";
+    if (profile.value.totem) {
+      name = profile.value.totem;
+    } else if (profile.value.firstName) {
+      name = profile.value.firstName;
+    } else if (profile.value.email) {
+      name = profile.value.email;
+    }
+    return `Profil de ${name}`;
+  }
 });
 
 onMounted(async () => {
   if (props.validation) {
-    console.log(`validation : ${props.validation}`);
     await processSignInLink(window.location.href);
     router.replace("/profile");
   }
-  console.log(`isownprofile`, isOwnProfile.value);
-  if (isOwnProfile.value){
+  if (isOwnProfile.value) {
     profile.value = store.profile;
   } else {
-    try{
+    try {
       profile.value = await fbGetUserProfile(route.params.id as string);
     } catch (e: any) {
       store.error = e;
