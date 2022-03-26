@@ -38,48 +38,6 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const USER_DB_NAME = "users";
 
-// fixme: remove unused method
-/**
- *
- * @param email
- * @param password
- * @returns
- */
-export const fbCreateAccount = async (
-  email: string,
-  password: string,
-  first: string,
-  last: string
-) => {
-  const response = await createUserWithEmailAndPassword(auth, email, password);
-  console.log(response);
-  if (response) {
-    const profile = await fbGetUserProfile(response.user.uid);
-    return {
-      user: response.user,
-      profile,
-    };
-  } else {
-    return {
-      user: null,
-      profile: null,
-    };
-  }
-};
-
-// fixme: remove unused method
-/**
- *
- * @param email
- * @param password
- * @returns
- */
-export const fbSignIn = async (email: string, password: string) => {
-  const response = await signInWithEmailAndPassword(auth, email, password);
-  console.log(response);
-  return response;
-};
-
 /**
  *
  * @param email
@@ -231,3 +189,45 @@ export const fbCollectionListener = (collectionName: string, callback: any) => {
 };
 
 export { app, db, auth };
+
+// fixme: remove unused method
+/**
+ *
+ * @param email
+ * @param password
+ * @returns
+ */
+ export const fbCreateAccount = async (
+  email: string,
+  password: string,
+  first: string,
+  last: string
+) => {
+  const response = await createUserWithEmailAndPassword(auth, email, password);
+  console.log(response);
+  if (response) {
+    const profile = await fbGetUserProfile(response.user.uid);
+    return {
+      user: response.user,
+      profile,
+    };
+  } else {
+    return {
+      user: null,
+      profile: null,
+    };
+  }
+};
+
+// fixme: remove unused method
+/**
+ *
+ * @param email
+ * @param password
+ * @returns
+ */
+export const fbSignIn = async (email: string, password: string) => {
+  const response = await signInWithEmailAndPassword(auth, email, password);
+  console.log(response);
+  return response;
+};
