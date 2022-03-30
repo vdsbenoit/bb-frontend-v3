@@ -13,11 +13,11 @@ import {
 } from "./firebase";
 
 export const ROLES = {
-  0: "Anonyme",
-  2: "Participant",
-  4: "Animateurs",
-  8: "Moderateur",
-  10: "Administrateur",
+  "Anonyme": 0,
+  "Participant": 2,
+  "Animateurs": 4,
+  "Moderateur": 8,
+  "Administrateur": 10,
 }
 
 export interface Profile {

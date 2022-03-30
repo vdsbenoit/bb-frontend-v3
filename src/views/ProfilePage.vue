@@ -20,7 +20,7 @@
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Role</ion-label>
               <ion-select v-model="profile.role" cancel-text="Cancel" ok-text="OK">
-                <ion-select-option v-for="(role, value) in ROLES" :key="value" :value="value">{{role}}</ion-select-option>
+                <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{role}}</ion-select-option>
               </ion-select>
             </ion-item>
           </ion-list>

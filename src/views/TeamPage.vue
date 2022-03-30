@@ -17,7 +17,7 @@
           </ion-row>
         </ion-card-header>
 
-        <ion-card-content>
+        <ion-card-content :class="showRanking">
           <ion-list>
             <ion-item>
               <ion-label>Score de l'équipe</ion-label><ion-note slot="end">5</ion-note>
@@ -50,7 +50,7 @@
             </ion-item>
           </ion-list>
           <ion-list-header v-else>
-            No Sessions Found
+            Aucun jeu trouvé
           </ion-list-header>
         </ion-card-content>
       </ion-card>
@@ -59,9 +59,19 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, 
+IonRow, IonCol, IonListHeader, IonIcon
+} from "@ionic/vue";
 import { closeOutline, ellipsisHorizontalOutline, swapHorizontalOutline, trophyOutline} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import { useAuthStore, ROLES } from "@/services";
+import { computed } from "@vue/reactivity";
+
+const store = useAuthStore();
+const showRanking = computed(() => {
+  return store.profile.role >= ROLES.Moderateur ? "" : "ion-hide"
+});
+
 const teamId = "A1";
 const teamName = "Louveteaux Férao";
 const teamCity = "Soignies";
@@ -77,7 +87,6 @@ const status = (match: any) => {
 };
 
 </script>
-
 <style scoped>
 .numberCircle {
     border-radius: 50%;
