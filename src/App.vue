@@ -47,8 +47,8 @@ const appPages = [
     mdIcon: mailSharp
   },
   {
-    title: 'Scores',
-    url: '/scores',
+    title: 'Equipe',
+    url: '/team',
     iosIcon: paperPlaneOutline,
     mdIcon: paperPlaneSharp
   },
@@ -106,7 +106,7 @@ const name = computed(() => {
 });
 </script>
 
-<style scoped>
+<style>
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }
@@ -205,8 +205,7 @@ ion-menu.ios ion-note {
 ion-note {
   display: inline-block;
   font-size: 16px;
-
-  color: var(--ion-color-medium-shade);
+  color: var(--ion-color-dark);
 }
 
 ion-item.selected {

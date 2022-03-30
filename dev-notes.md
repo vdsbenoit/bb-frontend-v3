@@ -6,8 +6,6 @@
 - ajouter un élément dans le menu: `App.vue`
 - ajouter un élément dans le router:  `router/main.ts`
 
-
-
 Pour appliquer des css à toute l'app, le faire dans `App.vue`.
 
 # Tech stack
@@ -36,6 +34,18 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] merger login & settings page into ProfilePage
 - [ ] popup enregistrement settings
 - [ ] erreurs enregistrement settings
+- [ ] Etendre service firebase: lire docs & collections, écrire docs
+
+# Pages
+
+- Accueil: Voir score / enregistrer score
+- Enregistrer score: seule les animateurs d'un match peuvent y ajouter des points
+- User list
+- Chercher un match: lecture seule si pas connecté
+- Classement
+- Gestion équipes (voir app précédente)
+- Gestion jeux (voir app précédente)
+- Paramètres généraux de l'app
 
 # Règles db
 

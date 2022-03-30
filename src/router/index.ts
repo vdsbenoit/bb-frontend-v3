@@ -32,9 +32,9 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/scores'
   },
   {
-    name: 'player',
-    path: '/scores',
-    component: () => import ('../views/ScoresPage.vue')
+    name: 'team',
+    path: '/team',
+    component: () => import ('../views/TeamPage.vue')
   },
   {
     name: 'profile',

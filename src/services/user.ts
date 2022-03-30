@@ -85,8 +85,8 @@ export const useAuthStore = defineStore("authStore", {
       }
     },
     async processSignInLink(href: string) {
-      //fixme: replace this with an error, it should not happen
       let email = window.localStorage.getItem('emailForSignIn');
+      //fixme: replace this with an error, it should not happen
       if (!email) {
         email = window.prompt('Quel email as-tu utilisé pour te connecter ?')!;
       }
@@ -114,23 +114,6 @@ export const useAuthStore = defineStore("authStore", {
         window.localStorage.removeItem('emailForSignIn');
       }
     },
-    // fixme: remove unused method
-    /**
-     *
-     * @param data
-     */
-    async logInUser(email: string, password: string) {
-      try {
-        const response = await fbSignIn(email, password);
-        this.user = response.user ? response.user : null;
-        this.error = null;
-        return true;
-      } catch (e: any) {
-        this.user = null;
-        this.error = e;
-        return false;
-      }
-    },
     /**
      *
      * @param data
@@ -148,6 +131,23 @@ export const useAuthStore = defineStore("authStore", {
       }
     },
 
+    // fixme: remove unused method
+    /**
+     *
+     * @param data
+     */
+     async logInUser(email: string, password: string) {
+      try {
+        const response = await fbSignIn(email, password);
+        this.user = response.user ? response.user : null;
+        this.error = null;
+        return true;
+      } catch (e: any) {
+        this.user = null;
+        this.error = e;
+        return false;
+      }
+    },
    // fixme: remove unused method
     /**
      *
