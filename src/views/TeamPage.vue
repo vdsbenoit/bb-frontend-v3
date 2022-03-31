@@ -1,7 +1,8 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Equipe"></header-template>
+    <header-template :pageTitle="'Equipe ' + (teamId ? teamId : 'inconnue')"></header-template>
     <ion-content :fullscreen="true">
+    <div v-if="teamId">
       <ion-card>
         <ion-card-header>
           <ion-row>
@@ -54,6 +55,11 @@
           </ion-list-header>
         </ion-card-content>
       </ion-card>
+      </div>
+      <div v-else class="not-found">
+        <strong class="capitalize">Nous n'avons pas trouvé cette équipe...</strong>
+        <p>Retour à <a  @click="router.go(-1)" >la page précédente</a></p>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -66,13 +72,21 @@ import { closeOutline, ellipsisHorizontalOutline, swapHorizontalOutline, trophyO
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services";
 import { computed } from "@vue/reactivity";
+import { useRoute, useRouter } from "vue-router";
 
 const store = useAuthStore();
+const route = useRoute();
+const router = useRouter();
+
 const showRanking = computed(() => {
   return store.profile.role >= ROLES.Moderateur ? "" : "ion-hide"
 });
 
-const teamId = "A1";
+const teamId = computed(() => {
+  if (route.params.id) return route.params.id;
+  if (store.profile.team) return store.profile.team;
+  return undefined;
+});
 const teamName = "Louveteaux Férao";
 const teamCity = "Soignies";
 const matches: any = [

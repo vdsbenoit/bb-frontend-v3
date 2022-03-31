@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <header-template pageTitle="Section"></header-template>
-    <ion-content :fullscreen="true">
+    <ion-content :fullscreen="true" class="ion-padding">
 
     <ion-grid>
       <ion-row>
@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, 
-IonGrid, IonRow, IonCol, IonListHeader, IonIcon
+IonGrid, IonRow, IonCol, IonListHeader, IonIcon, IonSelect, IonSelectOption
 } from "@ionic/vue";
 import { closeOutline, ellipsisHorizontalOutline, swapHorizontalOutline, trophyOutline} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";

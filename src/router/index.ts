@@ -32,8 +32,13 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/scores'
   },
   {
-    name: 'team',
+    name: 'myTeam',
     path: '/team',
+    component: () => import ('../views/TeamPage.vue')
+  },
+  {
+    name: 'team',
+    path: '/teams/:id',
     component: () => import ('../views/TeamPage.vue')
   },
   {
