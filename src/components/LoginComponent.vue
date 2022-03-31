@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonList, IonItem, IonLabel, IonInput, IonText, IonButton, loadingController } from "@ionic/vue";
+import { IonList, IonItem, IonLabel, IonInput, IonText, IonButton } from "@ionic/vue";
 import { useAuthStore, loadingPopup, toastPopup } from "@/services";
 import { ref } from "vue";
 
@@ -28,7 +28,7 @@ const email = ref("");
 const sendEmail = async () => {
   const loading = await loadingPopup();
   await sendSignInEmail(email.value);
-  loading.dismiss()
+  loading.dismiss();
   toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 10000);
 };
 

@@ -35,10 +35,16 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] popup enregistrement settings
 - [ ] erreurs enregistrement settings
 - [ ] Etendre service firebase: lire docs & collections, écrire docs
+- [ ] Créer une collection "sections". Field: `city`, `name`, `teams` 
+
+## Nice to have
+
+- Pas d'information post-connexion (choisir son équipe / jeu)
+- Système de recherche de joueur
 
 # Pages
 
-- Accueil: Voir score / enregistrer score
+- Accueil: invitation à s'inscrire - si connecté : Mon programme / Mon jeu
 - Enregistrer score: seule les animateurs d'un match peuvent y ajouter des points
 - User list
 - Chercher un match: lecture seule si pas connecté
@@ -58,3 +64,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] Désactiver les API key inutiles [ici](https://console.cloud.google.com/apis/credentials?project=badenbattle-a0dec)
 - [ ] Désactiver les domaines inutiles [ici](https://console.firebase.google.com/u/0/project/badenbattle-a0dec/authentication/providers)
 - [ ] Désactiver le login par mdp
+
+# Next release
+
+- QR codes
+- Create DB from web app

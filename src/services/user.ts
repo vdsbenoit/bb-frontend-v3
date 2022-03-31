@@ -27,6 +27,8 @@ export interface Profile {
   lastName: string;
   role: number;
   settings: any[];
+  team: string;
+  game: string;
 }
 
 export const emptyProfile = (email=""): Profile => ({
@@ -36,6 +38,8 @@ export const emptyProfile = (email=""): Profile => ({
   lastName: "",
   role: 0,
   settings: [],
+  team: "",
+  game: "",
 })
 
 interface State {

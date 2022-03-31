@@ -48,7 +48,13 @@ const appPages = [
   },
   {
     title: 'Equipe',
-    url: '/team',
+    url: '/team/A1',
+    iosIcon: paperPlaneOutline,
+    mdIcon: paperPlaneSharp
+  },
+  {
+    title: 'Section',
+    url: '/section',
     iosIcon: paperPlaneOutline,
     mdIcon: paperPlaneSharp
   },

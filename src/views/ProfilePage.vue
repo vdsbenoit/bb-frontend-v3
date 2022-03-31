@@ -3,6 +3,12 @@
     <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
       <div v-if="store.isLoggedIn">
+      <ion-card class="ion-no-margin ion-margin-bottom" :class="showFillingInfo">
+        <ion-card-content >
+          <p>Libre à toi de compléter les champs si dessous. Ca rendra l'utilisation de l'application plus facile</p>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="ion-no-margin ion-margin-bottom">
         <form>
           <ion-list>
             <ion-item lines="full">
@@ -19,18 +25,20 @@
             </ion-item>
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Role</ion-label>
-              <ion-select v-model="profile.role" cancel-text="Cancel" ok-text="OK">
+              <ion-select v-model="profile.role" cancel-text="Annuler" ok-text="OK">
                 <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{role}}</ion-select-option>
               </ion-select>
             </ion-item>
           </ion-list>
         </form>
+      </ion-card>
         <ion-button @click="saveProfile" expand="block" color="success">
           Enregistrer
         </ion-button>
         <ion-button v-if="isOwnProfile" expand="block" @click="logOut" color="danger">
           Se déconnnecter
         </ion-button>
+        
       </div>
       <div v-else>
         <login-component></login-component>
@@ -43,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption, IonCard, IonCardContent } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import LoginComponent from "@/components/LoginComponent.vue";
 import { useAuthStore, fbGetUserProfile, Profile, emptyProfile, ROLES, fbSetUserProfile} from "@/services";
@@ -65,6 +73,10 @@ const isOwnProfile = computed(() => {
 
 const activeUserId = computed(() : string => {
   return route.params.id ? route.params.id as string : store.uid
+});
+
+const showFillingInfo = computed(() => {
+  return !store.profile.totem || !store.profile.firstName || !store.profile.lastName ? "" : "ion-hide"
 });
 
 const pageTitle = computed(() => {
