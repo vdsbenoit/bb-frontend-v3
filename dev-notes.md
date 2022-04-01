@@ -35,7 +35,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] popup enregistrement settings
 - [ ] erreurs enregistrement settings
 - [ ] Etendre service firebase: lire docs & collections, écrire docs
-- [ ] Créer une collection "sections". Field: `city`, `name`, `teams` 
+- [ ] Créer une collection "sections". Un document contient toutes les infos de sections d'une année dans un dict { sectionCity: {sectionName [ teams]}}
 
 ## Nice to have
 

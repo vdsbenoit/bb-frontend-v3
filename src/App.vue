@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonFooter, IonToolbar} from '@ionic/vue';
 import { useRoute } from 'vue-router';
-import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp } from 'ionicons/icons';
+import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, earthOutline, earthSharp } from 'ionicons/icons';
 import { computed } from "vue";
 import { useAuthStore} from "@/services";import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -43,20 +43,26 @@ const appPages = [
   {
     title: 'Home',
     url: '/folder/Home',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
+    iosIcon: homeOutline,
+    mdIcon: homeSharp
+  },
+  {
+    title: 'Mon Equipe',
+    url: '/team',
+    iosIcon: peopleCircleOutline,
+    mdIcon: peopleCircleSharp
   },
   {
     title: 'Equipe',
-    url: '/team/A1',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
+    url: '/teams',
+    iosIcon: peopleOutline,
+    mdIcon: peopleSharp
   },
   {
-    title: 'Section',
-    url: '/section',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
+    title: 'Sections',
+    url: '/sections',
+    iosIcon: earthOutline,
+    mdIcon: earthSharp
   },
   {
     title: 'Animateur',
@@ -85,8 +91,8 @@ const appPages = [
   {
     title: 'Profil',
     url: '/profile',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
+    iosIcon: personCircleOutline,
+    mdIcon: personCircleSharp
   },
   {
     title: 'A propos',

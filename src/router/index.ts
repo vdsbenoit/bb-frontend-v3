@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: 'home',
     path: '',
-    redirect: '/scores'
+    redirect: '/sections'
   },
   {
     name: 'myTeam',
@@ -44,7 +44,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: 'sections',
     path: '/sections',
-    component: () => import ('../views/SectionPage.vue')
+    component: () => import ('../views/SectionsPage.vue')
   },
   {
     name: 'profile',

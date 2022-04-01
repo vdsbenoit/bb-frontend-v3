@@ -4,7 +4,7 @@
     <ion-content :fullscreen="true">
       <div class="not-found">
         <strong class="capitalize">C'est page n'existe pas ou plus</strong>
-        <p>Retour à <a  @click="router.push('/')" >l'accueil</a></p>
+        <p>Retour à <a  @click="router.go(-1)" >la page précédente</a></p>
       </div>
     </ion-content>
   </ion-page>

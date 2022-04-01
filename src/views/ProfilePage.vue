@@ -29,6 +29,18 @@
                 <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{role}}</ion-select-option>
               </ion-select>
             </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked" color="primary">Équipe</ion-label>
+              <ion-select v-model="profile.team" cancel-text="Annuler" ok-text="OK">
+                <ion-select-option v-for="team in getTeams()" :key="team" :value="team">{{team}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked" color="primary">Jeu</ion-label>
+              <ion-select v-model="profile.game" cancel-text="Annuler" ok-text="OK">
+                <ion-select-option v-for="game in getGames()" :key="game" :value="game">{{game}}</ion-select-option>
+              </ion-select>
+            </ion-item>
           </ion-list>
         </form>
       </ion-card>
@@ -78,6 +90,13 @@ const activeUserId = computed(() : string => {
 const showFillingInfo = computed(() => {
   return !store.profile.totem || !store.profile.firstName || !store.profile.lastName ? "" : "ion-hide"
 });
+
+const getTeams = () => {
+  return ["A1", "A2", "A3"];
+}
+const getGames = () => {
+  return ["1", "2", "3"];
+}
 
 const pageTitle = computed(() => {
   if (!store.isLoggedIn) return "Connexion";
