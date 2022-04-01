@@ -42,6 +42,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/TeamPage.vue')
   },
   {
+    name: 'myGame',
+    path: '/game',
+    component: () => import ('../views/GamePage.vue')
+  },
+  {
+    name: 'game',
+    path: '/games/:id',
+    component: () => import ('../views/GamePage.vue')
+  },
+  {
     name: 'sections',
     path: '/sections',
     component: () => import ('../views/SectionsPage.vue')

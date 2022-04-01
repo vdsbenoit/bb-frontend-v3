@@ -3,21 +3,21 @@
     <header-template :pageTitle="'Equipe ' + (teamId ? teamId : 'inconnue')"></header-template>
     <ion-content :fullscreen="true">
     <div v-if="teamId">
-      <ion-card>
-        <ion-card-header>
-          <ion-row>
-            <ion-col>
-              <ion-card-title>{{teamName}} </ion-card-title>
-              <ion-card-subtitle> {{teamCity}} </ion-card-subtitle>
+      <ion-grid class="ion-padding-horizontal ion-padding-top">
+        <ion-row class="ion-align-items-center">
+            <ion-col class="ion-padding-start">
+              <h1 class="ion-no-margin" style="font-weight: bold">{{teamName}}</h1>
+              <ion-card-subtitle>Circuit {{teamCity}}</ion-card-subtitle>
             </ion-col>
-            <ion-col class="numberCircle">
+            <ion-col class="numberCircle ion-padding-end">
               <span>
                   {{teamId}}
               </span>
             </ion-col>
           </ion-row>
-        </ion-card-header>
+      </ion-grid>
 
+      <ion-card>
         <ion-card-content :class="showRanking">
           <ion-list>
             <ion-item>
@@ -38,7 +38,7 @@
 
       <ion-card>
         <ion-card-header>
-          <ion-card-title>Programme</ion-card-title>
+          <ion-card-title style="font-size: 24px">Programme</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <ion-list  v-if="matches.length > 0">
@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, 
-IonRow, IonCol, IonListHeader, IonIcon
+IonRow, IonCol, IonListHeader, IonIcon, IonGrid
 } from "@ionic/vue";
 import { closeOutline, ellipsisHorizontalOutline, swapHorizontalOutline, trophyOutline} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";

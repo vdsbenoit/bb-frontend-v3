@@ -54,8 +54,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] Listes
   - [ ] Liste des jeux (filtre par circuit) + inscription
   - [ ] Utilisateurs
-  - [ ] Liste de matches (filtre temps et filtre circuit)
-
+  - [ ] Liste de matches (filtre temps et filtre circuit, bouton "charger" pour éviter trop de requêtes)
 - [ ] Chercher un match: lecture seule si pas connecté
 - [ ] Classement
 - [ ] Gestion équipes (voir app précédente)

@@ -53,8 +53,14 @@ const appPages = [
     mdIcon: peopleCircleSharp
   },
   {
-    title: 'Equipe',
-    url: '/teams',
+    title: 'Mon épreuve',
+    url: '/game',
+    iosIcon: peopleCircleOutline,
+    mdIcon: peopleCircleSharp
+  },
+  {
+    title: 'Epreuves',
+    url: '/games',
     iosIcon: peopleOutline,
     mdIcon: peopleSharp
   },
@@ -63,12 +69,6 @@ const appPages = [
     url: '/sections',
     iosIcon: earthOutline,
     mdIcon: earthSharp
-  },
-  {
-    title: 'Animateur',
-    url: '/leader',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
   },
   {
     title: 'Favorites',
@@ -247,5 +247,8 @@ ion-item.selected {
 .not-found a {
   text-decoration: none;
   cursor: pointer;
+}
+ion-label p{
+  color: var(--ion-color-medium) !important;
 }
 </style>
