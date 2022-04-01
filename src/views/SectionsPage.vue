@@ -18,7 +18,7 @@
         <ion-col size="12" size-sm="6">
             <ion-item>
               <ion-label>Section</ion-label>
-              <ion-select v-model="selectedSection" interface="popover">
+              <ion-select v-model="selectedSection">
                 <ion-select-option v-for="sectionName in getSectionNames" :value="sectionName" :key="sectionName">{{sectionName}}</ion-select-option>
               </ion-select>
             </ion-item>
@@ -128,5 +128,8 @@ const getSectionTeams = computed(() => {
 <style scoped>
 .your-team-note {
   background-color: var(--ion-color-primary);
+}
+ion-select{
+  max-width: 100%;
 }
 </style>

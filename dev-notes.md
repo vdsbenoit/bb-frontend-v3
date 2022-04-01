@@ -44,19 +44,30 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # Pages
 
-- Accueil: invitation à s'inscrire - si connecté : Mon programme / Mon jeu
-- Enregistrer score: seule les animateurs d'un match peuvent y ajouter des points
-- User list
-- Chercher un match: lecture seule si pas connecté
-- Classement
-- Gestion équipes (voir app précédente)
-- Gestion jeux (voir app précédente)
-- Paramètres généraux de l'app
+- [ ] Accueil: invitation à s'inscrire - si connecté : Mon programme / Mon jeu
+- [x] Login
+- [x] Profil (perso & qqun d'autre)
+- [x] Equipe (avec liste matches, ordonnés par temps)
+- [ ] Jeu (avec liste matches, ordonnés par temps)
+- [x] Sections (avec liste d'équipe)
+- [ ] Match
+- [ ] Listes
+  - [ ] Liste des jeux (filtre par circuit) + inscription
+  - [ ] Utilisateurs
+  - [ ] Liste de matches (filtre temps et filtre circuit)
+
+- [ ] Chercher un match: lecture seule si pas connecté
+- [ ] Classement
+- [ ] Gestion équipes (voir app précédente)
+- [ ] Gestion jeux (voir app précédente)
+- [ ] Paramètres généraux de l'app
+- [ ] Enregistrer score: seule les animateurs d'un match peuvent y ajouter des points
 
 # Règles db
 
 - tous les users peuvent modifier leur profile sauf leur role
 - seuls les admins peuvent modifier le profile des autres
+- Seuls les admins peuvent voir le classement en temps réel
 
 # Avant de mettre en prod
 
