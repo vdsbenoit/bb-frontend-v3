@@ -24,6 +24,10 @@
               <ion-input v-model="profile.lastName" name="lastName" type="text"></ion-input>
             </ion-item>
             <ion-item lines="full">
+              <ion-label position="stacked">Section</ion-label>
+              <ion-input v-model="profile.section" name="section" type="text"></ion-input>
+            </ion-item>
+            <ion-item lines="full">
               <ion-label position="stacked" color="primary">Role</ion-label>
               <ion-select v-model="profile.role" cancel-text="Annuler" ok-text="OK">
                 <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{role}}</ion-select-option>
@@ -43,14 +47,23 @@
             </ion-item>
           </ion-list>
         </form>
-      </ion-card>
-        <ion-button @click="saveProfile" expand="block" color="success">
-          Enregistrer
-        </ion-button>
-        <ion-button v-if="isOwnProfile" expand="block" @click="logOut" color="danger">
-          Se déconnnecter
-        </ion-button>
         
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+              <ion-button @click="saveProfile" expand="block" color="success">
+                Enregistrer
+              </ion-button>
+            </ion-col>
+            <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+              <ion-button v-if="isOwnProfile" expand="block" @click="logOut" color="danger">
+                Se déconnnecter
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        
+      </ion-card>
       </div>
       <div v-else>
         <login-component></login-component>
@@ -125,6 +138,7 @@ onMounted(async () => {
     try {
       profile.value = await fbGetUserProfile(route.params.id as string);
     } catch (e: any) {
+      profile.value = emptyProfile();
       store.error = e;
     }
   }

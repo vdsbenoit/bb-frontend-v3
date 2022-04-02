@@ -37,7 +37,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/TeamPage.vue')
   },
   {
-    name: 'team',
+    name: 'teams',
     path: '/teams/:id',
     component: () => import ('../views/TeamPage.vue')
   },
@@ -47,7 +47,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/GamePage.vue')
   },
   {
-    name: 'game',
+    name: 'games',
     path: '/games/:id',
     component: () => import ('../views/GamePage.vue')
   },
@@ -57,13 +57,13 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/SectionsPage.vue')
   },
   {
-    name: 'profile',
+    name: 'myProfile',
     path: '/profile',
     component: () => import ('../views/ProfilePage.vue')
   },
   {
-    name: 'userProfile',
-    path: '/profile/:id',
+    name: 'profiles',
+    path: '/profiles/:id',
     component: () => import ('../views/ProfilePage.vue')
   },
   {
@@ -82,10 +82,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'about',
     path: '/about',
     component: () => import ('../views/AboutPage.vue'),
-  },
-  {
-    path: '/folder/:id',
-    component: () => import ('../views/FolderPage.vue')
   },
   { 
     path: "/:catchAll(.*)",

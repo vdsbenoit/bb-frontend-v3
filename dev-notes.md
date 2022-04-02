@@ -35,11 +35,10 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] popup enregistrement settings
 - [ ] erreurs enregistrement settings
 - [ ] Etendre service firebase: lire docs & collections, écrire docs
-- [ ] Créer une collection "sections". Un document contient toutes les infos de sections d'une année dans un dict { sectionCity: {sectionName [ teams]}}
 
 ## Nice to have
 
-- Pas d'information post-connexion (choisir son équipe / jeu)
+- Page d'information post-connexion (choisir son équipe / jeu)
 - Système de recherche de joueur
 
 # Pages
@@ -48,7 +47,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Login
 - [x] Profil (perso & qqun d'autre)
 - [x] Equipe (avec liste matches, ordonnés par temps)
-- [ ] Jeu (avec liste matches, ordonnés par temps)
+- [x] Jeu (avec liste matches, ordonnés par temps)
 - [x] Sections (avec liste d'équipe)
 - [ ] Match
 - [ ] Listes
@@ -62,11 +61,20 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] Paramètres généraux de l'app
 - [ ] Enregistrer score: seule les animateurs d'un match peuvent y ajouter des points
 
+# Modification DB
+
+- [ ] game: faire morningLeaders & afternoonLeaders
+- [ ] Créer une collection "sections". Un document contient toutes les infos de sections d'une année dans un dict { sectionCity: {sectionName [ teams]}}
+- [ ] Créer une DB settigns avec 1 seul document avec les settings de l'app
+  - [ ] canRegisterScore: boolean
+  - [ ] gameLeaderSections : [] (liste des noms de sections animatrices)
+
 # Règles db
 
 - tous les users peuvent modifier leur profile sauf leur role
 - seuls les admins peuvent modifier le profile des autres
 - Seuls les admins peuvent voir le classement en temps réel
+- Il faut être animateur pour s'inscrire à une épreuve
 
 # Avant de mettre en prod
 
@@ -79,3 +87,4 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 - QR codes
 - Create DB from web app
+- Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.

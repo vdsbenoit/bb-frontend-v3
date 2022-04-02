@@ -17,8 +17,8 @@
           </ion-row>
       </ion-grid>
 
-      <ion-card>
-        <ion-card-content :class="showRanking">
+      <ion-card v-if="showRanking">
+        <ion-card-content>
           <ion-list>
             <ion-item>
               <ion-label>Score de l'équipe</ion-label><ion-note slot="end">5</ion-note>
@@ -47,7 +47,7 @@
                 <span>{{match.game_name}}</span>
                 <p>⌚ {{match.start_time}} - {{match.stop_time}} | 📍 Jeu n° {{match.game_id}}</p>
               </ion-label>
-              <ion-icon :icon="status(match)" slot="end"></ion-icon>
+              <ion-icon :ios="status(match).ios" :md="status(match).md" v-if="status(match).md" slot="end"></ion-icon>
             </ion-item>
           </ion-list>
           <ion-list-header v-else>
@@ -68,7 +68,7 @@
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, 
 IonRow, IonCol, IonListHeader, IonIcon, IonGrid
 } from "@ionic/vue";
-import { closeOutline, ellipsisHorizontalOutline, swapHorizontalOutline, trophyOutline} from 'ionicons/icons';
+import { closeOutline, closeSharp, swapHorizontalOutline, swapHorizontalSharp, trophyOutline, trophySharp} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services";
 import { computed } from "@vue/reactivity";
@@ -79,7 +79,7 @@ const route = useRoute();
 const router = useRouter();
 
 const showRanking = computed(() => {
-  return store.profile.role >= ROLES.Moderateur ? "" : "ion-hide"
+  return store.profile.role >= ROLES.Moderateur;
 });
 
 const teamId = computed(() => {
@@ -90,14 +90,16 @@ const teamId = computed(() => {
 const teamName = "Louveteaux Férao";
 const teamCity = "Soignies";
 const matches: any = [
-  {id: 1, game_id: 1, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false},
-  {id: 2, game_id: 2, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false},
+  {id: 1, game_id: 1, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "A1", loser: "", even: false},
+  {id: 2, game_id: 2, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "A1", even: false},
+  {id: 3, game_id: 3, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: true},
+  {id: 4, game_id: 4, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false},
 ];
 const status = (match: any) => {
-  if (match.winner === teamId) return trophyOutline;
-  if (match.loser === teamId) return closeOutline;
-  if (match.even === true) return swapHorizontalOutline;
-  return ellipsisHorizontalOutline;
+  if (match.winner === teamId.value) return {ios: trophyOutline, md: trophySharp};
+  if (match.loser === teamId.value) return {ios: closeOutline, md: closeSharp};
+  if (match.even === true) return {ios: swapHorizontalOutline, md: swapHorizontalSharp};
+  return {md: undefined, ios: undefined};
 };
 
 </script>

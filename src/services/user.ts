@@ -5,17 +5,15 @@ import {
   fbResetUserProfile,
   fbSetUserProfile,
   fbGetUserProfile,
-  fbCreateAccount,
   fbSendSignInEmail,
   fbSignInWithEmailLink,
-  fbSignIn,
   fbSignOut,
 } from "./firebase";
 
 export const ROLES = {
   "Anonyme": 0,
   "Participant": 2,
-  "Animateurs": 4,
+  "Animateur": 4,
   "Moderateur": 8,
   "Administrateur": 10,
 }
@@ -29,6 +27,7 @@ export interface Profile {
   settings: any[];
   team: string;
   game: string;
+  section: string;
 }
 
 export const emptyProfile = (email=""): Profile => ({
@@ -40,6 +39,7 @@ export const emptyProfile = (email=""): Profile => ({
   settings: [],
   team: "",
   game: "",
+  section: "",
 })
 
 interface State {
@@ -71,8 +71,13 @@ export const useAuthStore = defineStore("authStore", {
           this.user = user ? user : null;
 
           if (user) {
-            const profile = (await fbGetUserProfile(user.uid as string)) as Profile;
-            this.profile = profile;
+            try{
+              const profile = (await fbGetUserProfile(user.uid as string)) as Profile;
+              this.profile = profile;
+            } catch (e: any) {
+              this.profile = emptyProfile();
+              console.error(e);
+            }
           }
           resolve(true);
         });
@@ -134,41 +139,5 @@ export const useAuthStore = defineStore("authStore", {
         return false;
       }
     },
-
-    // fixme: remove unused method
-    /**
-     *
-     * @param data
-     */
-     async logInUser(email: string, password: string) {
-      try {
-        const response = await fbSignIn(email, password);
-        this.user = response.user ? response.user : null;
-        this.error = null;
-        return true;
-      } catch (e: any) {
-        this.user = null;
-        this.error = e;
-        return false;
-      }
-    },
-   // fixme: remove unused method
-    /**
-     *
-     * @param data
-     */
-     async createAccount(email: string, password: string, first: string, last: string) {
-        try {
-          const {user, profile} = await fbCreateAccount(email, password, first,last);
-          this.user = user ? user : null;
-          this.profile = profile ? profile : this.profile;
-          this.error = null;
-          return true;
-        } catch (e: any) {
-          this.user = null;
-          this.error = e;
-          return false;
-        }
-      },
   },
 });
