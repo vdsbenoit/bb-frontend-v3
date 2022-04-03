@@ -251,4 +251,22 @@ ion-item.selected {
 ion-label p{
   color: var(--ion-color-medium) !important;
 }
+.numberCircle {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 15px;
+    display: inline-flex;
+    flex-grow: 0;
+    background: var(--ion-color-primary);
+}
+.numberCircle span {
+    text-align: center;
+    width: 25px;
+    display: inline-block;
+    margin: auto;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+}
 </style>

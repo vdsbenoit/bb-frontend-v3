@@ -22,19 +22,18 @@
             <ion-card-title style="font-size: 24px">Responsables</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <h2>Matin</h2>
-            <ion-list v-if="matches.length > 0">
-              <ion-item v-for="leader in game.leaderInfo" :key="leader.uid" :routerLink="'/profiles/' + leader.uid">
+            <ion-list v-if="matches.length > 0" lines="none" class="ion-no-margin ion-no-padding">
+            <h2 class="ion-padding-start">Matin</h2>
+              <ion-item v-for="leader in game.leaderInfo" :key="leader.uid" :routerLink="'/profile/' + leader.uid" class="ion-margin-start">
                 <ion-label>
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
                   <ion-text color="medium" v-if="leader.section">&nbsp;({{ leader.section }})</ion-text>
                 </ion-label>
               </ion-item>
             </ion-list>
-            <br/>
-            <h2>Après-midi</h2>
-            <ion-list v-if="matches.length > 0">
-              <ion-item v-for="leader in game.leaderInfo" :key="leader.uid" :routerLink="'/profiles/' + leader.uid">
+            <ion-list v-if="matches.length > 0" lines="none" class="ion-no-margin ion-no-padding">
+            <h2 class="ion-padding-start">Après-midi</h2>
+              <ion-item v-for="leader in game.leaderInfo" :key="leader.uid" :routerLink="'/profile/' + leader.uid" class="ion-margin-start">
                 <ion-label>
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
                   <ion-text color="medium" v-if="leader.section">&nbsp;({{ leader.section }})</ion-text>
@@ -66,7 +65,7 @@
           </ion-card-header>
           <ion-card-content>
             <ion-list v-if="matches.length > 0">
-              <ion-item v-for="match in matches" :key="match.id" routerLink="/match/{{match.id}}" class="item-no-padding">
+              <ion-item v-for="match in matches" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
                   <ion-text color="tertiary" style="font-weight: bold">⌚ {{ match.start_time }} - {{ match.stop_time }} : </ion-text>
                   <ion-text>{{ match.player_ids[0] }} vs {{ match.player_ids[1] }}</ion-text>
@@ -100,6 +99,7 @@ const route = useRoute();
 const router = useRouter();
 
 const register = () => {
+  // popup pour choisir matin ou soir
   return "";
 };
 
@@ -178,24 +178,6 @@ const getWinner = (match: any) => {
 };
 </script>
 <style scoped>
-.numberCircle {
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  padding: 15px;
-  display: inline-flex;
-  flex-grow: 0;
-  background: var(--ion-color-primary);
-}
-.numberCircle span {
-  text-align: center;
-  width: 25px;
-  display: inline-block;
-  margin: auto;
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: bold;
-}
 .item-no-padding {
   --padding-start: 0px;
   --padding-end: 0px;

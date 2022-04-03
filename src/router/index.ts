@@ -38,7 +38,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'teams',
-    path: '/teams/:id',
+    path: '/team/:id',
     component: () => import ('../views/TeamPage.vue')
   },
   {
@@ -47,9 +47,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/GamePage.vue')
   },
   {
-    name: 'games',
-    path: '/games/:id',
+    name: 'game',
+    path: '/game/:id',
     component: () => import ('../views/GamePage.vue')
+  },
+  {
+    name: 'match',
+    path: '/match/:id',
+    component: () => import ('../views/MatchPage.vue')
   },
   {
     name: 'sections',
@@ -63,7 +68,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'profiles',
-    path: '/profiles/:id',
+    path: '/profile/:id',
     component: () => import ('../views/ProfilePage.vue')
   },
   {

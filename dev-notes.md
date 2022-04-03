@@ -12,9 +12,9 @@ Pour appliquer des css à toute l'app, le faire dans `App.vue`.
 
 - vue 3 : frontend engine
 - ionic 6 : UI 
-
 - firebase : auth & db
 - pinia : state management
+- magnetar: firestore 
 
 
 
@@ -34,7 +34,9 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] merger login & settings page into ProfilePage
 - [ ] popup enregistrement settings
 - [ ] erreurs enregistrement settings
-- [ ] Etendre service firebase: lire docs & collections, écrire docs
+- [ ] Magnetar
+  - [ ] fetch tous les games is setting.gameDbLastUpdate > gameDbLastUpdate 
+
 
 ## Nice to have
 
@@ -64,10 +66,11 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 # Modification DB
 
 - [ ] game: faire morningLeaders & afternoonLeaders
-- [ ] Créer une collection "sections". Un document contient toutes les infos de sections d'une année dans un dict { sectionCity: {sectionName [ teams]}}
+- [ ] Créer une DB "sections". Chaque collection est un type de section (e.g. loups, lutins, baladins). Chaque document est une section avec les fields suivant: name, city, nbTeams, teams: []. La liste teams se fait compléter par le script de distribution
 - [ ] Créer une DB settigns avec 1 seul document avec les settings de l'app
-  - [ ] canRegisterScore: boolean
-  - [ ] gameLeaderSections : [] (liste des noms de sections animatrices)
+  - canRegisterScore: boolean
+  - gameLeaderSections : [] (liste des noms de sections animatrices)
+  - gameDbLastUpdate: date de la dernière modification de la db de jeu
 
 # Règles db
 

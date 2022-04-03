@@ -6,8 +6,8 @@
       <ion-grid class="ion-padding-horizontal ion-padding-top">
         <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
+              <ion-card-subtitle>{{teamCity}}</ion-card-subtitle>
               <h1 class="ion-no-margin" style="font-weight: bold">{{teamName}}</h1>
-              <ion-card-subtitle>Circuit {{teamCity}}</ion-card-subtitle>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
               <span>
@@ -42,7 +42,7 @@
         </ion-card-header>
         <ion-card-content>
           <ion-list  v-if="matches.length > 0">
-            <ion-item v-for="match in matches" :key="match.id" routerLink="/match/{{match.id}}" class="ion-no-padding"> 
+            <ion-item v-for="match in matches" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding"> 
               <ion-label>
                 <span>{{match.game_name}}</span>
                 <p>⌚ {{match.start_time}} - {{match.stop_time}} | 📍 Jeu n° {{match.game_id}}</p>
@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, 
-IonRow, IonCol, IonListHeader, IonIcon, IonGrid
+IonRow, IonCol, IonListHeader, IonIcon, IonGrid,
 } from "@ionic/vue";
 import { closeOutline, closeSharp, swapHorizontalOutline, swapHorizontalSharp, trophyOutline, trophySharp} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
@@ -104,22 +104,4 @@ const status = (match: any) => {
 
 </script>
 <style scoped>
-.numberCircle {
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    padding: 15px;
-    display: inline-flex;
-    flex-grow: 0;
-    background: var(--ion-color-primary);
-}
-.numberCircle span {
-    text-align: center;
-    width: 25px;
-    display: inline-block;
-    margin: auto;
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: bold;
-}
 </style>
