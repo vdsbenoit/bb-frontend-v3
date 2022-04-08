@@ -2,7 +2,7 @@
   <ion-page>
     <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
-      <div v-if="store.isLoggedIn">
+      <div v-if="user.isLoggedIn">
       <ion-card class="ion-no-margin ion-margin-bottom" :class="showFillingInfo">
         <ion-card-content >
           <p>Libre à toi de compléter les champs si dessous. Ca rendra l'utilisation de l'application plus facile</p>
@@ -68,8 +68,8 @@
       <div v-else>
         <login-component></login-component>
       </div>
-      <ion-text class="ion-padding" color="danger" :hidden="!store.error">
-        <p class="ion-padding-start">{{ store.error }}</p>
+      <ion-text class="ion-padding" color="danger" :hidden="!user.error">
+        <p class="ion-padding-start">{{ user.error }}</p>
       </ion-text>
     </ion-content>
   </ion-page>
@@ -85,23 +85,23 @@ import { computed, onMounted, ref } from "vue";
 import { defineProps } from "vue";
 
 const props = defineProps(["validation", "id"]);
-const store = useAuthStore();
-const { processSignInLink, logoutUser } = store;
+const user = useAuthStore();
+const { processSignInLink, logoutUser } = user;
 const router = useRouter();
 const route = useRoute();
 
-const profile = ref<Profile>(emptyProfile());
+const profile = ref<Profile>();
 
 const isOwnProfile = computed(() => {
-  return !route.params.id || route.params.id === store.uid;
+  return !route.params.id || route.params.id === user.uid;
 });
 
 const activeUserId = computed(() : string => {
-  return route.params.id ? route.params.id as string : store.uid
+  return route.params.id ? route.params.id as string : user.uid
 });
 
 const showFillingInfo = computed(() => {
-  return !store.profile.totem || !store.profile.firstName || !store.profile.lastName ? "" : "ion-hide"
+  return !user.profile.totem ? "" : "ion-hide"
 });
 
 const getTeams = () => {
@@ -112,7 +112,7 @@ const getGames = () => {
 }
 
 const pageTitle = computed(() => {
-  if (!store.isLoggedIn) return "Connexion";
+  if (!user.isLoggedIn) return "Connexion";
   if (isOwnProfile.value){
     return "Ton profil"
   } else {
@@ -133,13 +133,13 @@ onMounted(async () => {
     router.replace("/profile");
   }
   if (isOwnProfile.value) {
-    profile.value = store.profile;
+    profile.value = user.profile;
   } else {
     try {
       profile.value = await fbGetUserProfile(route.params.id as string);
     } catch (e: any) {
       profile.value = emptyProfile();
-      store.error = e;
+      user.error = e;
     }
   }
 });

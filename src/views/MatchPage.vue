@@ -175,7 +175,8 @@ const register = () => {
     display: inline-block;
     vertical-align: middle;
     line-height: normal;
-    height: 100%;
+    height: 65%;
+    width: 100%;
 }
 
 </style>

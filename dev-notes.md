@@ -15,6 +15,7 @@ Pour appliquer des css à toute l'app, le faire dans `App.vue`.
 - firebase : auth & db
 - pinia : state management
 - magnetar: firestore 
+- Volar plugin (VS Code): I applied [this config](https://github.com/johnsoncodehk/volar/discussions/471).
 
 
 
@@ -32,26 +33,34 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Continuer à parser les pages d'auth management depuis "vue-firebase-auth-tuto"
 - [x] parser & adapter le popup manager depuis BadenBattle/frontend
 - [x] merger login & settings page into ProfilePage
+- [ ] disclaimer rgpd dans about
 - [ ] popup enregistrement settings
 - [ ] erreurs enregistrement settings
 - [ ] Magnetar
-  - [ ] fetch tous les games is setting.gameDbLastUpdate > gameDbLastUpdate 
-
+  - [ ] checker si merge fonction avec les arrays (games.ts)
+- [ ] save score au niveau des matches & équipes
 
 ## Nice to have
 
 - Page d'information post-connexion (choisir son équipe / jeu)
 - Système de recherche de joueur
+- séparation pour midi dans l'horaire
+- refactor even into draw
 
 # Pages
 
 - [ ] Accueil: invitation à s'inscrire - si connecté : Mon programme / Mon jeu
 - [x] Login
+  - [ ] Split login & profile
 - [x] Profil (perso & qqun d'autre)
 - [x] Equipe (avec liste matches, ordonnés par temps)
 - [x] Jeu (avec liste matches, ordonnés par temps)
 - [x] Sections (avec liste d'équipe)
-- [ ] Match
+- [x] Match
+  - [ ] Enregistrer le score au niveau du match & de équipes
+  - [ ] +2 par victoires
+  - [ ] +1 égalité
+  
 - [ ] Listes
   - [ ] Liste des jeux (filtre par circuit) + inscription
   - [ ] Utilisateurs
@@ -65,12 +74,22 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # Modification DB
 
-- [ ] game: faire morningLeaders & afternoonLeaders
-- [ ] Créer une DB "sections". Chaque collection est un type de section (e.g. loups, lutins, baladins). Chaque document est une section avec les fields suivant: name, city, nbTeams, teams: []. La liste teams se fait compléter par le script de distribution
+- [ ] games
+  - [ ] faire morningLeaders & afternoonLeaders
+
+- [ ] teams
+  - [ ] ajouter scores: number[]
+
+- [ ] Créer une DB "sections". 
+  - [ ] Chaque collection est un type de section (e.g. loups, lutins, baladins, animateurs). 
+  - [ ] Chaque document est une section avec les fields suivant: name, city, nbTeams, teams: [], nbAnimateurs. 
+  - [ ] La liste teams se fait compléter par le script de distribution
+
 - [ ] Créer une DB settigns avec 1 seul document avec les settings de l'app
-  - canRegisterScore: boolean
+  - freezeScores: boolean
   - gameLeaderSections : [] (liste des noms de sections animatrices)
-  - gameDbLastUpdate: date de la dernière modification de la db de jeu
+  - lastGameDbUpdate: date de la dernière modification de la db de jeu
+  - maxGameLeaders : number (max amount of leaders per game)
 
 # Règles db
 
@@ -78,6 +97,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - seuls les admins peuvent modifier le profile des autres
 - Seuls les admins peuvent voir le classement en temps réel
 - Il faut être animateur pour s'inscrire à une épreuve
+- Traduire les if conditions des services magnetar
 
 # Avant de mettre en prod
 
@@ -91,3 +111,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - QR codes
 - Create DB from web app
 - Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
+
+# Notes
+
+- Si bcp de désistement, activer l'argument "ignore_score" des équipes manquantes. Les équipes qui se retrouvent seules à un jeu joue contre elle même et est directement marquée comme gagnante

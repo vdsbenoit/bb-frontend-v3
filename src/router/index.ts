@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: 'home',
     path: '',
-    redirect: '/sections'
+    redirect: '/sandbox'
   },
   {
     name: 'myTeam',
@@ -87,6 +87,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'about',
     path: '/about',
     component: () => import ('../views/AboutPage.vue'),
+  },
+  {
+    name: 'sandbox',
+    path: '/sandbox',
+    component: () => import ('../views/SandBox.vue'),
   },
   { 
     path: "/:catchAll(.*)",

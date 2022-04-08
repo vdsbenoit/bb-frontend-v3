@@ -1,17 +1,17 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="'Equipe ' + (teamId ? teamId : 'inconnue')"></header-template>
+    <header-template :pageTitle="'Equipe ' + (team.id ? team.id : 'inconnue')"></header-template>
     <ion-content :fullscreen="true">
-    <div v-if="teamId">
+    <div v-if="team.id">
       <ion-grid class="ion-padding-horizontal ion-padding-top">
         <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
-              <ion-card-subtitle>{{teamCity}}</ion-card-subtitle>
-              <h1 class="ion-no-margin" style="font-weight: bold">{{teamName}}</h1>
+              <ion-card-subtitle>{{team.city}}</ion-card-subtitle>
+              <h1 class="ion-no-margin" style="font-weight: bold">{{team.name}}</h1>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
               <span>
-                  {{teamId}}
+                  {{team.id}}
               </span>
             </ion-col>
           </ion-row>
@@ -71,7 +71,7 @@ IonRow, IonCol, IonListHeader, IonIcon, IonGrid,
 import { closeOutline, closeSharp, swapHorizontalOutline, swapHorizontalSharp, trophyOutline, trophySharp} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services";
-import { computed } from "@vue/reactivity";
+import { computed, reactive } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
 
 const store = useAuthStore();
@@ -82,13 +82,15 @@ const showRanking = computed(() => {
   return store.profile.role >= ROLES.Moderateur;
 });
 
-const teamId = computed(() => {
-  if (route.params.id) return route.params.id;
-  if (store.profile.team) return store.profile.team;
-  return undefined;
+const team = reactive({
+  id: computed(() => {
+    if (route.params.id) return route.params.id;
+    if (store.profile.team) return store.profile.team;
+    return undefined;
+  }),
+  name: "Louveteaux Férao",
+  city: "Soignies",
 });
-const teamName = "Louveteaux Férao";
-const teamCity = "Soignies";
 const matches: any = [
   {id: 1, game_id: 1, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "A1", loser: "", even: false},
   {id: 2, game_id: 2, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "A1", even: false},
@@ -96,8 +98,8 @@ const matches: any = [
   {id: 4, game_id: 4, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false},
 ];
 const status = (match: any) => {
-  if (match.winner === teamId.value) return {ios: trophyOutline, md: trophySharp};
-  if (match.loser === teamId.value) return {ios: closeOutline, md: closeSharp};
+  if (match.winner === team.id) return {ios: trophyOutline, md: trophySharp};
+  if (match.loser === team.id) return {ios: closeOutline, md: closeSharp};
   if (match.even === true) return {ios: swapHorizontalOutline, md: swapHorizontalSharp};
   return {md: undefined, ios: undefined};
 };
