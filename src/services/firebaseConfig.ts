@@ -10,10 +10,11 @@ export const firebaseConfig = {
 }
 
 // const firebaseConfig = {
-//     apiKey: "AIzaSyBsrihSYaKH_n4i78QaI5bazAeCr_QFusQ",
-//     authDomain: "vue-firebase-tuto-96b81.firebaseapp.com",
-//     projectId: "vue-firebase-tuto-96b81",
-//     storageBucket: "vue-firebase-tuto-96b81.appspot.com",
-//     messagingSenderId: "200749081873",
-//     appId: "1:200749081873:web:11d9e313a6113bc34698b0"
+//     apiKey: "AIzaSyDuMiWI3efv5QDIwM9omswbcW8bmZWhIYI",
+//     authDomain: "mailmerge-59e91.firebaseapp.com",
+//     databaseURL: "https://mailmerge-59e91.firebaseio.com",
+//     projectId: "mailmerge-59e91",
+//     storageBucket: "mailmerge-59e91.appspot.com",
+//     messagingSenderId: "557635489513",
+//     appId: "1:557635489513:web:2ff42b389953ea594faa78"
 // };
