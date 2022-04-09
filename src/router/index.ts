@@ -8,9 +8,9 @@ import { useAuthStore } from "@/services/users";
  * @param from 
  */
  const authCheck = (to: any, from: any) => {
-  const store = useAuthStore();
-  console.log("authCheck", store.isLoggedIn);
-  if (store.isLoggedIn) {
+  const user = useAuthStore();
+  console.log("authCheck", user.isLoggedIn);
+  if (user.isLoggedIn) {
     if (to.name === "login") {
       return { name: 'home' }
     } else {
@@ -64,12 +64,14 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: 'myProfile',
     path: '/profile',
-    component: () => import ('../views/ProfilePage.vue')
+    component: () => import ('../views/ProfilePage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'profile',
     path: '/profile/:id',
-    component: () => import ('../views/ProfilePage.vue')
+    component: () => import ('../views/ProfilePage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'login',

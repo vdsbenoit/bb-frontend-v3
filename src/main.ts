@@ -32,14 +32,15 @@ defineCustomElements(window);
 import { createPinia } from "pinia";
 import { useAuthStore } from "./services/users";
 
+
 const app = createApp(App)
   .use(IonicVue)
-  .use(router)
   .use(createPinia());
-
+  
 const store = useAuthStore();
 
 store.initializeAuthListener().then(() => {
+  app.use(router);
   router.isReady().then(() => {
     app.mount('#app');
   });
