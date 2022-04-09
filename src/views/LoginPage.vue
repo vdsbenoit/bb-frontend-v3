@@ -12,7 +12,7 @@
         <ion-list>
           <ion-item lines="full">
             <ion-label position="floating">Email</ion-label>
-            <ion-input v-model="email" name="email" type="email" required autocapitalize="off"></ion-input>
+            <ion-input v-model="email" name="email" type="email" inputmode="email" autocomplete="email" required autocapitalize="off" clear-input="true"></ion-input>
           </ion-item>
           <ion-button expand="block" @click="sendEmail">Envoyer un email</ion-button>
         </ion-list>

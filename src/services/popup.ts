@@ -62,6 +62,7 @@ export const toastPopup = async (message: string, duration=3000) => {
       .create({
         message: message,
         duration: duration,
+        position : 'top',
         cssClass: "ion-text-center",
       })
     toast.present();

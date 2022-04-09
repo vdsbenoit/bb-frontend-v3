@@ -95,7 +95,7 @@ IonRow, IonCol, IonIcon, IonGrid, IonButton, IonText
 } from "@ionic/vue";
 import { closeOutline, closeSharp, trophyOutline, trophySharp} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES } from "@/services";
+import { useAuthStore, ROLES } from "@/services/users";
 import { computed, reactive } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
 

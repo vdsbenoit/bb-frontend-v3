@@ -81,7 +81,7 @@ export const canSetScore = async (uid: string, gameId: string) => {
  */
 export const setMorningLeader = async (gameId: string, uid="") => {
   if (uid === "") uid = user.uid;
-  const profile = await user.getProfile(uid);
+  const profile = await user.getProfileData(uid);
   const gameModule =  gamesModule.doc(gameId);
   if (profile.role < ROLES.Animateur) throw new Error(`L'utilisateur n'a pas le droit de s'inscrire à une épreuve car son role est ${getRoleByValue(profile.role)}`);
   const maxGameLeaders = await getMaxGameLeaders();
@@ -91,7 +91,7 @@ export const setMorningLeader = async (gameId: string, uid="") => {
 
 export const setAfternoonLeader = async (gameId: string, uid="") => {
   if (uid === "") uid = user.uid;
-  const profile = await user.getProfile(uid);
+  const profile = await user.getProfileData(uid);
   const gameModule =  gamesModule.doc(gameId);
   if (profile.role < ROLES.Animateur) throw new Error(`L'utilisateur n'a pas le droit de s'inscrire à une épreuve car son role est ${getRoleByValue(profile.role)}`);
   const maxGameLeaders = await getMaxGameLeaders();

@@ -67,6 +67,7 @@ export function usersDefaults(payload?: any) {
   return { ...defaults, ...payload }
 }
 
+// fixme: do not export
 export const usersModule = magnetar.collection(USER_PROFILES_COLLECTION, {
   modifyPayloadOn: { insert: usersDefaults },
   modifyReadResponseOn: { added: usersDefaults },
@@ -169,7 +170,7 @@ export const useAuthStore = defineStore("authStore", {
       if (!usersModule.doc(uid).data?.email) usersModule.doc(uid).insert({email: email});
     },
     async updateProfile(uid: string, profileData: any) {
-      await usersModule.doc(uid).merge(profileData);
+      return usersModule.doc(uid).merge(profileData);
     },
     /// Getters 
     isCurrentUserId(uid: string) {
@@ -177,12 +178,19 @@ export const useAuthStore = defineStore("authStore", {
       if (uid === this.uid) return true;
       return false;
     },
-    async getProfile(uid: string){
+    async getProfileData(uid: string){
       if (this.isCurrentUserId(uid)) return this.profile;
       const profile = await usersModule.doc(uid).fetch({ force: true }).catch(error => {
         console.error(`Error occurred while fetching the profile uid ${uid}`, error);
       });
       return profile?.data;
+    },
+     getProfile(uid: string){
+      const profile = usersModule.doc(uid);
+      profile.fetch().catch(error => {
+        console.error(`Error occurred while fetching the profile uid ${uid}`, error);
+      });
+      return profile;
     },
   },
 });
