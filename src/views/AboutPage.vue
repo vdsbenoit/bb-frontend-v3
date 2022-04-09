@@ -27,7 +27,7 @@
                 <ion-label>A propos</ion-label>
               </ion-item>
 
-              <p class="ion-padding-start ion-padding-end p-left">
+              <p class="ion-padding-start ion-padding-end">
                 Il sʼagit dʼun grand rassemblement scout, guide et patro à destination des étincelles, lutins, louvettes, louveteaux et chevaliers
                 (donc de 8 à 12 ans, filles et garçons) mais également depuis cette année à destination des plus jeunes âgés de 5 à 7 ans (baladins et
                 nutons), organisé par le poste pionnier Peter Pan de Soignies. Durant toute la journée, les participants passent à travers de

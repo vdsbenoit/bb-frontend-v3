@@ -2,29 +2,30 @@
   <ion-page>
     <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
-    <div v-if="isProfile">
-        <ion-card class="ion-no-margin ion-margin-bottom" v-if="showFillingInfo">
-          <ion-card-content>
-            <p>Libre à toi de compléter les champs si dessous. Ca rendra l'utilisation de l'application plus facile</p>
-          </ion-card-content>
-        </ion-card>
+      <div v-if="isProfile">
+        <info-card-component
+          v-if="showFillingInfo"
+          message="Nhésite pas à compléter ou corriger les champs si dessous. 
+                    Ca rend l'utilisation de l'app plus facile."
+        >
+        </info-card-component>
         <ion-card class="ion-no-margin ion-margin-bottom">
           <form>
             <ion-list>
               <ion-item lines="full">
                 <ion-label position="stacked" color="primary">Totem</ion-label>
                 <ion-input v-if="editMode" v-model="modifiedProfile.totem" name="totem" type="text" autocorrect="off"></ion-input>
-                <ion-input v-if="!editMode" v-model="userProfile.totem"    name="totem" type="text" readonly="true"></ion-input>
+                <ion-input v-if="!editMode" v-model="userProfile.totem" name="totem" type="text" readonly="true"></ion-input>
               </ion-item>
               <ion-item lines="full">
                 <ion-label position="stacked" color="primary">Nom</ion-label>
                 <ion-input v-if="editMode" v-model="modifiedProfile.name" name="name" type="text"></ion-input>
-                <ion-input v-if="!editMode" v-model="userProfile.name"    name="name" type="text" readonly="true"></ion-input>
+                <ion-input v-if="!editMode" v-model="userProfile.name" name="name" type="text" readonly="true"></ion-input>
               </ion-item>
               <ion-item lines="full">
                 <ion-label position="stacked" color="primary">Section</ion-label>
                 <ion-input v-if="editMode" v-model="modifiedProfile.sectionName" name="section" type="text" autocomplete="given-name"></ion-input>
-                <ion-input v-if="!editMode" v-model="userProfile.sectionName"    name="section" type="text" readonly="true"></ion-input>
+                <ion-input v-if="!editMode" v-model="userProfile.sectionName" name="section" type="text" readonly="true"></ion-input>
               </ion-item>
               <ion-item lines="full">
                 <ion-label position="stacked" color="primary">Role</ion-label>
@@ -65,7 +66,7 @@
               </ion-col>
               <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
                 <ion-button v-if="isOwnProfile && !editMode" expand="block" @click="logOut" color="danger"> Se déconnnecter </ion-button>
-                <ion-button v-if="editMode" expand="block" color="danger" @click="editMode=false" > Annuler </ion-button>
+                <ion-button v-if="editMode" expand="block" color="danger" @click="editMode = false"> Annuler </ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -76,20 +77,20 @@
       </div>
       <div v-else class="not-found ion-padding">
         <strong class="capitalize">Nous n'avons pas trouvé ce profil...</strong>
-        <p>Retour à <a  @click="router.go(-1)" >la page précédente</a></p>
+        <p>Retour à <a @click="router.go(-1)">la page précédente</a></p>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption, IonCard, IonCardContent,
-IonGrid, IonRow, IonCol } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption, IonCard, IonCardContent, IonGrid, IonRow, IonCol, IonIcon } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import { errorPopup, toastPopup } from "@/services/popup";
+import InfoCardComponent from "../components/InfoCardComponent.vue";
 
 const user = useAuthStore();
 const router = useRouter();
@@ -108,18 +109,18 @@ const userId = computed((): string => {
 });
 // The profile to be displayed in the current page
 const userProfile = computed((): Profile => {
-  return user.getProfile(userId.value).data as Profile;
-})
+  return user.getProfile(userId.value) as Profile;
+});
 const isProfile = computed(() => {
   return userProfile.value?.email ? true : false;
-})
+});
 const showFillingInfo = computed(() => {
   return isOwnProfile.value && !user.profile.totem && !user.profile.name;
 });
 const pageTitle = computed(() => {
   if (isOwnProfile.value) {
     return "Ton profil";
-  } else if (! isProfile.value) {
+  } else if (!isProfile.value) {
     return "Profil inconnu";
   } else {
     let name = userProfile.value.email;
@@ -127,7 +128,7 @@ const pageTitle = computed(() => {
       name = userProfile.value.totem;
     } else if (userProfile.value.name) {
       name = userProfile.value.name;
-    } 
+    }
     return `Profil de ${name}`;
   }
 });
@@ -143,7 +144,7 @@ const getGames = () => {
 const editProfile = () => {
   editMode.value = true;
   modifiedProfile.value = userProfile.value;
-}
+};
 const saveProfile = async () => {
   user.updateProfile(userId.value, modifiedProfile.value).then(() => {
     toastPopup("Le profil a bien été mis à jour");
