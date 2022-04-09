@@ -36,9 +36,10 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] disclaimer rgpd dans about
 - [ ] popup enregistrement settings
 - [ ] erreurs enregistrement settings
-- [ ] Magnetar
-  - [ ] checker si merge fonction avec les arrays (games.ts)
+- [x] Magnetar
+  - [x] checker si merge fonction avec les arrays (games.ts) -> non, il faut déstructurer l'array précédent et merger soi-même
 - [ ] save score au niveau des matches & équipes
+- [ ] Split profile & login
 
 ## Nice to have
 
@@ -74,18 +75,16 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # Modification DB
 
-- [ ] games
-  - [ ] faire morningLeaders & afternoonLeaders
-
-- [ ] teams
-  - [ ] ajouter scores: number[]
-
-- [ ] Créer une DB "sections". 
-  - [ ] Chaque collection est un type de section (e.g. loups, lutins, baladins, animateurs). 
-  - [ ] Chaque document est une section avec les fields suivant: name, city, nbTeams, teams: [], nbAnimateurs. 
-  - [ ] La liste teams se fait compléter par le script de distribution
-
-- [ ] Créer une DB settigns avec 1 seul document avec les settings de l'app
+- [x] games
+  - [x] faire morningLeaders & afternoonLeaders
+- [x] teams
+  - [x] ajouter scores: number[]
+- [x] Créer une DB "sections". 
+  - [ ] ~~Chaque collection est un type de section (e.g. loups, lutins, baladins, animateurs).~~ 
+  - [x] Chaque document est une section
+  - [x] Fields name, city, code d'unité, category (loups, lutins, balas, animateur), nbTeams, teams: []
+  - [x] La liste teams se fait compléter par le script de distribution
+- [x] Créer une DB settigns avec 1 seul document avec les settings de l'app
   - freezeScores: boolean
   - gameLeaderSections : [] (liste des noms de sections animatrices)
   - lastGameDbUpdate: date de la dernière modification de la db de jeu

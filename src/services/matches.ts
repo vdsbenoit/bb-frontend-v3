@@ -3,6 +3,7 @@ import { canSetScore } from './games';
 import { magnetar } from "./magnetar";
 import { isScoresFrozen } from "./settings";
 
+const MATCHES_COLLECTION = "matches";
 const user = useAuthStore();
 
 /////////////////////
@@ -39,7 +40,7 @@ function matchesDefaults(payload?: Partial<Match>): Match {
   }
   return { ...defaults, ...payload }
 }
-const matchesModule = magnetar.collection<Match>("matches", {
+const matchesModule = magnetar.collection<Match>(MATCHES_COLLECTION, {
   modifyPayloadOn: { insert: matchesDefaults },
   modifyReadResponseOn: { added: matchesDefaults },
 });

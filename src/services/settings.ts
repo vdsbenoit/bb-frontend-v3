@@ -2,27 +2,34 @@ import { useAuthStore } from './users';
 import { magnetar } from "./magnetar";
 import { defineStore } from "pinia";
 
+const SETTINGS_COLLECTION = "settings";
+const SETTINGS_DOCUMENT = "app";
+
 /////////////////////
 /// configuration //
 //////////////////
 
 // App settings (from firestore, through magneta)
 export interface AppSetting {
-  lastGameDbUpdate: Date;
-  maxGameLeaders: number;
+  lastGameDbUpdate: Date; // last time the game DB was updated on the remote, to avoid streaming it
+  maxGameLeaders: number; // max allowed leaders per game
   freezeScore: boolean;
+  categories: string[];
+  gameLeaderSections: string[];
 }
 
 const appSettingsDefaults = {
   lastGameDbUpdate: new Date(0),
   maxGameLeaders: 2,
   freezeScore: true,
+  categories: [],
+  gameLeaderSections: [],
 };
 
 function appSettingsDefaultsFunc(payload?: Partial<AppSetting>): AppSetting {
   return { ...appSettingsDefaults, ...payload }
 }
-const appSettingsModule = magnetar.doc("settings/app", {
+const appSettingsModule = magnetar.doc(`${SETTINGS_COLLECTION}/${SETTINGS_DOCUMENT}`, {
   modifyPayloadOn: { insert: appSettingsDefaultsFunc },
   modifyReadResponseOn: { added: appSettingsDefaultsFunc },
 });

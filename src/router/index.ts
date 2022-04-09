@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
-import { useAuthStore } from "@/services";
+import { useAuthStore } from "@/services/users";
 
 /**
  * 

@@ -2,6 +2,7 @@ import { useAuthStore, ROLES, getRoleByValue } from './users';
 import { magnetar } from "./magnetar";
 import { isGameDbOutdated, setlastGameDbUpdate, getMaxGameLeaders } from "./settings";
 
+const GAMES_COLLECTION = "games";
 const user = useAuthStore();
 
 /////////////////////
@@ -31,7 +32,7 @@ function gamesDefaults(payload?: Partial<Game>): Game {
   }
   return { ...defaults, ...payload }
 }
-const gamesModule = magnetar.collection<Game>("games", {
+const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION, {
   modifyPayloadOn: { insert: gamesDefaults },
   modifyReadResponseOn: { added: gamesDefaults },
 });

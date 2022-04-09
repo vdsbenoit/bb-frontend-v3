@@ -38,14 +38,14 @@ interface UserSettings {
 interface Profile {
   email: string;
   totem: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   role: number;
   settings: UserSettings;
   team: string;
   morningGame: string;
   afternoonGame: string;
-  section: string;
+  sectionName: string;
+  sectionId: string;
 }
 
 ///////////////////////
@@ -56,14 +56,14 @@ function usersDefaults(payload?: any) {
   const defaults = { 
     email: "",
     totem: "",
-    firstName: "",
-    lastName: "",
+    name: "",
     role: 0,
     settings: {},
     team: "",
     morningGame: "",
     afternoonGame: "",
-    section: "",
+    sectionName: "",
+    sectionId: "",
   }
   return { ...defaults, ...payload }
 }
