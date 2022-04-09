@@ -32,10 +32,9 @@ export const getRoleByValue = (role: number): string => {
 
 interface UserSettings {
   autoRefreshRaking: boolean;
-  ready: boolean;
 }
 
-interface Profile {
+export interface Profile {
   email: string;
   totem: string;
   name: string;
@@ -52,7 +51,7 @@ interface Profile {
 /// Magnetar config //
 /////////////////////
 
-function usersDefaults(payload?: any) {
+export function usersDefaults(payload?: any) {
   const defaults = { 
     email: "",
     totem: "",
@@ -86,12 +85,11 @@ interface authStoreState {
 export const useAuthStore = defineStore("authStore", {
   state: (): authStoreState => ({
     user: null,
-    profile: usersDefaults({}),
+    profile: usersDefaults(),
     error: null,
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null,
-    userError: (state) => state.error,
     uid: (state): string => state.user ? state.user.uid : "undefined",
   },
   actions: {
@@ -103,11 +101,14 @@ export const useAuthStore = defineStore("authStore", {
     initializeAuthListener() {
       return new Promise((resolve) => {
         fbAuthStateListener(async (user: any) => {
-          this.user = user ? user : null;
           if (user) {
-            this.streamUserProfile(user.uid as string);
+            this.user = user
+            this.streamProfile(user.uid as string);
+            this.profile = await usersModule.doc(user.uid as string).fetch() ?? usersDefaults();
+          } else {
+            this.user = null;
+            this.profile = usersDefaults();
           }
-          this.profile = usersDefaults({});
           resolve(true);
         });
       });
@@ -118,8 +119,8 @@ export const useAuthStore = defineStore("authStore", {
         window.localStorage.setItem('emailForSignIn', email);
       } catch (e: any) {
         this.user = null;
-        this.error = e;
         console.error(e);
+        throw e;
       }
     },
     async processSignInLink(href: string) {
@@ -134,7 +135,7 @@ export const useAuthStore = defineStore("authStore", {
         console.debug("auth response", response); //fixme
         if(response.user) {
           this.user = response.user as fbUser;
-          this.createUserProfile(response.user.uid as string, response.user.email as string);
+          this.createProfile(response.user.uid as string, response.user.email as string);
         } else this.user = null;
       } catch (e: any) {
         this.user = null;
@@ -147,7 +148,7 @@ export const useAuthStore = defineStore("authStore", {
      *
      * @param data
      */
-    async logoutUser() {
+    async logout() {
       try {
         await fbSignOut();
         this.user = null;
@@ -158,24 +159,29 @@ export const useAuthStore = defineStore("authStore", {
         return false;
       }
     },
-    streamUserProfile(uid: string) {
-      usersModule.doc(uid).stream;
+    streamProfile(uid: string) {
+      usersModule.doc(uid).stream();
     },
-    async createUserProfile(uid: string, email: string) {
-      await usersModule.doc(uid).fetch();
+    async createProfile(uid: string, email: string) {
+      await usersModule.doc(uid).fetch().catch(error => {
+        console.error(`Error occurred while fetching the profile of uid ${uid}`, error);
+      });
       if (!usersModule.doc(uid).data?.email) usersModule.doc(uid).insert({email: email});
     },
-    
-
+    async updateProfile(uid: string, profileData: any) {
+      await usersModule.doc(uid).merge(profileData);
+    },
     /// Getters 
     isCurrentUserId(uid: string) {
       if (!this.isLoggedIn) return false;
       if (uid === this.uid) return true;
       return false;
     },
-    async getUserProfile(uid: string){
+    async getProfile(uid: string){
       if (this.isCurrentUserId(uid)) return this.profile;
-      const profile = await usersModule.doc(uid).fetch({ force: true })
+      const profile = await usersModule.doc(uid).fetch({ force: true }).catch(error => {
+        console.error(`Error occurred while fetching the profile uid ${uid}`, error);
+      });
       return profile?.data;
     },
   },

@@ -67,14 +67,19 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/ProfilePage.vue')
   },
   {
-    name: 'profiles',
+    name: 'profile',
     path: '/profile/:id',
     component: () => import ('../views/ProfilePage.vue')
   },
   {
+    name: 'login',
+    path: '/login',
+    component: () => import ('../views/LoginPage.vue')
+  },
+  {
     name: 'validation',
     path: '/validation',
-    component: () => import ('../views/ProfilePage.vue'),
+    component: () => import ('../views/LoginPage.vue'),
     props: { validation: true }
   },
   {

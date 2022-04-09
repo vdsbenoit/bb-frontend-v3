@@ -33,7 +33,9 @@ const appSettingsModule = magnetar.doc(`${SETTINGS_COLLECTION}/${SETTINGS_DOCUME
   modifyPayloadOn: { insert: appSettingsDefaultsFunc },
   modifyReadResponseOn: { added: appSettingsDefaultsFunc },
 });
-appSettingsModule.stream();
+appSettingsModule.stream().catch(error => {
+  console.error(`App settings stream failed`, error);
+});
 
 // Local settings (from pinia store)
 interface State {

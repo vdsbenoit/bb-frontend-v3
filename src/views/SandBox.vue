@@ -23,7 +23,8 @@ IonGrid, IonRow, IonCol, IonListHeader, IonIcon, IonSelect, IonSelectOption, Ion
 } from "@ionic/vue";
 import { closeOutline, ellipsisHorizontalOutline, swapHorizontalOutline, trophyOutline} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES, errorPopup } from "@/services";
+import { useAuthStore, ROLES, } from "@/services/users";
+import { errorPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
 import { usersModule } from "@/services/users";
 import { getGame, setAfternoonLeader, setMorningLeader } from "@/services/games";

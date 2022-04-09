@@ -48,7 +48,9 @@ export const getGames = () => {
     forceUpdate = true;
     setlastGameDbUpdate();
   }
-  gamesModule.fetch({ force: forceUpdate });
+  gamesModule.fetch({ force: forceUpdate }).catch(error => {
+    console.error(`Error occurred while fetching the ${GAMES_COLLECTION} collection`, error);
+  });
   return gamesModule.data;
 };
 
@@ -79,7 +81,7 @@ export const canSetScore = async (uid: string, gameId: string) => {
  */
 export const setMorningLeader = async (gameId: string, uid="") => {
   if (uid === "") uid = user.uid;
-  const profile = await user.getUserProfile(uid);
+  const profile = await user.getProfile(uid);
   const gameModule =  gamesModule.doc(gameId);
   if (profile.role < ROLES.Animateur) throw new Error(`L'utilisateur n'a pas le droit de s'inscrire à une épreuve car son role est ${getRoleByValue(profile.role)}`);
   const maxGameLeaders = await getMaxGameLeaders();
@@ -89,7 +91,7 @@ export const setMorningLeader = async (gameId: string, uid="") => {
 
 export const setAfternoonLeader = async (gameId: string, uid="") => {
   if (uid === "") uid = user.uid;
-  const profile = await user.getUserProfile(uid);
+  const profile = await user.getProfile(uid);
   const gameModule =  gamesModule.doc(gameId);
   if (profile.role < ROLES.Animateur) throw new Error(`L'utilisateur n'a pas le droit de s'inscrire à une épreuve car son role est ${getRoleByValue(profile.role)}`);
   const maxGameLeaders = await getMaxGameLeaders();

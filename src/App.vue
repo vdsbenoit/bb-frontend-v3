@@ -17,7 +17,7 @@
         </ion-content>
         <ion-menu-toggle auto-hide="false">
         <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">
-            <div v-if="store.isLoggedIn">
+            <div v-if="user.isLoggedIn">
               <ion-text>Connecté en tant que {{name}}</ion-text>
             </div>
             <div v-else>
@@ -36,7 +36,8 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 import { useRoute } from 'vue-router';
 import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, earthOutline, earthSharp } from 'ionicons/icons';
 import { computed } from "vue";
-import { useAuthStore} from "@/services";import { useRouter } from 'vue-router';
+import { useAuthStore} from "@/services/users";
+import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const appPages = [
@@ -104,15 +105,16 @@ const appPages = [
   
 const route = useRoute();
 const isSelected = (url: string) => url === route.path;
-const store = useAuthStore();
+const user = useAuthStore();
 const name = computed(() => {
   let name = "undefined";
-  if (store.profile.totem) {
-    name = store.profile.totem;
-  } else if (store.profile.firstName) {
-    name = store.profile.firstName;
-  } else if (store.profile.email) {
-    name = store.profile.email;
+  if (!user.isLoggedIn) return name;
+  if (user.profile.totem) {
+    name = user.profile.totem;
+  } else if (user.profile.name) {
+    name = user.profile.name;
+  } else if (user.profile.email) {
+    name = user.profile.email;
   }
   return name;
 });

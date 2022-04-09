@@ -65,7 +65,7 @@ export const setScore = async (matchId: string, winner: string, loser: string) =
   const profile = user.profile;
   const match = matchesModule.doc(matchId);
 
-  const frozenScores = await isScoresFrozen());
+  const frozenScores = await isScoresFrozen();
   if (frozenScores) throw new Error("Il n'est pas ou plus possible d'enregistrer des scores");
   if (profile.role < ROLES.Animateur) throw new Error("Tu n'as pas le droit d'enregister de scores");
   if (profile.role === ROLES.Animateur) {
@@ -83,7 +83,7 @@ export const setScore = async (matchId: string, winner: string, loser: string) =
 export const setEven = async (matchId: string) => {
   const profile = user.profile;
   const match = matchesModule.doc(matchId);
-  const frozenScores = await isScoresFrozen());
+  const frozenScores = await isScoresFrozen();
   if (frozenScores) throw new Error("Il n'est pas ou plus possible d'enregistrer des scores");
   if (profile.role < ROLES.Animateur) throw new Error("Tu n'as pas le droit d'enregister de scores");
   if (profile.role === ROLES.Animateur) {
