@@ -50,11 +50,15 @@ const matchesModule = magnetar.collection<Match>(MATCHES_COLLECTION, {
 /////////////
 
 export const getGameMatches = (gameId: string) => {
-  return;
+  const matches = matchesModule.where("game_id", "==", gameId).orderBy("time", "asc");
+  matches.stream()
+  return matches.data;
 };
 
 export const getTeamMatches = (teamId: string) => {
-  return;
+  const matches = matchesModule.where("player_numbers", "array-contains", teamId).orderBy("time", "asc");
+  matches.stream()
+  return matches.data;
 };
 
 ///////////////

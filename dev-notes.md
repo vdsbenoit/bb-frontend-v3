@@ -89,6 +89,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - gameLeaderSections : [] (liste des noms de sections animatrices)
   - lastGameDbUpdate: date de la dernière modification de la db de jeu
   - maxGameLeaders : number (max amount of leaders per game)
+- [ ] Retirer matches des collection games & teams (utiliser des queries à la place)
 
 # Règles db
 
