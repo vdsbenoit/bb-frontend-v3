@@ -42,14 +42,14 @@
                 </ion-select>
               </ion-item>
               <ion-item lines="full">
-                <ion-label position="stacked" color="primary">Jeu du matin</ion-label>
+                <ion-label position="stacked" color="primary">Épreuve du matin</ion-label>
                 <ion-input v-if="!editMode" type="text" readonly="true">{{ userProfile.morningGame }}</ion-input>
                 <ion-select v-else v-model="modifiedProfile.morningGame" cancel-text="Annuler" ok-text="OK">
                   <ion-select-option v-for="game in getGames()" :key="game" :value="game">{{ game }}</ion-select-option>
                 </ion-select>
               </ion-item>
               <ion-item lines="full">
-                <ion-label position="stacked" color="primary">Jeu de l'après-midi</ion-label>
+                <ion-label position="stacked" color="primary">Épreuve de l'après-midi</ion-label>
                 <ion-input v-if="!editMode" type="text" readonly="true">{{ userProfile.afternoonGame }}</ion-input>
                 <ion-select v-else v-model="modifiedProfile.afternoonGame" cancel-text="Annuler" ok-text="OK">
                   <ion-select-option v-for="game in getGames()" :key="game" :value="game">{{ game }}</ion-select-option>
@@ -107,7 +107,7 @@ const editMode = ref(false);
 onBeforeMount(() => {
   userId.value = route.params.userId ? (route.params.userId as string) : user.uid;
   isOwnProfile.value = !route.params.userId || route.params.userId === user.uid;
-})
+});
 
 // Computed variables
 
@@ -160,5 +160,4 @@ const logOut = async () => {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

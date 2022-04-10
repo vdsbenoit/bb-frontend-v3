@@ -49,28 +49,28 @@
       </div>
       <div v-else class="not-found">
         <strong class="capitalize">Nous n'avons pas trouvé cette équipe...</strong>
-        <p>Retour à <a @click="router.go(-1)">la page précédente</a></p>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, IonIcon, IonGrid } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, IonIcon, IonGrid, useIonRouter } from "@ionic/vue";
 import { closeOutline, closeSharp, swapHorizontalOutline, swapHorizontalSharp, trophyOutline, trophySharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
-import { computed, reactive, ref } from "@vue/reactivity";
-import { useRoute, useRouter } from "vue-router";
+import { computed, ref } from "@vue/reactivity";
+import { useRoute } from "vue-router";
 import { onBeforeMount, watchEffect } from "vue";
 import { getTeam, Team } from "@/services/teams";
 import { getTeamMatches } from "@/services/matches";
 import { getSchedule } from "@/services/settings";
-import { getSection, Section } from "@/services/sections";
+import { getSection } from "@/services/sections";
 
 const store = useAuthStore();
 const route = useRoute();
-const router = useRouter();
+const router = useIonRouter();
 
 // reactive data
 

@@ -23,7 +23,7 @@ Auth management : https://dev.to/aaronksaunders/ionic-framework-v6-vuejs-and-fir
 
 ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations/blob/master/src/app/form/form.page.html
 
-# ⚠ LAISSE LES DATA MAGNETAR DANS DES COMPUTED METHODs BEN !!
+# ⚠ LAISSE LES DATA MAGNETAR DANS DES COMPUTED METHODS BEN !!
 
 # To do 
 
@@ -48,13 +48,15 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] Accueil: invitation à s'inscrire - si connecté : Mon programme / Mon jeu
 
 - [x] Login
-  - [ ] Split login & profile
+  - [x] Split login & profile
   
 - [x] Profil (perso & qqun d'autre)
 
+  - [ ] mettre condition sur ce qu'on peut modifier
+
 - [x] Equipe (avec liste matches, ordonnés par temps)
 
-  - [ ] classement
+  - [ ] fetch classement
 
 - [x] Jeu (avec liste matches, ordonnés par temps)
 
@@ -63,18 +65,21 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Match
   - [ ] Enregistrer le score au niveau 
     - [x] du match
-    - [ ] des équipes
-    - [ ] des sections
+    - [ ] des **équipes**
+    - [ ] des **sections**
   - [ ] +2 par victoires
   - [ ] +1 égalité
   - [x] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
 
 - [ ] Listes
-  - [ ] Liste des jeux []()
+  - [ ] Liste des jeux 
     - [ ] filtre par circuit
     - [ ] si admin : bouton pour éditer nom & description
   - [ ] Utilisateurs
-  - [ ] Liste de matches (filtre temps et filtre circuit, bouton "charger" pour éviter trop de requêtes)
+    - [ ] filtrepar section
+  - [ ] Liste de matches 
+    - [ ] filtre temps et filtre circuit
+    - [ ] bouton "charger" pour éviter trop de requêtes)
 
 - [ ] Chercher un match: lecture seule si pas connecté
 

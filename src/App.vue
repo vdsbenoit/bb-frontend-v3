@@ -5,7 +5,7 @@
         <ion-content>
           <ion-list id="menu-list">
             <ion-list-header>Baden Battle App</ion-list-header>
-            <ion-note>🐺</ion-note>
+            <ion-note>⚜️</ion-note>
 
             <ion-menu-toggle auto-hide="false" v-for="(p, i) in appPages" :key="i">
               <ion-item router-direction="root" :router-link="p.url" lines="none" detail="false" class="hydrated" :class="{ selected: isSelected(p.url) }">
@@ -32,31 +32,86 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonFooter, IonToolbar } from "@ionic/vue";
-import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, earthOutline, earthSharp } from "ionicons/icons";
+import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, 
+IonSplitPane, IonText, IonFooter } from "@ionic/vue";
+import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, 
+homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, 
+podiumOutline, podiumSharp } from "ionicons/icons";
 import { computed } from "vue";
-import { useAuthStore } from "@/services/users";
+import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
-const router = useRouter();
 
-const appPages = [
+const router = useRouter();
+const route = useRoute();
+const user = useAuthStore();
+
+// Computed
+
+const name = computed(() => {
+  if (!user.isLoggedIn) return "undefined";
+  return user.getName(user.uid);
+});
+const appPages = computed(() => {
+  let pages = topPages;
+  if (user.profile.role == ROLES.Participant) pages.splice(1, 0, playerPage);
+  if (user.profile.role >= ROLES.Animateur) {
+    if (user.profile.morningGame) {
+      pages.splice(1, 0, {
+        title: "Mon épreuve du matin",
+        url: `/game/${user.profile.morningGame}`,
+        iosIcon: footballOutline,
+        mdIcon: footballSharp,
+      });
+    }
+    if (user.profile.afternoonGame) {
+      pages.splice(1, 0, {
+        title: "Mon épreuve de l'après-midi",
+        url: `/game/${user.profile.afternoonGame}`,
+        iosIcon: footballOutline,
+        mdIcon: footballSharp,
+      });
+    }
+  }
+  if (user.profile.role >= ROLES.Moderateur) pages = [...pages, ...modPages];
+  if (user.profile.role >= ROLES.Administrateur) pages = [...pages, ...adminPages];
+  pages = [...pages, ...bottomPages];
+  return pages;
+});
+
+// Methods
+
+const isSelected = (url: string) => url === route.path;
+
+// Data
+
+const playerPage = {
+  title: "Mon Equipe",
+  url: "/team",
+  iosIcon: peopleCircleOutline,
+  mdIcon: peopleCircleSharp,
+};
+const modPages = [
+  {
+    title: "Classement",
+    url: "/podium",
+    iosIcon: podiumOutline,
+    mdIcon: podiumSharp,
+  },
+];
+const adminPages = [
+  {
+    title: "Paramètres",
+    url: "/settings",
+    iosIcon: optionsOutline,
+    mdIcon: optionsSharp,
+  },
+];
+const topPages = [
   {
     title: "Home",
     url: "/folder/Home",
     iosIcon: homeOutline,
     mdIcon: homeSharp,
-  },
-  {
-    title: "Mon Equipe",
-    url: "/team",
-    iosIcon: peopleCircleOutline,
-    mdIcon: peopleCircleSharp,
-  },
-  {
-    title: "Mon épreuve",
-    url: "/game",
-    iosIcon: peopleCircleOutline,
-    mdIcon: peopleCircleSharp,
   },
   {
     title: "Epreuves",
@@ -67,27 +122,11 @@ const appPages = [
   {
     title: "Sections",
     url: "/sections",
-    iosIcon: earthOutline,
-    mdIcon: earthSharp,
+    iosIcon: peopleOutline,
+    mdIcon: peopleSharp,
   },
-  {
-    title: "Favorites",
-    url: "/folder/Favorites",
-    iosIcon: heartOutline,
-    mdIcon: heartSharp,
-  },
-  {
-    title: "Archived",
-    url: "/folder/Archived",
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp,
-  },
-  {
-    title: "Trash",
-    url: "/folder/Trash",
-    iosIcon: trashOutline,
-    mdIcon: trashSharp,
-  },
+];
+const bottomPages = [
   {
     title: "Profil",
     url: "/profile",
@@ -101,22 +140,6 @@ const appPages = [
     mdIcon: informationCircleSharp,
   },
 ];
-
-const route = useRoute();
-const isSelected = (url: string) => url === route.path;
-const user = useAuthStore();
-const name = computed(() => {
-  let name = "undefined";
-  if (!user.isLoggedIn) return name;
-  if (user.profile.totem) {
-    name = user.profile.totem;
-  } else if (user.profile.name) {
-    name = user.profile.name;
-  } else if (user.profile.email) {
-    name = user.profile.email;
-  }
-  return name;
-});
 </script>
 
 <style>

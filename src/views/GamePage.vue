@@ -80,7 +80,7 @@
       </div>
       <div v-else class="not-found">
         <strong class="capitalize">Nous n'avons pas trouvé cette épreuve...</strong>
-        <p>Retour à <a @click="router.go(-1)">la page précédente</a></p>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
     </ion-content>
   </ion-page>
@@ -94,7 +94,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import {  choicePopup, errorPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { Game, gamesDefaults, getGame, removeLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
 import { getGameMatches, Match } from "@/services/matches";
 import { onBeforeMount, onMounted, watch, watchEffect } from "vue";
@@ -102,7 +102,7 @@ import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
 
 const user = useAuthStore();
 const route = useRoute();
-const router = useRouter();
+const router = useIonRouter();
 
 // reactive data
 
