@@ -14,8 +14,6 @@ export interface Match {
   id: string;
   game_id: string;
   time: number;
-  start_time: string;
-  stop_time: string;
   player_ids: string[];
   player_numbers: number[];
   winner: string;
@@ -29,8 +27,6 @@ function matchesDefaults(payload?: Partial<Match>): Match {
     id: "",
     game_id: "",
     time: 0,
-    start_time: "",
-    stop_time: "",
     player_ids: [],
     player_numbers: [],
     winner: "",
@@ -65,7 +61,7 @@ export const getGameMatches = (gameId: string) => {
 };
 
 export const getTeamMatches = (teamId: string) => {
-  const matches = matchesModule.where("player_numbers", "array-contains", teamId).orderBy("time", "asc");
+  const matches = matchesModule.where("player_ids", "array-contains", teamId).orderBy("time", "asc");
   matches.stream()
   return matches.data;
 };

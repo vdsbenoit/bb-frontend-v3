@@ -102,6 +102,12 @@ export const isLeaderRegistrationOpen = () => {
   return appSettingsDefaults.leaderRegistration; 
 }
 
+export const getSchedule = (time: number): Schedule => {
+  if (appSettingsModule.data?.schedule) return appSettingsModule.data.schedule[time];
+  console.error("appSettingsModule not loaded, returning empty schedule");
+  return {start: "", stop: ""} as Schedule;
+};
+
 ///////////////
 /// Setters //
 /////////////

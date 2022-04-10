@@ -34,12 +34,12 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] parser & adapter le popup manager depuis BadenBattle/frontend
 - [x] merger login & settings page into ProfilePage
 - [ ] disclaimer rgpd dans about
-- [ ] popup enregistrement settings
+- [x] popup enregistrement settings
 - [ ] erreurs enregistrement settings
 - [x] Magnetar
   - [x] checker si merge fonction avec les arrays (games.ts) -> non, il faut déstructurer l'array précédent et merger soi-même
 - [ ] save score au niveau des matches & équipes
-- [ ] Split profile & login
+- [x] Split profile & login
 
 # Pages
 
@@ -49,13 +49,14 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Profil (perso & qqun d'autre)
 - [x] Equipe (avec liste matches, ordonnés par temps)
 - [x] Jeu (avec liste matches, ordonnés par temps)
+  - [ ] ajouter bouton pour éditer jeu
+
 - [x] Sections (avec liste d'équipe)
 - [x] Match
   - [ ] Enregistrer le score au niveau du match & de équipes
   - [ ] +2 par victoires
   - [ ] +1 égalité
   - [ ] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
-  
 - [ ] Listes
   - [ ] Liste des jeux (filtre par circuit) + inscription
   - [ ] Utilisateurs
@@ -65,6 +66,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] Gestion équipes (voir app précédente)
 - [ ] Gestion jeux (voir app précédente)
 - [ ] Paramètres généraux de l'app
+  - [ ] set timing
+
 - [ ] Enregistrer score: seule les animateurs d'un match peuvent y ajouter des points
 
 # Modification DB
