@@ -172,25 +172,56 @@ export const useAuthStore = defineStore("authStore", {
     async updateProfile(uid: string, profileData: any) {
       return usersModule.doc(uid).merge(profileData);
     },
+
     /// Getters 
+
     isCurrentUserId(uid: string) {
       if (!this.isLoggedIn) return false;
       if (uid === this.uid) return true;
       return false;
     },
-    async getProfileData(uid: string){
+    /**
+     * Force a fetch of the latest profile data.
+     * Never use it in a computed property, it would lead to infinite db calls.
+     */
+    async getLatestProfileData(uid: string){
       if (this.isCurrentUserId(uid)) return this.profile;
       const profile = await usersModule.doc(uid).fetch({ force: true }).catch(error => {
         console.error(`Error occurred while fetching the profile uid ${uid}`, error);
       });
       return profile?.data;
     },
-     getProfile(uid: string){
+    /**
+     * Fetch user profile & return the promise.
+     */
+    async asyncFetchProfile(uid: string){
+      return usersModule.doc(uid).fetch()
+    },
+    /**
+     * Get user profile data without waiting for it.
+     * Fetch the profile asynchronously.
+     */
+    getProfile(uid: string): Profile{
       const profile = usersModule.doc(uid);
       profile.fetch().catch(error => {
         console.error(`Error occurred while fetching the profile uid ${uid}`, error);
       });
-      return profile;
+      return profile.data as Profile;
+    },
+    /**
+     * Get best matching user name.
+     * This method does not fetch the profile.
+     * Think about calling asyncFetchProfile() first if needed.
+     */
+    getName(uid: string){
+      const profile = usersModule.doc(uid).data;
+      if (!profile) return `User ${uid}`;
+      if (profile.totem) return profile.totem;
+      if (profile.name) return profile.name;
+      return profile.email;
+    },
+    canRegister(){
+      return this.profile.role >= ROLES.Animateur;
     },
   },
 });

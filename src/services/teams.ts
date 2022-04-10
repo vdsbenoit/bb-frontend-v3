@@ -1,5 +1,5 @@
 import { useAuthStore, ROLES, getRoleByValue } from './users';
-import { magnetar } from "./magnetar";-
+import { magnetar } from "./magnetar";
 
 const TEAMS_COLLECTION = "teams";
 const user = useAuthStore();
@@ -23,17 +23,17 @@ export interface Team {
 
 function teamsDefaults(payload?: Partial<Team>): Team {
   const defaults = { 
-    id = "",
-    hash = "",
-    number = -1,
-    sectionId = "",
-    sectionName = "",
-    city = "",
-    category = "",
-    scores = [],
-    matches = [],
-    nbPlayers = 0,
-    ignoreScore = false,
+    id: "",
+    hash: "",
+    number: -1,
+    sectionId: "",
+    sectionName: "",
+    city: "",
+    category: "",
+    scores: [],
+    matches: [],
+    nbPlayers: 0,
+    ignoreScore: false,
   }
   return { ...defaults, ...payload }
 }

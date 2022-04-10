@@ -16,6 +16,8 @@ export interface AppSetting {
   freezeScore: boolean;
   categories: string[];
   gameLeaderSections: string[];
+  everyoneCanSetScoreAnywhere: boolean;
+  leaderRegistration: boolean; // true when the leader can register to games
 }
 
 const appSettingsDefaults = {
@@ -24,6 +26,8 @@ const appSettingsDefaults = {
   freezeScore: true,
   categories: [],
   gameLeaderSections: [],
+  everyoneCanSetScoreAnywhere: false,
+  leaderRegistration: true, // fixme: change to false
 };
 
 function appSettingsDefaultsFunc(payload?: Partial<AppSetting>): AppSetting {
@@ -52,22 +56,34 @@ const localStore = useStore();
 /// Getters //
 /////////////
 
-export const isGameDbOutdated = ():boolean => {
+export const isGameDbOutdated = (): boolean => {
   if (appSettingsModule.data) return localStore.lastGameDbUpdate < appSettingsModule.data.lastGameDbUpdate;
   return true;
 };
 
-export const isScoresFrozen = ():boolean => {
+export const isScoresFrozen = (): boolean => {
   if (appSettingsModule.data) return appSettingsModule.data.freezeScore;
   console.log("appSettingsModule not loaded, returning default value for freezeScore");
   return appSettingsDefaults.freezeScore;
 };
 
-export const getMaxGameLeaders = ():number => {
+export const getMaxGameLeaders = (): number => {
   if (appSettingsModule.data) return appSettingsModule.data.maxGameLeaders;
   console.error("appSettingsModule not loaded, returning default value for maxGameLeaders");
   return appSettingsDefaults.maxGameLeaders;
 };
+
+export const canSetScoreAnywhere = (): boolean => {
+  if (appSettingsModule.data) return appSettingsModule.data.everyoneCanSetScoreAnywhere;
+  console.error("appSettingsModule not loaded, returning default value for everyoneCanSetScoreAnywhere");
+  return appSettingsDefaults.everyoneCanSetScoreAnywhere;
+};
+
+export const isLeaderRegistrationOpen = () => {
+  if (appSettingsModule.data) return appSettingsModule.data.leaderRegistration;
+  console.error("appSettingsModule not loaded, returning default value for leaderRegistration");
+  return appSettingsDefaults.leaderRegistration; 
+}
 
 ///////////////
 /// Setters //

@@ -61,6 +61,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] Enregistrer le score au niveau du match & de équipes
   - [ ] +2 par victoires
   - [ ] +1 égalité
+  - [ ] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
   
 - [ ] Listes
   - [ ] Liste des jeux (filtre par circuit) + inscription
