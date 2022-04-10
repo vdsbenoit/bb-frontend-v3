@@ -1,80 +1,72 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="'Equipe ' + (team.id ? team.id : 'inconnue')"></header-template>
+    <header-template :pageTitle="'Equipe ' + (team?.id ? team.id : 'inconnue')"></header-template>
     <ion-content :fullscreen="true">
-    <div v-if="team.id">
-      <ion-grid class="ion-padding-horizontal ion-padding-top">
-        <ion-row class="ion-align-items-center">
+      <div v-if="isTeam">
+        <ion-grid class="ion-padding-horizontal ion-padding-top">
+          <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
-              <ion-card-subtitle>{{team.city}}</ion-card-subtitle>
-              <h1 class="ion-no-margin" style="font-weight: bold">{{team?.sectionName}}</h1>
+              <ion-card-subtitle>{{ team.city }}</ion-card-subtitle>
+              <h1 class="ion-no-margin" style="font-weight: bold">{{ team?.sectionName }}</h1>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
               <span>
-                  {{team.id}}
+                {{ team.id }}
               </span>
             </ion-col>
           </ion-row>
-      </ion-grid>
+        </ion-grid>
 
-      <ion-card v-if="showRanking">
-        <ion-card-content>
-          <ion-list>
-            <ion-item>
-              <ion-label>Score de l'équipe</ion-label><ion-note slot="end">5</ion-note>
-            </ion-item>
-            <ion-item>
-              <ion-label>Classement équipe</ion-label><ion-note slot="end">14</ion-note>
-            </ion-item>
-            <ion-item>
-              <ion-label>Moyenne section</ion-label><ion-note slot="end">7</ion-note>
-            </ion-item>
-            <ion-item>
-              <ion-label>Classement section</ion-label><ion-note slot="end">3</ion-note>
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
+        <ion-card v-if="showRanking">
+          <ion-card-content>
+            <ion-list>
+              <ion-item> <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{teamScore}}</ion-note></ion-item>
+              <ion-item> <ion-label>Classement de l'équipe</ion-label><ion-note slot="end">placeholder</ion-note> </ion-item>
+              <ion-item> <ion-label>Score de la section</ion-label><ion-note slot="end">{{sectionScore}}</ion-note></ion-item>
+              <ion-item> <ion-label>Moyenne section</ion-label><ion-note slot="end">{{sectionMean}}</ion-note></ion-item>
+              <ion-item> <ion-label>Classement section</ion-label><ion-note slot="end">placeholder</ion-note> </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
 
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title style="font-size: 24px">Programme</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-list  v-if="matches.length > 0">
-            <ion-item v-for="match in matches" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding"> 
-              <ion-label>
-                <span>{{match.game_name}}</span>
-                <p>⌚ {{match.start_time}} - {{match.stop_time}} | 📍 Jeu n° {{match.game_id}}</p>
-              </ion-label>
-              <ion-icon :ios="status(match).ios" :md="status(match).md" v-if="status(match).md" slot="end"></ion-icon>
-            </ion-item>
-          </ion-list>
-          <ion-list-header v-else>
-            Aucun jeu trouvé
-          </ion-list-header>
-        </ion-card-content>
-      </ion-card>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title style="font-size: 24px">Programme</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list v-if="matches.size > 0">
+              <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding">
+                <ion-label>
+                  <span>{{ match.game_name }}</span>
+                  <p>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} | 📍 Jeu n° {{ match.game_id }}</p>
+                </ion-label>
+                <ion-icon :ios="statusIcon(match).ios" :md="statusIcon(match).md" v-if="statusIcon(match).md" slot="end"></ion-icon>
+              </ion-item>
+            </ion-list>
+            <ion-list-header v-else><h2>Aucun jeu trouvé</h2></ion-list-header>
+          </ion-card-content>
+        </ion-card>
       </div>
       <div v-else class="not-found">
         <strong class="capitalize">Nous n'avons pas trouvé cette équipe...</strong>
-        <p>Retour à <a  @click="router.go(-1)" >la page précédente</a></p>
+        <p>Retour à <a @click="router.go(-1)">la page précédente</a></p>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, 
-IonRow, IonCol, IonListHeader, IonIcon, IonGrid,
-} from "@ionic/vue";
-import { closeOutline, closeSharp, swapHorizontalOutline, swapHorizontalSharp, trophyOutline, trophySharp} from 'ionicons/icons';
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, IonIcon, IonGrid } from "@ionic/vue";
+import { closeOutline, closeSharp, swapHorizontalOutline, swapHorizontalSharp, trophyOutline, trophySharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
-import { onBeforeMount } from "vue";
+import { onBeforeMount, watchEffect } from "vue";
 import { getTeam, Team } from "@/services/teams";
+import { getTeamMatches } from "@/services/matches";
+import { getSchedule } from "@/services/settings";
+import { getSection, Section } from "@/services/sections";
 
 const store = useAuthStore();
 const route = useRoute();
@@ -87,48 +79,56 @@ const teamId = ref("");
 // lifecicle hooks
 
 onBeforeMount(() => {
-  if (route.params.teamdId) teamId.value = route.params.teamdId as string;
+  if (route.params.teamId) teamId.value = route.params.teamId as string;
   if (!teamId.value) console.error("Team ID not set in the URL");
-})
+});
 
 // Computed
 
-const team = computed((): Team => {
+const team = computed(() => {
   return getTeam(teamId.value as string) as Team;
-})
+});
+const section = computed(() => {
+  return getSection(team.value.sectionId);
+});
 const isTeam = computed(() => {
- if (team.value?.id) return true;
-  return false; 
-})
-
-
-
+  if (team.value?.id) return true;
+  return false;
+});
+const matches = computed(() => {
+  return team.value?.id ? getTeamMatches(team.value?.id) : new Map();
+});
 const showRanking = computed(() => {
   return store.profile.role >= ROLES.Moderateur;
 });
-
-const oldteam = reactive({
-  id: computed(() => {
-    if (route.params.teamdId) return route.params.teamdId;
-    if (store.profile.team) return store.profile.team;
-    return undefined;
-  }),
-  name: "Louveteaux Férao",
-  city: "Soignies",
+const teamScore = computed(() => {
+  return sum(team.value.scores);
 });
-const matches: any = [
-  {id: 1, game_id: 1, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "A1", loser: "", even: false},
-  {id: 2, game_id: 2, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "A1", even: false},
-  {id: 3, game_id: 3, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: true},
-  {id: 4, game_id: 4, game_name: "Pan t'es mort", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false},
-];
-const status = (match: any) => {
-  if (match.winner === team.id) return {ios: trophyOutline, md: trophySharp};
-  if (match.loser === team.id) return {ios: closeOutline, md: closeSharp};
-  if (match.even === true) return {ios: swapHorizontalOutline, md: swapHorizontalSharp};
-  return {md: undefined, ios: undefined};
-};
 
+
+// Watchers
+
+const sectionScore = ref(0);
+const sectionMean = ref("0");
+// async update sectionScore
+watchEffect(async () => {
+  if (!isTeam.value) return; // do not run this watcher if team is not initialized
+  const sectionScores = section.value?.scores;
+  if (!sectionScores) return;
+  sectionScore.value = sum(sectionScores);
+  sectionMean.value = ((sectionScore.value / sectionScores.length) || 0).toFixed(2);
+})
+
+// Methods
+
+const sum = (numArray: number[]): number => {
+  return numArray.reduce((a, b) => a + b, 0);
+}
+const statusIcon = (match: any) => {
+  if (match.winner === teamId.value) return { ios: trophyOutline, md: trophySharp };
+  if (match.loser === teamId.value) return { ios: closeOutline, md: closeSharp };
+  if (match.even === true) return { ios: swapHorizontalOutline, md: swapHorizontalSharp };
+  return { md: undefined, ios: undefined };
+};
 </script>
-<style scoped>
-</style>
+<style scoped></style>

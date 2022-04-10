@@ -39,36 +39,52 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Magnetar
   - [x] checker si merge fonction avec les arrays (games.ts) -> non, il faut déstructurer l'array précédent et merger soi-même
 - [ ] save score au niveau des matches & équipes
+  - [ ] seule les animateurs d'un match peuvent y ajouter des points
+
 - [x] Split profile & login
 
 # Pages
 
 - [ ] Accueil: invitation à s'inscrire - si connecté : Mon programme / Mon jeu
+
 - [x] Login
   - [ ] Split login & profile
+  
 - [x] Profil (perso & qqun d'autre)
+
 - [x] Equipe (avec liste matches, ordonnés par temps)
+
+  - [ ] classement
+
 - [x] Jeu (avec liste matches, ordonnés par temps)
-  - [ ] ajouter bouton pour éditer jeu
 
 - [x] Sections (avec liste d'équipe)
+
 - [x] Match
   - [ ] Enregistrer le score au niveau du match & de équipes
   - [ ] +2 par victoires
   - [ ] +1 égalité
   - [ ] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
+
 - [ ] Listes
-  - [ ] Liste des jeux (filtre par circuit) + inscription
+  - [ ] Liste des jeux 
+    - [ ] 
+    - [ ] filtre par circuit
+    - [ ] si admin : bouton pour éditer nom & description
   - [ ] Utilisateurs
   - [ ] Liste de matches (filtre temps et filtre circuit, bouton "charger" pour éviter trop de requêtes)
-- [ ] Chercher un match: lecture seule si pas connecté
-- [ ] Classement
-- [ ] Gestion équipes (voir app précédente)
-- [ ] Gestion jeux (voir app précédente)
-- [ ] Paramètres généraux de l'app
-  - [ ] set timing
 
-- [ ] Enregistrer score: seule les animateurs d'un match peuvent y ajouter des points
+- [ ] Chercher un match: lecture seule si pas connecté
+
+- [ ] Classement
+
+- [ ] Gestion équipes (voir app précédente)
+
+- [ ] Paramètres généraux de l'app
+
+  - [ ] set schedule
+
+  
 
 # Modification DB
 
@@ -77,7 +93,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] teams
   - [x] ajouter scores: number[]
 - [x] Créer une DB "sections". 
-  - [ ] ~~Chaque collection est un type de section (e.g. loups, lutins, baladins, animateurs).~~ 
+  - [x] ~~Chaque collection est un type de section (e.g. loups, lutins, baladins, animateurs).~~ 
   - [x] Chaque document est une section
   - [x] Fields name, city, code d'unité, category (loups, lutins, balas, animateur), nbTeams, teams: []
   - [x] La liste teams se fait compléter par le script de distribution
@@ -86,7 +102,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - gameLeaderSections : [] (liste des noms de sections animatrices)
   - lastGameDbUpdate: date de la dernière modification de la db de jeu
   - maxGameLeaders : number (max amount of leaders per game)
-- [ ] Retirer matches des collection games & teams (utiliser des queries à la place)
+- [ ] 
 
 # Règles db
 
@@ -101,21 +117,24 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] vérifier les DB rules
 - [ ] Désactiver les API key inutiles [ici](https://console.cloud.google.com/apis/credentials?project=badenbattle-a0dec)
 - [ ] Désactiver les domaines inutiles [ici](https://console.firebase.google.com/u/0/project/badenbattle-a0dec/authentication/providers)
-- [ ] Désactiver le login par mdp
+- [ ] Désactiver le logging magnetar
 
 # Nice to have
 
 - Page d'information post-connexion (choisir son équipe / jeu)
 - Système de recherche de joueur
 - séparation pour midi dans l'horaire
+- Description de jeu
 
 # Next release
 
+- Retirer matches des collection games & teams (utiliser des queries à la place)
 - QR codes
 - Create DB from web app
 - Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
 - Refactor even with draw
+- match time start at 0 ([instead of 1](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2))
 
-# Notes
+# Désistement
 
-- Si bcp de désistement, activer l'argument "ignore_score" des équipes manquantes. Les équipes qui se retrouvent seules à un jeu joue contre elle même et est directement marquée comme gagnante
+- Si bcp de désistement, activer l'argument "ignore_score" des équipes manquantes. Les équipes qui se retrouvent seules à un jeu joue contre elle même et sont directement marquées comme gagnantes

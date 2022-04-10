@@ -98,7 +98,7 @@ import { useRoute, useRouter } from "vue-router";
 import { Game, gamesDefaults, getGame, removeLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
 import { getGameMatches, Match } from "@/services/matches";
 import { onBeforeMount, onMounted, watch, watchEffect } from "vue";
-import { getSchedule, hardcodeSchedule, isLeaderRegistrationOpen } from "@/services/settings";
+import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
 
 const user = useAuthStore();
 const route = useRoute();
@@ -112,6 +112,7 @@ type leaderInfo = {
   name: string,
   section: string,
 }
+// store more information about the leaders than their IDs
 const leaders = reactive({
   morning: [] as leaderInfo[],
   afternoon: [] as leaderInfo[]
@@ -192,29 +193,6 @@ const getWinner = (match: any) => {
   if (match.even === true) return "Égalité";
   return "";
 };
-
-// Stubs
-
-// const matches: any = [
-//   { id: 1, game_id: 1, game_name: "Chateau gonflable", player_ids: ["A15", "A25"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 2, game_id: 2, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 3, game_id: 3, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 4, game_id: 4, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 5, game_id: 5, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 6, game_id: 6, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 7, game_id: 7, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 8, game_id: 8, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 9, game_id: 9, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 10, game_id: 10, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 11, game_id: 11, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 12, game_id: 12, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 13, game_id: 13, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 14, game_id: 14, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 15, game_id: 15, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 16, game_id: 16, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-//   { id: 17, game_id: 17, game_name: "Chateau gonflable", player_ids: ["A1", "A2"], start_time: "11:15", stop_time: "11:27", winner: "", loser: "", even: false },
-// ];
-
 </script>
 <style scoped>
 .item-no-padding {
