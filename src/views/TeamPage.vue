@@ -7,7 +7,7 @@
         <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
               <ion-card-subtitle>{{team.city}}</ion-card-subtitle>
-              <h1 class="ion-no-margin" style="font-weight: bold">{{team.name}}</h1>
+              <h1 class="ion-no-margin" style="font-weight: bold">{{team?.sectionName}}</h1>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
               <span>
@@ -70,21 +70,46 @@ IonRow, IonCol, IonListHeader, IonIcon, IonGrid,
 } from "@ionic/vue";
 import { closeOutline, closeSharp, swapHorizontalOutline, swapHorizontalSharp, trophyOutline, trophySharp} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES } from "@/services";
-import { computed, reactive } from "@vue/reactivity";
+import { useAuthStore, ROLES } from "@/services/users";
+import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
+import { onBeforeMount } from "vue";
+import { getTeam, Team } from "@/services/teams";
 
 const store = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 
+// reactive data
+
+const teamId = ref("");
+
+// lifecicle hooks
+
+onBeforeMount(() => {
+  if (route.params.teamdId) teamId.value = route.params.teamdId as string;
+  if (!teamId.value) console.error("Team ID not set in the URL");
+})
+
+// Computed
+
+const team = computed((): Team => {
+  return getTeam(teamId.value as string) as Team;
+})
+const isTeam = computed(() => {
+ if (team.value?.id) return true;
+  return false; 
+})
+
+
+
 const showRanking = computed(() => {
   return store.profile.role >= ROLES.Moderateur;
 });
 
-const team = reactive({
+const oldteam = reactive({
   id: computed(() => {
-    if (route.params.id) return route.params.id;
+    if (route.params.teamdId) return route.params.teamdId;
     if (store.profile.team) return store.profile.team;
     return undefined;
   }),

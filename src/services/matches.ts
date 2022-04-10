@@ -49,6 +49,15 @@ const matchesModule = magnetar.collection<Match>(MATCHES_COLLECTION, {
 /// Getters //
 /////////////
 
+// This method opens a stream on the match to get live updates
+export const getMatch = (id: string) => {
+  const matchModule = matchesModule.doc(id);
+  matchModule.stream().catch((error) => {
+    console.error(`Match ${id} stream was closed due to an error`, error);
+  });
+  return matchModule.data;
+};
+
 export const getGameMatches = (gameId: string) => {
   const matches = matchesModule.where("game_id", "==", gameId).orderBy("time", "asc");
   matches.stream()

@@ -23,18 +23,20 @@
           </ion-card-header>
           <ion-card-content>
             <ion-list v-if="matches.length > 0" lines="none" class="ion-no-margin ion-no-padding">
-            <h2 class="ion-padding-start">Matin</h2>
-              <ion-item v-for="leader in leaders.morning" :key="leader.uid" :routerLink="'/profile/' + leader.uid" class="ion-margin-start">
-                <ion-label>
+              <ion-text color="primary"><h2>Matin</h2></ion-text>
+              <span class="ion-padding-start" v-if="leaders.morning.length < 1">Pas encore de responsable inscrit</span>
+              <ion-item v-for="leader in leaders.morning" :key="leader.uid" :routerLink="`/profile/${leader.uid}`">
+                <ion-label class="ion-text-wrap">
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
                   <ion-text color="medium" v-if="leader.section">&nbsp;({{ leader.section }})</ion-text>
                 </ion-label>
               </ion-item>
             </ion-list>
             <ion-list v-if="matches.length > 0" lines="none" class="ion-no-margin ion-no-padding">
-            <h2 class="ion-padding-start">Après-midi</h2>
-              <ion-item v-for="leader in leaders.afternoon" :key="leader.uid" :routerLink="'/profile/' + leader.uid" class="ion-margin-start">
-                <ion-label>
+              <ion-text color="primary"><h2>Après-midi</h2></ion-text>
+              <span class="ion-padding-start" v-if="leaders.afternoon.length < 1">Pas encore de responsable inscrit</span>
+              <ion-item v-for="leader in leaders.afternoon" :key="leader.uid" :routerLink="`/profile/${leader.uid}`">
+                <ion-label class="ion-text-wrap">
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
                   <ion-text color="medium" v-if="leader.section">&nbsp;({{ leader.section }})</ion-text>
                 </ion-label>
@@ -58,11 +60,6 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-
-        <h3>morning_leaders</h3>
-        <p>{{game.morning_leaders}}</p>
-        <h3>leaders.morning</h3>
-        <p>{{leaders.morning}}</p>
 
         <ion-card>
           <ion-card-header>
@@ -92,15 +89,15 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, 
-IonIcon, IonBadge, IonGrid, IonText, IonButton } from "@ionic/vue";
+IonIcon, IonBadge, IonGrid, IonText, IonButton, useIonRouter } from "@ionic/vue";
 import { timeOutline, timeSharp, ellipsisHorizontalOutline, swapHorizontalOutline, trophyOutline } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import {  choicePopup, errorPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
-import { Game, getGame, removeLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
-import { watch, watchEffect } from "vue";
+import { Game, gamesDefaults, getGame, removeLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
+import { onBeforeMount, onMounted, watch, watchEffect } from "vue";
 import { isLeaderRegistrationOpen } from "@/services/settings";
 
 const user = useAuthStore();
@@ -108,6 +105,8 @@ const route = useRoute();
 const router = useRouter();
 
 // reactive data
+
+const gameId = ref("");
 type leaderInfo = {
   uid: string,
   name: string,
@@ -118,23 +117,21 @@ const leaders = reactive({
   afternoon: [] as leaderInfo[]
 })
 
+// lifecicle hooks
+
+onBeforeMount(() => {
+  if (route.params.gameId) gameId.value = route.params.gameId as string;
+  if (!gameId.value) console.error("Game ID not set in the URL");
+})
+
 // Computed 
 
-const gameId = computed(() => {
-    if (route.params.id) return route.params.id as string;
-    return undefined;
-})
 const game = computed((): Game => {
   return getGame(gameId.value as string) as Game;
 })
-
 const isGame = computed(() => {
-  if (!gameId.value) {
-    console.error("Game ID not set in the URL");
-    return false
-  }
-  if (!game.value?.circuit) return false;
-  return true; 
+  if (game.value?.circuit) return true;
+  return false; 
 })
 const canRegister = computed(() => {
   return isLeaderRegistrationOpen() && user.profile.role >= ROLES.Animateur; 
@@ -142,14 +139,18 @@ const canRegister = computed(() => {
 const loadLeaderInfo = async (leaders: string[]) => {
   const leaderInfo = [] as leaderInfo[];
 
-  for (const leaderId of leaders){
+  await Promise.all(leaders.map(async (leaderId) => {
     await user.asyncFetchProfile(leaderId);
     const section = user.getProfile(leaderId).sectionName;
     const name = user.getName(leaderId);
     leaderInfo.push({uid: leaderId, name, section});
-  }
+  }))
+
   return leaderInfo;
 }
+
+// Watchers
+
 // async update morning leaders information
 watchEffect(async () => {
   if (!isGame.value) return; // do not run this watcher if game is not initialized
@@ -166,7 +167,6 @@ watchEffect(async () => {
   leaders.afternoon = newLeaders;
   console.log("Afternoon leaders info updated", newLeaders);
 })
-
 
 // Methods
 

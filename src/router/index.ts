@@ -38,7 +38,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'teams',
-    path: '/team/:id',
+    path: '/team/:teamId',
     component: () => import ('../views/TeamPage.vue')
   },
   {
@@ -48,12 +48,12 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'game',
-    path: '/game/:id',
+    path: '/game/:gameId',
     component: () => import ('../views/GamePage.vue')
   },
   {
     name: 'match',
-    path: '/match/:id',
+    path: '/match/:matchId',
     component: () => import ('../views/MatchPage.vue')
   },
   {
@@ -69,7 +69,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'profile',
-    path: '/profile/:id',
+    path: '/profile/:userId',
     component: () => import ('../views/ProfilePage.vue'),
     beforeEnter: authCheck,
   },

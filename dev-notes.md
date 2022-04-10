@@ -23,7 +23,7 @@ Auth management : https://dev.to/aaronksaunders/ionic-framework-v6-vuejs-and-fir
 
 ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations/blob/master/src/app/form/form.page.html
 
-
+# ⚠ LAISSE LES DATA MAGNETAR DANS DES COMPUTED METHODs BEN !!
 
 # To do 
 
@@ -40,13 +40,6 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [x] checker si merge fonction avec les arrays (games.ts) -> non, il faut déstructurer l'array précédent et merger soi-même
 - [ ] save score au niveau des matches & équipes
 - [ ] Split profile & login
-
-## Nice to have
-
-- Page d'information post-connexion (choisir son équipe / jeu)
-- Système de recherche de joueur
-- séparation pour midi dans l'horaire
-- refactor even into draw
 
 # Pages
 
@@ -107,11 +100,18 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] Désactiver les domaines inutiles [ici](https://console.firebase.google.com/u/0/project/badenbattle-a0dec/authentication/providers)
 - [ ] Désactiver le login par mdp
 
+# Nice to have
+
+- Page d'information post-connexion (choisir son équipe / jeu)
+- Système de recherche de joueur
+- séparation pour midi dans l'horaire
+
 # Next release
 
 - QR codes
 - Create DB from web app
 - Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
+- Refactor even with draw
 
 # Notes
 

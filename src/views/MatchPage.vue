@@ -96,16 +96,39 @@ IonRow, IonCol, IonIcon, IonGrid, IonButton, IonText
 import { closeOutline, closeSharp, trophyOutline, trophySharp} from 'ionicons/icons';
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
-import { computed, reactive } from "@vue/reactivity";
+import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
+import { onBeforeMount } from "vue";
+import { getMatch, Match } from "@/services/matches";
 
 const store = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 
-const match = reactive({
+// reactive data
+
+const matchId = ref("");
+
+// lifecicle hooks
+
+onBeforeMount(() => {
+  if (route.params.matchId) matchId.value = route.params.matchId as string;
+  if (!matchId.value) console.error("Match ID not set in the URL");
+})
+
+// Computed
+
+const match = computed((): Match => {
+  return getMatch(matchId.value as string) as Match;
+})
+const isMatch = computed(() => {
+ if (match.value?.id) return true;
+  return false; 
+})
+
+const oldmatch = reactive({
   id: computed(() => {
-    if (route.params.id) return route.params.id;
+    if (route.params.matchId) return route.params.matchId;
     return undefined;
   }),
   gameId: 1,

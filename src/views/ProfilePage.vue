@@ -88,7 +88,7 @@ import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, Ion
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeMount, onMounted, ref } from "vue";
 import { errorPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 
@@ -96,17 +96,21 @@ const user = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
+// reactive data
+const isOwnProfile = ref(false);
+const userId = ref(user.uid);
 const modifiedProfile = ref<Profile>(usersDefaults());
 const editMode = ref(false);
 
+// lifecicle hooks
+
+onBeforeMount(() => {
+  userId.value = route.params.userId ? (route.params.userId as string) : user.uid;
+  isOwnProfile.value = !route.params.userId || route.params.userId === user.uid;
+})
+
 // Computed variables
 
-const isOwnProfile = computed(() => {
-  return !route.params.id || route.params.id === user.uid;
-});
-const userId = computed((): string => {
-  return route.params.id ? (route.params.id as string) : user.uid;
-});
 // The profile to be displayed in the current page
 const userProfile = computed((): Profile => {
   return user.getProfile(userId.value) as Profile;
