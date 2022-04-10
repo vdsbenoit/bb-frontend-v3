@@ -1,5 +1,5 @@
+import { getTeam } from './teams';
 import { useAuthStore, ROLES } from './users';
-import { canSetScore } from './games';
 import { magnetar } from "./magnetar";
 import { isScoresFrozen } from "./settings";
 
@@ -13,6 +13,7 @@ const user = useAuthStore();
 export interface Match {
   id: string;
   game_id: string;
+  game_name: string;
   time: number;
   player_ids: string[];
   player_numbers: number[];
@@ -26,6 +27,7 @@ function matchesDefaults(payload?: Partial<Match>): Match {
   const defaults = { 
     id: "",
     game_id: "",
+    game_name: "",
     time: 0,
     player_ids: [],
     player_numbers: [],
@@ -71,36 +73,11 @@ export const getTeamMatches = (teamId: string) => {
 /////////////
 
 export const setScore = async (matchId: string, winner: string, loser: string) => {
-  const profile = user.profile;
   const match = matchesModule.doc(matchId);
-
-  const frozenScores = await isScoresFrozen();
-  if (frozenScores) throw new Error("Il n'est pas ou plus possible d'enregistrer des scores");
-  if (profile.role < ROLES.Animateur) throw new Error("Tu n'as pas le droit d'enregister de scores");
-  if (profile.role === ROLES.Animateur) {
-    const canSetScoreResult = await canSetScore(user.uid, matchId);
-    if (!canSetScoreResult) {
-      throw new Error(`L'utilisateur ${user.uid} n'est pas inscrit à l'épreuve ${matchId}`);
-    }
-  }
-  if (!match.data?.player_ids.includes(winner)) throw new Error(`L'équipe ${winner} n'est pas assignée à cette épreuve`);
-  if (!match.data?.player_ids.includes(loser)) throw new Error(`L'équipe ${loser} n'est pas assignée à cette épreuve`);
-  
-  match.merge({winner, loser});
+  match.merge({winner, loser, even: false});
 };
 
 export const setEven = async (matchId: string) => {
-  const profile = user.profile;
   const match = matchesModule.doc(matchId);
-  const frozenScores = await isScoresFrozen();
-  if (frozenScores) throw new Error("Il n'est pas ou plus possible d'enregistrer des scores");
-  if (profile.role < ROLES.Animateur) throw new Error("Tu n'as pas le droit d'enregister de scores");
-  if (profile.role === ROLES.Animateur) {
-    const canSetScoreResult = await canSetScore(user.uid, matchId);
-    if (!canSetScoreResult) {
-      throw new Error(`L'utilisateur ${user.uid} n'est pas inscrit à l'épreuve ${matchId}`);
-    }
-  }
-  
-  match.merge({ even: true});
+  match.merge({winner: "", loser: "", even: true});
 }

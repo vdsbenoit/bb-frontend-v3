@@ -1,8 +1,8 @@
-import { confirmPopup, toastPopup } from './popup';
-import { useAuthStore, ROLES, getRoleByValue } from './users';
+import { confirmPopup, toastPopup } from "./popup";
+import { useAuthStore, ROLES, getRoleByValue } from "./users";
 import { magnetar } from "./magnetar";
-import { isGameDbOutdated, setlastGameDbUpdate, getMaxGameLeaders, canSetScoreAnywhere } from "./settings";
-import { DocInstance } from 'magnetar';
+import { isGameDbOutdated, setlastGameDbUpdate, getMaxGameLeaders, canSetScoreAnywhere, isScoresFrozen } from "./settings";
+import { DocInstance } from "magnetar";
 
 const GAMES_COLLECTION = "games";
 const user = useAuthStore();
@@ -22,7 +22,7 @@ export interface Game {
 }
 
 export function gamesDefaults(payload?: Partial<Game>): Game {
-  const defaults = { 
+  const defaults = {
     id: "",
     hash: "",
     name: "",
@@ -31,8 +31,8 @@ export function gamesDefaults(payload?: Partial<Game>): Game {
     afternoon_leaders: [],
     matches: [],
     weight: 1,
-  }
-  return { ...defaults, ...payload }
+  };
+  return { ...defaults, ...payload };
 }
 const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION, {
   modifyPayloadOn: { insert: gamesDefaults },
@@ -50,7 +50,7 @@ export const getGames = () => {
     forceUpdate = true;
     setlastGameDbUpdate();
   }
-  gamesModule.fetch({ force: forceUpdate }).catch(error => {
+  gamesModule.fetch({ force: forceUpdate }).catch((error) => {
     console.error(`Error occurred while fetching the ${GAMES_COLLECTION} collection`, error);
   });
   return gamesModule.data;
@@ -65,12 +65,26 @@ export const getGame = (id: string) => {
   return gameModule.data;
 };
 
-export const canSetScore = async (uid: string, gameId: string) => {
+export const canSetGameScore = async (gameId: string) => {
+  if (isScoresFrozen()) {
+    console.log("Cannot set score, score registration is closed")
+    return false;
+  }
+  if (user.profile.role < ROLES.Animateur){ 
+    console.log(`User ${user.uid} cannot edit game ${gameId} score. Insufficient role`);
+    return false;
+  }
+  if (user.profile.role >= ROLES.Moderateur) return true;
   if (canSetScoreAnywhere()) return true;
   const gameModule = gamesModule.doc(gameId);
   await gameModule.fetch();
-  return (gameModule.data?.morning_leaders.includes(uid) || gameModule.data?.afternoon_leaders.includes(uid));
-}
+  if (gameModule.data?.morning_leaders.includes(user.uid) || gameModule.data?.afternoon_leaders.includes(user.uid)){
+    return true;
+  } else {
+    console.log(`User ${user.uid} is note registered at ${gameId}`);
+    return false;
+  }
+};
 
 ///////////////
 /// Setters //
@@ -80,15 +94,15 @@ export const canSetScore = async (uid: string, gameId: string) => {
  * These methods actually update the DB, after the checks in setters below passed.
  */
 const updateMorningLeaders = (gameModule: DocInstance<Game>, gameId: string, uid: string) => {
-  gameModule.merge({ morning_leaders: [...gameModule.data?.morning_leaders as string[], uid] });
-  user.updateProfile(uid, {morningGame: gameId});
+  gameModule.merge({ morning_leaders: [...(gameModule.data?.morning_leaders as string[]), uid] });
+  user.updateProfile(uid, { morningGame: gameId });
   console.log(`Adding user ${uid} to game ${gameId}`);
-}
+};
 const updateAfternoonLeaders = (gameModule: DocInstance<Game>, gameId: string, uid: string) => {
-  gameModule.merge({ afternoon_leaders: [...gameModule.data?.afternoon_leaders as string[], uid] });
-  user.updateProfile(uid, {afternoonGame: gameId});
+  gameModule.merge({ afternoon_leaders: [...(gameModule.data?.afternoon_leaders as string[]), uid] });
+  user.updateProfile(uid, { afternoonGame: gameId });
   console.log(`Adding user ${uid} to game ${gameId}`);
-}
+};
 
 /**
  * This setter add the current user to the morning leaders a game.
@@ -96,57 +110,59 @@ const updateAfternoonLeaders = (gameModule: DocInstance<Game>, gameId: string, u
  * When a game page is opened, a stream is created for the game data.
  * Therefore, by design, it is not required to fetch the game data here.
  */
-export const setMorningLeader = async (gameId: string, uid="") => {
+export const setMorningLeader = async (gameId: string, uid = "") => {
   if (uid === "") uid = user.uid;
   const profile = await user.getLatestProfileData(uid);
-  const gameModule =  gamesModule.doc(gameId);
+  const gameModule = gamesModule.doc(gameId);
   // Checks
   if (gameModule.data?.morning_leaders.includes(uid)) throw Error("Tu es déjà inscrit à cette épreuve");
   if (profile.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
   const maxGameLeaders = await getMaxGameLeaders();
-  if (gameModule.data?.morning_leaders.length as number >= maxGameLeaders) throw new Error("Le nombre maximum d'animateurs a été atteint pour cette épreuve au matin");
-  if(profile.morningGame) {
-    const message = uid === user.uid ? 
-    `Tu es déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Est-ce que tu veux te désincrire ?` : 
-    `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Le/la désincrire ?`
+  if ((gameModule.data?.morning_leaders.length as number) >= maxGameLeaders) throw new Error("Le nombre maximum d'animateurs a été atteint pour cette épreuve au matin");
+  if (profile.morningGame) {
+    const message = uid === user.uid ? `Tu es déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Est-ce que tu veux te désincrire ?` : `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Le/la désincrire ?`;
     confirmPopup(
       message,
-      () => {removeLeader(profile.morningGame, uid, true, false); updateMorningLeaders(gameModule, gameId, uid)},
+      () => {
+        removeLeader(profile.morningGame, uid, true, false);
+        updateMorningLeaders(gameModule, gameId, uid);
+      },
       () => toastPopup("Enresitrement annulé")
-      );
-  } else updateMorningLeaders(gameModule, gameId, uid)
-}
+    );
+  } else updateMorningLeaders(gameModule, gameId, uid);
+};
 
-export const setAfternoonLeader = async (gameId: string, uid="") => {
+export const setAfternoonLeader = async (gameId: string, uid = "") => {
   if (uid === "") uid = user.uid;
   const profile = await user.getLatestProfileData(uid);
-  const gameModule =  gamesModule.doc(gameId);
+  const gameModule = gamesModule.doc(gameId);
   // Checks
   if (gameModule.data?.afternoon_leaders.includes(uid)) throw Error("Tu es déjà inscrit à cette épreuve");
   if (profile.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
   const maxGameLeaders = await getMaxGameLeaders();
-  if (gameModule.data?.afternoon_leaders.length as number >= maxGameLeaders) throw new Error("Le nombre maximum d'animateurs a été atteint pour cette épreuve l'après-midi");
-  if(profile.afternoonGame) {
-    const message = uid === user.uid ? 
-    `Tu es déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Est-ce que tu veux te désincrire ?` : 
-    `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Le/la désincrire ?`
+  if ((gameModule.data?.afternoon_leaders.length as number) >= maxGameLeaders) throw new Error("Le nombre maximum d'animateurs a été atteint pour cette épreuve l'après-midi");
+  if (profile.afternoonGame) {
+    const message = uid === user.uid ? `Tu es déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Est-ce que tu veux te désincrire ?` : `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Le/la désincrire ?`;
     confirmPopup(
-      message, 
-      () => {removeLeader(profile.afternoonGame, uid, false, true); updateAfternoonLeaders(gameModule, gameId, uid)},
+      message,
+      () => {
+        removeLeader(profile.afternoonGame, uid, false, true);
+        updateAfternoonLeaders(gameModule, gameId, uid);
+      },
       () => toastPopup("Enresitrement annulé")
-      );
-  } else updateAfternoonLeaders(gameModule, gameId, uid)
-}
+    );
+  } else updateAfternoonLeaders(gameModule, gameId, uid);
+};
 
-export const removeLeader = async (gameId: string, uid="", morningOnly=false, afternoonOnly=false) => {
+export const removeLeader = async (gameId: string, uid = "", morningOnly = false, afternoonOnly = false) => {
   if (uid === "") uid = user.uid;
-  const gameModule =   gamesModule.doc(gameId);
-  const game =  await gameModule.fetch();
+  const gameModule = gamesModule.doc(gameId);
+  const game = await gameModule.fetch();
   // find where to remove the leader from
   let removedMorningLeader = false;
-  const morningLeaders = game?.morning_leaders
-  if(!morningLeaders) console.error(`Cannot fetch morning leaders for game${gameId}`);
-  if (!afternoonOnly && morningLeaders){
+  const morningLeaders = game?.morning_leaders;
+  if (!morningLeaders) console.error(`Cannot fetch morning leaders for game${gameId}`);
+  if (!afternoonOnly && morningLeaders) {
     const index = morningLeaders.indexOf(uid);
     if (index > -1) {
       morningLeaders.splice(index, 1);
@@ -154,9 +170,9 @@ export const removeLeader = async (gameId: string, uid="", morningOnly=false, af
     }
   }
   let removedAfternoonLeader = false;
-  const afternoonLeaders = game?.afternoon_leaders
-  if(!afternoonLeaders) console.error(`Cannot fetch afternoon leaders for game${gameId}`);
-  if (!morningOnly && afternoonLeaders){
+  const afternoonLeaders = game?.afternoon_leaders;
+  if (!afternoonLeaders) console.error(`Cannot fetch afternoon leaders for game${gameId}`);
+  if (!morningOnly && afternoonLeaders) {
     const index = afternoonLeaders.indexOf(uid);
     if (index > -1) {
       afternoonLeaders.splice(index, 1);
@@ -170,17 +186,18 @@ export const removeLeader = async (gameId: string, uid="", morningOnly=false, af
   } else if (afternoonOnly && removedAfternoonLeader) {
     gameModule.merge({ afternoon_leaders: afternoonLeaders });
     console.log(`Removing user ${uid} from game ${gameId} (afternoon only)`);
-  } else if (removedMorningLeader || removedAfternoonLeader) { // make a single write in DB
-    gameModule.merge({ morning_leaders: morningLeaders,  afternoon_leaders: afternoonLeaders });
+  } else if (removedMorningLeader || removedAfternoonLeader) {
+    // make a single write in DB
+    gameModule.merge({ morning_leaders: morningLeaders, afternoon_leaders: afternoonLeaders });
     console.log(`Removing user ${uid} from game ${gameId} (both morning & afternoon)`);
   }
   // Apply change in user profile
   if (removedMorningLeader && !afternoonOnly) {
-    user.updateProfile(uid, {morningGame: ""});
+    user.updateProfile(uid, { morningGame: "" });
     console.log(`Removing game ${gameId} from user profile ${uid} (morning)`);
-  } 
+  }
   if (removedAfternoonLeader && !morningOnly) {
-    user.updateProfile(uid, {afternoonGame: ""});
+    user.updateProfile(uid, { afternoonGame: "" });
     console.log(`Removing game ${gameId} from user profile ${uid} (afternoon)`);
-  } 
-}
+  }
+};

@@ -61,14 +61,16 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Sections (avec liste d'équipe)
 
 - [x] Match
-  - [ ] Enregistrer le score au niveau du match & de équipes
+  - [ ] Enregistrer le score au niveau 
+    - [x] du match
+    - [ ] des équipes
+    - [ ] des sections
   - [ ] +2 par victoires
   - [ ] +1 égalité
-  - [ ] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
+  - [x] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
 
 - [ ] Listes
-  - [ ] Liste des jeux 
-    - [ ] 
+  - [ ] Liste des jeux []()
     - [ ] filtre par circuit
     - [ ] si admin : bouton pour éditer nom & description
   - [ ] Utilisateurs
@@ -112,6 +114,28 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - Il faut être animateur pour s'inscrire à une épreuve
 - Traduire les if conditions des services magnetar
 
+````typescript
+export const setScore = async (matchId: string, winner: string, loser: string) => {
+  const match = matchesModule.doc(matchId);
+  const canSetScoreResult = await canSetScore(matchId);
+  if (! canSetScoreResult) throw new Error(`Tu n'as pas le droit d'enregister de scores à l'épreuve ${match.data?.game_id}`);
+  if (!match.data?.player_ids.includes(winner)) throw new Error(`L'équipe ${winner} n'est pas assignée à cette épreuve`);
+  if (!match.data?.player_ids.includes(loser)) throw new Error(`L'équipe ${loser} n'est pas assignée à cette épreuve`);
+
+  match.merge({winner, loser, even: false});
+};
+
+export const setEven = async (matchId: string) => {
+  const match = matchesModule.doc(matchId);
+  const canSetScoreResult = await canSetScore(matchId);
+  if (! canSetScoreResult) throw new Error(`Tu n'as pas le droit d'enregister de scores à l'épreuve ${match.data?.game_id}`);
+
+  match.merge({winner: "", loser: "", even: true});
+}
+````
+
+
+
 # Avant de mettre en prod
 
 - [ ] vérifier les DB rules
@@ -134,6 +158,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
 - Refactor even with draw
 - match time start at 0 ([instead of 1](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2))
+- Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore)
 
 # Désistement
 

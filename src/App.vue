@@ -6,9 +6,9 @@
           <ion-list id="menu-list">
             <ion-list-header>Baden Battle App</ion-list-header>
             <ion-note>🐺</ion-note>
-  
+
             <ion-menu-toggle auto-hide="false" v-for="(p, i) in appPages" :key="i">
-              <ion-item router-direction="root" :router-link="p.url" lines="none" detail="false" class="hydrated" :class="{ 'selected': isSelected(p.url) }">
+              <ion-item router-direction="root" :router-link="p.url" lines="none" detail="false" class="hydrated" :class="{ selected: isSelected(p.url) }">
                 <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
@@ -16,14 +16,14 @@
           </ion-list>
         </ion-content>
         <ion-menu-toggle auto-hide="false">
-        <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">
+          <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">
             <div v-if="user.isLoggedIn">
-              <ion-text>Connecté en tant que {{name}}</ion-text>
+              <ion-text>Connecté en tant que {{ name }}</ion-text>
             </div>
             <div v-else>
               <ion-text>Pas authentifié</ion-text>
             </div>
-        </ion-footer>
+          </ion-footer>
         </ion-menu-toggle>
       </ion-menu>
       <ion-router-outlet id="main-content"></ion-router-outlet>
@@ -32,77 +32,76 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonFooter, IonToolbar} from '@ionic/vue';
-import { useRoute } from 'vue-router';
-import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, earthOutline, earthSharp } from 'ionicons/icons';
+import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, IonSplitPane, IonText, IonFooter, IonToolbar } from "@ionic/vue";
+import { archiveOutline, archiveSharp, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp, informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, earthOutline, earthSharp } from "ionicons/icons";
 import { computed } from "vue";
-import { useAuthStore} from "@/services/users";
-import { useRouter } from 'vue-router';
+import { useAuthStore } from "@/services/users";
+import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 
 const appPages = [
   {
-    title: 'Home',
-    url: '/folder/Home',
+    title: "Home",
+    url: "/folder/Home",
     iosIcon: homeOutline,
-    mdIcon: homeSharp
+    mdIcon: homeSharp,
   },
   {
-    title: 'Mon Equipe',
-    url: '/team',
+    title: "Mon Equipe",
+    url: "/team",
     iosIcon: peopleCircleOutline,
-    mdIcon: peopleCircleSharp
+    mdIcon: peopleCircleSharp,
   },
   {
-    title: 'Mon épreuve',
-    url: '/game',
+    title: "Mon épreuve",
+    url: "/game",
     iosIcon: peopleCircleOutline,
-    mdIcon: peopleCircleSharp
+    mdIcon: peopleCircleSharp,
   },
   {
-    title: 'Epreuves',
-    url: '/games',
+    title: "Epreuves",
+    url: "/games",
     iosIcon: peopleOutline,
-    mdIcon: peopleSharp
+    mdIcon: peopleSharp,
   },
   {
-    title: 'Sections',
-    url: '/sections',
+    title: "Sections",
+    url: "/sections",
     iosIcon: earthOutline,
-    mdIcon: earthSharp
+    mdIcon: earthSharp,
   },
   {
-    title: 'Favorites',
-    url: '/folder/Favorites',
+    title: "Favorites",
+    url: "/folder/Favorites",
     iosIcon: heartOutline,
-    mdIcon: heartSharp
+    mdIcon: heartSharp,
   },
   {
-    title: 'Archived',
-    url: '/folder/Archived',
+    title: "Archived",
+    url: "/folder/Archived",
     iosIcon: archiveOutline,
-    mdIcon: archiveSharp
+    mdIcon: archiveSharp,
   },
   {
-    title: 'Trash',
-    url: '/folder/Trash',
+    title: "Trash",
+    url: "/folder/Trash",
     iosIcon: trashOutline,
-    mdIcon: trashSharp
+    mdIcon: trashSharp,
   },
   {
-    title: 'Profil',
-    url: '/profile',
+    title: "Profil",
+    url: "/profile",
     iosIcon: personCircleOutline,
-    mdIcon: personCircleSharp
+    mdIcon: personCircleSharp,
   },
   {
-    title: 'A propos',
-    url: '/about',
+    title: "A propos",
+    url: "/about",
     iosIcon: informationCircleOutline,
-    mdIcon: informationCircleSharp
-  }
-];    
-  
+    mdIcon: informationCircleSharp,
+  },
+];
+
 const route = useRoute();
 const isSelected = (url: string) => url === route.path;
 const user = useAuthStore();
@@ -250,25 +249,25 @@ ion-item.selected {
   text-decoration: none;
   cursor: pointer;
 }
-ion-label p{
+ion-label p {
   color: var(--ion-color-medium) !important;
 }
 .numberCircle {
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    padding: 15px;
-    display: inline-flex;
-    flex-grow: 0;
-    background: var(--ion-color-primary);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  padding: 15px;
+  display: inline-flex;
+  flex-grow: 0;
+  background: var(--ion-color-primary);
 }
 .numberCircle span {
-    text-align: center;
-    width: 25px;
-    display: inline-block;
-    margin: auto;
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: bold;
+  text-align: center;
+  width: 25px;
+  display: inline-block;
+  margin: auto;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
 }
 </style>
