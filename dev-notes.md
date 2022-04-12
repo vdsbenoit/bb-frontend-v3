@@ -155,6 +155,9 @@ export const setEven = async (matchId: string) => {
 # Nice to have
 
 - Page d'information post-connexion (choisir son équipe / jeu)
+- PWA
+- Dark theme
+- Description de jeu
 - Système de recherche de joueur
 - séparation pour midi dans l'horaire
 - Description de jeu

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import { useAuthStore } from "@/services/users";
+import HomePageVue from '../views/HomePage.vue';
 
 /**
  * 
@@ -27,19 +28,15 @@ import { useAuthStore } from "@/services/users";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    name: 'index',
-    path: '',
-    redirect: '/home'
+    name: 'home',
+    path: '/',
+    alias: '/home',
+    component: HomePageVue
   },
   {
     name: 'index',
     path: '/guest',
     redirect: '/home'
-  },
-  {
-    name: 'home',
-    path: '/home',
-    component: () => import ('../views/HomePage.vue'),
   },
   {
     name: 'myTeam',

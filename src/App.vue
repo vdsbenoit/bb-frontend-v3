@@ -4,8 +4,8 @@
       <ion-menu content-id="main-content" type="overlay">
         <ion-content>
           <ion-list id="menu-list">
-            <ion-list-header>Baden Battle App</ion-list-header>
-            <ion-note>⚜️</ion-note>
+            <ion-list-header>Baden Battle</ion-list-header>
+            <ion-note>score app</ion-note>
 
             <ion-menu-toggle auto-hide="false" v-for="(p, i) in appPages" :key="i">
               <ion-item router-direction="root" :router-link="p.url" lines="none" detail="false" class="hydrated" :class="{ selected: isSelected(p.url) }">
@@ -52,7 +52,8 @@ const name = computed(() => {
   return user.getName(user.uid);
 });
 const appPages = computed(() => {
-  if (!user.isLoggedIn) return [homePage, loginPage, aboutPage];
+  if (!user.isLoggedIn) return [homePage, aboutPage];
+  // if (!user.isLoggedIn) return [homePage, loginPage, aboutPage]; // fixme: add login page back
   let pages = topPages;
   if (user.profile.role == ROLES.Participant) pages.splice(1, 0, playerPage);
   if (user.profile.role >= ROLES.Animateur) {
