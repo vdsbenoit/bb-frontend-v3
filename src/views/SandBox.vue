@@ -45,9 +45,7 @@ const game = computed(() => {
 
 
 const testMethod1 = () => {
-  setMorningLeader("1", "foo").catch(error => {
-    errorPopup(error.message);
-  });
+  usersModule.doc("foo").insert({email: "bar@mail"})
 }
 const testMethod2 = () => {
   setAfternoonLeader("1", "foo").catch(error => {

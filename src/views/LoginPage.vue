@@ -14,45 +14,61 @@
             <ion-label position="floating">Email</ion-label>
             <ion-input v-model="email" name="email" type="email" inputmode="email" autocomplete="email" required autocapitalize="off" clear-input="true"></ion-input>
           </ion-item>
-          <ion-button expand="block" @click="sendEmail">Envoyer un email</ion-button>
+          <ion-button expand="block"  @click="sendEmail" :color="sendButtonColor">
+              <ion-spinner v-if="isSendingEmail"></ion-spinner>
+              <span v-else>{{sendButtonText}}</span>
+          </ion-button>
         </ion-list>
       </form>
-      <ion-text class="ion-padding" color="danger" :hidden="!user.error">
-        <p class="ion-padding-start">{{ user.error }}</p>
-      </ion-text>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption, IonCard, IonCardContent } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSpinner } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore } from "@/services/users";
 import { loadingPopup, toastPopup } from "@/services/popup";
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { defineProps } from "vue";
+import { computed } from "@vue/reactivity";
 
 const props = defineProps(["validation"]);
 const user = useAuthStore();
-const { sendSignInEmail, processSignInLink, logout: logoutUser } = user;
+const { sendSignInEmail, processSignInLink } = user;
 const router = useRouter();
 const route = useRoute();
 
+// reactive data
 
 const email = ref("");
+const isSendingEmail = ref(false);
+const isEmailSent = ref(false);
+
+// computed data
+
+const sendButtonText = computed(() => {
+  return isEmailSent.value ? "Renvoyer" : "Envoyer";
+});
+const sendButtonColor = computed(() => {
+  return isEmailSent.value ? "warning": "primary";
+})
+
+// methods
 
 const sendEmail = async () => {
-  const loading = await loadingPopup();
+  isSendingEmail.value = true;
   await sendSignInEmail(email.value);
-  loading.dismiss();
+  isEmailSent.value = true;
   toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 10000);
+  isSendingEmail.value = false;
 };
 
 onMounted(async () => {
   if (props.validation) {
-    await processSignInLink(window.location.href);
-    router.replace("/profile");
+    const success = await processSignInLink(window.location.href);
+    if (success) router.replace("/home");
   }
 });
 </script>

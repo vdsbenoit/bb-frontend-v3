@@ -1,13 +1,10 @@
-import { firebaseConfig } from "./firebaseConfig";
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, doc } from "firebase/firestore";
+import {  collection, doc } from "firebase/firestore";
 import { CreatePlugin as PluginFirestore } from "@magnetarjs/plugin-firestore";
 import { CreatePlugin as PluginVue } from "@magnetarjs/plugin-vue3";
 import { Magnetar } from "magnetar";
 import { logger } from "@magnetarjs/utils";
+import { db } from './firebase'
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
 
 /**
  * A helper function that generates a random Firestore ID
@@ -30,3 +27,7 @@ export const magnetar = Magnetar({
   },
   on: { success: logger }, // fixme: disable this on production builds
 });
+
+export const stopMagnetar = async () => {
+  await magnetar.closeAllStreams;
+}

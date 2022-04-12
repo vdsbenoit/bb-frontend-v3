@@ -82,6 +82,7 @@ export const loadingPopup = async (timeout = 60000, message = "Chargement") => {
     duration: timeout,
   });
   setTimeout(() => loading.dismiss(), timeout);
+  loading.present();
   return loading;
 };
 

@@ -71,9 +71,6 @@
             </ion-row>
           </ion-grid>
         </ion-card>
-        <ion-text class="ion-padding" color="danger" :hidden="!user.error">
-          <p class="ion-padding-start">{{ user.error }}</p>
-        </ion-text>
       </div>
       <div v-else class="not-found ion-padding">
         <strong class="capitalize">Nous n'avons pas trouvé ce profil...</strong>
@@ -84,13 +81,14 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption, IonCard, IonCardContent, IonGrid, IonRow, IonCol, IonIcon } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption, IonCard, IonGrid, IonRow, IonCol } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
 import { computed, onBeforeMount, onMounted, ref } from "vue";
-import { errorPopup, toastPopup } from "@/services/popup";
+import { loadingPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
+import { stopMagnetar } from "@/services/magnetar";
 
 const user = useAuthStore();
 const router = useRouter();
@@ -150,13 +148,19 @@ const editProfile = () => {
   modifiedProfile.value = userProfile.value;
 };
 const saveProfile = async () => {
+  const loading = await loadingPopup();
   user.updateProfile(userId.value, modifiedProfile.value).then(() => {
     toastPopup("Le profil a bien été mis à jour");
+    loading?.dismiss();
   });
   editMode.value = false;
 };
 const logOut = async () => {
-  await user.logout();
+  const loading = await loadingPopup();
+  await stopMagnetar();
+  const result = await user.logout();
+  if (result) router.replace("/guest");
+  loading?.dismiss();
 };
 </script>
 

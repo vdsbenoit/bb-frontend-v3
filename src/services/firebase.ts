@@ -2,30 +2,20 @@ import { firebaseConfig } from './firebaseConfig';
 import { initializeApp } from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
-import {
-  getFirestore,
-  getDoc,
-  doc,
-  setDoc,
-  getDocs,
-  collection,
-  onSnapshot,
-} from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import {
   getAuth,
   signOut,
   sendSignInLinkToEmail,
   signInWithEmailLink,
   isSignInWithEmailLink,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   onAuthStateChanged,
+  User,
 } from "firebase/auth";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const USER_DB_NAME = "users";
 
 /**
  *
@@ -85,4 +75,8 @@ export const fbAuthStateListener = (callback: any) => {
   });
 };
 
-export { app, db, auth };
+export const isNewUser = (user: User) => {
+  return user.metadata.creationTime === user.metadata.lastSignInTime
+}
+
+export { db };

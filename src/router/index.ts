@@ -27,39 +27,55 @@ import { useAuthStore } from "@/services/users";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    name: 'home',
+    name: 'index',
     path: '',
-    redirect: '/sandbox'
+    redirect: '/home'
+  },
+  {
+    name: 'index',
+    path: '/guest',
+    redirect: '/home'
+  },
+  {
+    name: 'home',
+    path: '/home',
+    component: () => import ('../views/HomePage.vue'),
   },
   {
     name: 'myTeam',
     path: '/team',
-    component: () => import ('../views/TeamPage.vue')
+    component: () => import ('../views/TeamPage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'teams',
     path: '/team/:teamId',
-    component: () => import ('../views/TeamPage.vue')
+    component: () => import ('../views/TeamPage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'myGame',
     path: '/game',
-    component: () => import ('../views/GamePage.vue')
+    component: () => import ('../views/GamePage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'game',
     path: '/game/:gameId',
-    component: () => import ('../views/GamePage.vue')
+    component: () => import ('../views/GamePage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'match',
     path: '/match/:matchId',
-    component: () => import ('../views/MatchPage.vue')
+    component: () => import ('../views/MatchPage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'sections',
     path: '/sections',
-    component: () => import ('../views/SectionsPage.vue')
+    component: () => import ('../views/SectionsPage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'myProfile',
@@ -76,7 +92,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: 'login',
     path: '/login',
-    component: () => import ('../views/LoginPage.vue')
+    component: () => import ('../views/LoginPage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'validation',
@@ -99,6 +116,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'sandbox',
     path: '/sandbox',
     component: () => import ('../views/SandBox.vue'),
+    beforeEnter: authCheck,
   },
   { 
     path: "/:catchAll(.*)",

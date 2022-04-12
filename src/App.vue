@@ -36,7 +36,7 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 IonSplitPane, IonText, IonFooter } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, 
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, 
-podiumOutline, podiumSharp } from "ionicons/icons";
+podiumOutline, podiumSharp, logInSharp, logInOutline } from "ionicons/icons";
 import { computed } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
@@ -52,6 +52,7 @@ const name = computed(() => {
   return user.getName(user.uid);
 });
 const appPages = computed(() => {
+  if (!user.isLoggedIn) return [homePage, loginPage, aboutPage];
   let pages = topPages;
   if (user.profile.role == ROLES.Participant) pages.splice(1, 0, playerPage);
   if (user.profile.role >= ROLES.Animateur) {
@@ -97,7 +98,7 @@ const modPages = [
     iosIcon: podiumOutline,
     mdIcon: podiumSharp,
   },
-];
+]
 const adminPages = [
   {
     title: "Paramètres",
@@ -105,14 +106,34 @@ const adminPages = [
     iosIcon: optionsOutline,
     mdIcon: optionsSharp,
   },
-];
+]
+const homePage =   {
+  title: "Accueil",
+  url: "/home",
+  iosIcon: homeOutline,
+  mdIcon: homeSharp,
+}
+const loginPage =   {
+  title: "Connexion",
+  url: "/login",
+  iosIcon: personCircleOutline,
+  mdIcon: personCircleSharp,
+}
+const profilePage = {
+  title: "Profil",
+  url: "/profile",
+  iosIcon: personCircleOutline,
+  mdIcon: personCircleSharp,
+}
+const aboutPage = 
+{
+  title: "A propos",
+  url: "/about",
+  iosIcon: informationCircleOutline,
+  mdIcon: informationCircleSharp,
+}
 const topPages = [
-  {
-    title: "Home",
-    url: "/folder/Home",
-    iosIcon: homeOutline,
-    mdIcon: homeSharp,
-  },
+  homePage,
   {
     title: "Epreuves",
     url: "/games",
@@ -127,19 +148,10 @@ const topPages = [
   },
 ];
 const bottomPages = [
-  {
-    title: "Profil",
-    url: "/profile",
-    iosIcon: personCircleOutline,
-    mdIcon: personCircleSharp,
-  },
-  {
-    title: "A propos",
-    url: "/about",
-    iosIcon: informationCircleOutline,
-    mdIcon: informationCircleSharp,
-  },
+  profilePage,
+  aboutPage
 ];
+
 </script>
 
 <style>

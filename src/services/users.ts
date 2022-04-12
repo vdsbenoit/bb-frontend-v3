@@ -1,3 +1,4 @@
+import { errorPopup } from './popup';
 import { User as fbUser } from "firebase/auth";
 import { defineStore } from "pinia";
 import {
@@ -5,6 +6,7 @@ import {
   fbSendSignInEmail,
   fbSignInWithEmailLink,
   fbSignOut,
+  isNewUser,
 } from "./firebase";
 import { magnetar } from "./magnetar";
 
@@ -80,14 +82,12 @@ export const usersModule = magnetar.collection(USER_PROFILES_COLLECTION, {
 interface authStoreState {
   user: fbUser | null;
   profile: Profile;
-  error: any;
 }
 
 export const useAuthStore = defineStore("authStore", {
   state: (): authStoreState => ({
     user: null,
     profile: usersDefaults(),
-    error: null,
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null,
@@ -133,16 +133,22 @@ export const useAuthStore = defineStore("authStore", {
       try {
         if(!email) throw new Error("Impossible de récupérer l'email d'authentification");
         const response = await fbSignInWithEmailLink(email, href);
-        console.debug("auth response", response); //fixme
         if(response.user) {
           this.user = response.user as fbUser;
-          this.createProfile(response.user.uid as string, response.user.email as string);
-        } else this.user = null;
+          if(isNewUser(this.user)) this.createProfile(this.user.uid as string, this.user.email as string);
+          window.localStorage.removeItem('emailForSignIn');
+          return true;
+        } else {
+          this.user = null;
+          return false;
+        }
       } catch (e: any) {
         this.user = null;
-        this.error = e;
-      } finally {
-        window.localStorage.removeItem('emailForSignIn');
+        if (e.code === "auth/invalid-action-code") errorPopup(
+          "Le lien que tu viens d'utiliser n'est plus valide. Clique sur le lien du dernier email que tu as reçu."
+          );
+        else errorPopup(e.message);
+        return false;
       }
     },
     /**
@@ -153,10 +159,10 @@ export const useAuthStore = defineStore("authStore", {
       try {
         await fbSignOut();
         this.user = null;
-        this.error = null;
+        this.profile = usersDefaults();
         return true;
       } catch (e: any) {
-        this.error = e;
+        errorPopup(e.message);
         return false;
       }
     },
@@ -164,10 +170,7 @@ export const useAuthStore = defineStore("authStore", {
       usersModule.doc(uid).stream();
     },
     async createProfile(uid: string, email: string) {
-      await usersModule.doc(uid).fetch().catch(error => {
-        console.error(`Error occurred while fetching the profile of uid ${uid}`, error);
-      });
-      if (!usersModule.doc(uid).data?.email) usersModule.doc(uid).insert({email: email});
+      usersModule.doc(uid).insert({email: email, role: ROLES.Participant});
     },
     async updateProfile(uid: string, profileData: any) {
       return usersModule.doc(uid).merge(profileData);
@@ -218,7 +221,7 @@ export const useAuthStore = defineStore("authStore", {
       if (!profile) return `User ${uid}`;
       if (profile.totem) return profile.totem;
       if (profile.name) return profile.name;
-      return profile.email;
+      return profile.email.split("@")[0];
     },
     canRegister(){
       return this.profile.role >= ROLES.Animateur;

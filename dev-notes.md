@@ -27,15 +27,14 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # To do 
 
-- [x] Lire & comprendre `firebase.ts` et `user.ts`
-- [ ] Lire https://ionicframework.com/docs/vue/your-first-app 
+- [x] Lire & comprendre `firebase.ts` et `user.ts
 - [x] comprendre les base de la composition API
 - [x] Continuer à parser les pages d'auth management depuis "vue-firebase-auth-tuto"
 - [x] parser & adapter le popup manager depuis BadenBattle/frontend
 - [x] merger login & settings page into ProfilePage
 - [ ] disclaimer rgpd dans about
 - [x] popup enregistrement settings
-- [ ] erreurs enregistrement settings
+- [ ] `users.ts`: retirer prop `error`
 - [x] Magnetar
   - [x] checker si merge fonction avec les arrays (games.ts) -> non, il faut déstructurer l'array précédent et merger soi-même
 - [ ] save score au niveau des matches & équipes
@@ -53,6 +52,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Profil (perso & qqun d'autre)
 
   - [ ] mettre condition sur ce qu'on peut modifier
+  - [ ] erreurs enregistrement settings
 
 - [x] Equipe (avec liste matches, ordonnés par temps)
 
@@ -97,19 +97,23 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 - [x] games
   - [x] faire morningLeaders & afternoonLeaders
+
 - [x] teams
   - [x] ajouter scores: number[]
+
 - [x] Créer une DB "sections". 
   - [x] ~~Chaque collection est un type de section (e.g. loups, lutins, baladins, animateurs).~~ 
   - [x] Chaque document est une section
   - [x] Fields name, city, code d'unité, category (loups, lutins, balas, animateur), nbTeams, teams: []
   - [x] La liste teams se fait compléter par le script de distribution
+
 - [x] Créer une DB settigns avec 1 seul document avec les settings de l'app
   - freezeScores: boolean
   - gameLeaderSections : [] (liste des noms de sections animatrices)
   - lastGameDbUpdate: date de la dernière modification de la db de jeu
   - maxGameLeaders : number (max amount of leaders per game)
-- [ ] 
+
+  
 
 # Règles db
 
@@ -154,6 +158,7 @@ export const setEven = async (matchId: string) => {
 - Système de recherche de joueur
 - séparation pour midi dans l'horaire
 - Description de jeu
+- Fix bug uncaught promise après déconnexion
 
 # Next release
 
