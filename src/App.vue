@@ -5,7 +5,7 @@
         <ion-content>
           <ion-list id="menu-list">
             <ion-list-header>Baden Battle</ion-list-header>
-            <ion-note>score app</ion-note>
+            <ion-note class="ion-text-uppercase">score app</ion-note>
 
             <ion-menu-toggle auto-hide="false" v-for="(p, i) in appPages" :key="i">
               <ion-item router-direction="root" :router-link="p.url" lines="none" detail="false" class="hydrated" :class="{ selected: isSelected(p.url) }">
@@ -253,8 +253,10 @@ ion-menu.ios ion-note {
 
 ion-note {
   display: inline-block;
-  font-size: 16px;
-  color: var(--ion-color-dark);
+  font-size: 14px;
+  font-weight: bold;
+  
+  /* color: var(--ion-color-dark); */
 }
 
 ion-item.selected {

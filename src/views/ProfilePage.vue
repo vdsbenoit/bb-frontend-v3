@@ -85,7 +85,7 @@ import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, Ion
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
-import { computed, onBeforeMount, onMounted, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { loadingPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
