@@ -7,7 +7,7 @@
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
               <ion-card-subtitle>{{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }}</ion-card-subtitle>
-              <h1 class="ion-no-margin" style="font-weight: bold">{{ match.game_name }}</h1>
+              <h1 class="ion-no-margin" style="font-weight: bold">{{ game?.name }}</h1>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
               <span @click="router.navigate(`/game/${match.game_id}`, 'back', 'push')">
@@ -96,7 +96,7 @@ import { useRoute } from "vue-router";
 import { onBeforeMount, watchEffect } from "vue";
 import { getMatch, Match, setEven, setScore } from "@/services/matches";
 import { getTeam } from "@/services/teams";
-import { canSetGameScore } from "@/services/games";
+import { canSetGameScore, Game, getGame } from "@/services/games";
 import { isScoresFrozen } from "@/services/settings";
 import { getSchedule } from "@/services/settings";
 import { choicePopup, errorPopup } from "@/services/popup";
@@ -121,6 +121,9 @@ onBeforeMount(() => {
 
 const match = computed((): Match => {
   return getMatch(matchId.value as string) as Match;
+});
+const game = computed((): Game => {
+  return getGame(match.value.game_id as string) as Game;
 });
 const isMatch = computed(() => {
   if (match.value?.id) return true;

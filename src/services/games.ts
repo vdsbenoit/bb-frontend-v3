@@ -201,3 +201,14 @@ export const removeLeader = async (gameId: string, uid = "", morningOnly = false
     console.log(`Removing game ${gameId} from user profile ${uid} (afternoon)`);
   }
 };
+
+export const hardcodeGameNames = () => {
+  const gameNames = [
+    ""
+  ]
+  let i = 1;
+  for (const gameName of gameNames) {
+    gamesModule.doc(`${i}`).merge({name: gameName});
+    i++;
+  }
+}

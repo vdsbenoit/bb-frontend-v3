@@ -113,6 +113,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - lastGameDbUpdate: date de la dernière modification de la db de jeu
   - maxGameLeaders : number (max amount of leaders per game)
 
+- [ ] Match : retirer game_name (on obtient cette info des documents de games)
+
   
 
 # Règles db

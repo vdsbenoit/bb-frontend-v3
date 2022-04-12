@@ -27,7 +27,7 @@ import { useAuthStore, ROLES, } from "@/services/users";
 import { errorPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
 import { usersModule } from "@/services/users";
-import { getGame, setAfternoonLeader, setMorningLeader } from "@/services/games";
+import { getGame, hardcodeGameNames, setAfternoonLeader, setMorningLeader } from "@/services/games";
 
 const uid = ref("");
 // const profile = computed(() => {
@@ -45,7 +45,7 @@ const game = computed(() => {
 
 
 const testMethod1 = () => {
-  usersModule.doc("foo").insert({email: "bar@mail"})
+  return "";
 }
 const testMethod2 = () => {
   setAfternoonLeader("1", "foo").catch(error => {
