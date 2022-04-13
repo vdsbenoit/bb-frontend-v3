@@ -2,6 +2,7 @@
   "name": "baden-app",
   "version": "0.0.1",
   "private": true,
+  "description": "Baden Battle Score App",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -23,6 +24,7 @@
     "firebase": "^9.6.8",
     "magnetar": "^0.5.4",
     "pinia": "^2.0.11",
+    "register-service-worker": "^1.7.2",
     "vue": "^3.2.21",
     "vue-qrcode-reader": "^3.1.0",
     "vue-router": "^4.0.12"
@@ -35,6 +37,7 @@
     "@vue/cli-plugin-babel": "~5.0.0-rc.1",
     "@vue/cli-plugin-e2e-cypress": "~5.0.0-rc.1",
     "@vue/cli-plugin-eslint": "~5.0.0-rc.1",
+    "@vue/cli-plugin-pwa": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0-rc.1",
     "@vue/cli-plugin-typescript": "~5.0.0-rc.1",
     "@vue/cli-plugin-unit-jest": "~5.0.0-rc.1",
@@ -50,5 +53,99 @@
     "ts-jest": "^27.0.7",
     "typescript": "^4.6.2"
   },
-  "description": "Baden Battle score app"
+  "vue": {
+    "pwa": {
+      "name": "Baden Battle Score App",
+      "themeColor": "#4DBA87",
+      "msTileColor": "#000000",
+      "appleMobileWebAppCapable": "yes",
+      "manifestOptions": {
+        "short_name": "Baden Battle",
+        "display": "standalone",
+        "orientation": "portrait",
+        "icons": [
+          {
+            "src": "./img/icons/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/android-chrome-maskable-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/android-chrome-maskable-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+          },
+          {
+            "src": "./img/icons/android-chrome-maskable-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+          },
+          {
+            "src": "./img/icons/apple-touch-icon-60x60.png",
+            "sizes": "60x60",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/apple-touch-icon-76x76.png",
+            "sizes": "76x76",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/apple-touch-icon-120x120.png",
+            "sizes": "120x120",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/apple-touch-icon-152x152.png",
+            "sizes": "152x152",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/apple-touch-icon-180x180.png",
+            "sizes": "180x180",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/favicon-16x16.png",
+            "sizes": "16x16",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/msapplication-icon-144x144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+          },
+          {
+            "src": "./img/icons/mstile-150x150.png",
+            "sizes": "150x150",
+            "type": "image/png"
+          }
+        ]
+      },
+      "iconPaths": {
+        "faviconSVG": null,
+        "favicon32": "img/icons/favicon-32x32.png",
+        "favicon16": "img/icons/favicon-16x16.png",
+        "appleTouchIcon": "img/icons/apple-touch-icon.png",
+        "maskIcon": "img/icons/safari-pinned-tab.svg",
+        "msTileImage": "img/icons/msapplication-icon-144x144.png"
+      }
+    }
+  }
 }

@@ -55,7 +55,7 @@ const appPages = computed(() => {
   if (!user.isLoggedIn) return [homePage, aboutPage];
   // if (!user.isLoggedIn) return [homePage, loginPage, aboutPage]; // fixme: add login page back
   let pages = topPages;
-  if (user.profile.role == ROLES.Participant) pages.splice(1, 0, playerPage);
+  if (user.profile.team) pages.splice(1, 0, playerPage);
   if (user.profile.role >= ROLES.Animateur) {
     if (user.profile.morningGame) {
       pages.splice(1, 0, {
