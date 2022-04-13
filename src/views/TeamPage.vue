@@ -40,7 +40,13 @@
                   <span>{{ match.game_name }}</span>
                   <p>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} | 📍 Jeu n° {{ match.game_id }}</p>
                 </ion-label>
-                <ion-icon :ios="statusIcon(match).ios" :md="statusIcon(match).md" v-if="statusIcon(match).md" slot="end"></ion-icon>
+                <ion-icon 
+                :ios="statusIcon(match).ios" 
+                :md="statusIcon(match).md" 
+                :color="statusIcon(match).ios == trophyOutline ? 'success' : 'danger'" 
+                v-if="statusIcon(match).md" 
+                slot="end"></ion-icon>
+                <ion-badge slot="end" class="ion-no-margin" color="warning" v-if="match.even">Égalité</ion-badge>
               </ion-item>
             </ion-list>
             <ion-list-header v-else><h2>Aucun jeu trouvé</h2></ion-list-header>
@@ -56,8 +62,8 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, IonIcon, IonGrid, useIonRouter } from "@ionic/vue";
-import { closeOutline, closeSharp, swapHorizontalOutline, swapHorizontalSharp, trophyOutline, trophySharp } from "ionicons/icons";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, IonIcon, IonGrid, useIonRouter, IonBadge } from "@ionic/vue";
+import { closeOutline, closeSharp, trophyOutline, trophySharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
@@ -125,9 +131,8 @@ const sum = (numArray: number[]): number => {
   return numArray.reduce((a, b) => a + b, 0);
 }
 const statusIcon = (match: any) => {
-  if (match.winner === teamId.value) return { ios: trophyOutline, md: trophySharp };
-  if (match.loser === teamId.value) return { ios: closeOutline, md: closeSharp };
-  if (match.even === true) return { ios: swapHorizontalOutline, md: swapHorizontalSharp };
+  if (match.winner === teamId.value) return { ios: trophyOutline, md: trophySharp};
+  if (match.loser === teamId.value) return { ios: closeOutline, md: closeSharp};
   return { md: undefined, ios: undefined };
 };
 </script>
