@@ -30,7 +30,7 @@
               <ion-item lines="full">
                 <ion-label position="stacked" color="primary">Role</ion-label>
                 <ion-input v-if="!editMode" type="text" readonly="true">{{ getRoleByValue(userProfile.role) }}</ion-input>
-                <ion-select v-else v-model="modifiedProfile.role" cancel-text="Annuler" ok-text="OK">
+                <ion-select v-else v-model="modifiedProfile.role" cancel-text="Annuler" ok-text="OK" disabled="true">
                   <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{ role }}</ion-select-option>
                 </ion-select>
               </ion-item>
