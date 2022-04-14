@@ -43,13 +43,14 @@ const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION, {
 /// Getters //
 /////////////
 
-export const getGames = () => {
-  gamesModule.stream().catch((error) => {
+export const getGames = (circuit: string) => {
+  console.log(`Fetching games for circuit '${circuit}'`);
+  const filteredGamesModule = gamesModule.where("circuit", "==", circuit);
+  filteredGamesModule.stream().catch((error) => {
     console.error(`Error occurred while streaming the ${GAMES_COLLECTION} collection`, error);
   });
-  return gamesModule.data;
+  return filteredGamesModule.data;
 };
-
 // This method opens a stream on the game to get live updates
 export const getGame = (id: string) => {
   const gameModule = gamesModule.doc(id);
@@ -58,7 +59,6 @@ export const getGame = (id: string) => {
   });
   return gameModule.data;
 };
-
 export const canSetGameScore = async (gameId: string) => {
   if (isScoresFrozen()) {
     console.log("Cannot set score, score registration is closed")
