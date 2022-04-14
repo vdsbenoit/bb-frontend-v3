@@ -1,6 +1,4 @@
-
 import { magnetar } from "./magnetar";
-import { defineStore } from "pinia";
 
 const SETTINGS_COLLECTION = "settings";
 const SETTINGS_DOCUMENT = "app";
@@ -58,25 +56,9 @@ appSettingsModule.stream().catch(error => {
   console.error(`App settings stream failed`, error);
 });
 
-// Local settings (from pinia store)
-interface State {
-  lastGameDbUpdate: Date;
-}
-const useStore = defineStore("localSettings", {
-  state: (): State => {
-    return appSettingsDefaults;
-  },
-});
-const localStore = useStore();
-
 ///////////////
 /// Getters //
 /////////////
-
-export const isGameDbOutdated = (): boolean => {
-  if (appSettingsModule.data) return localStore.lastGameDbUpdate < appSettingsModule.data.lastGameDbUpdate;
-  return true;
-};
 
 export const isScoresFrozen = (): boolean => {
   if (appSettingsModule.data) return appSettingsModule.data.freezeScore;
@@ -111,15 +93,6 @@ export const getSchedule = (time: number): Schedule => {
 ///////////////
 /// Setters //
 /////////////
-
-export const setlastGameDbUpdate = async () => {
-  if (appSettingsModule.data) {
-    localStore.lastGameDbUpdate = appSettingsModule.data.lastGameDbUpdate;
-  } else{
-    console.error("appSettingsModule not loaded, setting default value for lastGameDbUpdate");
-  }
-  localStore.lastGameDbUpdate = appSettingsDefaults.lastGameDbUpdate;
-}
 
 export const setSchedule = async (schedule: Schedule[]) => {
   return appSettingsModule.merge({ schedule });

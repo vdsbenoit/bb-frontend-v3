@@ -1,7 +1,7 @@
 import { confirmPopup, toastPopup } from "./popup";
 import { useAuthStore, ROLES, getRoleByValue } from "./users";
 import { magnetar } from "./magnetar";
-import { isGameDbOutdated, setlastGameDbUpdate, getMaxGameLeaders, canSetScoreAnywhere, isScoresFrozen } from "./settings";
+import { getMaxGameLeaders, canSetScoreAnywhere, isScoresFrozen } from "./settings";
 import { DocInstance } from "magnetar";
 
 const GAMES_COLLECTION = "games";
@@ -44,14 +44,8 @@ const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION, {
 /////////////
 
 export const getGames = () => {
-  let forceUpdate = false;
-  if (isGameDbOutdated()) {
-    console.log("Game store is outdated, fetching data from firestore");
-    forceUpdate = true;
-    setlastGameDbUpdate();
-  }
-  gamesModule.fetch({ force: forceUpdate }).catch((error) => {
-    console.error(`Error occurred while fetching the ${GAMES_COLLECTION} collection`, error);
+  gamesModule.stream().catch((error) => {
+    console.error(`Error occurred while streaming the ${GAMES_COLLECTION} collection`, error);
   });
   return gamesModule.data;
 };
