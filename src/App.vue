@@ -36,7 +36,7 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 IonSplitPane, IonText, IonFooter } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, 
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, 
-podiumOutline, podiumSharp, logInSharp, logInOutline } from "ionicons/icons";
+podiumOutline, podiumSharp, logInSharp, logInOutline, albumsOutline, albumsSharp } from "ionicons/icons";
 import { computed } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
@@ -54,26 +54,13 @@ const name = computed(() => {
 const appPages = computed(() => {
   if (!user.isLoggedIn) return [homePage, aboutPage];
   // if (!user.isLoggedIn) return [homePage, loginPage, aboutPage]; // fixme: add login page back
-  let pages = topPages;
+  let pages = [homePage];
   if (user.profile.team) pages.splice(1, 0, playerPage);
   if (user.profile.role >= ROLES.Animateur) {
-    if (user.profile.morningGame) {
-      pages.splice(1, 0, {
-        title: "Mon épreuve du matin",
-        url: `/game/${user.profile.morningGame}`,
-        iosIcon: footballOutline,
-        mdIcon: footballSharp,
-      });
-    }
-    if (user.profile.afternoonGame) {
-      pages.splice(1, 0, {
-        title: "Mon épreuve de l'après-midi",
-        url: `/game/${user.profile.afternoonGame}`,
-        iosIcon: footballOutline,
-        mdIcon: footballSharp,
-      });
-    }
+    if (user.profile.morningGame) pages = [...pages, morningGamePage]
+    if (user.profile.afternoonGame) pages = [...pages, afternoonGamePage]
   }
+  pages = [...pages, gamesPage, sectionsPage];
   if (user.profile.role >= ROLES.Moderateur) pages = [...pages, ...modPages];
   if (user.profile.role >= ROLES.Administrateur) pages = [...pages, ...adminPages];
   pages = [...pages, ...bottomPages];
@@ -92,6 +79,20 @@ const playerPage = {
   iosIcon: peopleCircleOutline,
   mdIcon: peopleCircleSharp,
 };
+const morningGamePage = {
+  title: "Mon épreuve du matin",
+  url: `/game/${user.profile.morningGame}`,
+  iosIcon: footballOutline,
+  mdIcon: footballSharp,
+
+}
+const afternoonGamePage = {
+  title: "Mon épreuve de l'aprèm",
+  url: `/game/${user.profile.afternoonGame}`,
+  iosIcon: footballOutline,
+  mdIcon: footballSharp,
+
+}
 const modPages = [
   {
     title: "Classement",
@@ -133,26 +134,22 @@ const aboutPage =
   iosIcon: informationCircleOutline,
   mdIcon: informationCircleSharp,
 }
-const topPages = [
-  homePage,
-  {
-    title: "Epreuves",
-    url: "/games",
-    iosIcon: peopleOutline,
-    mdIcon: peopleSharp,
-  },
-  {
-    title: "Sections",
-    url: "/sections",
-    iosIcon: peopleOutline,
-    mdIcon: peopleSharp,
-  },
-];
+const gamesPage = {
+  title: "Epreuves",
+  url: "/games",
+  iosIcon: albumsOutline,
+  mdIcon: albumsSharp,
+}
+const sectionsPage = {
+  title: "Sections",
+  url: "/sections",
+  iosIcon: peopleOutline,
+  mdIcon: peopleSharp,
+}
 const bottomPages = [
   profilePage,
   aboutPage
-];
-
+]
 </script>
 
 <style>
