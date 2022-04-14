@@ -21,7 +21,7 @@
 
         <ion-card>
           <ion-card-header>
-            <ion-card-title style="font-size: 24px">Responsables</ion-card-title>
+            <ion-card-title>Responsables</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <ion-list lines="none" class="ion-no-margin ion-no-padding">
@@ -69,7 +69,7 @@
         </ion-card>
         <ion-card>
           <ion-card-header>
-            <ion-card-title style="font-size: 24px">Programme</ion-card-title>
+            <ion-card-title>Programme</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <ion-list v-if="isLoading || matches.size > 0">
@@ -161,7 +161,7 @@ const matches = computed(() => {
   return game.value?.id ? getGameMatches(game.value?.id) : new Map();
 })
 const pageTitle = computed(() => {
-  if (isGame.value) return `Épreuve ${gameId}`;
+  if (isGame.value) return `Épreuve ${gameId.value}`;
   if (isLoading.value) return "Chargement";
   return "Épreuve inconnue";
 })
@@ -227,5 +227,8 @@ const getWinner = (match: any) => {
   --padding-end: 0px;
   --inner-padding-start: 0px;
   --inner-padding-end: 0px;
+}
+ion-card-title {
+  font-size: 24px
 }
 </style>
