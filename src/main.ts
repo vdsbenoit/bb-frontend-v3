@@ -26,9 +26,6 @@ import './theme/variables.css';
 // Above the createApp() line
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 
-// Call the element loader after the platform has been bootstrapped
-defineCustomElements(window);
-
 import { createPinia } from "pinia";
 import { useAuthStore } from "./services/users";
 
@@ -45,3 +42,6 @@ store.initializeAuthListener().then(() => {
     app.mount('#app');
   });
 });
+
+// Call the element loader after the platform has been bootstrapped
+defineCustomElements(window);
