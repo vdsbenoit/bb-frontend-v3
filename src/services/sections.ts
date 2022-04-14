@@ -9,31 +9,27 @@ const user = useAuthStore();
 //////////////////
 export interface Section {
   id: string;
-  hash: string;
-  number: number;
-  sectionId: string;
-  sectionName: string;
+  name: string;
   city: string;
+  unit: string;
   category: string;
   scores: number[];
-  matches: string[];
+  teams: string[];
   nbPlayers: number;
-  ignoreScore: boolean;
+  nbTeams: number;
 }
 
 function sectionsDefaults(payload?: Partial<Section>): Section {
   const defaults = { 
     id: "",
-    hash: "",
-    number: -1,
-    sectionId: "",
-    sectionName: "",
+    name: "",
     city: "",
+    unit: "",
     category: "",
     scores: [],
-    matches: [],
+    teams: [],
     nbPlayers: 0,
-    ignoreScore: false,
+    nbTeams: 0,
   }
   return { ...defaults, ...payload }
 }
@@ -46,6 +42,12 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION, {
 /// Getters //
 /////////////
 
+export const fetchCategorySections = (category: string) => {
+  console.log(`Fetching sections for catetory '${category}'`);
+  const filteredSectionsModule = sectionsModule.where("category", "==", category);
+  filteredSectionsModule.fetch();
+  return filteredSectionsModule.data;
+}
 // This method opens a stream on the game to get live updates
 export const getSection = (id: string) => {
   const sectionModule = sectionsModule.doc(id);
