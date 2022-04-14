@@ -20,8 +20,8 @@ export const ROLES = {
   Anonyme:        0,
   Participant:    2,
   Animateur:      4,
-  Moderateur:     8,
-  Administrateur: 10,
+  Moderateur:     6,
+  Administrateur: 8,
 }
 
 export const getRoleByValue = (role: number): string => {
@@ -29,7 +29,7 @@ export const getRoleByValue = (role: number): string => {
     if (value === role)
       return key;
   }
-  throw new Error(`Role inconnu: ${role}`);
+  throw console.error(`Role inconnu: ${role}`);
 }
 
 interface UserSettings {
