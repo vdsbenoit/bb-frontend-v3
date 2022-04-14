@@ -39,8 +39,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [x] checker si merge fonction avec les arrays (games.ts) -> non, il faut déstructurer l'array précédent et merger soi-même
 - [ ] save score au niveau des matches & équipes
   - [ ] seule les animateurs d'un match peuvent y ajouter des points
-
 - [x] Split profile & login
+- [ ] rendre le éléments du menu réactifs
 
 # Pages
 
@@ -153,6 +153,8 @@ export const setEven = async (matchId: string) => {
 - [ ] Désactiver les API key inutiles [ici](https://console.cloud.google.com/apis/credentials?project=badenbattle-a0dec)
 - [ ] Désactiver les domaines inutiles [ici](https://console.firebase.google.com/u/0/project/badenbattle-a0dec/authentication/providers)
 - [ ] Désactiver le logging magnetar
+- [ ] Checker tous les fixme
+- [ ] Checker tous les console.debug
 
 # Nice to have
 
@@ -167,6 +169,7 @@ export const setEven = async (matchId: string) => {
 
 # Next release
 
+- [Pull-to-refresh](https://ionicframework.com/docs/api/refresher)
 - Retirer matches des collection games & teams (utiliser des queries à la place)
 - QR codes
 - Create DB from web app

@@ -9,7 +9,7 @@
                     Ca rend l'utilisation de l'app plus facile."
         >
         </info-card-component>
-        <ion-card class="ion-no-margin ion-margin-bottom">
+        <ion-card class="ion-no-margin ion-margin-bottom ion-padding-bottom">
           <form>
             <ion-list>
               <ion-item lines="full">
@@ -66,7 +66,7 @@
               </ion-col>
               <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
                 <ion-button v-if="isOwnProfile && !editMode" expand="block" @click="logOut" color="danger"> Se déconnnecter </ion-button>
-                <ion-button v-if="editMode" expand="block" color="danger" @click="editMode = false"> Annuler </ion-button>
+                <ion-button v-if="editMode" expand="block" color="medium" @click="editMode = false"> Annuler </ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>

@@ -1,18 +1,20 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="'Épreuve ' + (gameId ? gameId : 'inconnue')"></header-template>
+    <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true">
-      <div v-if="isGame">
+      <div v-if="isGame || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
               <ion-card-subtitle>Circuit {{ game?.circuit }}</ion-card-subtitle>
-              <h1 class="ion-no-margin" style="font-weight: bold">{{ game?.name }}</h1>
+              <h1 v-if="game?.name" class="ion-no-margin" style="font-weight: bold">{{ game.name }}</h1>
+              <ion-spinner v-else></ion-spinner>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
-              <span>
+              <span v-if="gameId">
                 {{ gameId }}
               </span>
+              <ion-spinner v-else></ion-spinner>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -24,7 +26,10 @@
           <ion-card-content>
             <ion-list lines="none" class="ion-no-margin ion-no-padding">
               <ion-text color="primary"><h2>Matin</h2></ion-text>
-              <span class="ion-padding-start" v-if="leaders.morning.length < 1">Pas encore de responsable inscrit</span>
+              <ion-spinner class="ion-margin-start" v-if="isLoadingMorningLeaders"></ion-spinner>
+              <div v-else>
+                <span class="ion-padding-start" v-if="leaders.morning.length < 1">Pas encore de responsable inscrit</span>
+              </div>
               <ion-item v-for="leader in leaders.morning" :key="leader.uid" :routerLink="`/profile/${leader.uid}`">
                 <ion-label class="ion-text-wrap">
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
@@ -34,7 +39,10 @@
             </ion-list>
             <ion-list lines="none" class="ion-no-margin ion-no-padding">
               <ion-text color="primary"><h2>Après-midi</h2></ion-text>
-              <span class="ion-padding-start" v-if="leaders.afternoon.length < 1">Pas encore de responsable inscrit</span>
+              <ion-spinner  class="ion-margin-start" v-if="isLoadingAfternoonLeaders"></ion-spinner>
+              <div v-else>
+                <span class="ion-padding-start" v-if="leaders.afternoon.length < 1">Pas encore de responsable inscrit</span>
+              </div>
               <ion-item v-for="leader in leaders.afternoon" :key="leader.uid" :routerLink="`/profile/${leader.uid}`">
                 <ion-label class="ion-text-wrap">
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
@@ -64,9 +72,11 @@
             <ion-card-title style="font-size: 24px">Programme</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list v-if="matches.size > 0">
-            <!-- <ion-list> -->
-              <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
+            <ion-list v-if="isLoading || matches.size > 0">
+              <div v-if="isLoading" class="ion-text-center">
+                <ion-spinner></ion-spinner>
+              </div>
+              <ion-item v-else v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
                   <ion-text color="tertiary" style="font-weight: bold">⌚ {{ getSchedule(match.time-1).start }} - {{ getSchedule(match.time-1).stop }} : </ion-text>
                   <ion-text>{{ match.player_ids[0] }} vs {{ match.player_ids[1] }}</ion-text>
@@ -87,9 +97,8 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, 
-IonIcon, IonBadge, IonGrid, IonText, IonButton, useIonRouter } from "@ionic/vue";
-import { timeOutline, timeSharp, ellipsisHorizontalOutline, swapHorizontalOutline, trophyOutline } from "ionicons/icons";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, 
+IonBadge, IonGrid, IonText, IonButton, useIonRouter, IonSpinner } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import {  choicePopup, errorPopup } from "@/services/popup";
@@ -107,16 +116,19 @@ const router = useIonRouter();
 // reactive data
 
 const gameId = ref("");
+// store more information about the leaders than their IDs
 type leaderInfo = {
   uid: string,
   name: string,
   section: string,
 }
-// store more information about the leaders than their IDs
 const leaders = reactive({
   morning: [] as leaderInfo[],
   afternoon: [] as leaderInfo[]
 })
+const isLoading = ref(true);
+const isLoadingMorningLeaders = ref(false);
+const isLoadingAfternoonLeaders = ref(false);
 
 // lifecicle hooks
 
@@ -124,6 +136,11 @@ onBeforeMount(() => {
   if (route.params.gameId) gameId.value = route.params.gameId as string;
   if (!gameId.value) console.error("Game ID not set in the URL");
 })
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 5000);
+});
 
 // Computed 
 
@@ -131,7 +148,10 @@ const game = computed((): Game => {
   return getGame(gameId.value as string) as Game;
 })
 const isGame = computed(() => {
-  if (game.value?.id) return true;
+  if (game.value?.id) {
+    isLoading.value = false;
+    return true;
+  }
   return false; 
 })
 const canRegister = computed(() => {
@@ -140,6 +160,11 @@ const canRegister = computed(() => {
 const matches = computed(() => {
   return game.value?.id ? getGameMatches(game.value?.id) : new Map();
 })
+const pageTitle = computed(() => {
+  if (isGame.value) return `Épreuve ${gameId}`;
+  if (isLoading.value) return "Chargement";
+  return "Épreuve inconnue";
+})
 
 // Watchers
 
@@ -147,16 +172,20 @@ const matches = computed(() => {
 watchEffect(async () => {
   if (!isGame.value) return; // do not run this watcher if game is not initialized
   const newLeaderIds = game.value.morning_leaders;
+  isLoadingMorningLeaders.value = true;
   const newLeaders = await loadLeaderInfo(newLeaderIds);
   leaders.morning = newLeaders;
+  isLoadingMorningLeaders.value = false;
   console.log("Morning leaders info updated", newLeaders);
 })
 // async update morning leaders information
 watchEffect(async () => {
   if (!isGame.value) return; // do not run this watcher if game is not initialized
   const newLeaderIds = game.value.afternoon_leaders;
+  isLoadingAfternoonLeaders.value = true;
   const newLeaders = await loadLeaderInfo(newLeaderIds);
   leaders.afternoon = newLeaders;
+  isLoadingAfternoonLeaders.value = false;
   console.log("Afternoon leaders info updated", newLeaders);
 })
 
@@ -164,14 +193,12 @@ watchEffect(async () => {
 
 const loadLeaderInfo = async (leaders: string[]) => {
   const leaderInfo = [] as leaderInfo[];
-
   await Promise.all(leaders.map(async (leaderId) => {
     await user.asyncFetchProfile(leaderId);
     const section = user.getProfile(leaderId).sectionName;
     const name = user.getName(leaderId);
     leaderInfo.push({uid: leaderId, name, section});
   }))
-
   return leaderInfo;
 }
 

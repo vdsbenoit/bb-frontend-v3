@@ -1,25 +1,30 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="'Equipe ' + (team?.id ? team.id : 'inconnue')"></header-template>
+    <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true">
-      <div v-if="isTeam">
+      <div v-if="isTeam || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
-              <ion-card-subtitle>{{ team.city }}</ion-card-subtitle>
-              <h1 class="ion-no-margin" style="font-weight: bold">{{ team?.sectionName }}</h1>
+              <ion-card-subtitle v-if="team?.city">{{ team.city }}</ion-card-subtitle>
+              <h1 v-if="team?.sectionName" class="ion-no-margin" style="font-weight: bold">{{ team.sectionName }}</h1>
+              <ion-spinner v-else></ion-spinner>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
-              <span>
-                {{ team.id }}
+              <span v-if="teamId">
+                {{ teamId }}
               </span>
+              <ion-spinner v-else></ion-spinner>
             </ion-col>
           </ion-row>
         </ion-grid>
 
         <ion-card v-if="showRanking">
           <ion-card-content>
-            <ion-list>
+            <div v-if="isLoading" class="ion-text-center">
+              <ion-spinner></ion-spinner>
+            </div>
+            <ion-list v-else>
               <ion-item> <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{teamScore}}</ion-note></ion-item>
               <ion-item> <ion-label>Classement de l'équipe</ion-label><ion-note slot="end">placeholder</ion-note> </ion-item>
               <ion-item> <ion-label>Score de la section</ion-label><ion-note slot="end">{{sectionScore}}</ion-note></ion-item>
@@ -34,8 +39,11 @@
             <ion-card-title style="font-size: 24px">Programme</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list v-if="matches.size > 0">
-              <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding">
+            <ion-list v-if="isLoading || matches.size > 0">
+              <div v-if="isLoading" class="ion-text-center">
+                <ion-spinner></ion-spinner>
+              </div>
+              <ion-item v-else v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding">
                 <ion-label>
                   <span>{{ match.game_name }}</span>
                   <p>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} | 📍 Jeu n° {{ match.game_id }}</p>
@@ -62,17 +70,18 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, IonIcon, IonGrid, useIonRouter, IonBadge } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, 
+IonListHeader, IonIcon, IonGrid, useIonRouter, IonBadge, IonSpinner } from "@ionic/vue";
 import { closeOutline, closeSharp, trophyOutline, trophySharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { onBeforeMount, watchEffect } from "vue";
+import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getTeam, Team } from "@/services/teams";
 import { getTeamMatches } from "@/services/matches";
 import { getSchedule } from "@/services/settings";
-import { getSection } from "@/services/sections";
+import { getSection, Section } from "@/services/sections";
 
 const store = useAuthStore();
 const route = useRoute();
@@ -81,6 +90,7 @@ const router = useIonRouter();
 // reactive data
 
 const teamId = ref("");
+const isLoading = ref(true);
 
 // lifecicle hooks
 
@@ -88,18 +98,32 @@ onBeforeMount(() => {
   if (route.params.teamId) teamId.value = route.params.teamId as string;
   if (!teamId.value) console.error("Team ID not set in the URL");
 });
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 5000);
+});
 
 // Computed
 
-const team = computed(() => {
+const team = computed((): Team => {
   return getTeam(teamId.value as string) as Team;
 });
-const section = computed(() => {
-  return getSection(team.value.sectionId);
+const section = computed((): Section | undefined => {
+  if (team.value?.sectionId) return getSection(team.value.sectionId);
+  return undefined;
 });
 const isTeam = computed(() => {
-  if (team.value?.id) return true;
+  if (team.value?.id) {
+    isLoading.value = false;
+    return true;
+  }
   return false;
+});
+const pageTitle = computed(() => {
+  if (isTeam.value) return `Equipe ${team.value?.id}`;
+  if (isLoading.value) return "Chargement"
+  return "Équipe inconnue";
 });
 const matches = computed(() => {
   return team.value?.id ? getTeamMatches(team.value?.id) : new Map();

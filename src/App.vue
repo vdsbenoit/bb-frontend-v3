@@ -95,7 +95,7 @@ const playerPage = {
 const modPages = [
   {
     title: "Classement",
-    url: "/podium",
+    url: "/raking",
     iosIcon: podiumOutline,
     mdIcon: podiumSharp,
   },

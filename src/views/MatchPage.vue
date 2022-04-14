@@ -2,17 +2,19 @@
   <ion-page>
     <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true">
-      <div v-if="isMatch">
+      <div v-if="isMatch || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
-              <ion-card-subtitle>{{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }}</ion-card-subtitle>
-              <h1 class="ion-no-margin" style="font-weight: bold">{{ game?.name }}</h1>
+              <ion-card-subtitle>{{ schedule.start }} - {{ schedule.stop }}</ion-card-subtitle>
+              <h1 v-if="game?.name" class="ion-no-margin" style="font-weight: bold">{{ game?.name }}</h1>
+              <ion-spinner v-else></ion-spinner>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
-              <span @click="router.navigate(`/game/${match.game_id}`, 'back', 'push')">
+              <span v-if="match?.game_id" @click="router.navigate(`/game/${match.game_id}`, 'back', 'push')">
                 {{ match.game_id }}
               </span>
+              <ion-spinner v-else></ion-spinner>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -21,7 +23,8 @@
           <ion-card-content class="ion-no-padding ion-padding-vertical">
             <ion-grid class="score-grid">
               <ion-row class="ion-align-items-center ion-text-center">
-                <ion-col size="5" @click="router.push(`/team/${firstPlayer?.id}`)" class="ion-no-padding">
+                <ion-col size="5" v-if="isLoading" class="ion-no-padding"><ion-spinner></ion-spinner></ion-col>
+                <ion-col size="5" v-else @click="router.push(`/team/${firstPlayer?.id}`)" class="ion-no-padding">
                   <ion-text color="primary">
                     <h1>{{ firstPlayer?.id }}</h1>
                   </ion-text>
@@ -35,7 +38,8 @@
                 <ion-col size="1">
                   <ion-text> vs </ion-text>
                 </ion-col>
-                <ion-col size="5" @click="router.push(`/team/${secondPlayer?.id}`)" class="ion-no-padding">
+                <ion-col size="5" v-if="isLoading" class="ion-no-padding"><ion-spinner></ion-spinner></ion-col>
+                <ion-col size="5" v-else @click="router.push(`/team/${secondPlayer?.id}`)" class="ion-no-padding">
                   <ion-text color="primary">
                     <h1>{{ secondPlayer?.id }}</h1>
                   </ion-text>
@@ -48,14 +52,14 @@
                 </ion-col>
               </ion-row>
               <!-- Score icons -->
-              <ion-row v-if="match.even" class="ion-align-items-center ion-text-center">
+              <ion-row v-if="match?.even" class="ion-align-items-center ion-text-center">
                 <ion-col size="11">
                   <div class="score-div even-color">
                     <span class="even-span ion-text-uppercase">égalité</span>
                   </div>
                 </ion-col>
               </ion-row>
-              <ion-row v-if="match.winner">
+              <ion-row v-if="match?.winner">
                 <ion-col size="5">
                   <div class="score-div" :class="scoreColor(firstPlayer?.id)">
                     <ion-icon class="score-icon" :ios="scoreIcon(firstPlayer?.id).ios" :md="scoreIcon(firstPlayer?.id).md"></ion-icon>
@@ -87,13 +91,13 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardSubtitle, IonRow, IonCol, IonIcon, IonGrid, IonButton, IonText, useIonRouter } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardSubtitle, IonRow, IonCol, IonIcon, IonGrid, IonButton, IonText, useIonRouter, IonSpinner } from "@ionic/vue";
 import { closeOutline, closeSharp, trophyOutline, trophySharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { onBeforeMount, watchEffect } from "vue";
+import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getMatch, Match, setEven, setScore } from "@/services/matches";
 import { getTeam } from "@/services/teams";
 import { canSetGameScore, Game, getGame } from "@/services/games";
@@ -109,6 +113,7 @@ const router = useIonRouter();
 
 const matchId = ref("");
 const canSetScore = ref(false);
+const isLoading = ref(true);
 
 // lifecicle hooks
 
@@ -116,21 +121,31 @@ onBeforeMount(() => {
   if (route.params.matchId) matchId.value = route.params.matchId as string;
   if (!matchId.value) console.error("Match ID not set in the URL");
 });
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 5000);
+});
 
 // Computed
 
 const match = computed((): Match => {
   return getMatch(matchId.value as string) as Match;
 });
-const game = computed((): Game => {
-  return getGame(match.value.game_id as string) as Game;
+const game = computed((): Game | undefined => {
+  if (match.value?.game_id) return getGame(match.value?.game_id as string) as Game;
+  return undefined;
 });
 const isMatch = computed(() => {
-  if (match.value?.id) return true;
+  if (match.value?.id) {
+    isLoading.value = false;
+    return true;
+  }
   return false;
 });
 const pageTitle = computed(() => {
   if (isMatch.value) return `Duel ${match.value.player_ids[0]} vs ${match.value.player_ids[1]}`;
+  if (isLoading.value) return "Chargement"
   return "Duel inconnu";
 });
 const firstPlayer = computed(() => {
@@ -139,6 +154,10 @@ const firstPlayer = computed(() => {
 const secondPlayer = computed(() => {
   return getTeam(match.value.player_ids[1]);
 });
+const schedule = computed(() => {
+  if(isMatch.value) return getSchedule(match.value?.time - 1);
+  return {start: " ", stop: " "};
+})
 
 // Watchers
 
