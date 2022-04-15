@@ -59,8 +59,18 @@ const appPages = computed(() => {
   let pages = [homePage];
   if (user.profile.team) pages.splice(1, 0, playerPage);
   if (user.profile.role >= ROLES.Animateur) {
-    if (user.profile.morningGame) pages = [...pages, morningGamePage]
-    if (user.profile.afternoonGame) pages = [...pages, afternoonGamePage]
+    if (user.profile.morningGame) pages = [...pages, {
+      title: "Mon épreuve du matin",
+      url: `/game/${user.profile.morningGame}`,
+      iosIcon: footballOutline,
+      mdIcon: footballSharp,
+    }]
+    if (user.profile.afternoonGame) pages = [...pages, {
+      title: "Mon épreuve de l'aprèm",
+      url: `/game/${user.profile.afternoonGame}`,
+      iosIcon: footballOutline,
+      mdIcon: footballSharp,
+    }]
   }
   pages = [...pages, gamesPage, sectionsPage];
   if (user.profile.role >= ROLES.Moderateur) pages = [...pages, ...modPages];
@@ -81,20 +91,6 @@ const playerPage = {
   iosIcon: peopleCircleOutline,
   mdIcon: peopleCircleSharp,
 };
-const morningGamePage = {
-  title: "Mon épreuve du matin",
-  url: `/game/${user.profile.morningGame}`,
-  iosIcon: footballOutline,
-  mdIcon: footballSharp,
-
-}
-const afternoonGamePage = {
-  title: "Mon épreuve de l'aprèm",
-  url: `/game/${user.profile.afternoonGame}`,
-  iosIcon: footballOutline,
-  mdIcon: footballSharp,
-
-}
 const modPages = [
   {
     title: "Classement",
@@ -137,7 +133,7 @@ const aboutPage =
   mdIcon: informationCircleSharp,
 }
 const gamesPage = {
-  title: "Epreuves",
+  title: "Épreuves",
   url: "/games",
   iosIcon: albumsOutline,
   mdIcon: albumsSharp,
