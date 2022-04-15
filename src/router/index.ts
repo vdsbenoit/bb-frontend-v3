@@ -39,6 +39,12 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/home'
   },
   {
+    name: 'teams',
+    path: '/team/:teamId',
+    component: () => import ('../views/TeamPage.vue'),
+    beforeEnter: authCheck,
+  },
+  {
     name: 'game',
     path: '/game/:gameId',
     component: () => import ('../views/GamePage.vue'),
