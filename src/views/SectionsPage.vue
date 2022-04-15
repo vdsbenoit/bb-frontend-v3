@@ -117,7 +117,7 @@ import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { fetchCategorySections, getSection, Section } from "@/services/sections";
 import { onBeforeMount, onMounted, watch } from "vue";
-import { getCategories, getLeaderCategoryName } from "@/services/settings";
+import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
 
 const user = useAuthStore();
 const route = useRoute();
@@ -139,6 +139,7 @@ onBeforeMount(async () => {
 // Computed
 
 const showRanking = computed(() => {
+  if(isShowRankingToAll()) return true;
   return user.profile.role >= ROLES.Moderateur;
 });
 const showUsers = computed(() => {

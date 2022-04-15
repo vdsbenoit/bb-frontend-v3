@@ -22,6 +22,7 @@ export interface AppSetting {
   everyoneCanSetScoreAnywhere: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
   schedule: Schedule[];
+  showRakingToAll: boolean;
 }
 
 const appSettingsDefaults = {
@@ -33,6 +34,7 @@ const appSettingsDefaults = {
   everyoneCanSetScoreAnywhere: false,
   leaderRegistration: true, // fixme: change to false
   schedule: [] as Schedule[],
+  showRakingToAll: false,
 };
 
 function appSettingsDefaultsFunc(payload?: Partial<AppSetting>): AppSetting {
@@ -76,8 +78,8 @@ export const getSchedule = (time: number): Schedule => {
   return {start: "", stop: ""} as Schedule;
 };
 export const getCategories = async () => {
-  const appSettings = await appSettingsModule.fetch()
-  if (appSettings) return appSettings.categories;
+  await appSettingsModule.stream()
+  if (appSettingsModule.data) return appSettingsModule.data.categories;
   console.error("appSettingsModule could not be loaded, returning empty category list");
   return appSettingsDefaults.categories;
 };
@@ -85,6 +87,10 @@ export const getLeaderCategoryName = (): string => {
   if (appSettingsModule.data?.schedule) return appSettingsModule.data.leaderCategoryName;
   console.error("appSettings not loaded, returning default leaderCategoryName");
   return appSettingsDefaults.leaderCategoryName;
+};
+export const isShowRankingToAll = (): boolean => {
+  if (appSettingsModule.data?.showRakingToAll) return appSettingsModule.data.showRakingToAll;
+  return appSettingsDefaults.showRakingToAll;
 };
 
 ///////////////

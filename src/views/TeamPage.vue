@@ -86,7 +86,7 @@ import { useRoute } from "vue-router";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getTeam, Team } from "@/services/teams";
 import { getTeamMatches } from "@/services/matches";
-import { getSchedule } from "@/services/settings";
+import { getSchedule, isShowRankingToAll } from "@/services/settings";
 import { getSection, Section } from "@/services/sections";
 import { errorPopup, infoPopup } from "@/services/popup";
 
@@ -136,6 +136,7 @@ const matches = computed(() => {
   return team.value?.id ? getTeamMatches(team.value?.id) : new Map();
 });
 const showRanking = computed(() => {
+  if(isShowRankingToAll()) return true;
   return user.profile.role >= ROLES.Moderateur;
 });
 const showRegisterButton = computed(() => {
