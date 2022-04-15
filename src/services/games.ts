@@ -11,7 +11,7 @@ const user = useAuthStore();
 /// configuration //
 //////////////////
 export interface Game {
-  id: string;
+  id: number;
   hash: string;
   name: string;
   circuit: string;
@@ -23,7 +23,7 @@ export interface Game {
 
 export function gamesDefaults(payload?: Partial<Game>): Game {
   const defaults = {
-    id: "",
+    id: -1,
     hash: "",
     name: "",
     circuit: "",
@@ -61,6 +61,7 @@ export const getGame = (id: string) => {
   });
   return gameModule.data;
 };
+
 export const canSetGameScore = async (gameId: string) => {
   if (isScoresFrozen()) {
     console.log("Cannot set score, score registration is closed")
