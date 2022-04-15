@@ -81,16 +81,17 @@ export const usersModule = magnetar.collection(USER_PROFILES_COLLECTION, {
 
 interface authStoreState {
   user: fbUser | null;
-  profile: Profile;
+  profileObject: any;
 }
 
 export const useAuthStore = defineStore("authStore", {
   state: (): authStoreState => ({
     user: null,
-    profile: usersDefaults(),
+    profileObject: null,
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null,
+    profile: (state): Profile => state.profileObject?.data ? state.profileObject.data : usersDefaults(),
     uid: (state): string => state.user ? state.user.uid : "undefined",
   },
   actions: {
@@ -103,12 +104,12 @@ export const useAuthStore = defineStore("authStore", {
       return new Promise((resolve) => {
         fbAuthStateListener(async (user: any) => {
           if (user) {
-            this.user = user
+            this.user = user;
             this.streamProfile(user.uid as string);
-            this.profile = await usersModule.doc(user.uid as string).fetch() ?? usersDefaults();
+            this.profileObject = usersModule.doc(user.uid as string);
           } else {
             this.user = null;
-            this.profile = usersDefaults();
+            this.profileObject = null;
           }
           resolve(true);
         });
@@ -159,7 +160,7 @@ export const useAuthStore = defineStore("authStore", {
       try {
         await fbSignOut();
         this.user = null;
-        this.profile = usersDefaults();
+        this.profileObject = null;
         return true;
       } catch (e: any) {
         errorPopup(e.message);
@@ -168,7 +169,10 @@ export const useAuthStore = defineStore("authStore", {
     },
     streamProfile(uid: string) {
       if(!uid) return undefined;
-      usersModule.doc(uid).stream();
+      usersModule.doc(uid).stream().catch((error: any) => {
+        if(error.code === 'resource-exhausted' ) errorPopup("Impossible de lancer l'app. Le quota Firestore est épuisé");
+        console.error(`Error occurred while streaming the ${USER_PROFILES_COLLECTION} collection`, error);
+      });
     },
     async createProfile(uid: string, email: string) {
       usersModule.doc(uid).insert({email: email, role: ROLES.Participant});

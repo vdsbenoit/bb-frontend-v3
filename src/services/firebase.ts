@@ -42,7 +42,6 @@ const auth = getAuth(app);
  export const fbSignInWithEmailLink = async (email: string, href: string) => {
   if (isSignInWithEmailLink(auth, href)) {
     const response = signInWithEmailLink(auth, email, href);
-    console.debug(response);
     return response;
   } else {
     throw new Error("Incorrect validation url");
