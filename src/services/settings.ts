@@ -73,7 +73,6 @@ export const canSetScoreAnywhere = (): boolean => {
 };
 export const isLeaderRegistrationOpen = () => {
   if (appSettingsModule.data) return appSettingsModule.data.leaderRegistration;
-  console.error("appSettingsModule not loaded, returning default value for leaderRegistration");
   return appSettingsDefaults.leaderRegistration; 
 }
 export const getSchedule = (time: number): Schedule => {

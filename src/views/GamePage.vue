@@ -60,7 +60,8 @@
                 </ion-col>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
                   <ion-button @click="unRegister" expand="block" color="danger" v-if="canRegister" >
-                    Se désinscrire
+                    <ion-spinner v-if="isUnregistering"></ion-spinner>
+                    <span v-else>Se désinscrire</span>
                   </ion-button>
                 </ion-col>
               </ion-row>
@@ -78,9 +79,12 @@
               </div>
               <ion-item v-else v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
-                  <ion-text color="tertiary" style="font-weight: bold">⌚ {{ getSchedule(match.time-1).start }} - {{ getSchedule(match.time-1).stop }} : </ion-text>
-                  <ion-text>{{ match.player_ids[0] }} vs {{ match.player_ids[1] }}</ion-text>
+                  <ion-text >⌚ {{ getSchedule(match.time-1).start }} - {{ getSchedule(match.time-1).stop }} : </ion-text>
+                  <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[0] }}</ion-text>
+                  <ion-text > vs </ion-text>
+                  <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
                 </ion-label>
+                <ion-icon :icon="chevronForwardOutline"></ion-icon>
                 <ion-badge slot="end" class="ion-no-margin" :color="match.even ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
               </ion-item>
             </ion-list>
@@ -99,9 +103,10 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, 
 IonBadge, IonGrid, IonText, IonButton, useIonRouter, IonSpinner } from "@ionic/vue";
+import { chevronForwardOutline } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
-import {  choicePopup, errorPopup } from "@/services/popup";
+import {  choicePopup, errorPopup, infoPopup, toastPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { Game,  getGame, removeLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
@@ -129,6 +134,7 @@ const leaders = reactive({
 const isLoading = ref(true);
 const isLoadingMorningLeaders = ref(false);
 const isLoadingAfternoonLeaders = ref(false);
+const isUnregistering = ref(false);
 
 // lifecicle hooks
 
@@ -171,7 +177,7 @@ const pageTitle = computed(() => {
 // async update morning leaders information
 watchEffect(async () => {
   if (!isGame.value) return; // do not run this watcher if game is not initialized
-  const newLeaderIds = game.value.morning_leaders;
+  const newLeaderIds = game.value.morningLeaders;
   isLoadingMorningLeaders.value = true;
   const newLeaders = await loadLeaderInfo(newLeaderIds);
   leaders.morning = newLeaders;
@@ -181,7 +187,7 @@ watchEffect(async () => {
 // async update morning leaders information
 watchEffect(async () => {
   if (!isGame.value) return; // do not run this watcher if game is not initialized
-  const newLeaderIds = game.value.afternoon_leaders;
+  const newLeaderIds = game.value.afternoonLeaders;
   isLoadingAfternoonLeaders.value = true;
   const newLeaders = await loadLeaderInfo(newLeaderIds);
   leaders.afternoon = newLeaders;
@@ -212,8 +218,14 @@ const register = () => {
     });
   })
 };
-const unRegister = () => {
-  removeLeader(gameId.value as string);
+const unRegister = async () => {
+  isUnregistering.value = true;
+  try {
+    await removeLeader(gameId.value as string);
+  } catch(error: any){
+    errorPopup(`Nous n'avons pas pu te désincrire : ${error.message}`)
+  }
+  isUnregistering.value = false;
 }
 const getWinner = (match: any) => {
   if (match.winner) return match.winner;

@@ -1,16 +1,25 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="pageTitle"></header-template>
+      <ion-header :translucent="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-buttons slot="start">
+        <ion-menu-button color="primary"></ion-menu-button>
+      </ion-buttons>
+      <ion-title>{{ pageTitle }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
     <ion-content :fullscreen="true">
-      <ion-item>
+      <ion-item color="primary">
         <ion-label class="ion-text-center">Circuit</ion-label>
         <ion-select v-model="selectedCircuit" interface="popover">
           <ion-select-option v-for="(circuit, index) in circuits" :value="circuit" :key="index">{{ circuit }}</ion-select-option>
         </ion-select>
       </ion-item>
-
-      <ion-list v-if="selectedCircuit && (isLoading || games.size > 0)">
-        <div v-if="isLoading" class="ion-text-center" style="background: transparent">
+      <ion-list v-if="selectedCircuit">
+        <div v-if="games?.size < 1" class="ion-text-center" style="background: transparent">
           <ion-spinner></ion-spinner>
         </div>
         <ion-item v-else v-for="game in games?.values()" :key="game.id" :routerLink="`/game/${game.id}`" class="">
@@ -22,7 +31,7 @@
         </ion-item>
       </ion-list>
       <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center" >Aucune épreuve trouvée</h2>
+        <h2 class="ion-text-center ion-align-items-center" >Sélectionner un circuit</h2>
       </div>
       
     </ion-content>
@@ -30,8 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, IonBadge, IonGrid, IonText, IonButton, useIonRouter, IonSpinner, IonSelect, IonSelectOption } from "@ionic/vue";
-import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import { IonContent, IonPage, IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton, IonList, IonItem, IonLabel, IonBadge, IonText, useIonRouter, IonSpinner, IonSelect, IonSelectOption } from "@ionic/vue";
 import { useAuthStore } from "@/services/users";
 import { choicePopup, errorPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
@@ -45,7 +53,6 @@ const route = useRoute();
 const router = useIonRouter();
 
 // reactive data
-const isLoading = ref(true);
 const editMode = ref(false);
 const circuits = ref();
 const selectedCircuit = ref("");
@@ -56,15 +63,10 @@ onBeforeMount(async () => {
   // We take this approach to ensure circuits is not stuck to undefined
   circuits.value = await getCircuits();
 });
-onMounted(() => {
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 5000);
-});
 
 // Computed
 const games = computed((): Map<string, Game> | undefined => {
-  return selectedCircuit.value ? getGames(selectedCircuit.value) : undefined;
+  return selectedCircuit.value ? getGames(selectedCircuit.value) : new Map();
 });
 const pageTitle = computed(() => {
   if (editMode.value) return `Édition des épreuves`;
@@ -78,11 +80,11 @@ const isFull = (leaderList: string[]) => {
   return leaderList.length >= getMaxGameLeaders();
 };
 const getStatus = (game: Game) => {
-  if(!game.morning_leaders || ! game.afternoon_leaders) return { text: "inconnu", color: "medium" };
-  if (isFull(game.morning_leaders) && isFull(game.afternoon_leaders)) return { text: "Complet", color: "danger" };
-  if (!isFull(game.morning_leaders) && isFull(game.afternoon_leaders)) return { text: "Matin", color: "warning" };
-  if (isFull(game.morning_leaders) && !isFull(game.afternoon_leaders)) return { text: "Arpèm", color: "warning" };
-  if (!isFull(game.morning_leaders) && !isFull(game.afternoon_leaders)) return { text: "Libre", color: "primary" };
+  if(!game.morningLeaders || ! game.afternoonLeaders) return { text: "inconnu", color: "medium" };
+  if (isFull(game.morningLeaders) && isFull(game.afternoonLeaders)) return { text: "Complet", color: "danger" };
+  if (!isFull(game.morningLeaders) && isFull(game.afternoonLeaders)) return { text: "Matin", color: "warning" };
+  if (isFull(game.morningLeaders) && !isFull(game.afternoonLeaders)) return { text: "Arpèm", color: "warning" };
+  if (!isFull(game.morningLeaders) && !isFull(game.afternoonLeaders)) return { text: "Libre", color: "primary" };
   return { text: "inconnu", color: "medium" };
 };
 </script>
@@ -95,5 +97,8 @@ const getStatus = (game: Game) => {
 }
 ion-card-title {
   font-size: 24px;
+}
+.can-go-back ion-menu-button {
+    display: none;
 }
 </style>
