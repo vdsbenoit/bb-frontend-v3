@@ -18,7 +18,7 @@ export interface AppSetting {
   maxGameLeaders: number; // max allowed leaders per game
   freezeScore: boolean;
   categories: string[];
-  gameLeaderSections: string[];
+  leaderCategoryName: string;
   everyoneCanSetScoreAnywhere: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
   schedule: Schedule[];
@@ -29,24 +29,14 @@ const appSettingsDefaults = {
   maxGameLeaders: 2,
   freezeScore: true,
   categories: [],
-  gameLeaderSections: [],
+  leaderCategoryName: "Animateurs",
   everyoneCanSetScoreAnywhere: false,
   leaderRegistration: true, // fixme: change to false
   schedule: [] as Schedule[],
 };
 
 function appSettingsDefaultsFunc(payload?: Partial<AppSetting>): AppSetting {
-  const appSettingsDef = {
-    lastGameDbUpdate: new Date(0),
-    maxGameLeaders: 2,
-    freezeScore: true,
-    categories: [],
-    gameLeaderSections: [],
-    everyoneCanSetScoreAnywhere: false,
-    leaderRegistration: true, // fixme: change to false
-    schedule: [],
-  };
-  return { ...appSettingsDef, ...payload }
+  return { ...appSettingsDefaults, ...payload }
 }
 const appSettingsModule = magnetar.doc<AppSetting>(`${SETTINGS_COLLECTION}/${SETTINGS_DOCUMENT}`, {
   modifyPayloadOn: { insert: appSettingsDefaultsFunc },
@@ -65,29 +55,36 @@ export const isScoresFrozen = (): boolean => {
   console.log("appSettingsModule not loaded, returning default value for freezeScore");
   return appSettingsDefaults.freezeScore;
 };
-
 export const getMaxGameLeaders = (): number => {
   if (appSettingsModule.data) return appSettingsModule.data.maxGameLeaders;
   console.error("appSettingsModule not loaded, returning default value for maxGameLeaders");
   return appSettingsDefaults.maxGameLeaders;
 };
-
 export const canSetScoreAnywhere = (): boolean => {
   if (appSettingsModule.data) return appSettingsModule.data.everyoneCanSetScoreAnywhere;
   console.error("appSettingsModule not loaded, returning default value for everyoneCanSetScoreAnywhere");
   return appSettingsDefaults.everyoneCanSetScoreAnywhere;
 };
-
 export const isLeaderRegistrationOpen = () => {
   if (appSettingsModule.data) return appSettingsModule.data.leaderRegistration;
   console.error("appSettingsModule not loaded, returning default value for leaderRegistration");
   return appSettingsDefaults.leaderRegistration; 
 }
-
 export const getSchedule = (time: number): Schedule => {
   if (appSettingsModule.data?.schedule) return appSettingsModule.data.schedule[time];
   console.error("appSettingsModule not loaded, returning empty schedule");
   return {start: "", stop: ""} as Schedule;
+};
+export const getCategories = async () => {
+  const appSettings = await appSettingsModule.fetch()
+  if (appSettings) return appSettings.categories;
+  console.error("appSettingsModule could not be loaded, returning empty category list");
+  return appSettingsDefaults.categories;
+};
+export const getLeaderCategoryName = (): string => {
+  if (appSettingsModule.data?.schedule) return appSettingsModule.data.leaderCategoryName;
+  console.error("appSettings not loaded, returning default leaderCategoryName");
+  return appSettingsDefaults.leaderCategoryName;
 };
 
 ///////////////

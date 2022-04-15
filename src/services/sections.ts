@@ -14,6 +14,7 @@ export interface Section {
   unit: string;
   category: string;
   scores: number[];
+  score: number;
   teams: string[];
   nbPlayers: number;
   nbTeams: number;
@@ -27,6 +28,7 @@ function sectionsDefaults(payload?: Partial<Section>): Section {
     unit: "",
     category: "",
     scores: [],
+    score: 0,
     teams: [],
     nbPlayers: 0,
     nbTeams: 0,
@@ -43,13 +45,14 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION, {
 /////////////
 
 export const fetchCategorySections = (category: string) => {
-  console.log(`Fetching sections for catetory '${category}'`);
+  console.log(`Fetching sections from category '${category}'`);
   const filteredSectionsModule = sectionsModule.where("category", "==", category);
   filteredSectionsModule.fetch();
   return filteredSectionsModule.data;
 }
 // This method opens a stream on the game to get live updates
 export const getSection = (id: string) => {
+  if(!id) return undefined;
   const sectionModule = sectionsModule.doc(id);
   sectionModule.stream().catch((error) => {
     console.error(`Section ${id} stream was closed due to an error`, error);
