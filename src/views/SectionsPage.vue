@@ -133,6 +133,7 @@ const shouldLoadUsers = ref(false);
 // lifecicle hooks
 
 onBeforeMount(async () => {
+  // We take this approach to ensure categories is not stuck to undefined
   categories.value = await getCategories();
 });
 

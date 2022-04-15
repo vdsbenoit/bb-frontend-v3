@@ -84,7 +84,7 @@
                 <ion-badge slot="end" class="ion-no-margin" :color="match.even ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
               </ion-item>
             </ion-list>
-            <ion-list-header v-else><h2>Aucun jeu trouvé</h2></ion-list-header>
+            <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
           </ion-card-content>
         </ion-card>
       </div>

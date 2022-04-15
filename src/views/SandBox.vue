@@ -29,14 +29,19 @@ import { computed, ref } from "@vue/reactivity";
 import { usersModule } from "@/services/users";
 import { getGame, hardcodeGameNames, setAfternoonLeader, setMorningLeader } from "@/services/games";
 
+const user = useAuthStore();
+
 const uid = ref("");
 // const profile = computed(() => {
 //   return uid.value ? getUserProfileFoo(uid.value) : {};
 // })
 
+// const profile = computed(() => {
+//   usersModule.doc("foo").fetch();
+//   return usersModule.doc("foo").data;
+// })
 const profile = computed(() => {
-  usersModule.doc("foo").fetch();
-  return usersModule.doc("foo").data;
+  return user.profile;
 })
 
 const game = computed(() => {

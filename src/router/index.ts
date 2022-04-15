@@ -39,27 +39,15 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/home'
   },
   {
-    name: 'myTeam',
-    path: '/team',
-    component: () => import ('../views/TeamPage.vue'),
-    beforeEnter: authCheck,
-  },
-  {
-    name: 'teams',
-    path: '/team/:teamId',
-    component: () => import ('../views/TeamPage.vue'),
-    beforeEnter: authCheck,
-  },
-  {
-    name: 'myGame',
-    path: '/game',
-    component: () => import ('../views/GamePage.vue'),
-    beforeEnter: authCheck,
-  },
-  {
     name: 'game',
     path: '/game/:gameId',
     component: () => import ('../views/GamePage.vue'),
+    beforeEnter: authCheck,
+  },
+  {
+    name: 'games',
+    path: '/games',
+    component: () => import ('../views/GamesPage.vue'),
     beforeEnter: authCheck,
   },
   {
@@ -99,18 +87,12 @@ const routes: Array<RouteRecordRaw> = [
     props: { validation: true }
   },
   {
-    name: 'leader',
-    path: '/leader',
-    component: () => import ('../views/LeaderPage.vue'),
-    beforeEnter: authCheck,
-  },
-  {
     name: 'about',
     path: '/about',
     component: () => import ('../views/AboutPage.vue'),
   },
   {
-    name: 'sandbox',
+    name: 'sandbox', //fixme
     path: '/sandbox',
     component: () => import ('../views/SandBox.vue'),
     beforeEnter: authCheck,

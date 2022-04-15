@@ -18,6 +18,7 @@ export interface AppSetting {
   maxGameLeaders: number; // max allowed leaders per game
   freezeScore: boolean;
   categories: string[];
+  circuits: string[];
   leaderCategoryName: string;
   everyoneCanSetScoreAnywhere: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
@@ -30,6 +31,7 @@ const appSettingsDefaults = {
   maxGameLeaders: 2,
   freezeScore: true,
   categories: [],
+  circuits: [],
   leaderCategoryName: "Animateurs",
   everyoneCanSetScoreAnywhere: false,
   leaderRegistration: true, // fixme: change to false
@@ -82,6 +84,10 @@ export const getSchedule = (time: number): Schedule => {
 export const getCategories = async () => {
   if (!appSettingsModule.data) await appSettingsModule.fetch();
   return appSettingsModule.data?.categories;
+};
+export const getCircuits = async () => {
+  if (!appSettingsModule.data) await appSettingsModule.fetch();
+  return appSettingsModule.data?.circuits;
 };
 export const getLeaderCategoryName = (): string => {
   if (appSettingsModule.data?.schedule) return appSettingsModule.data.leaderCategoryName;

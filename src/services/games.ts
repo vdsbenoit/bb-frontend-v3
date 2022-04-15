@@ -45,8 +45,8 @@ const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION, {
 
 export const getGames = (circuit: string) => {
   if(!circuit) return undefined;
-  console.log(`Fetching games from circuit '${circuit}'`);
-  const filteredGamesModule = gamesModule.where("circuit", "==", circuit);
+  console.log(`Streaming games from circuit '${circuit}'`);
+  const filteredGamesModule = gamesModule.where("circuit", "==", circuit).orderBy("id");
   filteredGamesModule.stream().catch((error) => {
     console.error(`Error occurred while streaming the ${GAMES_COLLECTION} collection`, error);
   });
