@@ -78,7 +78,7 @@ export const getSchedule = (time: number): Schedule => {
   return {start: "", stop: ""} as Schedule;
 };
 export const getCategories = async () => {
-  await appSettingsModule.stream()
+  await appSettingsModule.fetch();
   if (appSettingsModule.data) return appSettingsModule.data.categories;
   console.error("appSettingsModule could not be loaded, returning empty category list");
   return appSettingsDefaults.categories;

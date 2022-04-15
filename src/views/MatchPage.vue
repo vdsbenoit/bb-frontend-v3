@@ -173,7 +173,7 @@ const register = () => {
     return;
   }
   if (!canSetScore) { // fixme: seems useless
-    throw errorPopup(`Tu n'as pas le droit d'enregister de scores cette épreuve`);
+    errorPopup(`Tu n'as pas le droit d'enregister de scores cette épreuve`);
   }
   choicePopup("Est-ce une victoire ?", ["Victoire", "Égalité"], (choice: string) => {
     if (choice === "Égalité") setEven(matchId.value);
