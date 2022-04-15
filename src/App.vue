@@ -39,11 +39,13 @@ homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline,
 podiumOutline, podiumSharp, logInSharp, logInOutline, albumsOutline, albumsSharp } from "ionicons/icons";
 import { computed } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
+import { streamSettings } from "@/services/settings";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
 const user = useAuthStore();
+streamSettings();
 
 // Computed
 

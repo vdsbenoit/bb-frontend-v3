@@ -44,9 +44,11 @@ const appSettingsModule = magnetar.doc<AppSetting>(`${SETTINGS_COLLECTION}/${SET
   modifyPayloadOn: { insert: appSettingsDefaultsFunc },
   modifyReadResponseOn: { added: appSettingsDefaultsFunc },
 });
-appSettingsModule.stream().catch(error => {
-  console.error(`App settings stream failed`, error);
-});
+export const streamSettings = () => {
+  appSettingsModule.stream().catch(error => {
+    console.error(`App settings stream failed`, error);
+  })
+}
 
 ///////////////
 /// Getters //
@@ -78,10 +80,8 @@ export const getSchedule = (time: number): Schedule => {
   return {start: "", stop: ""} as Schedule;
 };
 export const getCategories = async () => {
-  await appSettingsModule.fetch();
-  if (appSettingsModule.data) return appSettingsModule.data.categories;
-  console.error("appSettingsModule could not be loaded, returning empty category list");
-  return appSettingsDefaults.categories;
+  if (!appSettingsModule.data) await appSettingsModule.fetch();
+  return appSettingsModule.data?.categories;
 };
 export const getLeaderCategoryName = (): string => {
   if (appSettingsModule.data?.schedule) return appSettingsModule.data.leaderCategoryName;
