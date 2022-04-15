@@ -40,7 +40,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] save score au niveau des matches & équipes
   - [ ] seule les animateurs d'un match peuvent y ajouter des points
 - [x] Split profile & login
-- [ ] rendre le éléments du menu réactifs
+- [x] fix bug menu
+- [ ] Mettre à jour le field `teams` des documents de la collection sections
 
 # Pages
 
@@ -177,6 +178,8 @@ export const setEven = async (matchId: string) => {
 - Refactor even with draw
 - match time start at 0 ([instead of 1](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2))
 - Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore)
+- Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
+- La catégorie `Animateurs` n'est pas créée dans settings/app/categories par le script d'init DB 
 
 # Désistement
 

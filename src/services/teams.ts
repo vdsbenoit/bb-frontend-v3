@@ -16,6 +16,7 @@ export interface Team {
   city: string;
   category: string;
   scores: number[];
+  score: number;
   matches: string[];
   nbPlayers: number;
   ignoreScore: boolean;
@@ -31,6 +32,7 @@ function teamsDefaults(payload?: Partial<Team>): Team {
     city: "",
     category: "",
     scores: [],
+    score: 0,
     matches: [],
     nbPlayers: 0,
     ignoreScore: false,
@@ -48,6 +50,7 @@ const teamsModule = magnetar.collection<Team>(TEAMS_COLLECTION, {
 
 // This method opens a stream on the game to get live updates
 export const getTeam = (id: string) => {
+  if(!id) return undefined;
   const teamModule = teamsModule.doc(id);
   teamModule.stream().catch((error) => {
     console.error(`Team ${id} stream was closed due to an error`, error);

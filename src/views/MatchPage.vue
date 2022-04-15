@@ -99,7 +99,7 @@ import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getMatch, Match, setEven, setScore } from "@/services/matches";
-import { getTeam } from "@/services/teams";
+import { getTeam, Team } from "@/services/teams";
 import { canSetGameScore, Game, getGame } from "@/services/games";
 import { isScoresFrozen } from "@/services/settings";
 import { getSchedule } from "@/services/settings";
@@ -133,8 +133,7 @@ const match = computed((): Match => {
   return getMatch(matchId.value as string) as Match;
 });
 const game = computed((): Game | undefined => {
-  if (match.value?.game_id) return getGame(match.value?.game_id as string) as Game;
-  return undefined;
+  return (match.value?.game_id) ? getGame(match.value?.game_id as string) as Game : undefined;
 });
 const isMatch = computed(() => {
   if (match.value?.id) {
@@ -144,26 +143,25 @@ const isMatch = computed(() => {
   return false;
 });
 const pageTitle = computed(() => {
-  if (isMatch.value) return `Duel ${match.value.player_ids[0]} vs ${match.value.player_ids[1]}`;
+  if (isMatch.value) return `Duel ${match.value?.player_ids[0]} vs ${match.value?.player_ids[1]}`;
   if (isLoading.value) return "Chargement"
   return "Duel inconnu";
 });
-const firstPlayer = computed(() => {
-  return getTeam(match.value.player_ids[0]);
+const firstPlayer = computed((): Team | undefined => {
+  return match.value?.player_ids[0] ? getTeam(match.value.player_ids[0]) : undefined;
 });
-const secondPlayer = computed(() => {
-  return getTeam(match.value.player_ids[1]);
+const secondPlayer = computed((): Team | undefined => {
+  return match.value?.player_ids[1] ? getTeam(match.value.player_ids[1]) : undefined;
 });
 const schedule = computed(() => {
-  if(isMatch.value) return getSchedule(match.value?.time - 1);
-  return {start: " ", stop: " "};
+  return match.value?.time ? getSchedule(match.value?.time - 1) : {start: " ", stop: " "};
 })
 
 // Watchers
 
 // async update canSetScore value
 watchEffect(async () => {
-  if (!isMatch.value) return; // do not run this watcher if match is not initialized
+  if (!match.value?.game_id) return; // do not run this watcher if match is not initialized
   canSetScore.value = await canSetGameScore(match.value.game_id);
 });
 

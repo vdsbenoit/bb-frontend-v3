@@ -167,6 +167,7 @@ export const useAuthStore = defineStore("authStore", {
       }
     },
     streamProfile(uid: string) {
+      if(!uid) return undefined;
       usersModule.doc(uid).stream();
     },
     async createProfile(uid: string, email: string) {
@@ -226,5 +227,11 @@ export const useAuthStore = defineStore("authStore", {
     canRegister(){
       return this.profile.role >= ROLES.Animateur;
     },
+    getSectionUsers(sectionId: string){
+      console.log(`Fetching users from section '${sectionId}'`);
+      const filteredUsersModule = usersModule.where("section", "==", sectionId);
+      filteredUsersModule.fetch();
+      return filteredUsersModule.data;
+    }
   },
 });

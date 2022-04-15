@@ -20,23 +20,24 @@
         </ion-grid>
 
         <ion-card v-if="showRanking">
+        <ion-card-header>
+            <ion-card-title>Score</ion-card-title>
+          </ion-card-header>
           <ion-card-content>
             <div v-if="isLoading" class="ion-text-center">
               <ion-spinner></ion-spinner>
             </div>
             <ion-list v-else>
-              <ion-item> <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{teamScore}}</ion-note></ion-item>
-              <ion-item> <ion-label>Classement de l'équipe</ion-label><ion-note slot="end">placeholder</ion-note> </ion-item>
-              <ion-item> <ion-label>Score de la section</ion-label><ion-note slot="end">{{sectionScore}}</ion-note></ion-item>
-              <ion-item> <ion-label>Moyenne section</ion-label><ion-note slot="end">{{sectionMean}}</ion-note></ion-item>
-              <ion-item> <ion-label>Classement section</ion-label><ion-note slot="end">placeholder</ion-note> </ion-item>
+              <ion-item  class="ion-no-padding"> <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{team?.score}}</ion-note></ion-item>
+              <ion-item  class="ion-no-padding"> <ion-label>Score de la section</ion-label><ion-note slot="end">{{section?.score}}</ion-note></ion-item>
+              <ion-item  class="ion-no-padding"> <ion-label>Moyenne de la section</ion-label><ion-note slot="end">{{sectionMean}}</ion-note></ion-item>
             </ion-list>
           </ion-card-content>
         </ion-card>
 
         <ion-card>
           <ion-card-header>
-            <ion-card-title style="font-size: 24px">Programme</ion-card-title>
+            <ion-card-title>Programme</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <ion-list v-if="isLoading || matches.size > 0">
@@ -83,7 +84,7 @@ import { getTeamMatches } from "@/services/matches";
 import { getSchedule } from "@/services/settings";
 import { getSection, Section } from "@/services/sections";
 
-const store = useAuthStore();
+const user = useAuthStore();
 const route = useRoute();
 const router = useIonRouter();
 
@@ -110,8 +111,7 @@ const team = computed((): Team => {
   return getTeam(teamId.value as string) as Team;
 });
 const section = computed((): Section | undefined => {
-  if (team.value?.sectionId) return getSection(team.value.sectionId);
-  return undefined;
+  return team.value?.sectionId ? getSection(team.value.sectionId) : undefined;
 });
 const isTeam = computed(() => {
   if (team.value?.id) {
@@ -129,35 +129,30 @@ const matches = computed(() => {
   return team.value?.id ? getTeamMatches(team.value?.id) : new Map();
 });
 const showRanking = computed(() => {
-  return store.profile.role >= ROLES.Moderateur;
+  return user.profile.role >= ROLES.Moderateur;
 });
-const teamScore = computed(() => {
-  return sum(team.value.scores);
-});
-
 
 // Watchers
 
-const sectionScore = ref(0);
 const sectionMean = ref("0");
 // async update sectionScore
 watchEffect(async () => {
   if (!isTeam.value) return; // do not run this watcher if team is not initialized
   const sectionScores = section.value?.scores;
   if (!sectionScores) return;
-  sectionScore.value = sum(sectionScores);
-  sectionMean.value = ((sectionScore.value / sectionScores.length) || 0).toFixed(2);
+  sectionMean.value = ((section.value.score / sectionScores.length) || 0).toFixed(2);
 })
 
 // Methods
 
-const sum = (numArray: number[]): number => {
-  return numArray.reduce((a, b) => a + b, 0);
-}
 const statusIcon = (match: any) => {
   if (match.winner === teamId.value) return { ios: trophyOutline, md: trophySharp};
   if (match.loser === teamId.value) return { ios: closeOutline, md: closeSharp};
   return { md: undefined, ios: undefined };
 };
 </script>
-<style scoped></style>
+<style scoped>
+ion-card-title {
+  font-size: 24px
+}
+</style>
