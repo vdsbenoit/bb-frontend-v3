@@ -7,79 +7,85 @@
           <ion-grid>
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ion-item>
-                  <ion-label>Catégorie</ion-label>
-                  <ion-select v-model="selectedCategory" interface="popover" placeholder="Choisis une catégorie">
-                    <ion-select-option v-for="(category, index) in categories" :value="category" :key="index">{{ category }}</ion-select-option>
-                  </ion-select>
-                </ion-item>
+                <ion-select v-model="selectedCategory" interface="popover" placeholder="Catégorie">
+                  <ion-select-option v-for="(category, index) in categories" :value="category" :key="index">{{ category }}</ion-select-option>
+                </ion-select>
               </ion-col>
               <ion-col size="12" size-sm="6">
-                <ion-item v-if="selectedCategory">
-                  <ion-label>Section</ion-label>
+                <div v-if="selectedCategory">
                   <ion-spinner v-if="isLoadingSections"></ion-spinner>
-                  <ion-select v-else v-model="selectedSectionId" placeholder="Choisis une section">
-                    <ion-select-option v-for="section in sections?.values()" :value="section.id" :key="section.id">{{ section.name }}</ion-select-option>
+                  <ion-select v-else v-model="selectedSectionId" placeholder="Section">
+                    <ion-select-option color="dark" v-for="section in sections?.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
                   </ion-select>
-                </ion-item>
+                </div>
               </ion-col>
             </ion-row>
           </ion-grid>
         </ion-card-content>
       </ion-card>
-      <ion-card v-if="selectedSectionId">
-        <ion-card-header>
-          <ion-card-title>Détails</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
-            <ion-spinner></ion-spinner>
-          </div>
-          <div v-else>
-            {{ selectedSection.name }}
-            {{ selectedSection?.unit }} - {{ selectedSection?.city }}
-          </div>
-        </ion-card-content>
-      </ion-card>
-      <ion-card v-if="showRanking">
-        <ion-card-header>
-          <ion-card-title> Classement </ion-card-title>
-          <ion-card-subtitle> {{ selectedSection?.unit }}<ion-spinner v-if="isLoadingSection"></ion-spinner> - {{ selectedSection?.city }}<ion-spinner v-if="isLoadingSection"></ion-spinner> </ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
-            <ion-spinner></ion-spinner>
-          </div>
-          <ion-list v-else>
-            <ion-item>
-              <ion-label>Score accumulé</ion-label><ion-note slot="end">{{ selectedSection?.score }}</ion-note></ion-item
-            >
-            <ion-item>
-              <ion-label>Score moyen</ion-label><ion-note slot="end">{{ sectionMeanScore }}</ion-note>
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-      <ion-card v-if="selectedSectionId">
-        <ion-card-header>
-          <ion-card-title>Équipes</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
-            <ion-spinner></ion-spinner>
-          </div>
-          <div v-else>
-            <ion-list v-if="selectedSection?.teams.length > 0">
-              <ion-item v-for="teamId in selectedSection.teams" :key="teamId" :routerLink="`/team/${teamId}`">
-                <ion-label>{{ teamId }}</ion-label>
-                <ion-badge v-if="teamId === user.profile.team" slot="end" color="primary">Ton équipe</ion-badge>
-              </ion-item>
-            </ion-list>
-            <ion-list-header v-else> Aucune équipe trouvée </ion-list-header>
-          </div>
-        </ion-card-content>
-      </ion-card>
-      <ion-button v-if="!shouldLoadUsers && selectedSectionId && showUsers" expand="block" color="primary" @click="loadUsers"> Charger les utilisateurs</ion-button>
+      <ion-grid class="ion-no-padding">
+        <ion-row>
+          <ion-col size="12" size-sm="6">
+            <ion-card v-if="selectedSectionId">
+              <ion-card-header>
+                <ion-card-title>Détails</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                  <ion-spinner></ion-spinner>
+                </div>
+                <ion-list v-else>
+                  <ion-item> <ion-label>Nom</ion-label>{{ selectedSection.name }} </ion-item>
+                  <ion-item> <ion-label>Ville</ion-label>{{ selectedSection.city }} </ion-item>
+                  <ion-item> <ion-label>Unité</ion-label>{{ selectedSection.unit }} </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+            <ion-card v-if="showRanking && selectedSectionId">
+              <ion-card-header>
+                <ion-card-title> Classement </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                  <ion-spinner></ion-spinner>
+                </div>
+                <ion-list v-else class="ranking">
+                  <ion-item>
+                    <ion-label>Score accumulé</ion-label><ion-note slot="end">{{ selectedSection?.score }}</ion-note></ion-item
+                  >
+                  <ion-item>
+                    <ion-label>Score moyen</ion-label><ion-note slot="end">{{ sectionMeanScore }}</ion-note>
+                  </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size="12" size-sm="6">
+            <ion-card v-if="selectedSectionId">
+              <ion-card-header>
+                <ion-card-title>Équipes</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                  <ion-spinner></ion-spinner>
+                </div>
+                <div v-else>
+                  <ion-list v-if="selectedSection?.teams.length > 0">
+                    <ion-item v-for="teamId in selectedSection.teams" :key="teamId" :routerLink="`/team/${teamId}`">
+                      <ion-label>{{ teamId }}</ion-label>
+                      <ion-badge v-if="teamId === user.profile.team" slot="end" color="success">Ton équipe</ion-badge>
+                    </ion-item>
+                  </ion-list>
+                  <ion-list-header v-else> Aucune équipe trouvée </ion-list-header>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-button v-if="!shouldLoadUsers && selectedSectionId && showUsers" expand="block" color="primary" @click="loadUsers" class="ion-margin-horizontal">
+        Charger les utilisateurs
+      </ion-button>
       <ion-card v-if="shouldLoadUsers && showUsers">
         <ion-card-header>
           <ion-card-title>Utilisateurs</ion-card-title>
@@ -89,7 +95,8 @@
             <ion-spinner></ion-spinner>
           </div>
           <div v-else>
-            <ion-list v-if="selectedSection?.teams.length > 0">
+            <ion-list-header v-if="sectionUsers.size < 1"><h2>Aucun utilisateur trouvé</h2></ion-list-header>
+            <ion-list v-else>
               <ion-item v-for="sectionUser in sectionUsers.values()" :key="sectionUser.id" :routerLink="`/profile/${sectionUser.id}`">
                 <ion-label>{{ user.getName(sectionUser.id) }}</ion-label>
                 <div v-if="showLeaderRegistration">
@@ -97,7 +104,6 @@
                 </div>
               </ion-item>
             </ion-list>
-            <ion-list-header v-else> Aucune équipe trouvée </ion-list-header>
           </div>
         </ion-card-content>
       </ion-card>
@@ -176,13 +182,12 @@ const loadUsers = () => {
   shouldLoadUsers.value = true;
 };
 const registrationStatus = (user: Profile) => {
-  if (!user.morningGame && !user.afternoonGame) return {text: "Pas inscrit", color: "danger"};
-  if (user.morningGame && !user.afternoonGame) return {text: "Matin", color: "warning"};
-  if (!user.morningGame && user.afternoonGame) return {text: "Arpèm", color: "warning"};
-  if (user.morningGame && user.afternoonGame) return {text: "Ok", color: "success"};
-  return {text: "inconnu", color: "medium"}
-}
-
+  if (!user.morningGame && !user.afternoonGame) return { text: "Pas inscrit", color: "danger" };
+  if (user.morningGame && !user.afternoonGame) return { text: "Matin", color: "warning" };
+  if (!user.morningGame && user.afternoonGame) return { text: "Arpèm", color: "warning" };
+  if (user.morningGame && user.afternoonGame) return { text: "Ok", color: "success" };
+  return { text: "inconnu", color: "medium" };
+};
 </script>
 <style scoped>
 ion-select {
@@ -190,5 +195,14 @@ ion-select {
 }
 ion-card-title {
   font-size: 24px;
+}
+ion-select {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  color: var(--ion-color-dark);
+  --placeholder-color: var(--ion-color-dark);
+  /* Set full opacity on the placeholder */
+  --placeholder-opacity: 1;
 }
 </style>

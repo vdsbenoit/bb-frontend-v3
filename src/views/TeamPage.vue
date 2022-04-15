@@ -27,7 +27,7 @@
             <div v-if="isLoading" class="ion-text-center">
               <ion-spinner></ion-spinner>
             </div>
-            <ion-list v-else>
+            <ion-list v-else class="ranking">
               <ion-item  class="ion-no-padding"> <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{team?.score}}</ion-note></ion-item>
               <ion-item  class="ion-no-padding"> <ion-label>Score de la section</ion-label><ion-note slot="end">{{section?.score}}</ion-note></ion-item>
               <ion-item  class="ion-no-padding"> <ion-label>Moyenne de la section</ion-label><ion-note slot="end">{{sectionMean}}</ion-note></ion-item>

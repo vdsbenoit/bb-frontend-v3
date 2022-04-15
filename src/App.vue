@@ -187,6 +187,9 @@ ion-menu.md ion-list#menu-list ion-list-header {
 ion-item {
   cursor: pointer;
 }
+.ranking ion-item {
+  cursor: auto;
+}
 
 ion-menu.md ion-item {
   --padding-start: 10px;

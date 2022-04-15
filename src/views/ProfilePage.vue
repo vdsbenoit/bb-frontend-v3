@@ -138,7 +138,7 @@ const pageTitle = computed(() => {
 // Methods
 
 const getTeams = () => {
-  return ["A1", "A2", "A3"];
+  return ["1A", "2A", "3A"];
 };
 const getGames = () => {
   return ["1", "2", "3"];
