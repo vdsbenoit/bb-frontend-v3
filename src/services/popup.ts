@@ -7,7 +7,7 @@ export const errorPopup = async (text: string, title = "Erreur") => {
     buttons: ["OK"],
   });
 
-  await alert.present();
+  return alert.present();
 };
 
 export const infoPopup = async (text: string, title?: string) => {
@@ -17,12 +17,12 @@ export const infoPopup = async (text: string, title?: string) => {
     buttons: ["OK"],
   });
 
-  await alert.present();
+  return alert.present();
 };
 
-export const confirmPopup = async (text: string, confirmHandler: any, declineHandler?: any) => {
+export const confirmPopup = async (text: string, confirmHandler: any, declineHandler?: any, title="Tu confirmes ?") => {
   const alert = await alertController.create({
-    header: "Tu confirmes ?",
+    header: title,
     message: text,
     buttons: [
       {
@@ -44,7 +44,7 @@ export const confirmPopup = async (text: string, confirmHandler: any, declineHan
     ],
   });
 
-  await alert.present();
+  return alert.present();
 };
 
 /**
@@ -73,7 +73,7 @@ export const choicePopup = async (text: string, options: string[], handler: any)
     message: text,
     buttons: buttons,
   });
-  await alert.present();
+  return alert.present();
 };
 
 export const loadingPopup = async (timeout = 60000, message = "Chargement") => {
@@ -93,5 +93,5 @@ export const toastPopup = async (message: string, duration = 3000) => {
     position: "top",
     cssClass: "ion-text-center",
   });
-  toast.present();
+  return toast.present();
 };

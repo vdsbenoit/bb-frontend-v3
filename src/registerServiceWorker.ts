@@ -1,3 +1,4 @@
+import { confirmPopup } from './services/popup';
 /* eslint-disable no-console */
 /* tslint:disable-next-line */
 import { register } from 'register-service-worker'
@@ -21,8 +22,12 @@ if (process.env.NODE_ENV === 'production') {
       console.log('New content is downloading.')
     },
     updated () {
-      infoPopup("Redémarre l'app pour l'appliquer", "Mise à jour disonible")
-      console.log('New content is available; please refresh.')
+      confirmPopup(
+        "Elle ne sera appliquée qu'après avoir fermé complètement l'app. Veux-tu le faire maintenant ?", 
+        () => window.close(),
+        () => void 0,
+        "Mise à jour disonible"
+      )
     },
     offline () {
       console.log('No internet connection found. App is running in offline mode.')
