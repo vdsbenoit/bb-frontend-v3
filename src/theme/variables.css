@@ -242,6 +242,6 @@ http://ionicframework.com/docs/theming/ */
   user-select: text;
 }
 ion-popover {
-  --min-width: 250px;
+  --min-width: 300px;
   --max-width: 80%;
 }

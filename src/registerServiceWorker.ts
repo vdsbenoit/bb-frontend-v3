@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
     updated () {
       confirmPopup(
         "Elle ne sera appliquée qu'après avoir fermé complètement l'app. Veux-tu le faire maintenant ?", 
-        () => window.close(),
+        () => { window.close() },
         () => void 0,
         "Mise à jour disonible"
       )
