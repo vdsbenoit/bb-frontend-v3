@@ -4,20 +4,18 @@
     <ion-content :fullscreen="true" class="ion-padding">
       <ion-card>
         <ion-card-content class="ion-no-padding">
-          <ion-grid>
+          <ion-grid class="">
             <ion-row>
               <ion-col size="12" size-sm="6">
                 <ion-select v-model="selectedCategory" interface="popover" placeholder="Catégorie">
                   <ion-select-option v-for="(category, index) in categories" :value="category" :key="index">{{ category }}</ion-select-option>
                 </ion-select>
               </ion-col>
-              <ion-col size="12" size-sm="6">
-                <div v-if="selectedCategory">
+              <ion-col size="12" size-sm="6"  v-if="selectedCategory">
                   <ion-spinner v-if="isLoadingSections"></ion-spinner>
                   <ion-select v-else v-model="selectedSectionId" placeholder="Section">
                     <ion-select-option color="dark" v-for="section in sections?.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
                   </ion-select>
-                </div>
               </ion-col>
             </ion-row>
           </ion-grid>

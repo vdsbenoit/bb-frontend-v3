@@ -1,8 +1,6 @@
-import { useAuthStore, ROLES, getRoleByValue } from './users';
 import { magnetar } from "./magnetar";
 
 const SECTIONS_COLLECTION = "sections";
-const user = useAuthStore();
 
 /////////////////////
 /// configuration //
@@ -47,7 +45,7 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION, {
 export const fetchCategorySections = (category: string) => {
   console.log(`Fetching sections from category '${category}'`);
   const filteredSectionsModule = sectionsModule.where("category", "==", category);
-  filteredSectionsModule.fetch();
+  filteredSectionsModule.fetch(); // fixme: use streams ?
   return filteredSectionsModule.data;
 }
 // This method opens a stream on the game to get live updates
