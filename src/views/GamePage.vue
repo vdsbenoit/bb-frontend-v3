@@ -104,9 +104,9 @@ import { useAuthStore, ROLES } from "@/services/users";
 import {  choicePopup, errorPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { Game, gamesDefaults, getGame, removeLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
-import { getGameMatches, Match } from "@/services/matches";
-import { onBeforeMount, onMounted, watch, watchEffect } from "vue";
+import { Game,  getGame, removeLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
+import { getGameMatches } from "@/services/matches";
+import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
 
 const user = useAuthStore();
@@ -158,7 +158,7 @@ const canRegister = computed(() => {
   return isLeaderRegistrationOpen() && user.profile.role >= ROLES.Animateur; 
 })
 const matches = computed(() => {
-  return game.value?.id ? getGameMatches(game.value?.id) : new Map();
+  return game.value?.id ? getGameMatches(game.value?.id.toString()) : new Map();
 })
 const pageTitle = computed(() => {
   if (isGame.value) return `Épreuve ${gameId.value}`;
