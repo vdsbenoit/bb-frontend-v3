@@ -3,6 +3,7 @@ import { useAuthStore, ROLES, getRoleByValue } from "./users";
 import { magnetar } from "./magnetar";
 import { getMaxGameLeaders, canSetScoreAnywhere, isScoresFrozen } from "./settings";
 import { DocInstance } from "magnetar";
+import { addToDocArray, removeFromDocArray } from "./firebase";
 
 const GAMES_COLLECTION = "games";
 const user = useAuthStore();
@@ -68,6 +69,13 @@ export const getGame = (id: string) => {
   });
   return gameModule.data;
 };
+/**
+ * Force fetch a game and return it
+ */
+export const forceFetchGame = (id: string) => {
+  if(!id) return undefined;
+  return gamesModule.doc(id).fetch({force: true});
+}
 export const getGameName = (id: string) => {
   if(!id) return undefined;
   const gameModule = gamesModule.doc(id);
@@ -110,24 +118,27 @@ export const setName = (gameId: number, name: string) => {
 /**
  * These methods actually update the DB, after the checks in setters below passed.
  */
-const updateMorningLeaders = async (gameModule: DocInstance<Game>, gameId: string, uid: string) => {
+const addMorningLeaders = async (gameId: string, uid: string) => {
   console.log(`Adding user ${uid} to game ${gameId}`);
-  const gameMergePromise = gameModule.merge({ morningLeaders: [...(gameModule.data?.morningLeaders as string[]), uid] });
+  const gameMergePromise = addToDocArray(GAMES_COLLECTION, gameId, "morningLeaders", uid)
   const userMergePromise = user.updateProfile(uid, { morningGame: gameId });
   await Promise.all([gameMergePromise, userMergePromise]);
   toastPopup("Responsables du matin mis à jour");
 };
-const updateAfternoonLeaders = async (gameModule: DocInstance<Game>, gameId: string, uid: string) => {
+const addAfternoonLeaders = async (gameId: string, uid: string) => {
   console.log(`Adding user ${uid} to game ${gameId}`);
-  const gameMergePromise = gameModule.merge({ afternoonLeaders: [...(gameModule.data?.afternoonLeaders as string[]), uid] });
+  const gameMergePromise = addToDocArray(GAMES_COLLECTION, gameId, "afternoonLeaders", uid)
   const userMergePromise = user.updateProfile(uid, { afternoonGame: gameId });
   await Promise.all([gameMergePromise, userMergePromise]);
   toastPopup("Responsables de l'après-midi mis à jour");
 };
+
+
+
+
 /**
- * This setter add the current user to the morning leaders a game.
- * To set a leader, the user must be on a game page.
- * When a game page is opened, a stream is created for the game data.
+ * The two following setters adds a user to the morning leaders a game.
+ * To set a leader, the user must have loaded the either the game lists or the game page.
  * Therefore, by design, it is not required to fetch the game data here.
  */
 export const setMorningLeader = async (gameId: string, uid = "") => {
@@ -144,12 +155,12 @@ export const setMorningLeader = async (gameId: string, uid = "") => {
     return confirmPopup(
       message,
       async () => {
-        await removeLeader(profile.morningGame, uid, true, false);
-        await updateMorningLeaders(gameModule, gameId, uid);
+        await removeMorningLeader(profile.morningGame, uid);
+        await addMorningLeaders(gameId, uid);
       },
       () => toastPopup("Enresitrement annulé")
     );
-  } else return updateMorningLeaders(gameModule, gameId, uid);
+  } else return addMorningLeaders(gameId, uid);
 };
 
 export const setAfternoonLeader = async (gameId: string, uid = "") => {
@@ -166,69 +177,47 @@ export const setAfternoonLeader = async (gameId: string, uid = "") => {
     return confirmPopup(
       message,
       async () => {
-        await removeLeader(profile.afternoonGame, uid, false, true);
-        await updateAfternoonLeaders(gameModule, gameId, uid);
+        await removeAfternoonLeader(profile.afternoonGame, uid);
+        await addAfternoonLeaders(gameId, uid);
       },
       () => toastPopup("Enresitrement annulé")
     );
-  } else return updateAfternoonLeaders(gameModule, gameId, uid);
+  } else return addAfternoonLeaders(gameId, uid);
 };
 
 /**
  * Remove Leader from both the game and his profile data
  */
-export const removeLeader = async (gameId: string, uid = "", morningOnly = false, afternoonOnly = false) => {
+export const removeMorningLeader = async (gameId: string, uid = "") => {
   if (uid === "") uid = user.uid;
-  const gameModule = gamesModule.doc(gameId);
-  const game = await gameModule.fetch();
-  // find where to remove the leader from
-  let removedMorningLeader = false;
-  const morningLeaders = game?.morningLeaders;
-  if (!morningLeaders) console.error(`Cannot fetch morning leaders for game${gameId}`);
-  if (!afternoonOnly && morningLeaders) {
-    const index = morningLeaders.indexOf(uid);
-    if (index > -1) {
-      morningLeaders.splice(index, 1);
-      removedMorningLeader = true;
-    }
-  }
-  let removedAfternoonLeader = false;
-  const afternoonLeaders = game?.afternoonLeaders;
-  if (!afternoonLeaders) console.error(`Cannot fetch afternoon leaders for game${gameId}`);
-  if (!morningOnly && afternoonLeaders) {
-    const index = afternoonLeaders.indexOf(uid);
-    if (index > -1) {
-      afternoonLeaders.splice(index, 1);
-      removedAfternoonLeader = true;
-    }
-  }
-  // Apply change in game
-  let gameMergePromise = null;
-  let userMergePromise = null;
 
-  if (morningOnly && removedMorningLeader) {
-    gameMergePromise = gameModule.merge({ morningLeaders: morningLeaders });
-    console.log(`Removing user ${uid} from game ${gameId} (morning only)`);
-  } else if (afternoonOnly && removedAfternoonLeader) {
-    gameMergePromise = gameModule.merge({ afternoonLeaders: afternoonLeaders });
-    console.log(`Removing user ${uid} from game ${gameId} (afternoon only)`);
-  } else if (removedMorningLeader || removedAfternoonLeader) {
-    // make a single write in DB
-    gameMergePromise = gameModule.merge({ morningLeaders: morningLeaders, afternoonLeaders: afternoonLeaders });
-    console.log(`Removing user ${uid} from game ${gameId} (both morning & afternoon)`);
-  }
-  // Apply change in user profile
-  if (removedMorningLeader && !afternoonOnly) {
-    userMergePromise = user.updateProfile(uid, { morningGame: "" });
-    console.log(`Removing game ${gameId} from user profile ${uid} (morning)`);
-  }
-  if (removedAfternoonLeader && !morningOnly) {
-    userMergePromise = user.updateProfile(uid, { afternoonGame: "" });
-    console.log(`Removing game ${gameId} from user profile ${uid} (afternoon)`);
-  }
-  await Promise.all([gameMergePromise, userMergePromise]);
-  toastPopup(`Désinscription à l'épreuve ${gameId} effectuée`);
-};
+  // remove from game
+  console.log(`Removing user ${uid} from game ${gameId} (morning)`);
+  const gameMergePromise = removeFromDocArray(GAMES_COLLECTION, gameId, "morningLeaders", uid);
+
+  // remove from user profile
+  console.log(`Removing game ${gameId} from user profile ${uid} (morning)`);
+  const userMergePromise = user.updateProfile(uid, { morningGame: "" });
+
+  return Promise.all([gameMergePromise, userMergePromise]).then(() => {
+    toastPopup(`Désinscription à l'épreuve ${gameId} effectuée`);
+  });
+}
+export const removeAfternoonLeader = async (gameId: string, uid = "") => {
+  if (uid === "") uid = user.uid;
+
+  // remove from game
+  console.log(`Removing user ${uid} from game ${gameId} (afternoon)`);
+  const gameMergePromise = removeFromDocArray(GAMES_COLLECTION, gameId, "afternoonLeaders", uid);
+
+  // remove from user profile
+  console.log(`Removing game ${gameId} from user profile ${uid} (afternoon)`);
+  const userMergePromise = user.updateProfile(uid, { afternoonGame: "" });
+
+  return Promise.all([gameMergePromise, userMergePromise]).then(() => {
+    toastPopup(`Désinscription à l'épreuve ${gameId} effectuée`);
+  });
+}
 
 export const hardcodeGameNames = () => {
   const gameNames = [

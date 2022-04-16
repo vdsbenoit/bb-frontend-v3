@@ -122,7 +122,7 @@ import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
 import { getAppSettings } from "@/services/settings";
 import { fetchCategorySections, getSection, Section } from "@/services/sections";
-import { getAllGames, removeLeader, getGameName, setMorningLeader, setAfternoonLeader } from "@/services/games";
+import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
 
 const userStore = useAuthStore();
 const router = useRouter();
@@ -285,8 +285,8 @@ const deleteAccount = async () => {
     let removeMorningGamePromise = null;
     let removeAfternoonGamePromise = null;
     try{
-      if(userProfile.value.morningGame) removeMorningGamePromise = removeLeader(userProfile.value.morningGame, userId.value, true, false);
-      if(userProfile.value.afternoonGame) removeAfternoonGamePromise = removeLeader(userProfile.value.afternoonGame, userId.value, false, true);
+      if(userProfile.value.morningGame) removeMorningGamePromise = removeMorningLeader(userProfile.value.morningGame, userId.value);
+      if(userProfile.value.afternoonGame) removeAfternoonGamePromise = removeAfternoonLeader(userProfile.value.afternoonGame, userId.value);
       const removeAccountPromise = userStore.removeAccount(userId.value);
       await Promise.all([removeMorningGamePromise, removeAfternoonGamePromise, removeAccountPromise])
     } catch(error: any){

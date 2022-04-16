@@ -203,6 +203,7 @@ export const setEven = async (matchId: string) => {
 - Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
 - La catégorie `Animateurs` n'est actuellement pas créée dans settings/app/categories par le script d'init DB 
 - Modifier détails section depuis SectionsPage
+- implémenter les weigh
 
 # Désistement
 

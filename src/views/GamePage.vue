@@ -18,7 +18,6 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-
         <ion-card>
           <ion-card-header>
             <ion-card-title>Responsables</ion-card-title>
@@ -103,7 +102,7 @@ import { useAuthStore, ROLES } from "@/services/users";
 import {  choicePopup, errorPopup, infoPopup, toastPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { Game,  getGame, removeLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
+import { forceFetchGame, Game,  getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
 import { getGameMatches } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
@@ -203,19 +202,23 @@ const loadLeaderInfo = async (leaders: string[]) => {
 }
 
 const register = () => {
-  choicePopup("A quel moment de la journée ?", ["Matin", "Après-midi"], (choice: string) => {
-    if (choice === "Matin") setMorningLeader(gameId.value as string).catch((error) => {
+  choicePopup("A quel moment de la journée ?", ["Matin", "Après-midi"], async (choice: string) => {
+    try {
+      if (choice === "Matin") await setMorningLeader(gameId.value as string);
+      if (choice === "Après-midi") await setAfternoonLeader(gameId.value as string);
+      forceFetchGame(gameId.value); // this is required, otherwise the leader arrays does not update
+    } catch(error: any) {
       errorPopup(error.message);
-    });
-    if (choice === "Après-midi") setAfternoonLeader(gameId.value as string).catch((error) => {
-      errorPopup(error.message);
-    });
+    }
   })
-};
+}
 const unRegister = async () => {
   isUnregistering.value = true;
   try {
-    await removeLeader(gameId.value as string);
+    const morningPromise = removeMorningLeader(gameId.value as string);
+    const afternoonPromise = removeAfternoonLeader(gameId.value as string);
+    await Promise.all([morningPromise, afternoonPromise]);
+    forceFetchGame(gameId.value); // this is required, otherwise the leader arrays does not update
   } catch(error: any){
     errorPopup(`Nous n'avons pas pu te désincrire : ${error.message}`)
   }
