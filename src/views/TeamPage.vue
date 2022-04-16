@@ -149,9 +149,9 @@ const sectionMean = ref("0");
 // async update sectionScore
 watchEffect(async () => {
   if (!isTeam.value) return; // do not run this watcher if team is not initialized
-  const sectionScores = section.value?.scores;
-  if (!sectionScores) return;
-  sectionMean.value = (section.value.score / sectionScores.length || 0).toFixed(2);
+  const nbTeams = section.value?.nbTeams;
+  if (!nbTeams) return;
+  sectionMean.value = (section.value.score / nbTeams || 0).toFixed(2);
 });
 
 // Methods

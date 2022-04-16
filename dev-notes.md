@@ -49,7 +49,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 - [x] Login
   - [x] Split login & profile
-  
+
 - [x] Profil (perso & qqun d'autre)
 
   - [ ] mettre condition sur ce qu'on peut modifier
@@ -73,12 +73,12 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [x] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
 
 - [ ] Listes
-  - [ ] Liste des jeux 
-    - [ ] filtre par circuit
-    - [ ] si admin : bouton pour éditer nom & description
+  - [x] Liste des jeux 
+    - [x] filtre par circuit
+    - [x] si admin : bouton pour éditer nom & description
   - [ ] Utilisateurs
     - [ ] filtrepar section
-  - [ ] Liste de matches 
+  - [ ] ~~Liste de matches~~ 
     - [ ] filtre temps et filtre circuit
     - [ ] bouton "charger" pour éviter trop de requêtes)
 
@@ -91,6 +91,11 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] Paramètres généraux de l'app
 
   - [ ] set schedule
+
+- [ ] ignore_score
+
+  - [ ] réduire nbTeams de la section (pour le score)
+  - [ ] afficher l'équipe d'une certaine manière aux animateurs
 
   
 
@@ -114,13 +119,13 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - lastGameDbUpdate: date de la dernière modification de la db de jeu
   - maxGameLeaders : number (max amount of leaders per game)
 
-- [ ] Match : retirer game_name (on obtient cette info des documents de games)
+- [x] Match : retirer game_name (on obtient cette info des documents de games)
 
   
 
 # Règles db
 
-- seuls les modos peuvent modifier l
+- seuls les modos peuvent modifier les noms de jeu
 - tous les users peuvent modifier leur profile sauf leur role
 - seuls les admins peuvent modifier le profile des autres
 - Seuls les admins peuvent voir le classement en temps réel
@@ -172,7 +177,7 @@ export const setEven = async (matchId: string) => {
 # Next release
 
 - [Pull-to-refresh](https://ionicframework.com/docs/api/refresher)
-- Retirer matches des collection games & teams (utiliser des queries à la place)
+- Retirer matches des collection games & teams (utiliser des queries à la place). Vérifier tout de même si ce n'est pas utile pour la validation de la db à la fin de l'initialisation.
 - QR codes
 - Create DB from web app
 - Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
@@ -180,7 +185,7 @@ export const setEven = async (matchId: string) => {
 - match time start at 0 ([instead of 1](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2))
 - Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore)
 - Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
-- La catégorie `Animateurs` n'est pas créée dans settings/app/categories par le script d'init DB 
+- La catégorie `Animateurs` n'est actuellement pas créée dans settings/app/categories par le script d'init DB 
 
 # Désistement
 

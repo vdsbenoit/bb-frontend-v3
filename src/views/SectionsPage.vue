@@ -153,7 +153,7 @@ const selectedSection = computed((): Section | undefined => {
   return selectedSectionId.value ? getSection(selectedSectionId.value) : undefined;
 });
 const sectionMeanScore = computed(() => {
-  return selectedSection.value?.score ? (selectedSection.value.score / selectedSection.value.scores.length || 0).toFixed(2) : 0;
+  return selectedSection.value?.score ? (selectedSection.value.score / selectedSection.value.nbTeams || 0).toFixed(2) : 0;
 });
 const isLoadingSections = computed(() => {
   if (selectedCategory.value && !sections.value) return true;
