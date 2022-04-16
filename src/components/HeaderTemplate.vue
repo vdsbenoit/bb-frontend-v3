@@ -8,17 +8,20 @@
         <ion-menu-button color="primary"></ion-menu-button>
       </ion-buttons>
       <ion-title>{{ props.pageTitle }}</ion-title>
+      <ion-buttons slot="end">
+        <slot></slot>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
 </template>
 
 <script setup lang="ts">
 import { IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton } from "@ionic/vue";
-import { defineProps,   } from "vue";
+import { defineProps } from "vue";
 const props = defineProps(["pageTitle"]);
 </script>
 <style scoped>
 .can-go-back ion-menu-button {
-    display: none;
+  display: none;
 }
 </style>

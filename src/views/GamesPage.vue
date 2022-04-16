@@ -1,19 +1,8 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button></ion-back-button>
-        </ion-buttons>
-        <ion-buttons slot="start">
-          <ion-menu-button color="primary"></ion-menu-button>
-        </ion-buttons>
-        <ion-title>{{ pageTitle }}</ion-title>
-        <ion-buttons slot="end" v-if="canEditGames">
-          <ion-button @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
+    <header-template :pageTitle="pageTitle">
+      <ion-button v-if="canEditGames" @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
+    </header-template>
     <ion-content :fullscreen="true">
       <ion-item color="primary">
         <ion-label class="ion-text-center">Circuit</ion-label>
@@ -66,6 +55,7 @@
 import { IonContent, IonPage, IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton, IonList, IonItem, IonLabel, IonBadge, IonText, 
 useIonRouter, IonSpinner, IonSelect, IonSelectOption, IonButton, IonIcon, IonInput } from "@ionic/vue";
 import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
+import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";

@@ -50,7 +50,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] Si pas connecté : invitation à s'inscrire
   - [ ] Si connecté
     - [ ] Si pas de jeu : inviter à s'inscrire à un jeu / une équipe
-    - [ ] Sinon Mon programme / Mon jeu
+    - [ ] Sinon liens vers Mon programme / Mon jeu
+    - [ ] Compléter profil
 
 - [x] Login
   - [x] Split login & profile
@@ -66,6 +67,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] fetch classement
 
 - [x] Jeu (avec liste matches, ordonnés par temps)
+
+  - [ ] Ajouter bouton "Inscrire quelqu'un"
 
 - [x] Sections (avec liste d'équipe)
 
@@ -88,8 +91,6 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
     - [ ] filtre temps et filtre circuit
     - [ ] bouton "charger" pour éviter trop de requêtes)
 
-- [ ] Chercher un match: lecture seule si pas connecté
-
 - [ ] Classement
 
 - [ ] Gestion équipes (voir app précédente)
@@ -102,6 +103,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
   - [ ] réduire nbTeams de la section (pour le score)
   - [ ] afficher l'équipe d'une certaine manière aux animateurs
+
+- [ ] role guards
 
   
 
