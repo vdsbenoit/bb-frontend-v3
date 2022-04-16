@@ -84,7 +84,6 @@
                   <ion-text > vs </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
                 </ion-label>
-                <ion-icon :icon="chevronForwardOutline"></ion-icon>
                 <ion-badge slot="end" class="ion-no-margin" :color="match.even ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
               </ion-item>
             </ion-list>
@@ -103,7 +102,6 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, 
 IonBadge, IonGrid, IonText, IonButton, useIonRouter, IonSpinner } from "@ionic/vue";
-import { chevronForwardOutline } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import {  choicePopup, errorPopup, infoPopup, toastPopup } from "@/services/popup";

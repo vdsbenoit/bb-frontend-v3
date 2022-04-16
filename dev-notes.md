@@ -120,6 +120,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # Règles db
 
+- seuls les modos peuvent modifier l
 - tous les users peuvent modifier leur profile sauf leur role
 - seuls les admins peuvent modifier le profile des autres
 - Seuls les admins peuvent voir le classement en temps réel

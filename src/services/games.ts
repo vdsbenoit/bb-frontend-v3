@@ -87,6 +87,10 @@ export const canSetGameScore = async (gameId: string) => {
 /// Setters //
 /////////////
 
+export const setName = (gameId: number, name: string) => {
+  console.log(`Changing the name of game ${gameId} to ${name}`);
+  return gamesModule.doc(gameId.toString()).merge({ name: name });
+}
 /**
  * These methods actually update the DB, after the checks in setters below passed.
  */

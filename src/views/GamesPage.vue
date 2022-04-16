@@ -9,6 +9,9 @@
         <ion-menu-button color="primary"></ion-menu-button>
       </ion-buttons>
       <ion-title>{{ pageTitle }}</ion-title>
+      <ion-buttons slot="end" v-if="canEditGames">
+        <ion-button @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
     <ion-content :fullscreen="true">
@@ -22,31 +25,55 @@
         <div v-if="games?.size < 1" class="ion-text-center" style="background: transparent">
           <ion-spinner></ion-spinner>
         </div>
-        <ion-item v-else v-for="game in games?.values()" :key="game.id" :routerLink="`/game/${game.id}`" class="">
-          <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ game.id }}</ion-badge>
-          <ion-label>
-            <ion-text>{{ game.name }}</ion-text>
-          </ion-label>
-          <ion-badge slot="end" class="ion-no-margin" :color="getStatus(game).color">{{ getStatus(game).text }}</ion-badge>
-        </ion-item>
+        <div v-else v-for="game in games?.values()" :key="game.id">
+          <div v-if="editMode">
+            <div v-if="game.id === editedGameId && !isUpdating">
+              <ion-item>
+                <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ game.id }}</ion-badge>
+                <ion-input type="text" v-model="newGameName" ></ion-input>
+                <ion-button @click="updateGameName()" color="success"><ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp"></ion-icon></ion-button>
+                <ion-button @click="clearEdition()" color="danger"><ion-icon slot="icon-only" :ios="closeOutline" :md="closeSharp"></ion-icon></ion-button>
+              </ion-item>
+            </div>
+            <div v-else>
+              <ion-item>
+                <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ game.id }}</ion-badge>
+                <ion-input type="text" readonly="true" >{{ game.name }}</ion-input>
+                <ion-spinner v-if="isUpdating && game.id === editedGameId" slot="end"></ion-spinner>
+                <ion-icon v-else @click="editGame(game)" slot="end" :ios="pencilOutline" :md="pencilSharp"></ion-icon>
+              </ion-item>
+            </div>
+          </div>
+          <div v-else>
+            <ion-item @click="goToGamePage(game.id)">
+              <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ game.id }}</ion-badge>
+              <ion-label>
+                <ion-text>{{ game.name }}</ion-text>
+              </ion-label>
+              <ion-badge slot="end" class="ion-no-margin" :color="getStatus(game).color">{{ getStatus(game).text }}</ion-badge>
+            </ion-item>
+          </div>
+        </div>
       </ion-list>
       <div v-else class="not-found">
         <h2 class="ion-text-center ion-align-items-center" >Sélectionner un circuit</h2>
       </div>
-      
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton, IonList, IonItem, IonLabel, IonBadge, IonText, useIonRouter, IonSpinner, IonSelect, IonSelectOption } from "@ionic/vue";
-import { useAuthStore } from "@/services/users";
-import { choicePopup, errorPopup } from "@/services/popup";
+import { IonContent, IonPage, IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton, IonList, IonItem, IonLabel, IonBadge, IonText, 
+useIonRouter, IonSpinner, IonSelect, IonSelectOption, IonButton, IonIcon, IonInput } from "@ionic/vue";
+import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
+import { ROLES, useAuthStore } from "@/services/users";
+import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { Game, getGames } from "@/services/games";
+import { Game, getGames, setName } from "@/services/games";
 import { onBeforeMount, onMounted } from "vue";
 import { getCircuits, getMaxGameLeaders } from "@/services/settings";
+import { toastController } from "@ionic/core";
 
 const user = useAuthStore();
 const route = useRoute();
@@ -56,6 +83,9 @@ const router = useIonRouter();
 const editMode = ref(false);
 const circuits = ref();
 const selectedCircuit = ref("");
+const editedGameId = ref(-1);
+const newGameName = ref("");
+const isUpdating = ref(false);
 
 // lifecicle hooks
 
@@ -72,6 +102,12 @@ const pageTitle = computed(() => {
   if (editMode.value) return `Édition des épreuves`;
   return "Épreuves";
 });
+const canEditGames = computed(() => {
+  return user.profile.role >= ROLES.Moderateur;
+});
+const editIcon = computed(() => {
+  return (editMode.value) ? {ios: checkmarkOutline, md: checkmarkSharp} : {ios: pencilOutline, md: pencilSharp}
+});
 
 // Watchers
 
@@ -87,6 +123,28 @@ const getStatus = (game: Game) => {
   if (!isFull(game.morningLeaders) && !isFull(game.afternoonLeaders)) return { text: "Libre", color: "primary" };
   return { text: "inconnu", color: "medium" };
 };
+const toggleEditMode = () => {
+  editMode.value = !editMode.value 
+}
+const goToGamePage = (gameId: number) => {
+  if (!editMode.value) router.push(`/game/${gameId}`);
+}
+const editGame = (game: Game) => {
+  newGameName.value = game.name;
+  editedGameId.value = game.id;
+}
+const clearEdition = () => {
+  newGameName.value = "";
+  editedGameId.value = -1;  
+}
+const updateGameName = async () => {
+  isUpdating.value = true;
+  await setName(editedGameId.value, newGameName.value);
+  toastPopup("Le nom du jeu a bien été mis à jour");
+  isUpdating.value = false;
+  clearEdition();
+
+}
 </script>
 <style scoped>
 .item-no-padding {
