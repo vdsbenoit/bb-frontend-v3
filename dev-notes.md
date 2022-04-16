@@ -109,7 +109,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] réduire nbTeams de la section (pour le score)
   - [ ] afficher l'équipe d'une certaine manière aux animateurs
 
-- [ ] role guards
+- [ ] role guards -> ajouter au guard actuel
 
   
 

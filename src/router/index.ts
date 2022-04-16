@@ -1,3 +1,4 @@
+import { ROLES } from './../services/users';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import { useAuthStore } from "@/services/users";
@@ -11,6 +12,10 @@ import HomePageVue from '../views/HomePage.vue';
  const authCheck = (to: any, from: any) => {
   const user = useAuthStore();
   console.log("authCheck", user.isLoggedIn);
+  if (to.name === "settings"){
+    if(user.profile.role >= ROLES.Administrateur) return true;
+    else return { name: 'home' };
+  }
   if (user.isLoggedIn) {
     if (to.name === "login") {
       return { name: 'home' }
@@ -83,6 +88,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     name: 'login',
     path: '/login',
+    component: () => import ('../views/LoginPage.vue'),
+    beforeEnter: authCheck,
+  },
+  {
+    name: 'settings',
+    path: '/settings',
     component: () => import ('../views/LoginPage.vue'),
     beforeEnter: authCheck,
   },
