@@ -48,7 +48,7 @@
                 <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
                   <ion-spinner></ion-spinner>
                 </div>
-                <ion-list v-else class="ranking">
+                <ion-list v-else class="no-pointer">
                   <ion-item>
                     <ion-label>Score accumulé</ion-label><ion-note slot="end">{{ selectedSection?.score }}</ion-note></ion-item
                   >

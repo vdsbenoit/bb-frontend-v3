@@ -184,7 +184,7 @@ ion-menu.md ion-list#menu-list ion-list-header {
 ion-item {
   cursor: pointer;
 }
-.ranking ion-item {
+.no-pointer ion-item {
   cursor: auto;
 }
 

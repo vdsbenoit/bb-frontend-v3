@@ -52,10 +52,10 @@
                 </ion-col>
               </ion-row>
               <!-- Score icons -->
-              <ion-row v-if="match?.even" class="ion-align-items-center ion-text-center">
+              <ion-row v-if="match?.draw" class="ion-align-items-center ion-text-center">
                 <ion-col size="11">
-                  <div class="score-div even-color">
-                    <span class="even-span ion-text-uppercase">égalité</span>
+                  <div class="score-div draw-color">
+                    <span class="draw-span ion-text-uppercase">égalité</span>
                   </div>
                 </ion-col>
               </ion-row>
@@ -75,9 +75,26 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-        <div class="ion-padding-horizontal" v-if="canSetScore">
-          <ion-button @click="register" expand="block">
-            <span v-if="match.winner || match.even">Modifier le score</span>
+        <ion-card v-if="showModeration">
+          <ion-card-header>
+            <ion-card-title>Modération</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list  lines="none" v-if="match?.reporter" class="no-pointer">
+              <ion-item class=""><ion-label>
+                Reporter: {{reporterName}} ({{reporter?.sectionName}})
+              </ion-label></ion-item>
+              <ion-item class=""><ion-label>
+                Modifié à : {{formatedDate}}
+              </ion-label></ion-item>
+            </ion-list>
+            <ion-list-header v-else><h2>Le score n'a pas encore été enregsitré</h2></ion-list-header>
+          </ion-card-content>
+        </ion-card>
+        <div class="ion-margin-top" style="max-width: 600px; margin: 0 auto" v-if="canSetScore">
+          <ion-button class="ion-margin-horizontal ion-margin-top" @click="setScore" expand="block" :disabled="isSettingScore">
+            <ion-spinner v-if="isSettingScore"></ion-spinner>
+            <span v-else-if="match.winner || match.draw">Modifier le score</span>
             <span v-else>Enregister le score</span>
           </ion-button>
         </div>
@@ -91,21 +108,22 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardSubtitle, IonRow, IonCol, IonIcon, IonGrid, IonButton, IonText, useIonRouter, IonSpinner } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardSubtitle, IonRow, IonCol, IonIcon, IonGrid, IonButton, IonText, useIonRouter, IonSpinner, 
+IonLabel, IonItem, IonList, IonListHeader, IonCardHeader, IonCardTitle} from "@ionic/vue";
 import { closeOutline, closeSharp, trophyOutline, trophySharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore } from "@/services/users";
+import { ROLES, useAuthStore } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
-import { getMatch, Match, setEven, setScore } from "@/services/matches";
+import { getMatch, Match, setMatchDraw, setMatchScore } from "@/services/matches";
 import { getTeam, Team } from "@/services/teams";
 import { canSetGameScore, Game, getGame } from "@/services/games";
 import { isScoresFrozen } from "@/services/settings";
 import { getSchedule } from "@/services/settings";
 import { choicePopup, errorPopup } from "@/services/popup";
 
-const store = useAuthStore();
+const userStore = useAuthStore();
 const route = useRoute();
 const router = useIonRouter();
 
@@ -114,6 +132,7 @@ const router = useIonRouter();
 const matchId = ref("");
 const canSetScore = ref(false);
 const isLoading = ref(true);
+const isSettingScore = ref(false);
 
 // lifecicle hooks
 
@@ -133,7 +152,7 @@ const match = computed((): Match => {
   return getMatch(matchId.value as string) as Match;
 });
 const game = computed((): Game | undefined => {
-  return (match.value?.game_id) ? getGame(match.value?.game_id as string) as Game : undefined;
+  return match.value?.game_id ? (getGame(match.value?.game_id as string) as Game) : undefined;
 });
 const isMatch = computed(() => {
   if (match.value?.id) {
@@ -144,7 +163,7 @@ const isMatch = computed(() => {
 });
 const pageTitle = computed(() => {
   if (isMatch.value) return `Duel ${match.value?.player_ids[0]} vs ${match.value?.player_ids[1]}`;
-  if (isLoading.value) return "Chargement"
+  if (isLoading.value) return "Chargement";
   return "Duel inconnu";
 });
 const firstPlayer = computed((): Team | undefined => {
@@ -154,7 +173,25 @@ const secondPlayer = computed((): Team | undefined => {
   return match.value?.player_ids[1] ? getTeam(match.value.player_ids[1]) : undefined;
 });
 const schedule = computed(() => {
-  return match.value?.time ? getSchedule(match.value?.time - 1) : {start: " ", stop: " "};
+  return match.value?.time ? getSchedule(match.value?.time - 1) : { start: " ", stop: " " };
+});
+const showModeration = computed(() => {
+  return userStore.profile.role >= ROLES.Modérateur;
+})
+const reporter = computed(() => {
+  if(!showModeration) return // to prevent any unrequired db calls 
+  if(! match.value?.reporter) return undefined;
+  return userStore.getProfile(match.value.reporter);
+});
+const reporterName = computed(() => {
+  if(!showModeration) return // to prevent any unrequired db calls 
+  if(! match.value?.reporter) return undefined;
+  return userStore.getName(match.value.reporter);
+});
+const formatedDate = computed(() => {
+  if(!showModeration) return // to prevent any unrequired db calls 
+  const date = new Date(match.value.lastModified);
+  return date.toLocaleString("fr-BE");
 })
 
 // Watchers
@@ -167,22 +204,25 @@ watchEffect(async () => {
 
 // Methods
 
-const register = () => {
+const winHandler = (winner: string) => {
+  const loser = match.value.player_ids[0] === winner ? match.value.player_ids[1] : match.value.player_ids[0];
+  setMatchScore(matchId.value, winner, loser);
+}
+const drawHandler = () => {
+   setMatchDraw(matchId.value);
+}
+
+const setScore = () => {
   if (isScoresFrozen()) {
     errorPopup("Il n'est pas ou plus possible d'enregistrer des scores");
     return;
   }
-  if (!canSetScore) { // fixme: seems useless
-    errorPopup(`Tu n'as pas le droit d'enregister de scores cette épreuve`);
-  }
   choicePopup("Est-ce une victoire ?", ["Victoire", "Égalité"], (choice: string) => {
-    if (choice === "Égalité") setEven(matchId.value);
-    else if (choice === "Victoire")
-      choicePopup("Qui est l'heureux gagnant ?", [match.value.player_ids[0], match.value.player_ids[1]], (winner: string) => {
-        const loser = match.value.player_ids[0] === winner ? match.value.player_ids[1] : match.value.player_ids[0];
-        setScore(matchId.value, winner, loser);
-      });
-    else console.error(`Unknown choice: ${choice}`);
+    if (choice === "Égalité") {
+      drawHandler();
+    } else if (choice === "Victoire") {
+      choicePopup("Qui est l'heureux gagnant ?", [match.value.player_ids[0], match.value.player_ids[1]], winHandler);
+    } else console.error(`Unknown choice: ${choice}`);
   });
 };
 
@@ -215,10 +255,10 @@ const scoreIcon = (playerId: string | undefined) => {
 .loser-color {
   background-color: var(--ion-color-danger);
 }
-.even-color {
+.draw-color {
   background-color: var(--ion-color-warning);
 }
-.even-span {
+.draw-span {
   display: inline-block;
   vertical-align: middle;
   line-height: normal;

@@ -30,7 +30,7 @@
             <div v-if="isLoading" class="ion-text-center">
               <ion-spinner></ion-spinner>
             </div>
-            <ion-list v-else class="ranking">
+            <ion-list v-else class="no-pointer">
               <ion-item class="ion-no-padding">
                 <ion-label>Score de l'équipe</ion-label><ion-note slot="end">{{ team?.score }}</ion-note></ion-item
               >
@@ -59,7 +59,7 @@
                   <p>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} | 📍 Jeu n° {{ match.game_id }}</p>
                 </ion-label>
                 <ion-icon :ios="statusIcon(match).ios" :md="statusIcon(match).md" :color="statusIcon(match).ios == trophyOutline ? 'success' : 'danger'" v-if="statusIcon(match).md" slot="end"></ion-icon>
-                <ion-badge slot="end" class="ion-no-margin" color="warning" v-if="match.even">Égalité</ion-badge>
+                <ion-badge slot="end" class="ion-no-margin" color="warning" v-if="match.draw">Égalité</ion-badge>
               </ion-item>
             </ion-list>
             <ion-list-header v-else><h2>Aucun jeu trouvé</h2></ion-list-header>

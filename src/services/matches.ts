@@ -19,8 +19,9 @@ export interface Match {
   player_numbers: number[];
   winner: string;
   loser: string;
-  even: boolean;
+  draw: boolean;
   reporter: string;
+  lastModified: string;
 }
 
 function matchesDefaults(payload?: Partial<Match>): Match {
@@ -33,8 +34,9 @@ function matchesDefaults(payload?: Partial<Match>): Match {
     player_numbers: [],
     winner: "",
     loser: "",
-    even: false,
+    draw: false,
     reporter: "",
+    lastModified: "",
   }
   return { ...defaults, ...payload }
 }
@@ -75,12 +77,16 @@ export const getTeamMatches = (teamId: string) => {
 /// Setters //
 /////////////
 
-export const setScore = async (matchId: string, winner: string, loser: string) => {
+export const setMatchScore = async (matchId: string, winner: string, loser: string) => {
+  const reporter = user.uid;
+  const lastModified = new Date().toISOString()
   const match = matchesModule.doc(matchId);
-  match.merge({winner, loser, even: false});
+  return match.merge({winner, loser, draw: false, reporter, lastModified});
 };
 
-export const setEven = async (matchId: string) => {
+export const setMatchDraw = async (matchId: string) => {
+  const reporter = user.uid;
+  const lastModified = new Date().toISOString()
   const match = matchesModule.doc(matchId);
-  match.merge({winner: "", loser: "", even: true});
-}
+  return match.merge({winner: "", loser: "", draw: true, reporter, lastModified});
+};

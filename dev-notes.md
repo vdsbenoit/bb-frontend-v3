@@ -42,46 +42,42 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Continuer à parser les pages d'auth management depuis "vue-firebase-auth-tuto"
 - [x] parser & adapter le popup manager depuis BadenBattle/frontend
 - [x] merger login & settings page into ProfilePage
-- [ ] disclaimer rgpd dans about
 - [x] popup enregistrement settings
-- [ ] `users.ts`: retirer prop `error`
+- [x] `users.ts`: retirer prop `error`
 - [x] Magnetar
   - [x] checker si merge fonction avec les arrays (games.ts) -> non, il faut déstructurer l'array précédent et merger soi-même
-- [ ] save score au niveau des matches & équipes
-  - [ ] seule les animateurs d'un match peuvent y ajouter des points
 - [x] Split profile & login
 - [x] fix bug menu
-- [ ] Mettre à jour le field `teams` des documents de la collection sections
+- [x] Mettre à jour le field `teams` des documents de la collection sections
+- [x] Refactor even with draw
 
 # Pages
 
 - [ ] Accueil
-
   - [ ] Si pas connecté : invitation à s'inscrire
   - [ ] Si connecté
     - [ ] Si pas de jeu : inviter à s'inscrire à un jeu / une équipe
     - [ ] Sinon liens vers Mon programme / Mon jeu
     - [ ] Compléter profil
 
+- [x] About
+  - [ ] Explication sur le scoring (2 pt par victoire, 1pt par égalité)
+
 - [x] Login
   - [x] Split login & profile
-
+  - [ ] RGPD
 - [x] Profil (perso & qqun d'autre)
 
-  - [ ] mettre condition sur ce qu'on peut modifier
-  - [ ] erreurs enregistrement settings
+  - [x] mettre condition sur ce qu'on peut modifier
+  - [x] erreurs enregistrement settings
   - [ ] bouton pour demander une promotion
-
 - [x] Equipe (avec liste matches, ordonnés par temps)
 
   - [ ] fetch classement
-
 - [x] Jeu (avec liste matches, ordonnés par temps)
-
   - [ ] Ajouter bouton "Inscrire quelqu'un"
 
 - [x] Sections (avec liste d'équipe)
-
 - [x] Match
   - [ ] Enregistrer le score au niveau 
     - [x] du match
@@ -91,15 +87,12 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] +1 égalité
   - [x] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
 
-- [ ] Listes
-  - [x] Liste des jeux 
-    - [x] filtre par circuit
-    - [x] si admin : bouton pour éditer nom & description
-  - [ ] Utilisateurs
-    - [ ] filtrepar section
-  - [ ] ~~Liste de matches~~ 
-    - [ ] filtre temps et filtre circuit
-    - [ ] bouton "charger" pour éviter trop de requêtes)
+- [x] Liste des jeux 
+  - [x] filtre par circuit
+  - [x] si admin : bouton pour éditer nom & description
+- [ ] Liste utilisateurs
+  - [ ] filtre par section
+  - [ ] filtre demande de promotion
 
 - [ ] Classement
 
@@ -107,6 +100,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 - [ ] Paramètres généraux de l'app
 
+  - [ ] reset all scores
   - [ ] set schedule
 
 - [ ] ignore_score
@@ -194,6 +188,7 @@ export const setEven = async (matchId: string) => {
 - séparation pour midi dans l'horaire
 - Description de jeu
 - Fix bug uncaught promise après déconnexion
+- OSS License
 
 # Next release
 
@@ -202,7 +197,7 @@ export const setEven = async (matchId: string) => {
 - QR codes
 - Create DB from web app
 - Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
-- Refactor even with draw
+- Get rid of snake case in the DB
 - match time start at 0 ([instead of 1](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2))
 - Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore). Je verrais mieux ça au niveau des Pages, vu que ça touche à plusieurs services.
 - Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections

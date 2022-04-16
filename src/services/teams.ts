@@ -62,3 +62,15 @@ export const getTeam = (id: string) => {
 /// Setters //
 /////////////
 
+export const addWin = (teamId: string) => {
+  return 
+}
+export const removeWin = (teamId: string) => {
+  return 
+}
+export const addDraw = (teamId: string) => {
+  return 
+}
+export const removeDraw = (teamId: string) => {
+  return 
+}

@@ -26,10 +26,8 @@
           <ion-card-content>
             <ion-list lines="none" class="ion-no-margin ion-no-padding">
               <ion-text color="primary"><h2>Matin</h2></ion-text>
-              <ion-spinner class="ion-margin-start" v-if="isLoadingMorningLeaders"></ion-spinner>
-              <div v-else>
-                <span class="ion-padding-start" v-if="leaders.morning.length < 1">Pas encore de responsable inscrit</span>
-              </div>
+              <ion-spinner v-if="isLoadingMorningLeaders" class="ion-margin-start" ></ion-spinner>
+              <span class="ion-padding-start" v-else-if="leaders.morning.length < 1">Pas encore de responsable inscrit</span>
               <ion-item v-for="leader in leaders.morning" :key="leader.uid" :routerLink="`/profile/${leader.uid}`">
                 <ion-label class="ion-text-wrap">
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
@@ -39,10 +37,8 @@
             </ion-list>
             <ion-list lines="none" class="ion-no-margin ion-no-padding">
               <ion-text color="primary"><h2>Après-midi</h2></ion-text>
-              <ion-spinner  class="ion-margin-start" v-if="isLoadingAfternoonLeaders"></ion-spinner>
-              <div v-else>
-                <span class="ion-padding-start" v-if="leaders.afternoon.length < 1">Pas encore de responsable inscrit</span>
-              </div>
+              <ion-spinner v-if="isLoadingAfternoonLeaders" class="ion-margin-start"></ion-spinner>
+              <span class="ion-padding-start" v-else-if="leaders.afternoon.length < 1">Pas encore de responsable inscrit</span>
               <ion-item v-for="leader in leaders.afternoon" :key="leader.uid" :routerLink="`/profile/${leader.uid}`">
                 <ion-label class="ion-text-wrap">
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
@@ -84,7 +80,7 @@
                   <ion-text > vs </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
                 </ion-label>
-                <ion-badge slot="end" class="ion-no-margin" :color="match.even ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
+                <ion-badge slot="end" class="ion-no-margin" :color="match.draw ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
               </ion-item>
             </ion-list>
             <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
@@ -227,7 +223,7 @@ const unRegister = async () => {
 }
 const getWinner = (match: any) => {
   if (match.winner) return match.winner;
-  if (match.even === true) return "Égalité";
+  if (match.draw === true) return "Égalité";
   return "";
 };
 </script>

@@ -75,15 +75,19 @@ export const getGameName = (id: string) => {
   return gameModule.data?.name;
 };
 export const canSetGameScore = async (gameId: string) => {
+  // Check frozen score
   if (isScoresFrozen()) {
     console.log("Cannot set score, score registration is closed")
     return false;
   }
+  // Check if not leader
   if (user.profile.role < ROLES.Animateur){ 
     console.log(`User ${user.uid} cannot edit game ${gameId} score. Insufficient role`);
     return false;
   }
+  // Check if moderator
   if (user.profile.role >= ROLES.Modérateur) return true;
+  // Check if global setting allow leaders to set any scores
   if (canSetScoreAnywhere()) return true;
   const gameModule = gamesModule.doc(gameId);
   await gameModule.fetch();
