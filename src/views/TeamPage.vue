@@ -1,6 +1,20 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="pageTitle"></header-template>
+    <ion-header :translucent="true">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-buttons slot="start">
+          <ion-menu-button color="primary"></ion-menu-button>
+        </ion-buttons>
+        <ion-title>{{ pageTitle }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button v-if="isMyTeam" @click="unRegisterPlayer"><ion-icon slot="icon-only" :icon="star"></ion-icon></ion-button>
+          <ion-button v-if="showRegisterButton" @click="registerPlayer"><ion-icon slot="icon-only" :icon="starOutline"></ion-icon></ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
     <ion-content :fullscreen="true">
       <div v-if="isTeam || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
@@ -76,9 +90,9 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow,
-IonCol, IonListHeader, IonIcon, IonGrid, useIonRouter, IonBadge, IonSpinner, IonButton } from "@ionic/vue";
-import { closeOutline, closeSharp, trophyOutline, trophySharp } from "ionicons/icons";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, 
+IonIcon, IonGrid, useIonRouter, IonBadge, IonSpinner, IonButton, IonButtons, IonTitle, IonHeader, IonToolbar, IonBackButton, IonMenuButton } from "@ionic/vue";
+import { closeOutline, closeSharp, trophyOutline, trophySharp, starOutline, star } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
@@ -88,7 +102,7 @@ import { getTeam, Team } from "@/services/teams";
 import { getTeamMatches } from "@/services/matches";
 import { getSchedule, isShowRankingToAll } from "@/services/settings";
 import { getSection, Section } from "@/services/sections";
-import { errorPopup, infoPopup } from "@/services/popup";
+import { errorPopup, infoPopup, toastPopup } from "@/services/popup";
 
 const user = useAuthStore();
 const route = useRoute();
@@ -140,7 +154,13 @@ const showRanking = computed(() => {
   return user.profile.role >= ROLES.Moderateur;
 });
 const showRegisterButton = computed(() => {
+  if (isMyTeam.value) return false;
+  if (user.profile.role >= ROLES.Moderateur) return true;
   return team.value?.sectionId && user.profile.sectionId === team.value.sectionId;
+});
+const isMyTeam = computed(() => {
+  if (!user.profile.team) return false;
+  return user.profile.team === teamId.value;
 })
 
 // Watchers
@@ -163,13 +183,20 @@ const statusIcon = (match: any) => {
 };
 const registerPlayer = () => {
   if (team.value) user.updateProfile(user.uid, {team: team.value.id}).then(() => {
-    infoPopup(`L'équipe ${team.value.id} a bien été enregistrée dans ton profil`);
+    toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`);
   }).catch((e) => {
     errorPopup(`Une erreur s'est produite lors de la modification de ton profil`); 
     console.error(e);
   });
 }
-
+const unRegisterPlayer = () => {
+  if (team.value) user.updateProfile(user.uid, {team: ""}).then(() => {
+    toastPopup(`Nous t'avons désincrit.e de cette équipe`);
+  }).catch((e) => {
+    errorPopup(`Une erreur s'est produite lors de la modification de ton profil`); 
+    console.error(e);
+  });
+}
 </script>
 <style scoped>
 ion-card-title {

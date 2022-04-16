@@ -57,7 +57,12 @@ const appPages = computed(() => {
   if (!user.isLoggedIn) return [homePage, aboutPage];
   // if (!user.isLoggedIn) return [homePage, loginPage, aboutPage]; // fixme: add login page back
   let pages = [homePage];
-  if (user.profile.team) pages.splice(1, 0, playerPage);
+  if (user.profile.team) pages = [...pages,  {
+    title: "Mon Equipe",
+    url: `/team/${user.profile.team}`,
+    iosIcon: peopleCircleOutline,
+    mdIcon: peopleCircleSharp,
+  }]
   if (user.profile.role >= ROLES.Animateur) {
     if (user.profile.morningGame) pages = [...pages, {
       title: "Mon épreuve du matin",
@@ -85,12 +90,6 @@ const isSelected = (url: string) => url === route.path;
 
 // Data
 
-const playerPage = {
-  title: "Mon Equipe",
-  url: "/team",
-  iosIcon: peopleCircleOutline,
-  mdIcon: peopleCircleSharp,
-};
 const modPages = [
   {
     title: "Classement",
@@ -305,5 +304,8 @@ ion-label p {
   color: #ffffff;
   font-size: 18px;
   font-weight: bold;
+}
+.can-go-back ion-menu-button {
+    display: none;
 }
 </style>

@@ -36,6 +36,7 @@
                   <ion-item> <ion-label>Nom</ion-label>{{ selectedSection.name }} </ion-item>
                   <ion-item> <ion-label>Ville</ion-label>{{ selectedSection.city }} </ion-item>
                   <ion-item> <ion-label>Unité</ion-label>{{ selectedSection.unit }} </ion-item>
+                  <ion-item> <ion-label>Nombre d'équipes</ion-label>{{ selectedSection.nbTeams }} </ion-item>
                 </ion-list>
               </ion-card-content>
             </ion-card>
@@ -71,7 +72,7 @@
                   <ion-list v-if="selectedSection?.teams.length > 0">
                     <ion-item v-for="teamId in selectedSection.teams" :key="teamId" :routerLink="`/team/${teamId}`">
                       <ion-label>{{ teamId }}</ion-label>
-                      <ion-badge v-if="teamId === user.profile.team" slot="end" color="success">Ton équipe</ion-badge>
+                      <ion-badge v-if="teamId === user.profile.team" slot="end" color="primary">Ton équipe</ion-badge>
                     </ion-item>
                   </ion-list>
                   <ion-list-header v-else> Aucune équipe trouvée </ion-list-header>

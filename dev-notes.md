@@ -45,7 +45,12 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # Pages
 
-- [ ] Accueil: invitation à s'inscrire - si connecté : Mon programme / Mon jeu
+- [ ] Accueil
+
+  - [ ] Si pas connecté : invitation à s'inscrire
+  - [ ] Si connecté
+    - [ ] Si pas de jeu : inviter à s'inscrire à un jeu / une équipe
+    - [ ] Sinon Mon programme / Mon jeu
 
 - [x] Login
   - [x] Split login & profile
@@ -54,6 +59,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
   - [ ] mettre condition sur ce qu'on peut modifier
   - [ ] erreurs enregistrement settings
+  - [ ] bouton pour demander une promotion
 
 - [x] Equipe (avec liste matches, ordonnés par temps)
 
@@ -186,6 +192,7 @@ export const setEven = async (matchId: string) => {
 - Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore)
 - Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
 - La catégorie `Animateurs` n'est actuellement pas créée dans settings/app/categories par le script d'init DB 
+- Modifier détails section depuis SectionsPage
 
 # Désistement
 
