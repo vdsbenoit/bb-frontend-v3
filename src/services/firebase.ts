@@ -2,7 +2,7 @@ import { firebaseConfig } from './firebaseConfig';
 import { initializeApp } from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, getFirestore, increment, updateDoc } from "firebase/firestore";
 import {
   getAuth,
   signOut,
@@ -76,6 +76,19 @@ export const fbAuthStateListener = (callback: any) => {
 
 export const isNewUser = (user: User) => {
   return user.metadata.creationTime === user.metadata.lastSignInTime
+}
+
+export const addToDocArray = async (collection: string, docId: string, key: string, arrayValue: any) => {
+  const docRef = doc(db, collection, docId);
+  return updateDoc(docRef, { [key]: arrayUnion(arrayValue) });
+}
+export const removeFromDocArray = async (collection: string, docId: string, key: string, arrayValue: any) => {
+  const docRef = doc(db, collection, docId);
+  return updateDoc(docRef, { [key]: arrayRemove(arrayValue) });
+}
+export const incrementDocField = async (collection: string, docId: string, key: string, value: number) => {
+  const docRef = doc(db, collection, docId);
+  return updateDoc(docRef, { [key]: increment(value) });
 }
 
 export { db };
