@@ -1,6 +1,8 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="pageTitle"></header-template>
+    <header-template :pageTitle="pageTitle">
+      <ion-button v-if="canEditProfile" @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
+    </header-template>
     <ion-content :fullscreen="true" class="ion-padding">
       <div v-if="isProfile">
         <info-card-component
@@ -61,12 +63,11 @@
           <ion-grid>
             <ion-row>
               <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                <ion-button v-if="!editMode" expand="block" color="primary" @click="editProfile"> Modifier </ion-button>
+                <ion-button v-if="!editMode && isOwnProfile" expand="block" @click="logOut" color="danger"> Se déconnnecter </ion-button>
                 <ion-button v-if="editMode" expand="block" color="success" @click="saveProfile"> Enregistrer </ion-button>
               </ion-col>
               <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                <ion-button v-if="isOwnProfile && !editMode" expand="block" @click="logOut" color="danger"> Se déconnnecter </ion-button>
-                <ion-button v-if="editMode" expand="block" color="medium" @click="editMode = false"> Annuler </ion-button>
+                <ion-button v-if="editMode && canDeleteProfile" expand="block" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -82,42 +83,59 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption, IonCard, IonGrid, IonRow, IonCol } from "@ionic/vue";
+import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
 import { computed, onBeforeMount, ref } from "vue";
-import { loadingPopup, toastPopup } from "@/services/popup";
+import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
 
-const user = useAuthStore();
+const userStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
 // reactive data
-const isOwnProfile = ref(false);
-const userId = ref(user.uid);
+const userId = ref(userStore.uid);
 const modifiedProfile = ref<Profile>(usersDefaults());
 const editMode = ref(false);
 
 // lifecicle hooks
 
 onBeforeMount(() => {
-  userId.value = route.params.userId ? (route.params.userId as string) : user.uid;
-  isOwnProfile.value = !route.params.userId || route.params.userId === user.uid;
+  userId.value = route.params.userId ? (route.params.userId as string) : userStore.uid;
 });
 
 // Computed variables
 
 // The profile to be displayed in the current page
 const userProfile = computed((): Profile => {
-  return user.getProfile(userId.value) as Profile;
+  return userStore.getProfile(userId.value) as Profile;
 });
 const isProfile = computed(() => {
   return userProfile.value?.email ? true : false;
 });
+const isOwnProfile = computed(() => {
+  if(!route.params.userId) return false;
+  return route.params.userId === userStore.uid;
+});
+const canEditProfile = computed(() => {
+  if(userStore.profile.role >= ROLES.Moderateur) return true;
+  return isOwnProfile.value;
+});
+const showFullProfile = computed(() => {
+  return canEditProfile.value;
+});
+const canChangeRole = computed(() => {
+  return userStore.profile.role >= ROLES.Administrateur;
+});
+const canDeleteProfile = computed(() => {
+  if(userStore.profile.role >= ROLES.Administrateur) return true;
+  return isOwnProfile.value;
+});
 const showFillingInfo = computed(() => {
-  return isOwnProfile.value && !user.profile.totem && !user.profile.name;
+  return isOwnProfile.value && !userStore.profile.totem && !userStore.profile.name;
 });
 const pageTitle = computed(() => {
   if (isOwnProfile.value) {
@@ -134,8 +152,15 @@ const pageTitle = computed(() => {
     return `Profil de ${name}`;
   }
 });
+const editIcon = computed(() => {
+  return (editMode.value) ? {ios: closeOutline, md: closeSharp} : {ios: pencilOutline, md: pencilSharp}
+});
 
 // Methods
+const toggleEditMode = () => {
+  if (!editMode.value) modifiedProfile.value = userProfile.value;
+  editMode.value = !editMode.value;
+} 
 
 const getTeams = () => {
   return ["1A", "2A", "3A"];
@@ -143,25 +168,37 @@ const getTeams = () => {
 const getGames = () => {
   return ["1", "2", "3"];
 };
-const editProfile = () => {
-  editMode.value = true;
-  modifiedProfile.value = userProfile.value;
-};
 const saveProfile = async () => {
   const loading = await loadingPopup();
-  user.updateProfile(userId.value, modifiedProfile.value).then(() => {
+  userStore.updateProfile(userId.value, modifiedProfile.value).then(() => {
     toastPopup("Le profil a bien été mis à jour");
     loading?.dismiss();
   });
   editMode.value = false;
 };
 const logOut = async () => {
-  const loading = await loadingPopup();
+  const loading = await loadingPopup("Déconnexion");
   await stopMagnetar();
-  const result = await user.logout();
+  const result = await userStore.logout();
   if (result) router.replace("/guest");
-  loading?.dismiss();
+  loading.dismiss();
 };
+const deleteAccount = async () => {
+  const confirmTitle = "Es-tu sûr.e ?"
+  const confirmMessage = "Cette opération supprimera toute les données liées à ton profil";
+  const removeAccountHandler = async () => {
+    const wasOwnProfile = isOwnProfile.value;
+    const loading = await loadingPopup("Suppression du profil");
+    try{
+      await userStore.removeAccount(userId.value);
+    } catch(error: any){
+      errorPopup(`Une erreur est survenue durant la suppression du profil: ${error.message}`);
+    }
+    loading.dismiss();
+    if (wasOwnProfile) await logOut();
+  }
+  confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
+}
 </script>
 
 <style scoped></style>

@@ -158,6 +158,9 @@ export const setAfternoonLeader = async (gameId: string, uid = "") => {
   } else updateAfternoonLeaders(gameModule, gameId, uid);
 };
 
+/**
+ * Remove Leader from both the game and his profile data
+ */
 export const removeLeader = async (gameId: string, uid = "", morningOnly = false, afternoonOnly = false) => {
   if (uid === "") uid = user.uid;
   const gameModule = gamesModule.doc(gameId);

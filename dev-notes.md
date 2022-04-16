@@ -139,6 +139,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - seuls les admins peuvent modifier le profile des autres
 - Seuls les admins peuvent voir le classement en temps réel
 - Il faut être animateur pour s'inscrire à une épreuve
+- seul les admins & propriétaire peuvent supprimer un profil
 - Traduire les if conditions des services magnetar
 
 ````typescript
@@ -192,7 +193,7 @@ export const setEven = async (matchId: string) => {
 - Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
 - Refactor even with draw
 - match time start at 0 ([instead of 1](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2))
-- Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore)
+- Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore). Je verrais mieux ça au niveau des Pages, vu que ça touche à plusieurs se
 - Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
 - La catégorie `Animateurs` n'est actuellement pas créée dans settings/app/categories par le script d'init DB 
 - Modifier détails section depuis SectionsPage

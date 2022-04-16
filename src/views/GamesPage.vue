@@ -96,7 +96,7 @@ const canEditGames = computed(() => {
   return user.profile.role >= ROLES.Moderateur;
 });
 const editIcon = computed(() => {
-  return (editMode.value) ? {ios: checkmarkOutline, md: checkmarkSharp} : {ios: pencilOutline, md: pencilSharp}
+  return (editMode.value) ? {ios: closeOutline, md: closeSharp} : {ios: pencilOutline, md: pencilSharp}
 });
 
 // Watchers
@@ -114,7 +114,7 @@ const getStatus = (game: Game) => {
   return { text: "inconnu", color: "medium" };
 };
 const toggleEditMode = () => {
-  editMode.value = !editMode.value 
+  editMode.value = !editMode.value;
 }
 const goToGamePage = (gameId: number) => {
   if (!editMode.value) router.push(`/game/${gameId}`);

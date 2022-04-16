@@ -1,3 +1,4 @@
+import { removeLeader } from './games';
 import { errorPopup } from './popup';
 import { User as fbUser } from "firebase/auth";
 import { defineStore } from "pinia";
@@ -166,6 +167,13 @@ export const useAuthStore = defineStore("authStore", {
         errorPopup(e.message);
         return false;
       }
+    },
+    async removeAccount(uid: string) {
+      const profile = await this.asyncFetchProfile(uid);
+      if(!profile?.id) throw new Error(`Profile not found for uid : ${uid}`);
+      if(profile.morningGame) removeLeader(profile.morningGame, uid, true, false);
+      if(profile.afternoonGame) removeLeader(profile.afternoonGame, uid, false, true);
+      return profile.delete();
     },
     streamProfile(uid: string) {
       if(!uid) return undefined;

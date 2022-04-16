@@ -76,7 +76,7 @@ export const choicePopup = async (text: string, options: string[], handler: any)
   return alert.present();
 };
 
-export const loadingPopup = async (timeout = 60000, message = "Chargement") => {
+export const loadingPopup = async (message = "Chargement", timeout = 60000) => {
   const loading = await loadingController.create({
     message: message,
     duration: timeout,
