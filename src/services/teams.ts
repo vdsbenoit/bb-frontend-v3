@@ -1,3 +1,4 @@
+import { incrementDocField } from './firebase';
 import { useAuthStore, ROLES, getRoleByValue } from './users';
 import { magnetar } from "./magnetar";
 
@@ -62,15 +63,19 @@ export const getTeam = (id: string) => {
 /// Setters //
 /////////////
 
-export const addWin = (teamId: string) => {
-  return 
+export const addTeamWin = (teamId: string) => {
+  console.log(`Adding 2 points to team ${teamId}`);
+  return incrementDocField(TEAMS_COLLECTION, teamId, "score", 2);
 }
-export const removeWin = (teamId: string) => {
-  return 
+export const removeTeamWin = (teamId: string) => {
+  console.log(`Removing 2 points to team ${teamId}`);
+  return incrementDocField(TEAMS_COLLECTION, teamId, "score", -2);
 }
-export const addDraw = (teamId: string) => {
-  return 
+export const addTeamDraw = (teamId: string) => {
+  console.log(`Adding 1 points to team ${teamId}`);
+  return incrementDocField(TEAMS_COLLECTION, teamId, "score", 1);
 }
-export const removeDraw = (teamId: string) => {
-  return 
+export const removeTeamDraw = (teamId: string) => {
+  console.log(`Removing 1 points to team ${teamId}`);
+  return incrementDocField(TEAMS_COLLECTION, teamId, "score", -1);
 }

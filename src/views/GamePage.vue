@@ -237,7 +237,4 @@ const getWinner = (match: any) => {
   --inner-padding-start: 0px;
   --inner-padding-end: 0px;
 }
-ion-card-title {
-  font-size: 24px
-}
 </style>

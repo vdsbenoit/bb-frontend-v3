@@ -187,8 +187,4 @@ const unRegisterPlayer = () => {
   });
 }
 </script>
-<style scoped>
-ion-card-title {
-  font-size: 24px;
-}
-</style>
+<style scoped></style>

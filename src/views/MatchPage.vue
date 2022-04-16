@@ -117,11 +117,12 @@ import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getMatch, Match, setMatchDraw, setMatchScore } from "@/services/matches";
-import { getTeam, Team } from "@/services/teams";
+import { addTeamDraw, addTeamWin, getTeam, removeTeamDraw, removeTeamWin, Team } from "@/services/teams";
 import { canSetGameScore, Game, getGame } from "@/services/games";
 import { isScoresFrozen } from "@/services/settings";
 import { getSchedule } from "@/services/settings";
-import { choicePopup, errorPopup } from "@/services/popup";
+import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
+import { addSectionDraw, addSectionWin, removeSectionDraw, removeSectionWin } from "@/services/sections";
 
 const userStore = useAuthStore();
 const route = useRoute();
@@ -204,12 +205,51 @@ watchEffect(async () => {
 
 // Methods
 
-const winHandler = (winner: string) => {
+const winHandler = async (winner: string) => {
+  if(match.value.winner == winner) return errorPopup(`L'équipe ${winner} est déjà enregistrée comme gagnante`);
+  const promises = [];
   const loser = match.value.player_ids[0] === winner ? match.value.player_ids[1] : match.value.player_ids[0];
-  setMatchScore(matchId.value, winner, loser);
+  try {
+    if(match.value.winner) {
+      promises.push(removeTeamWin(match.value.winner));
+      promises.push(removeSectionWin(match.value.winner));
+    }
+    if(match.value.draw) {
+      promises.push(removeTeamDraw(winner));
+      promises.push(removeTeamDraw(loser));
+      promises.push(removeSectionDraw(winner));
+      promises.push(removeSectionDraw(loser));
+    }
+    promises.push(addTeamWin(winner));
+    promises.push(addSectionWin(winner));
+    promises.push(setMatchScore(matchId.value, winner, loser));
+
+    await Promise.all(promises);
+    toastPopup("Le score a été enregistré");
+  } catch(error: any) {
+    errorPopup(`L'enregistrement du score a échoué : ${error.message}`);
+  }
 }
-const drawHandler = () => {
-   setMatchDraw(matchId.value);
+const drawHandler = async () => {
+  if(match.value.draw) return errorPopup("Ce duel est déjà enregistré comme égalité");
+
+  const promises = [];
+  try{
+    if(match.value.winner) {
+      promises.push(removeTeamWin(match.value.winner));
+      promises.push(removeSectionWin(match.value.winner));
+    }
+    promises.push(addTeamDraw(match.value.player_ids[0]));
+    promises.push(addTeamDraw(match.value.player_ids[1]));
+    promises.push(addSectionDraw(match.value.player_ids[0]));
+    promises.push(addSectionDraw(match.value.player_ids[1]));
+    promises.push(setMatchDraw(matchId.value));
+
+    await Promise.all(promises);
+    toastPopup("Le score a été enregistré");
+  } catch(error: any) {
+    errorPopup(`L'enregistrement du score a échoué : ${error.message}`);
+  }
 }
 
 const setScore = () => {

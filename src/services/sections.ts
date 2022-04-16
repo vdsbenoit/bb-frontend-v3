@@ -1,3 +1,4 @@
+import { incrementDocField } from './firebase';
 import { magnetar } from "./magnetar";
 
 const SECTIONS_COLLECTION = "sections";
@@ -62,3 +63,19 @@ export const getSection = (id: string) => {
 /// Setters //
 /////////////
 
+export const addSectionWin = (sectionId: string) => {
+  console.log(`Adding 2 points to section ${sectionId}`);
+  return incrementDocField(SECTIONS_COLLECTION, sectionId, "score", 2);
+}
+export const removeSectionWin = (sectionId: string) => {
+  console.log(`Removing 2 points to section ${sectionId}`);
+  return incrementDocField(SECTIONS_COLLECTION, sectionId, "score", -2);
+}
+export const addSectionDraw = (sectionId: string) => {
+  console.log(`Adding 1 points to section ${sectionId}`);
+  return incrementDocField(SECTIONS_COLLECTION, sectionId, "score", 1);
+}
+export const removeSectionDraw = (sectionId: string) => {
+  console.log(`Removing 1 points to section ${sectionId}`);
+  return incrementDocField(SECTIONS_COLLECTION, sectionId, "score", -1);
+}

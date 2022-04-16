@@ -52,18 +52,16 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonButtons, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonBackButton, IonList, IonItem, IonLabel, IonBadge, IonText, 
-useIonRouter, IonSpinner, IonSelect, IonSelectOption, IonButton, IonIcon, IonInput } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, useIonRouter, IonSpinner, IonSelect, IonSelectOption, IonButton, IonIcon, IonInput } from "@ionic/vue";
 import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { ROLES, useAuthStore } from "@/services/users";
-import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
+import { toastPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { Game, getCircuitGames, setName } from "@/services/games";
-import { onBeforeMount, onMounted } from "vue";
+import { onBeforeMount } from "vue";
 import { getCircuits, getMaxGameLeaders } from "@/services/settings";
-import { toastController } from "@ionic/core";
 
 const user = useAuthStore();
 const route = useRoute();
@@ -142,8 +140,5 @@ const updateGameName = async () => {
   --padding-end: 0px;
   --inner-padding-start: 0px;
   --inner-padding-end: 0px;
-}
-ion-card-title {
-  font-size: 24px;
 }
 </style>

@@ -90,6 +90,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Liste des jeux 
   - [x] filtre par circuit
   - [x] si admin : bouton pour éditer nom & description
+- [ ] Liste matches, filter temps (pour vérifier les inscriptions)
 - [ ] Liste utilisateurs
   - [ ] filtre par section
   - [ ] filtre demande de promotion
@@ -203,7 +204,7 @@ export const setEven = async (matchId: string) => {
 - Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
 - La catégorie `Animateurs` n'est actuellement pas créée dans settings/app/categories par le script d'init DB 
 - Modifier détails section depuis SectionsPage
-- implémenter les weigh
+- implémenter les weights
 
 # Désistement
 

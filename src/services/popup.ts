@@ -28,7 +28,7 @@ export const confirmPopup = async (text: string, confirmHandler: any, declineHan
       {
         text: "Non",
         role: "cancel",
-        cssClass: "secondary",
+        cssClass: "choice-popup",
         handler: () => {
           console.log('User chose "no" to prompt "' + text + '"');
           if (declineHandler) declineHandler();
@@ -60,7 +60,6 @@ export const choicePopup = async (text: string, options: string[], handler: any)
     buttons.push(
       {
         text: option,
-        cssClass: "secondary",
         handler: () => {
           console.log(`User chose "${option}" to prompt "${text}"`);
           handler(option);
@@ -69,8 +68,8 @@ export const choicePopup = async (text: string, options: string[], handler: any)
     ) 
   })
   const alert = await alertController.create({
-    header: "Choisi une option",
-    message: text,
+    header: text,
+    cssClass: "choice-popup",
     buttons: buttons,
   });
   return alert.present();

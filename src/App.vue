@@ -308,4 +308,16 @@ ion-label p {
 .can-go-back ion-menu-button {
     display: none;
 }
+.md .choice-popup .alert-wrapper {
+  max-width: 300px;
+}
+.md .choice-popup .alert-button{
+  font-size: 18px;
+}
+ion-card-title {
+  font-size: 24px;
+}
+ion-select {
+  max-width: 100%;
+}
 </style>

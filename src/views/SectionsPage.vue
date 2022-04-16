@@ -192,12 +192,6 @@ const registrationStatus = (user: Profile) => {
 </script>
 <style scoped>
 ion-select {
-  max-width: 100%;
-}
-ion-card-title {
-  font-size: 24px;
-}
-ion-select {
   width: 100%;
   text-align: center;
   justify-content: center;
