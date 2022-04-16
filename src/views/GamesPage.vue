@@ -60,7 +60,7 @@ import { ROLES, useAuthStore } from "@/services/users";
 import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { Game, getGames, setName } from "@/services/games";
+import { Game, getCircuitGames, setName } from "@/services/games";
 import { onBeforeMount, onMounted } from "vue";
 import { getCircuits, getMaxGameLeaders } from "@/services/settings";
 import { toastController } from "@ionic/core";
@@ -86,14 +86,14 @@ onBeforeMount(async () => {
 
 // Computed
 const games = computed((): Map<string, Game> | undefined => {
-  return selectedCircuit.value ? getGames(selectedCircuit.value) : new Map();
+  return selectedCircuit.value ? getCircuitGames(selectedCircuit.value) : new Map();
 });
 const pageTitle = computed(() => {
   if (editMode.value) return `Édition des épreuves`;
   return "Épreuves";
 });
 const canEditGames = computed(() => {
-  return user.profile.role >= ROLES.Moderateur;
+  return user.profile.role >= ROLES.Modérateur;
 });
 const editIcon = computed(() => {
   return (editMode.value) ? {ios: closeOutline, md: closeSharp} : {ios: pencilOutline, md: pencilSharp}

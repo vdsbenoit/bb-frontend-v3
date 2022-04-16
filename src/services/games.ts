@@ -43,7 +43,14 @@ const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION, {
 /// Getters //
 /////////////
 
-export const getGames = (circuit: string) => {
+export const getAllGames = () => {
+  console.log(`Streaming all games`); // using stream because the fetch() method is bugged
+  gamesModule.orderBy("id").stream().catch((error) => {
+    console.error(`Error occurred while streaming the ${GAMES_COLLECTION} collection`, error);
+  });
+  return gamesModule.data;
+};
+export const getCircuitGames = (circuit: string) => {
   if(!circuit) return undefined;
   console.log(`Streaming games from circuit '${circuit}'`);
   const filteredGamesModule = gamesModule.where("circuit", "==", circuit).orderBy("id");
@@ -61,7 +68,12 @@ export const getGame = (id: string) => {
   });
   return gameModule.data;
 };
-
+export const getGameName = (id: string) => {
+  if(!id) return undefined;
+  const gameModule = gamesModule.doc(id);
+  gameModule.fetch()
+  return gameModule.data?.name;
+};
 export const canSetGameScore = async (gameId: string) => {
   if (isScoresFrozen()) {
     console.log("Cannot set score, score registration is closed")
@@ -71,7 +83,7 @@ export const canSetGameScore = async (gameId: string) => {
     console.log(`User ${user.uid} cannot edit game ${gameId} score. Insufficient role`);
     return false;
   }
-  if (user.profile.role >= ROLES.Moderateur) return true;
+  if (user.profile.role >= ROLES.Modérateur) return true;
   if (canSetScoreAnywhere()) return true;
   const gameModule = gamesModule.doc(gameId);
   await gameModule.fetch();
@@ -119,13 +131,13 @@ export const setMorningLeader = async (gameId: string, uid = "") => {
   const profile = await user.getLatestProfileData(uid);
   const gameModule = gamesModule.doc(gameId);
   // Checks
-  if (gameModule.data?.morningLeaders.includes(uid)) throw Error("Déjà inscrit.e à cette épreuve");
+  if (gameModule.data?.morningLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} le matin`);
   if (profile.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
   const maxGameLeaders = await getMaxGameLeaders();
-  if ((gameModule.data?.morningLeaders.length as number) >= maxGameLeaders) throw new Error("Le nombre maximum d'animateurs a été atteint pour cette épreuve au matin");
+  if ((gameModule.data?.morningLeaders.length as number) >= maxGameLeaders) throw new Error(`Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} au matin`);
   if (profile.morningGame) {
     const message = uid === user.uid ? `Tu es déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Veux-tu te désincrire ?` : `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Le/la désincrire ?`;
-    confirmPopup(
+    return confirmPopup(
       message,
       async () => {
         await removeLeader(profile.morningGame, uid, true, false);
@@ -133,7 +145,7 @@ export const setMorningLeader = async (gameId: string, uid = "") => {
       },
       () => toastPopup("Enresitrement annulé")
     );
-  } else updateMorningLeaders(gameModule, gameId, uid);
+  } else return updateMorningLeaders(gameModule, gameId, uid);
 };
 
 export const setAfternoonLeader = async (gameId: string, uid = "") => {
@@ -141,13 +153,13 @@ export const setAfternoonLeader = async (gameId: string, uid = "") => {
   const profile = await user.getLatestProfileData(uid);
   const gameModule = gamesModule.doc(gameId);
   // Checks
-  if (gameModule.data?.afternoonLeaders.includes(uid)) throw Error("Tu es déjà inscrit à cette épreuve");
+  if (gameModule.data?.afternoonLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} l'après-midi`);
   if (profile.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
   const maxGameLeaders = await getMaxGameLeaders();
-  if ((gameModule.data?.afternoonLeaders.length as number) >= maxGameLeaders) throw new Error("Le nombre maximum d'animateurs a été atteint pour cette épreuve l'après-midi");
+  if ((gameModule.data?.afternoonLeaders.length as number) >= maxGameLeaders) throw new Error(`Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} l'après-midi`);
   if (profile.afternoonGame) {
     const message = uid === user.uid ? `Tu es déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Veux-tu te désincrire ?` : `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Le/la désincrire ?`;
-    confirmPopup(
+    return confirmPopup(
       message,
       async () => {
         await removeLeader(profile.afternoonGame, uid, false, true);
@@ -155,7 +167,7 @@ export const setAfternoonLeader = async (gameId: string, uid = "") => {
       },
       () => toastPopup("Enresitrement annulé")
     );
-  } else updateAfternoonLeaders(gameModule, gameId, uid);
+  } else return updateAfternoonLeaders(gameModule, gameId, uid);
 };
 
 /**

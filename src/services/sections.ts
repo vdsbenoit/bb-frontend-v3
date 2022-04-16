@@ -45,7 +45,7 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION, {
 export const fetchCategorySections = (category: string) => {
   console.log(`Fetching sections from category '${category}'`);
   const filteredSectionsModule = sectionsModule.where("category", "==", category);
-  filteredSectionsModule.fetch(); // fixme: use streams ?
+  filteredSectionsModule.stream(); // using stream because the fetch() method is bugged
   return filteredSectionsModule.data;
 }
 // This method opens a stream on the game to get live updates
@@ -56,7 +56,7 @@ export const getSection = (id: string) => {
     console.error(`Section ${id} stream was closed due to an error`, error);
   });
   return sectionModule.data;
-};
+}
 
 ///////////////
 /// Setters //

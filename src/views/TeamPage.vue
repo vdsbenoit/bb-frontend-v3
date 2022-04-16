@@ -140,11 +140,11 @@ const matches = computed(() => {
 });
 const showRanking = computed(() => {
   if(isShowRankingToAll()) return true;
-  return user.profile.role >= ROLES.Moderateur;
+  return user.profile.role >= ROLES.Modérateur;
 });
 const showRegisterButton = computed(() => {
   if (isMyTeam.value) return false;
-  if (user.profile.role >= ROLES.Moderateur) return true;
+  if (user.profile.role >= ROLES.Modérateur) return true;
   return team.value?.sectionId && user.profile.sectionId === team.value.sectionId;
 });
 const isMyTeam = computed(() => {

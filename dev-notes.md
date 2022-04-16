@@ -8,6 +8,16 @@
 
 Pour appliquer des css à toute l'app, le faire dans `App.vue`.
 
+# Troubleshooting
+
+Quand tu as ce genre d'erreur 
+
+````javascript
+Uncaught ReferenceError: Cannot access 'useAuthStore' before initialization
+````
+
+Ca veut dire que tu as une circular dependency dans tes imports. Check que tu n'importes pas d'autres services dans `users.ts` car ce module est importé presque partout.
+
 # Tech stack
 
 - vue 3 : frontend engine
@@ -172,6 +182,7 @@ export const setEven = async (matchId: string) => {
 - [ ] Désactiver le logging magnetar
 - [ ] Checker tous les fixme
 - [ ] Checker tous les console.debug
+- [ ] Ajouter "Animateurs" dans settings/catégorie
 
 # Nice to have
 
@@ -193,7 +204,7 @@ export const setEven = async (matchId: string) => {
 - Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
 - Refactor even with draw
 - match time start at 0 ([instead of 1](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2))
-- Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore). Je verrais mieux ça au niveau des Pages, vu que ça touche à plusieurs se
+- Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore). Je verrais mieux ça au niveau des Pages, vu que ça touche à plusieurs services.
 - Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
 - La catégorie `Animateurs` n'est actuellement pas créée dans settings/app/categories par le script d'init DB 
 - Modifier détails section depuis SectionsPage

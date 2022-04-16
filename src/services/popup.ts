@@ -20,7 +20,7 @@ export const infoPopup = async (text: string, title?: string) => {
   return alert.present();
 };
 
-export const confirmPopup = async (text: string, confirmHandler: any, declineHandler?: any, title="Tu confirmes ?") => {
+export const confirmPopup = async (text: string, confirmHandler: any, declineHandler?: any, title="") => {
   const alert = await alertController.create({
     header: title,
     message: text,

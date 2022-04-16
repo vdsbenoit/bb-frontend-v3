@@ -1,3 +1,4 @@
+import { computed } from "vue";
 import { magnetar } from "./magnetar";
 
 const SETTINGS_COLLECTION = "settings";
@@ -97,6 +98,9 @@ export const isShowRankingToAll = (): boolean => {
   if (appSettingsModule.data?.showRakingToAll) return appSettingsModule.data.showRakingToAll;
   return appSettingsDefaults.showRakingToAll;
 };
+export const getAppSettings = computed(() => {
+  return appSettingsModule.data;
+});
 
 ///////////////
 /// Setters //

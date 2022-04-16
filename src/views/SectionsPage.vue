@@ -142,10 +142,10 @@ onBeforeMount(async () => {
 
 const showRanking = computed(() => {
   if(isShowRankingToAll()) return true;
-  return user.profile.role >= ROLES.Moderateur;
+  return user.profile.role >= ROLES.Modérateur;
 });
 const showUsers = computed(() => {
-  return user.profile.role >= ROLES.Moderateur;
+  return user.profile.role >= ROLES.Modérateur;
 });
 const sections = computed((): Map<string, Section> | undefined => {
   return selectedCategory.value ? fetchCategorySections(selectedCategory.value) : undefined;

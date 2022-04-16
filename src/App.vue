@@ -36,7 +36,7 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 IonSplitPane, IonText, IonFooter } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, 
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, 
-podiumOutline, podiumSharp, logInSharp, logInOutline, albumsOutline, albumsSharp } from "ionicons/icons";
+podiumOutline, podiumSharp, albumsOutline, albumsSharp } from "ionicons/icons";
 import { computed } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { streamSettings } from "@/services/settings";
@@ -78,7 +78,7 @@ const appPages = computed(() => {
     }]
   }
   pages = [...pages, gamesPage, sectionsPage];
-  if (user.profile.role >= ROLES.Moderateur) pages = [...pages, ...modPages];
+  if (user.profile.role >= ROLES.Modérateur) pages = [...pages, ...modPages];
   if (user.profile.role >= ROLES.Administrateur) pages = [...pages, ...adminPages];
   pages = [...pages, ...bottomPages];
   return pages;

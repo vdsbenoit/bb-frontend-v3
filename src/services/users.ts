@@ -1,4 +1,3 @@
-import { removeLeader } from './games';
 import { errorPopup } from './popup';
 import { User as fbUser } from "firebase/auth";
 import { defineStore } from "pinia";
@@ -21,7 +20,7 @@ export const ROLES = {
   Anonyme:        0,
   Participant:    2,
   Animateur:      4,
-  Moderateur:     6,
+  Modérateur:     6,
   Administrateur: 8,
 }
 
@@ -48,6 +47,7 @@ export interface Profile {
   afternoonGame: string;
   sectionName: string;
   sectionId: string;
+  category: string;
 }
 
 ///////////////////////
@@ -66,6 +66,7 @@ export function usersDefaults(payload?: any) {
     afternoonGame: "",
     sectionName: "",
     sectionId: "",
+    category: "",
   }
   return { ...defaults, ...payload }
 }
@@ -169,11 +170,7 @@ export const useAuthStore = defineStore("authStore", {
       }
     },
     async removeAccount(uid: string) {
-      const profile = await this.asyncFetchProfile(uid);
-      if(!profile?.id) throw new Error(`Profile not found for uid : ${uid}`);
-      if(profile.morningGame) removeLeader(profile.morningGame, uid, true, false);
-      if(profile.afternoonGame) removeLeader(profile.afternoonGame, uid, false, true);
-      return profile.delete();
+      return usersModule.doc(uid).delete();
     },
     streamProfile(uid: string) {
       if(!uid) return undefined;
