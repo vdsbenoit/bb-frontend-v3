@@ -36,7 +36,7 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 IonSplitPane, IonText, IonFooter } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, 
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, 
-podiumOutline, podiumSharp, albumsOutline, albumsSharp } from "ionicons/icons";
+podiumOutline, podiumSharp, albumsOutline, albumsSharp, documentOutline, documentSharp } from "ionicons/icons";
 import { computed } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { streamSettings } from "@/services/settings";
@@ -91,6 +91,12 @@ const isSelected = (url: string) => url === route.path;
 // Data
 
 const modPages = [
+  {
+    title: "Duels",
+    url: "/matches",
+    iosIcon: documentOutline,
+    mdIcon: documentSharp,
+  },
   {
     title: "Classement",
     url: "/raking",

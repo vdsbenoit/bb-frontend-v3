@@ -68,6 +68,12 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: authCheck,
   },
   {
+    name: 'matches',
+    path: '/matches',
+    component: () => import ('../views/MatchesPage.vue'),
+    beforeEnter: authCheck,
+  },
+  {
     name: 'sections',
     path: '/sections',
     component: () => import ('../views/SectionsPage.vue'),

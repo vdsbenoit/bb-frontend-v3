@@ -1,7 +1,5 @@
-import { getTeam } from './teams';
-import { useAuthStore, ROLES } from './users';
+import { useAuthStore } from './users';
 import { magnetar } from "./magnetar";
-import { isScoresFrozen } from "./settings";
 
 const MATCHES_COLLECTION = "matches";
 const user = useAuthStore();
@@ -12,7 +10,7 @@ const user = useAuthStore();
 
 export interface Match {
   id: string;
-  game_id: string;
+  game_id: number;
   game_name: string;
   time: number;
   player_ids: string[];
@@ -27,7 +25,7 @@ export interface Match {
 function matchesDefaults(payload?: Partial<Match>): Match {
   const defaults = { 
     id: "",
-    game_id: "",
+    game_id: 0,
     game_name: "",
     time: 0,
     player_ids: [],
@@ -62,14 +60,21 @@ export const getMatch = (id: string) => {
 export const getGameMatches = (gameId: string) => {
   if(!gameId) return undefined;
   const matches = matchesModule.where("game_id", "==", gameId).orderBy("time", "asc");
-  matches.stream()
+  matches.stream();
   return matches.data;
 };
 
 export const getTeamMatches = (teamId: string) => {
   if(!teamId) return undefined;
   const matches = matchesModule.where("player_ids", "array-contains", teamId).orderBy("time", "asc");
-  matches.stream()
+  matches.stream();
+  return matches.data;
+};
+
+export const getTimeMatches = (time: number) => {
+  if(time < 1) return undefined;
+  const matches = matchesModule.where("time", "==", time).orderBy("game_id", "asc");
+  matches.stream();
   return matches.data;
 };
 
