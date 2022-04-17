@@ -72,7 +72,7 @@
                   <ion-list v-if="selectedSection?.teams.length > 0">
                     <ion-item v-for="teamId in selectedSection.teams" :key="teamId" :routerLink="`/team/${teamId}`">
                       <ion-label>{{ teamId }}</ion-label>
-                      <ion-badge v-if="teamId === user.profile.team" slot="end" color="primary">Ton équipe</ion-badge>
+                      <ion-badge v-if="teamId === user.profile.team" slot="end" color="primary" class="ion-padding-horizontal">Ton équipe</ion-badge>
                     </ion-item>
                   </ion-list>
                   <ion-list-header v-else> Aucune équipe trouvée </ion-list-header>
@@ -96,11 +96,9 @@
           <div v-else>
             <ion-list-header v-if="sectionUsers.size < 1"><h2>Aucun utilisateur trouvé</h2></ion-list-header>
             <ion-list v-else>
-              <ion-item v-for="sectionUser in sectionUsers.values()" :key="sectionUser.id" :routerLink="`/profile/${sectionUser.id}`">
-                <ion-label>{{ user.getName(sectionUser.id) }}</ion-label>
-                <div v-if="showLeaderRegistration">
-                  <ion-badge slot="end" :color="registrationStatus(sectionUser).color">{{ registrationStatus(sectionUser).text }}</ion-badge>
-                </div>
+              <ion-item v-for="sectionUser in sectionUsers.values()" :key="sectionUser.uid" :routerLink="`/profile/${sectionUser.uid}`">
+                <ion-label>{{ user.getName(sectionUser.uid) }}</ion-label>
+                <ion-badge v-if="showLeaderRegistration" slot="end" :color="registrationStatus(sectionUser).color">{{ registrationStatus(sectionUser).text }}</ion-badge>
               </ion-item>
             </ion-list>
           </div>
@@ -129,7 +127,7 @@ const router = useIonRouter();
 const selectedCategory = ref("");
 const selectedSectionId = ref("");
 const categories = ref();
-const shouldLoadUsers = ref(false);
+const shouldLoadUsers = ref(false); // true after clicking on the show button
 
 // lifecicle hooks
 
@@ -182,7 +180,7 @@ watch(selectedSectionId, async () => {
 const loadUsers = () => {
   shouldLoadUsers.value = true;
 };
-const registrationStatus = (user: Profile) => {
+const registrationStatus = (user: any) => {
   if (!user.morningGame && !user.afternoonGame) return { text: "Pas inscrit", color: "danger" };
   if (user.morningGame && !user.afternoonGame) return { text: "Matin", color: "warning" };
   if (!user.morningGame && user.afternoonGame) return { text: "Arpèm", color: "warning" };

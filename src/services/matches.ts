@@ -57,7 +57,7 @@ export const getMatch = (id: string) => {
   return matchModule.data;
 };
 
-export const getGameMatches = (gameId: string) => {
+export const getGameMatches = (gameId: number) => {
   if(!gameId) return undefined;
   const matches = matchesModule.where("game_id", "==", gameId).orderBy("time", "asc");
   matches.stream();

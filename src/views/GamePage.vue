@@ -113,7 +113,7 @@ const router = useIonRouter();
 
 // reactive data
 
-const gameId = ref("");
+const gameId = ref(0);
 // store more information about the leaders than their IDs
 type leaderInfo = {
   uid: string,
@@ -132,7 +132,7 @@ const isUnregistering = ref(false);
 // lifecicle hooks
 
 onBeforeMount(() => {
-  if (route.params.gameId) gameId.value = route.params.gameId as string;
+  if (route.params.gameId) gameId.value = +route.params.gameId;
   if (!gameId.value) console.error("Game ID not set in the URL");
 })
 onMounted(() => {
@@ -144,7 +144,7 @@ onMounted(() => {
 // Computed 
 
 const game = computed((): Game => {
-  return getGame(gameId.value as string) as Game;
+  return getGame(gameId.value) as Game;
 })
 const isGame = computed(() => {
   if (game.value?.id) {
@@ -157,7 +157,7 @@ const canRegister = computed(() => {
   return isLeaderRegistrationOpen() && user.profile.role >= ROLES.Animateur; 
 })
 const matches = computed(() => {
-  return game.value?.id ? getGameMatches(game.value?.id.toString()) : new Map();
+  return game.value?.id ? getGameMatches(game.value?.id) : new Map();
 })
 const pageTitle = computed(() => {
   if (isGame.value) return `Épreuve ${gameId.value}`;
@@ -204,9 +204,8 @@ const loadLeaderInfo = async (leaders: string[]) => {
 const register = () => {
   choicePopup("A quel moment de la journée ?", ["Matin", "Après-midi"], async (choice: string) => {
     try {
-      if (choice === "Matin") await setMorningLeader(gameId.value as string);
-      if (choice === "Après-midi") await setAfternoonLeader(gameId.value as string);
-      forceFetchGame(gameId.value); // this is required, otherwise the leader arrays does not update
+      if (choice === "Matin") await setMorningLeader(gameId.value);
+      if (choice === "Après-midi") await setAfternoonLeader(gameId.value);
     } catch(error: any) {
       errorPopup(error.message);
     }
@@ -215,8 +214,8 @@ const register = () => {
 const unRegister = async () => {
   isUnregistering.value = true;
   try {
-    const morningPromise = removeMorningLeader(gameId.value as string);
-    const afternoonPromise = removeAfternoonLeader(gameId.value as string);
+    const morningPromise = removeMorningLeader(gameId.value);
+    const afternoonPromise = removeAfternoonLeader(gameId.value);
     await Promise.all([morningPromise, afternoonPromise]);
     forceFetchGame(gameId.value); // this is required, otherwise the leader arrays does not update
   } catch(error: any){

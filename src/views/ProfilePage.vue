@@ -247,17 +247,17 @@ const saveProfile = async () => {
     if (newProfile.sectionName == "Not found") console.error("Cannot retrieve section name");
   }
   if(newProfile.team) toUpdateKeys.push("team");
-  // Treat games speparately
+  // Treat games separately
   if (newProfile.morningGame && newProfile.morningGame != userProfile.value.morningGame){
     console.log("Updating morning game");
     morningGamePromise = setMorningLeader(newProfile.morningGame, userId.value).catch((error) => {
-      errorPopup(error.message);
+      errorPopup(`Le jeu du matin n'a pas pu être mis à jour : ${error.message}`);
     })
   }
   if (newProfile.afternoonGame && newProfile.afternoonGame != userProfile.value.afternoonGame){
     console.log("Updating afternoon game");
     afternoonGamePromise = setAfternoonLeader(newProfile.afternoonGame, userId.value).catch((error) => {
-      errorPopup(error.message);
+      errorPopup(`Le jeu de l'après midi n'a pas pu être mis à jour : ${error.message}`);
     });
   }
   await Promise.all([morningGamePromise, afternoonGamePromise]);

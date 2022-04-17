@@ -9,6 +9,7 @@ import {
   isNewUser,
 } from "./firebase";
 import { magnetar } from "./magnetar";
+import { processIf } from '@vue/compiler-core';
 
 const USER_PROFILES_COLLECTION = "users";
 
@@ -37,14 +38,15 @@ interface UserSettings {
 }
 
 export interface Profile {
+  uid: string;
   email: string;
   totem: string;
   name: string;
   role: number;
   settings: UserSettings;
   team: string;
-  morningGame: string;
-  afternoonGame: string;
+  morningGame: number;
+  afternoonGame: number;
   sectionName: string;
   sectionId: string;
   category: string;
@@ -56,14 +58,15 @@ export interface Profile {
 
 export function usersDefaults(payload?: any) {
   const defaults = { 
+    uid: "",
     email: "",
     totem: "",
     name: "",
     role: 0,
     settings: {},
     team: "",
-    morningGame: "",
-    afternoonGame: "",
+    morningGame: 0,
+    afternoonGame: 0,
     sectionName: "",
     sectionId: "",
     category: "",
@@ -180,7 +183,7 @@ export const useAuthStore = defineStore("authStore", {
       });
     },
     async createProfile(uid: string, email: string) {
-      usersModule.doc(uid).insert({email: email, role: ROLES.Participant});
+      usersModule.doc(uid).insert({uid, email, role: ROLES.Participant});
     },
     async updateProfile(uid: string, profileData: any) {
       return usersModule.doc(uid).merge(profileData);
@@ -227,6 +230,7 @@ export const useAuthStore = defineStore("authStore", {
      * Think about calling asyncFetchProfile() first if needed.
      */
     getName(uid: string){
+      if(!uid) return undefined;
       const profile = usersModule.doc(uid).data;
       if (!profile) return `User ${uid}`;
       if (profile.totem) return profile.totem;
@@ -238,8 +242,8 @@ export const useAuthStore = defineStore("authStore", {
     },
     getSectionUsers(sectionId: string){
       console.log(`Fetching users from section '${sectionId}'`);
-      const filteredUsersModule = usersModule.where("section", "==", sectionId);
-      filteredUsersModule.fetch();
+      const filteredUsersModule = usersModule.where("sectionId", "==", sectionId);
+      filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data;
     }
   },

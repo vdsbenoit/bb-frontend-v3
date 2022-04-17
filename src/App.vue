@@ -37,7 +37,7 @@ IonSplitPane, IonText, IonFooter } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, 
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, 
 podiumOutline, podiumSharp, albumsOutline, albumsSharp, documentOutline, documentSharp } from "ionicons/icons";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { streamSettings } from "@/services/settings";
 import { useRouter, useRoute } from "vue-router";
@@ -45,7 +45,12 @@ import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 const user = useAuthStore();
-streamSettings();
+
+// lifecicle hooks
+
+onMounted(() => {
+  streamSettings(); 
+})
 
 // Computed
 
