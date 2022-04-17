@@ -73,6 +73,7 @@ const sendButtonColor = computed(() => {
 // methods
 
 const sendEmail = async () => {
+  if(!dgprChecked.value || !email.value) return;
   isSendingEmail.value = true;
   await sendSignInEmail(email.value);
   isEmailSent.value = true;
