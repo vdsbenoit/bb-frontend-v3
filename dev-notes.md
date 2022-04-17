@@ -117,7 +117,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 - [ ] Gestion équipes (voir app précédente)
 
-- [ ] [Pull-to-refresh](https://ionicframework.com/docs/api/refresher)
+- [x] Dark theme
 
   
 
@@ -188,7 +188,6 @@ export const setEven = async (matchId: string) => {
 
 # Nice to have
 
-- Dark theme
 - Description de jeu
 - Système de recherche de joueur
 - séparation pour midi dans l'horaire

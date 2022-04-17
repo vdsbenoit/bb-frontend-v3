@@ -1,5 +1,5 @@
 <template>
-  <ion-col size="6" @click="router.replace(target)">
+  <ion-col size="6" size-sm="4" size-lg="3" @click="router.replace(target)">
     <div class="tile ion-activatable ripple-parent">
       <span class="ion-padding"><slot></slot></span>
       <ion-ripple-effect class="ripple"></ion-ripple-effect>
@@ -24,7 +24,7 @@ const router = useRouter();
   justify-content: center;
   text-align: center;
   line-height: 35px;
-  font-size: large;
+  font-size: 1.2em;
   font-weight: bold;
   cursor: pointer;
 }
