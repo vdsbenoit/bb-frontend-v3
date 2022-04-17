@@ -121,6 +121,7 @@ export const setName = (gameId: number, name: string) => {
 const addMorningLeaders = async (gameId: number, uid: string) => {
   console.log(`Adding user ${uid} to game ${gameId}`);
   const gameMergePromise = addToDocArray(GAMES_COLLECTION, gameId.toString(), "morningLeaders", uid)
+  console.log(`Adding game ${gameId} to user ${uid}`);
   const userMergePromise = user.updateProfile(uid, { morningGame: gameId });
   await Promise.all([gameMergePromise, userMergePromise]);
   toastPopup("Responsables du matin mis à jour");
@@ -128,6 +129,7 @@ const addMorningLeaders = async (gameId: number, uid: string) => {
 const addAfternoonLeaders = async (gameId: number, uid: string) => {
   console.log(`Adding user ${uid} to game ${gameId}`);
   const gameMergePromise = addToDocArray(GAMES_COLLECTION, gameId.toString(), "afternoonLeaders", uid)
+  console.log(`Adding game ${gameId} to user ${uid}`);
   const userMergePromise = user.updateProfile(uid, { afternoonGame: gameId });
   await Promise.all([gameMergePromise, userMergePromise]);
   toastPopup("Responsables de l'après-midi mis à jour");
@@ -156,6 +158,7 @@ export const setMorningLeader = async (gameId: number, uid = "") => {
       message,
       async () => {
         await removeMorningLeader(profile.morningGame, uid);
+        await forceFetchGame(profile.morningGame);
         await addMorningLeaders(gameId, uid);
         await forceFetchGame(gameId);
       },
@@ -182,6 +185,7 @@ export const setAfternoonLeader = async (gameId: number, uid = "") => {
       message,
       async () => {
         await removeAfternoonLeader(profile.afternoonGame, uid);
+        await forceFetchGame(profile.afternoonGame);
         await addAfternoonLeaders(gameId, uid);
         await forceFetchGame(gameId);
       },
