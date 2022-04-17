@@ -26,6 +26,7 @@ Ca veut dire que tu as une circular dependency dans tes imports. Check que tu n'
 - pinia : state management
 - magnetar: firestore 
 - Volar plugin (VS Code): I applied [this config](https://github.com/johnsoncodehk/volar/discussions/471).
+- Auto generate build info file : https://www.npmjs.com/package/ionic-build-info
 
 
 
@@ -51,11 +52,12 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Mettre à jour le field `teams` des documents de la collection sections
 - [x] Refactor even with draw
 - [ ] Comparer & re-init db pour changer game_id en number
+- [ ] config firebase blaze
 
 # Pages
 
 - [ ] Accueil
-  - [ ] Si pas connecté : invitation à s'inscrire
+  - [x] Si pas connecté : invitation à s'inscrire
   - [ ] Si connecté
     - [ ] Si pas de jeu : inviter à s'inscrire à un jeu / une équipe
     - [ ] Sinon liens vers Mon programme / Mon jeu
