@@ -25,9 +25,9 @@
 
           <p class="ion-padding-start ion-padding-end">
             Chaque section est divisée en plusieurs équipes d'entre 5 et 10 joueurs. Les équipes s'affrontent à travers des duels durant toute la journée.
-            Chaque victoire fait gagner 2 points à l'équipe gagante. Chaque égalité fait gagner 1 points aux deux équipes. Les défaites n'affectent pas le score.
+            Chaque victoire fait gagner 2 points à l'équipe gagnante. Chaque égalité fait gagner un point aux deux équipes. Les défaites n'affectent pas le score.
             A la fin de la journée, les 3 équipes qui ont remporté le plus de points sont invitées à monter sur le podium. Il y a un podium par catégorie 
-            de section (par ex. un podium louveteaux, un podium Lutins, etc). Les champions de chaque podium remprotent des prix.
+            de section (par ex. un podium louveteaux, un podium Lutins, etc). Les champions de chaque podium remportent des prix.
           </p>
 
           <ion-item>

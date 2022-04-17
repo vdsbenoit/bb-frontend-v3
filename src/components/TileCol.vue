@@ -1,5 +1,5 @@
 <template>
-  <ion-col size="6" size-sm="4" size-lg="3" @click="router.replace(target)">
+  <ion-col size="6" size-sm="4" size-lg="2" @click="router.replace(target)">
     <div class="tile ion-activatable ripple-parent">
       <span class="ion-padding"><slot></slot></span>
       <ion-ripple-effect class="ripple"></ion-ripple-effect>
