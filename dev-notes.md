@@ -53,6 +53,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Refactor even with draw
 - [ ] Comparer & re-init db pour changer game_id en number
 - [ ] config firebase blaze
+- [ ] rules DB
+- [ ] Ajouter les animateurs
 
 # Pages
 
@@ -64,7 +66,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
     - [x] Compléter profil
 
 - [x] About
-  - [ ] Explication sur le scoring (2 pt par victoire, 1pt par égalité)
+  - [x] Explication sur le scoring (2 pt par victoire, 1pt par égalité)
 
 - [x] Login
   - [x] Split login & profile

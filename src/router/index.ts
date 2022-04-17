@@ -39,11 +39,6 @@ const routes: Array<RouteRecordRaw> = [
     component: HomePageVue
   },
   {
-    name: 'index',
-    path: '/guest',
-    redirect: '/home'
-  },
-  {
     name: 'teams',
     path: '/team/:teamId',
     component: () => import ('../views/TeamPage.vue'),
@@ -109,12 +104,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/LoginPage.vue'),
     props: { validation: true }
   },
-  {
-    name: 'settings',
-    path: '/settings',
-    component: () => import ('../views/LoginPage.vue'),
-    beforeEnter: authCheck,
-  },
+  // {
+  //   name: 'settings',
+  //   path: '/settings',
+  //   component: () => import ('../views/LoginPage.vue'),
+  //   beforeEnter: authCheck,
+  // },
   {
     name: 'about',
     path: '/about',

@@ -285,7 +285,7 @@ const logOut = () => {
     const loading = await loadingPopup("Déconnexion");
     await stopMagnetar();
     const result = await userStore.logout();
-    if (result) router.replace("/guest");
+    if (result) router.replace("/home");
     loading.dismiss();
   });
 };

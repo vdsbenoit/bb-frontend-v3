@@ -1,6 +1,6 @@
 {
   "name": "baden-app",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": true,
   "description": "Baden Battle Score App",
   "scripts": {
