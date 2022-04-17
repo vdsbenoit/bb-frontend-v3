@@ -67,17 +67,20 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Login
   - [x] Split login & profile
   - [ ] RGPD
+  
 - [x] Profil (perso & qqun d'autre)
 
   - [x] mettre condition sur ce qu'on peut modifier
   - [x] erreurs enregistrement settings
   - [x] bouton pour demander une promotion
+  
 - [x] Equipe (avec liste matches, ordonnés par temps)
 
 - [x] Jeu (avec liste matches, ordonnés par temps)
   - [ ] Ajouter bouton "Inscrire quelqu'un"
 
 - [x] Sections (avec liste d'équipe)
+
 - [x] Match
   - [x] Enregistrer le score au niveau 
     - [x] du match
@@ -90,7 +93,9 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Liste des jeux 
   - [x] filtre par circuit
   - [x] si admin : bouton pour éditer nom & description
+  
 - [x] Liste matches, filter temps (pour vérifier les inscriptions)
+
 - [ ] Liste utilisateurs
   - [ ] filtre par section
   - [ ] filtre demande de promotion
@@ -109,6 +114,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] role guards -> ajouter au guard actuel
 
 - [ ] Gestion équipes (voir app précédente)
+
+- [ ] [Pull-to-refresh](https://ionicframework.com/docs/api/refresher)
 
   
 
@@ -190,7 +197,6 @@ export const setEven = async (matchId: string) => {
 
 # Next release
 
-- [Pull-to-refresh](https://ionicframework.com/docs/api/refresher)
 - Retirer matches des collection games & teams (utiliser des queries à la place). Vérifier tout de même si ce n'est pas utile pour la validation de la db à la fin de l'initialisation.
 - QR codes
 - Create DB from web app
