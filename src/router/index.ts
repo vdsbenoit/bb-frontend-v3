@@ -120,12 +120,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/about',
     component: () => import ('../views/AboutPage.vue'),
   },
-  {
-    name: 'sandbox', //fixme
-    path: '/sandbox',
-    component: () => import ('../views/SandBox.vue'),
-    beforeEnter: authCheck,
-  },
   { 
     path: "/:catchAll(.*)",
     component: () => import ('../views/NotFoundPage.vue')

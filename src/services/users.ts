@@ -77,8 +77,7 @@ export function usersDefaults(payload?: any) {
   return { ...defaults, ...payload }
 }
 
-// fixme: do not export
-export const usersModule = magnetar.collection(USER_PROFILES_COLLECTION, {
+const usersModule = magnetar.collection(USER_PROFILES_COLLECTION, {
   modifyPayloadOn: { insert: usersDefaults },
   modifyReadResponseOn: { added: usersDefaults },
 });
