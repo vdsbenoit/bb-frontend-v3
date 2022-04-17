@@ -23,7 +23,8 @@ if (process.env.NODE_ENV === 'production') {
     },
     updated () {
       confirmPopup(
-        "Elle ne sera appliquée qu'après avoir fermé complètement l'app. Veux-tu le faire maintenant ?", 
+        `Elle ne sera appliquée qu'après avoir fermé complètement l'app. Veux-tu le faire maintenant ?
+         Si ce pop apparait à chaque ouverture de l'app, ferme complètement ton navigateur web aussi.`, 
         () => { 
           window.close();
           setTimeout(() => {

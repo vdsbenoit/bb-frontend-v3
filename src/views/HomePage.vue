@@ -65,7 +65,7 @@ const showSelectGame = computed(() => {
   width: 100%;
   height: 30%;
   margin-bottom: 20px;
-  margin-top:5px;
+  margin-top: 10px;
 }
 .logo img {
   max-width: 100%;
