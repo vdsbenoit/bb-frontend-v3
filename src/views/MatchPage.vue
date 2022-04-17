@@ -153,7 +153,7 @@ const match = computed((): Match => {
   return getMatch(matchId.value as string) as Match;
 });
 const game = computed((): Game | undefined => {
-  return match.value?.game_id ? (getGame(match.value?.game_id as string) as Game) : undefined;
+  return match.value?.game_id ? (getGame(match.value?.game_id.toString()) as Game) : undefined;
 });
 const isMatch = computed(() => {
   if (match.value?.id) {
@@ -200,28 +200,37 @@ const formatedDate = computed(() => {
 // async update canSetScore value
 watchEffect(async () => {
   if (!match.value?.game_id) return; // do not run this watcher if match is not initialized
-  canSetScore.value = await canSetGameScore(match.value.game_id);
+  canSetScore.value = await canSetGameScore(match.value.game_id.toString());
 });
 
 // Methods
 
 const winHandler = async (winner: string) => {
   if(match.value.winner == winner) return errorPopup(`L'équipe ${winner} est déjà enregistrée comme gagnante`);
+  let winningSection: string;
+  let losingSection: string;
   const promises = [];
   const loser = match.value.player_ids[0] === winner ? match.value.player_ids[1] : match.value.player_ids[0];
+  if (firstPlayer.value?.id == winner) {
+    winningSection = firstPlayer.value?.sectionId as string;
+    losingSection = secondPlayer.value?.sectionId as string;
+  } else {
+    winningSection = secondPlayer.value?.sectionId as string;
+    losingSection = firstPlayer.value?.sectionId as string;
+  }
   try {
     if(match.value.winner) {
-      promises.push(removeTeamWin(match.value.winner));
-      promises.push(removeSectionWin(match.value.winner));
+      promises.push(removeTeamWin(loser));
+      promises.push(removeSectionWin(losingSection));
     }
     if(match.value.draw) {
       promises.push(removeTeamDraw(winner));
       promises.push(removeTeamDraw(loser));
-      promises.push(removeSectionDraw(winner));
-      promises.push(removeSectionDraw(loser));
+      promises.push(removeSectionDraw(winningSection));
+      promises.push(removeSectionDraw(losingSection));
     }
     promises.push(addTeamWin(winner));
-    promises.push(addSectionWin(winner));
+    promises.push(addSectionWin(winningSection));
     promises.push(setMatchScore(matchId.value, winner, loser));
 
     await Promise.all(promises);
@@ -232,17 +241,17 @@ const winHandler = async (winner: string) => {
 }
 const drawHandler = async () => {
   if(match.value.draw) return errorPopup("Ce duel est déjà enregistré comme égalité");
-
   const promises = [];
   try{
     if(match.value.winner) {
+      const previousWinner = firstPlayer.value?.id == match.value.winner ? firstPlayer.value?.sectionId : secondPlayer.value?.sectionId;
       promises.push(removeTeamWin(match.value.winner));
-      promises.push(removeSectionWin(match.value.winner));
+      promises.push(removeSectionWin(previousWinner as string));
     }
-    promises.push(addTeamDraw(match.value.player_ids[0]));
-    promises.push(addTeamDraw(match.value.player_ids[1]));
-    promises.push(addSectionDraw(match.value.player_ids[0]));
-    promises.push(addSectionDraw(match.value.player_ids[1]));
+    promises.push(addTeamDraw(firstPlayer.value?.id as string));
+    promises.push(addTeamDraw(secondPlayer.value?.id as string));
+    promises.push(addSectionDraw(firstPlayer.value?.sectionId as string));
+    promises.push(addSectionDraw(secondPlayer.value?.sectionId as string));
     promises.push(setMatchDraw(matchId.value));
 
     await Promise.all(promises);
