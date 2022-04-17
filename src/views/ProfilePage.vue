@@ -16,12 +16,12 @@
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Totem</ion-label>
               <ion-input v-if="editMode" v-model="modifiedProfile.totem" name="totem" type="text" autocorrect="off"></ion-input>
-              <ion-input v-else name="totem" type="text" readonly="true">{{ userProfile.totem }}</ion-input>
+              <ion-input v-else name="totem" type="text" readonly="true" inputmode="none">{{ userProfile.totem }}</ion-input>
             </ion-item>
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Nom</ion-label>
               <ion-input v-if="editMode" v-model="modifiedProfile.name" name="name" type="text"></ion-input>
-              <ion-input v-else name="name" type="text" readonly="true">{{ userProfile.name }}</ion-input>
+              <ion-input v-else name="name" type="text" readonly="true" inputmode="none">{{ userProfile.name }}</ion-input>
             </ion-item>
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Catégorie</ion-label>
@@ -44,7 +44,7 @@
                 <ion-select-option v-for="team in getSectionTeams()" :key="team" :value="team">{{ team }}</ion-select-option>
               </ion-select>
               <p v-if="editMode && !modifiedProfile.sectionId" class="missing-field-alert">Selectionne d'abord une section</p>
-              <ion-input v-if="!editMode" type="text" readonly="true" @click="goToTeamPage(userProfile.team)">{{ userProfile.team }}</ion-input>
+              <ion-input v-if="!editMode" type="text" readonly="true" inputmode="none" @click="goToTeamPage(userProfile.team)">{{ userProfile.team }}</ion-input>
             </ion-item>
             <div v-if="showFullProfile">
               <ion-item lines="full">
@@ -52,7 +52,7 @@
                 <ion-select v-if="editMode && editGames" v-model="modifiedProfile.morningGame" cancel-text="Annuler">
                   <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id"> {{ isGameFullEmoji(game.morningLeaders) }}{{ game.id }} - {{ game.name }} </ion-select-option>
                 </ion-select>
-                <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.morningGame)">
+                <ion-input v-else type="text" readonly="true" inputmode="none" @click="goToGamePage(userProfile.morningGame)">
                   <span v-if="userProfile.morningGame">{{ userProfile.morningGame }}: {{ getGameName(userProfile.morningGame) }}</span>
                 </ion-input>
                 <ion-icon v-if="editMode && !editGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames"></ion-icon>
@@ -62,7 +62,7 @@
                 <ion-select v-if="editMode && editGames" v-model="modifiedProfile.afternoonGame" cancel-text="Annuler">
                   <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id" color="danger"> {{ isGameFullEmoji(game.afternoonLeaders) }}{{ game.id }} - {{ game.name }} </ion-select-option>
                 </ion-select>
-                <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.afternoonGame)">
+                <ion-input v-else type="text" readonly="true" inputmode="none" @click="goToGamePage(userProfile.afternoonGame)">
                   <span v-if="userProfile.afternoonGame">{{ userProfile.afternoonGame }}: {{ getGameName(userProfile.afternoonGame) }}</span>
                 </ion-input>
                 <ion-icon v-if="editMode && !editGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames"></ion-icon>
@@ -72,7 +72,7 @@
                 <ion-select v-if="editMode && canSetRole" v-model="modifiedProfile.role" cancel-text="Annuler">
                   <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{ role }}</ion-select-option>
                 </ion-select>
-                <ion-input v-else type="text" readonly="true">{{ getRoleByValue(userProfile.role) }}</ion-input>
+                <ion-input v-else type="text" readonly="true" inputmode="none">{{ getRoleByValue(userProfile.role) }}</ion-input>
               </ion-item>
               <ion-item lines="full" v-if="editMode && !canSetRole && isOwnProfile">
                 <ion-button expand="block" color="medium" @click="requestPromotion">
@@ -82,7 +82,7 @@
               </ion-item>
               <ion-item lines="full">
                 <ion-label position="stacked" color="primary">Adresse email</ion-label>
-                <ion-input type="text" readonly="true">{{ userProfile.email }}</ion-input>
+                <ion-input type="text" readonly="true" inputmode="none">{{ userProfile.email }}</ion-input>
               </ion-item>
             </div>
           </ion-list>
