@@ -20,17 +20,15 @@ if (process.env.NODE_ENV === 'production') {
     },
     updatefound () {
       console.log('New content is downloading.')
-      toastPopup("Une mise à jour est en train d'être appliquée à l'app")
     },
     updated () {
       confirmPopup(
         "Elle ne sera appliquée qu'après avoir fermé complètement l'app. Veux-tu le faire maintenant ?", 
         () => { 
-          try{
-            window.close();
-          } catch {
-            errorPopup("Ton navigateur n'a pas voulu laisser l'app se fermer. Fais le manuellement pour appliquer la mise à jour");
-          }
+          window.close();
+          setTimeout(() => {
+            errorPopup("Ton navigateur ne veut visiblement pas laisser l'app se fermer. Fais le manuellement pour appliquer la mise à jour stp");
+          }, 1000)
         },
         () => void 0,
         "Mise à jour disonible"
