@@ -39,7 +39,6 @@ homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline,
 podiumOutline, podiumSharp, albumsOutline, albumsSharp, documentOutline, documentSharp } from "ionicons/icons";
 import { computed, onMounted } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
-import { streamSettings } from "@/services/settings";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
@@ -151,6 +150,7 @@ const bottomPages = [
   profilePage,
   aboutPage
 ]
+
 </script>
 
 <style>

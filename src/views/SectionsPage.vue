@@ -64,6 +64,9 @@
               <ion-card-header>
                 <ion-card-title>Équipes</ion-card-title>
               </ion-card-header>
+                <info-card-component v-if="selectedSectionId && isPlayer && !user.profile.team">
+                  Tu peux sélectionner une équipe ci-dessous et la marquer comme ton équipe
+                </info-card-component>
               <ion-card-content>
                 <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
                   <ion-spinner></ion-spinner>
@@ -109,7 +112,9 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonGrid, IonRow, IonCol, IonListHeader, IonSelect, IonSelectOption, IonBadge, useIonRouter, IonSpinner, IonButton } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonNote, IonGrid, IonRow, IonCol, 
+IonListHeader, IonSelect, IonSelectOption, IonBadge, useIonRouter, IonSpinner, IonButton } from "@ionic/vue";
+import { informationCircleOutline, informationCircleSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
@@ -117,6 +122,8 @@ import { useRoute } from "vue-router";
 import { fetchCategorySections, getSection, Section } from "@/services/sections";
 import { onBeforeMount, watch } from "vue";
 import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
+import InfoCardComponent from "@/components/InfoCardComponent.vue";
+
 
 const user = useAuthStore();
 const route = useRoute();

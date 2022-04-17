@@ -10,11 +10,11 @@
       </ion-text>
       <form v-on:submit.prevent="sendEmail">
         <ion-list>
-          <ion-item lines="full">
+          <ion-item lines="none">
             <ion-label position="floating">Email</ion-label>
             <ion-input v-model="email" name="email" type="email" inputmode="email" autocomplete="email" required autocapitalize="off" clear-input="true"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-item lines="none">
           <ion-checkbox slot="start" class="ion-no-margin ion-margin-end" v-model="dgprChecked"></ion-checkbox>
           <ion-label class="">J'accepte les <a @click="showPrivacyNotice">conditions d'utilisation</a></ion-label>
           </ion-item>
@@ -111,6 +111,7 @@ const showPrivacyNotice = () => {
   width: 100%;
   height: 30%;
   margin-bottom: 20px;
+  margin-top:5px;
 }
 .logo img {
   max-width: 100%;

@@ -8,99 +8,92 @@
     </header-template>
     <ion-content :fullscreen="true" class="ion-padding">
       <div v-if="isProfile">
-        <info-card-component
-          v-if="showFillingInfo"
-          message="Nhésite pas à compléter ou corriger les champs si dessous. 
-                    Ca rend l'utilisation de l'app plus facile."
-        >
+        <info-card-component class="ion-no-margin ion-margin-bottom" v-if="showFillingInfo"> 
+          Nhésite pas à compléter ou corriger les champs si dessous. Ca rend l'utilisation de l'app plus facile.
         </info-card-component>
         <ion-card class="ion-no-margin ion-margin-bottom ion-padding-bottom">
-            <ion-list>
+          <ion-list>
+            <ion-item lines="full">
+              <ion-label position="stacked" color="primary">Totem</ion-label>
+              <ion-input v-if="editMode" v-model="modifiedProfile.totem" name="totem" type="text" autocorrect="off"></ion-input>
+              <ion-input v-else name="totem" type="text" readonly="true">{{ userProfile.totem }}</ion-input>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked" color="primary">Nom</ion-label>
+              <ion-input v-if="editMode" v-model="modifiedProfile.name" name="name" type="text"></ion-input>
+              <ion-input v-else name="name" type="text" readonly="true">{{ userProfile.name }}</ion-input>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked" color="primary">Catégorie</ion-label>
+              <ion-select v-if="editMode" v-model="modifiedProfile.category" cancel-text="Annuler">
+                <ion-select-option v-for="(category, index) in categories" :key="index" :value="category">{{ category }}</ion-select-option>
+              </ion-select>
+              <ion-input v-else name="category" type="text">{{ userProfile.category }}</ion-input>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked" color="primary">Section</ion-label>
+              <ion-select v-if="editMode && modifiedProfile.category" v-model="modifiedProfile.sectionId" cancel-text="Annuler">
+                <ion-select-option v-for="section in getCategorySections()?.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
+              </ion-select>
+              <p v-if="editMode && !modifiedProfile.category" class="missing-field-alert">Selectionne d'abord une catégorie</p>
+              <ion-input v-if="!editMode" name="section" type="text">{{ userProfile.sectionName }}</ion-input>
+            </ion-item>
+            <ion-item lines="full">
+              <ion-label position="stacked" color="primary">Équipe</ion-label>
+              <ion-select v-if="editMode && modifiedProfile.sectionId" v-model="modifiedProfile.team" cancel-text="Annuler">
+                <ion-select-option v-for="team in getSectionTeams()" :key="team" :value="team">{{ team }}</ion-select-option>
+              </ion-select>
+              <p v-if="editMode && !modifiedProfile.sectionId" class="missing-field-alert">Selectionne d'abord une section</p>
+              <ion-input v-if="!editMode" type="text" readonly="true" @click="goToTeamPage(userProfile.team)">{{ userProfile.team }}</ion-input>
+            </ion-item>
+            <div v-if="showFullProfile">
               <ion-item lines="full">
-                <ion-label position="stacked" color="primary">Totem</ion-label>
-                <ion-input v-if="editMode" v-model="modifiedProfile.totem" name="totem" type="text" autocorrect="off"></ion-input>
-                <ion-input v-else name="totem" type="text" readonly="true">{{ userProfile.totem }}</ion-input>
-              </ion-item>
-              <ion-item lines="full">
-                <ion-label position="stacked" color="primary">Nom</ion-label>
-                <ion-input v-if="editMode" v-model="modifiedProfile.name" name="name" type="text"></ion-input>
-                <ion-input v-else name="name" type="text" readonly="true">{{ userProfile.name }}</ion-input>
-              </ion-item>
-              <ion-item lines="full">
-                <ion-label position="stacked" color="primary">Catégorie</ion-label>
-                <ion-select v-if="editMode" v-model="modifiedProfile.category" cancel-text="Annuler">
-                    <ion-select-option v-for="(category, index) in categories" :key="index" :value="category">{{ category }}</ion-select-option>
+                <ion-label position="stacked" color="primary">Épreuve du matin</ion-label>
+                <ion-select v-if="editMode && editGames" v-model="modifiedProfile.morningGame" cancel-text="Annuler">
+                  <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id"> {{ isGameFullEmoji(game.morningLeaders) }}{{ game.id }} - {{ game.name }} </ion-select-option>
                 </ion-select>
-                <ion-input v-else name="category" type="text">{{ userProfile.category }}</ion-input>
+                <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.morningGame)">
+                  <span v-if="userProfile.morningGame">{{ userProfile.morningGame }}: {{ getGameName(userProfile.morningGame) }}</span>
+                </ion-input>
+                <ion-icon v-if="editMode && !editGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames"></ion-icon>
               </ion-item>
               <ion-item lines="full">
-                <ion-label position="stacked" color="primary">Section</ion-label>
-                  <ion-select v-if="editMode && modifiedProfile.category" v-model="modifiedProfile.sectionId" cancel-text="Annuler">
-                      <ion-select-option v-for="section in getCategorySections()?.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
-                  </ion-select>
-                  <p v-if="editMode && !modifiedProfile.category" class="missing-field-alert">Selectionne d'abord une catégorie</p>
-                <ion-input v-if="!editMode" name="section" type="text">{{ userProfile.sectionName }}</ion-input>
+                <ion-label position="stacked" color="primary">Épreuve de l'après-midi</ion-label>
+                <ion-select v-if="editMode && editGames" v-model="modifiedProfile.afternoonGame" cancel-text="Annuler">
+                  <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id" color="danger"> {{ isGameFullEmoji(game.afternoonLeaders) }}{{ game.id }} - {{ game.name }} </ion-select-option>
+                </ion-select>
+                <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.afternoonGame)">
+                  <span v-if="userProfile.afternoonGame">{{ userProfile.afternoonGame }}: {{ getGameName(userProfile.afternoonGame) }}</span>
+                </ion-input>
+                <ion-icon v-if="editMode && !editGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames"></ion-icon>
               </ion-item>
               <ion-item lines="full">
-                <ion-label position="stacked" color="primary">Équipe</ion-label>
-                  <ion-select v-if="editMode && modifiedProfile.sectionId" v-model="modifiedProfile.team" cancel-text="Annuler">
-                    <ion-select-option v-for="team in getSectionTeams()" :key="team" :value="team">{{ team }}</ion-select-option>
-                  </ion-select>
-                  <p v-if="editMode && !modifiedProfile.sectionId"  class="missing-field-alert">Selectionne d'abord une section</p>
-                <ion-input v-if="!editMode" type="text" readonly="true" @click="goToTeamPage(userProfile.team)">{{ userProfile.team }}</ion-input>
+                <ion-label position="stacked" color="primary">Role</ion-label>
+                <ion-select v-if="editMode && canSetRole" v-model="modifiedProfile.role" cancel-text="Annuler">
+                  <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{ role }}</ion-select-option>
+                </ion-select>
+                <ion-input v-else type="text" readonly="true">{{ getRoleByValue(userProfile.role) }}</ion-input>
               </ion-item>
-              <div v-if="showFullProfile">
-                <ion-item lines="full">
-                  <ion-label position="stacked" color="primary">Épreuve du matin</ion-label>
-                  <ion-select v-if="editMode && editGames" v-model="modifiedProfile.morningGame" cancel-text="Annuler">
-                    <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">
-                      {{isGameFullEmoji(game.morningLeaders)}}{{ game.id }} - {{ game.name }}
-                    </ion-select-option>
-                  </ion-select>
-                  <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.morningGame)">
-                    <span v-if="userProfile.morningGame">{{ userProfile.morningGame }}: {{getGameName(userProfile.morningGame)}}</span>
-                    </ion-input>
-                  <ion-icon v-if="editMode && !editGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames"></ion-icon>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label position="stacked" color="primary">Épreuve de l'après-midi</ion-label>
-                  <ion-select v-if="editMode && editGames" v-model="modifiedProfile.afternoonGame" cancel-text="Annuler">
-                    <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id" color="danger">
-                       {{isGameFullEmoji(game.afternoonLeaders)}}{{ game.id }} - {{ game.name }}
-                    </ion-select-option>
-                  </ion-select>
-                  <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.afternoonGame)">
-                    <span v-if="userProfile.afternoonGame">{{ userProfile.afternoonGame }}: {{getGameName(userProfile.afternoonGame)}}</span>
-                  </ion-input>
-                  <ion-icon v-if="editMode && !editGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames"></ion-icon>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label position="stacked" color="primary">Role</ion-label>
-                  <ion-select v-if="editMode && canSetRole" v-model="modifiedProfile.role" cancel-text="Annuler">
-                    <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{ role }}</ion-select-option>
-                  </ion-select>
-                  <ion-input v-else type="text" readonly="true">{{ getRoleByValue(userProfile.role) }}</ion-input>
-                </ion-item>
-                <ion-item lines="full" v-if="editMode && !canSetRole && isOwnProfile">
-                  <ion-button  expand="block" color="medium" @click="requestPromotion">
-                    <ion-spinner v-if="isRequestingPromotion"></ion-spinner>
-                    <span v-else>Demander une promotion</span>
-                  </ion-button>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label position="stacked" color="primary">Adresse email</ion-label>
-                  <ion-input type="text" readonly="true">{{ userProfile.email }}</ion-input>
-                </ion-item>
-              </div>
-            </ion-list>
+              <ion-item lines="full" v-if="editMode && !canSetRole && isOwnProfile">
+                <ion-button expand="block" color="medium" @click="requestPromotion">
+                  <ion-spinner v-if="isRequestingPromotion"></ion-spinner>
+                  <span v-else>Demander une promotion</span>
+                </ion-button>
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label position="stacked" color="primary">Adresse email</ion-label>
+                <ion-input type="text" readonly="true">{{ userProfile.email }}</ion-input>
+              </ion-item>
+            </div>
+          </ion-list>
           <ion-grid class="ion-no-padding">
             <ion-row>
               <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
                 <ion-button v-if="!editMode && isOwnProfile" expand="block" class="ion-margin-top" color="danger" @click="logOut"> Se déconnnecter </ion-button>
                 <ion-button v-if="editMode" expand="block" class="ion-margin-top" color="success" @click="saveProfile" :disabled="isUpdating">
                   <ion-spinner v-if="isUpdating"></ion-spinner>
-                  <span v-else>Enregistrer</span>  
-                 </ion-button>
+                  <span v-else>Enregistrer</span>
+                </ion-button>
               </ion-col>
               <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
                 <ion-button v-if="editMode && canDeleteProfile" expand="block" class="ion-margin-top" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
@@ -161,11 +154,11 @@ const isProfile = computed(() => {
   return userProfile.value?.email ? true : false;
 });
 const isOwnProfile = computed(() => {
-  if(!route.params.userId) return true;
+  if (!route.params.userId) return true;
   return route.params.userId === userStore.uid;
 });
 const canEditProfile = computed(() => {
-  if(userStore.profile.role >= ROLES.Modérateur) return true;
+  if (userStore.profile.role >= ROLES.Modérateur) return true;
   return isOwnProfile.value;
 });
 const showFullProfile = computed(() => {
@@ -175,7 +168,7 @@ const canSetRole = computed(() => {
   return userStore.profile.role >= ROLES.Administrateur;
 });
 const canDeleteProfile = computed(() => {
-  if(userStore.profile.role >= ROLES.Administrateur) return true;
+  if (userStore.profile.role >= ROLES.Administrateur) return true;
   return isOwnProfile.value;
 });
 const showFillingInfo = computed(() => {
@@ -197,70 +190,75 @@ const pageTitle = computed(() => {
   }
 });
 const editIcon = computed(() => {
-  return (editMode.value) ? {ios: closeOutline, md: closeSharp} : {ios: pencilOutline, md: pencilSharp}
+  return editMode.value ? { ios: closeOutline, md: closeSharp } : { ios: pencilOutline, md: pencilSharp };
 });
 const categories = computed(() => {
   return getAppSettings.value?.categories;
-})
+});
 
 // Watchers
-watch(() => modifiedProfile.value.category, () => {
-  modifiedProfile.value.sectionId = "";
-  modifiedProfile.value.team = "";
-})
-watch(() => modifiedProfile.value.sectionId, () => {
-  modifiedProfile.value.team = "";
-})
+watch(
+  () => modifiedProfile.value.category,
+  () => {
+    modifiedProfile.value.sectionId = "";
+    modifiedProfile.value.team = "";
+  }
+);
+watch(
+  () => modifiedProfile.value.sectionId,
+  () => {
+    modifiedProfile.value.team = "";
+  }
+);
 
 // Methods
 
 const toggleEditMode = () => {
-  if (!editMode.value) modifiedProfile.value = {...userProfile.value}; // deep copy
+  if (!editMode.value) modifiedProfile.value = { ...userProfile.value }; // deep copy
   editMode.value = !editMode.value;
-} 
+};
 const getCategorySections = (): Map<string, Section> | undefined => {
   return modifiedProfile.value.category ? fetchCategorySections(modifiedProfile.value.category) : undefined;
 };
 const getSectionTeams = (): string[] => {
   const section = getSection(modifiedProfile.value.sectionId);
   return section?.teams ?? [];
-}
+};
 const loadGames = () => {
   games.value = getAllGames();
   editGames.value = true;
-}
+};
 const goToTeamPage = (teamId: string) => {
   if (teamId) router.push(`/team/${teamId}`);
-}
+};
 const goToGamePage = (gameId: number) => {
   if (editMode.value) loadGames();
   else if (gameId) router.push(`/game/${gameId}`);
-}
+};
 const filterObject = (obj: any, acceptedKeys: string[]) => {
-  return Object.fromEntries(Object.entries(obj).
-    filter(([key, val]) => acceptedKeys.includes(key)));
-}
+  return Object.fromEntries(Object.entries(obj).filter(([key, val]) => acceptedKeys.includes(key)));
+};
 const saveProfile = async () => {
-  let newProfile = {...modifiedProfile.value} // deep copy before transformation
+  let newProfile = { ...modifiedProfile.value }; // deep copy before transformation
   const toUpdateKeys = ["totem", "name", "category", "role"];
   isUpdating.value = true;
   let morningGamePromise = null;
   let afternoonGamePromise = null;
-  if(newProfile.sectionId){
+  if (newProfile.sectionId) {
     const section = getSection(newProfile.sectionId);
     newProfile.sectionName = section?.name ?? "Not found";
     toUpdateKeys.push("sectionId", "sectionName");
     if (newProfile.sectionName == "Not found") console.error("Cannot retrieve section name");
   }
-  if(newProfile.team) toUpdateKeys.push("team");
+  if (newProfile.team) toUpdateKeys.push("team");
   // Treat games separately
-  if (newProfile.morningGame && newProfile.morningGame != userProfile.value.morningGame){
+  if (newProfile.morningGame && newProfile.morningGame != userProfile.value.morningGame) {
     console.log("Updating morning game");
     morningGamePromise = setMorningLeader(newProfile.morningGame, userId.value).catch((error) => {
       errorPopup(`Le jeu du matin n'a pas pu être mis à jour : ${error.message}`);
-    })
+    });
   }
-  if (newProfile.afternoonGame && newProfile.afternoonGame != userProfile.value.afternoonGame){
+  if (newProfile.afternoonGame && newProfile.afternoonGame != userProfile.value.afternoonGame) {
     console.log("Updating afternoon game");
     afternoonGamePromise = setAfternoonLeader(newProfile.afternoonGame, userId.value).catch((error) => {
       errorPopup(`Le jeu de l'après midi n'a pas pu être mis à jour : ${error.message}`);
@@ -269,13 +267,16 @@ const saveProfile = async () => {
   await Promise.all([morningGamePromise, afternoonGamePromise]);
   // filter keys to be updated
   newProfile = filterObject(newProfile, toUpdateKeys);
-  userStore.updateProfile(userId.value, newProfile).then(() => {
-    toastPopup("Le profil a été mis à jour");
-    isUpdating.value = false;
-  }).catch((error: any) => {
-    errorPopup(`Le n'a pas pu être mis à jour : ${error.message}`);
-    isUpdating.value = false;
-  });
+  userStore
+    .updateProfile(userId.value, newProfile)
+    .then(() => {
+      toastPopup("Le profil a été mis à jour");
+      isUpdating.value = false;
+    })
+    .catch((error: any) => {
+      errorPopup(`Le n'a pas pu être mis à jour : ${error.message}`);
+      isUpdating.value = false;
+    });
   editMode.value = false;
   editGames.value = false;
 };
@@ -285,45 +286,48 @@ const logOut = () => {
     await stopMagnetar();
     const result = await userStore.logout();
     if (result) router.replace("/guest");
-    loading.dismiss(); 
-  })
+    loading.dismiss();
+  });
 };
 const deleteAccount = async () => {
-  const confirmTitle = "Es-tu sûr.e ?"
+  const confirmTitle = "Es-tu sûr.e ?";
   const confirmMessage = "Cette opération supprimera toute les données liées à ton profil";
   const removeAccountHandler = async () => {
     const wasOwnProfile = isOwnProfile.value;
     const loading = await loadingPopup("Suppression du profil");
     let removeMorningGamePromise = null;
     let removeAfternoonGamePromise = null;
-    try{
-      if(userProfile.value.morningGame) removeMorningGamePromise = removeMorningLeader(userProfile.value.morningGame, userId.value);
-      if(userProfile.value.afternoonGame) removeAfternoonGamePromise = removeAfternoonLeader(userProfile.value.afternoonGame, userId.value);
+    try {
+      if (userProfile.value.morningGame) removeMorningGamePromise = removeMorningLeader(userProfile.value.morningGame, userId.value);
+      if (userProfile.value.afternoonGame) removeAfternoonGamePromise = removeAfternoonLeader(userProfile.value.afternoonGame, userId.value);
       const removeAccountPromise = userStore.removeAccount(userId.value);
-      await Promise.all([removeMorningGamePromise, removeAfternoonGamePromise, removeAccountPromise])
-    } catch(error: any){
+      await Promise.all([removeMorningGamePromise, removeAfternoonGamePromise, removeAccountPromise]);
+    } catch (error: any) {
       errorPopup(`Une erreur est survenue durant la suppression du profil: ${error.message}`);
     }
     loading.dismiss();
     if (wasOwnProfile) await logOut();
-  }
+  };
   confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
-}
+};
 const requestPromotion = () => {
   console.debug("promotionRequested", userProfile.value.promotionRequested);
   if (userProfile.value.promotionRequested) return errorPopup("Tu as déjà demandé une promotion");
   isRequestingPromotion.value = true;
-  userStore.updateProfile(userId.value, {promotionRequested: true}).then(() => {
-    toastPopup("Une demande de promotion a été envoyé aux administrateurs");
-    isRequestingPromotion.value = false;
-  }).catch((error: any) => {
-    errorPopup(`La requête à échoué: ${error.message}`);
-    isRequestingPromotion.value = false;
-  });
-}
+  userStore
+    .updateProfile(userId.value, { promotionRequested: true })
+    .then(() => {
+      toastPopup("Une demande de promotion a été envoyé aux administrateurs");
+      isRequestingPromotion.value = false;
+    })
+    .catch((error: any) => {
+      errorPopup(`La requête à échoué: ${error.message}`);
+      isRequestingPromotion.value = false;
+    });
+};
 const isGameFullEmoji = (leaders: string[]): string => {
   return leaders.length >= getMaxGameLeaders() ? "❌ " : "";
-}
+};
 </script>
 
 <style scoped>
@@ -331,10 +335,10 @@ ion-select {
   width: 100%;
   max-width: 100%;
 }
- .missing-field-alert{
-   color: var(--ion-color-danger);
-   font-size: small;
-   text-align: center;
-   margin: auto auto;
- }
+.missing-field-alert {
+  color: var(--ion-color-danger);
+  font-size: small;
+  text-align: center;
+  margin: auto auto;
+}
 </style>

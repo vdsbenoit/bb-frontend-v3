@@ -43,7 +43,10 @@
             </ion-list>
           </ion-card-content>
         </ion-card>
-
+        <ion-button v-if="showRegisterButton" :disabled="isRegistering" expand="block" color="primary" @click="registerPlayer" class="ion-margin">
+        <ion-spinner v-if="isRegistering"></ion-spinner>
+        <span v-else>C'est mon équipe </span>
+        </ion-button>
         <ion-card>
           <ion-card-header>
             <ion-card-title>Programme</ion-card-title>
@@ -65,10 +68,6 @@
             <ion-list-header v-else><h2>Aucun jeu trouvé</h2></ion-list-header>
           </ion-card-content>
         </ion-card>
-        <ion-button v-if="showRegisterButton" :disabled="isRegistering" expand="block" color="primary" @click="registerPlayer" class="ion-margin-horizontal ion-margin-bottom">
-        <ion-spinner v-if="isRegistering"></ion-spinner>
-        <span v-else>C'est mon équipe </span>
-        </ion-button>
       </div>
       <div v-else class="not-found">
         <strong class="capitalize">Nous n'avons pas trouvé cette équipe...</strong>

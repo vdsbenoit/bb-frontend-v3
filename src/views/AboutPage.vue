@@ -36,6 +36,9 @@
           </p>
         </ion-list>
       </div>
+      <div class="version-info">
+        <span>{{buildInfo.buildVersion}} - {{buildDate}}</span>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -44,18 +47,19 @@
 import { calendar, pin, informationCircleOutline } from "ionicons/icons";
 import { IonContent, IonPage, IonIcon, IonLabel, IonList, IonItem, IonText } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import { buildInfo } from "@/app/buildinfo";
+
+const buildDate = new Date(buildInfo.buildDate).toLocaleString("fr-BE");
 </script>
 
 <style scoped>
 .background-image{
     --background: url(@/assets/img/Logo-bb.png) 50% 10%/80%  no-repeat;
 }
-
 .logo img {
   max-width: 100%;
   max-height: 100%;
 }
-
 .about-info {
   margin-top: 43%;
 }
@@ -63,9 +67,13 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
   color: var(--ion-color-dark);
   text-align: justify;
 }
-
 .about-info ion-icon {
   margin-left: 15px;
   margin-inline-end: 20px;
+}
+.version-info {
+  color: var(--ion-color-medium);
+  font-size: 12px;
+  text-align: center;
 }
 </style>
