@@ -1,7 +1,10 @@
 <template>
   <ion-page>
     <header-template :pageTitle="pageTitle">
-      <ion-button v-if="canEditProfile" @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
+      <ion-button v-if="canEditProfile" @click="toggleEditMode">
+        <ion-spinner v-if="isUpdating"></ion-spinner>
+        <ion-icon v-else slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon>
+      </ion-button>
     </header-template>
     <ion-content :fullscreen="true" class="ion-padding">
       <div v-if="isProfile">
@@ -51,7 +54,7 @@
                   <ion-label position="stacked" color="primary">Épreuve du matin</ion-label>
                   <ion-select v-if="editMode && editGames" v-model="modifiedProfile.morningGame" cancel-text="Annuler">
                     <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">
-                      {{ game.id }} : {{ game.name }}
+                      {{ game.id }} - {{ game.name }}
                     </ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.morningGame)">
@@ -64,7 +67,7 @@
                   <ion-label position="stacked" color="primary">Épreuve de l'après-midi</ion-label>
                   <ion-select v-if="editMode && editGames" v-model="modifiedProfile.afternoonGame" cancel-text="Annuler">
                     <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">
-                      {{ game.id }} : {{ game.name }}
+                      {{ game.id }} - {{ game.name }}
                     </ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.afternoonGame)">
@@ -228,38 +231,39 @@ const goToGamePage = (gameId: number) => {
   else if (gameId) router.push(`/game/${gameId}`);
 }
 const filterObject = (obj: any, acceptedKeys: string[]) => {
-
   return Object.fromEntries(Object.entries(obj).
     filter(([key, val]) => acceptedKeys.includes(key)));
 }
 const saveProfile = async () => {
+  let newProfile = {...modifiedProfile.value} // deep copy before transformation
   const toUpdateKeys = ["totem", "name", "category", "role"];
   isUpdating.value = true;
   let morningGamePromise = null;
   let afternoonGamePromise = null;
-  if(modifiedProfile.value.sectionId){
-    const section = getSection(modifiedProfile.value.sectionId);
-    modifiedProfile.value.sectionName = section?.name ?? "Not found";
+  if(newProfile.sectionId){
+    const section = getSection(newProfile.sectionId);
+    newProfile.sectionName = section?.name ?? "Not found";
     toUpdateKeys.push("sectionId", "sectionName");
-    if (modifiedProfile.value.sectionName == "Not found") console.error("Cannot retrieve section name");
+    if (newProfile.sectionName == "Not found") console.error("Cannot retrieve section name");
   }
-  console.debug("modifiedProfile.value.morningGame", modifiedProfile.value.morningGame);
-  console.debug("userProfile.value.morningGame", userProfile.value.morningGame);
-  if (modifiedProfile.value.morningGame && modifiedProfile.value.morningGame != userProfile.value.morningGame){
+  if(newProfile.team) toUpdateKeys.push("team");
+  // Treat games speparately
+  if (newProfile.morningGame && newProfile.morningGame != userProfile.value.morningGame){
     console.log("Updating morning game");
-    morningGamePromise = setMorningLeader(modifiedProfile.value.morningGame, userId.value).catch((error) => {
+    morningGamePromise = setMorningLeader(newProfile.morningGame, userId.value).catch((error) => {
       errorPopup(error.message);
     })
   }
-  if (modifiedProfile.value.afternoonGame && modifiedProfile.value.afternoonGame != userProfile.value.afternoonGame){
+  if (newProfile.afternoonGame && newProfile.afternoonGame != userProfile.value.afternoonGame){
     console.log("Updating afternoon game");
-    afternoonGamePromise = setAfternoonLeader(modifiedProfile.value.afternoonGame, userId.value).catch((error) => {
+    afternoonGamePromise = setAfternoonLeader(newProfile.afternoonGame, userId.value).catch((error) => {
       errorPopup(error.message);
     });
   }
   await Promise.all([morningGamePromise, afternoonGamePromise]);
-  modifiedProfile.value = filterObject(modifiedProfile.value, toUpdateKeys);
-  userStore.updateProfile(userId.value, modifiedProfile.value).then(() => {
+  // filter keys to be updated
+  newProfile = filterObject(newProfile, toUpdateKeys);
+  userStore.updateProfile(userId.value, newProfile).then(() => {
     toastPopup("Le profil a été mis à jour");
     isUpdating.value = false;
   }).catch((error: any) => {
