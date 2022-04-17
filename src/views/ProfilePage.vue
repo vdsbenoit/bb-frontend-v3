@@ -38,7 +38,7 @@
                   <ion-select v-if="editMode && modifiedProfile.category" v-model="modifiedProfile.sectionId" cancel-text="Annuler">
                       <ion-select-option v-for="section in getCategorySections()?.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
                   </ion-select>
-                  <p v-if="editMode && !modifiedProfile.category" color="danger">Selectionne d'abord une catégorie</p>
+                  <p v-if="editMode && !modifiedProfile.category" class="missing-field-alert">Selectionne d'abord une catégorie</p>
                 <ion-input v-if="!editMode" name="section" type="text">{{ userProfile.sectionName }}</ion-input>
               </ion-item>
               <ion-item lines="full">
@@ -46,7 +46,7 @@
                   <ion-select v-if="editMode && modifiedProfile.sectionId" v-model="modifiedProfile.team" cancel-text="Annuler">
                     <ion-select-option v-for="team in getSectionTeams()" :key="team" :value="team">{{ team }}</ion-select-option>
                   </ion-select>
-                  <p v-if="editMode && !modifiedProfile.sectionId" color="danger">Selectionne d'abord une section</p>
+                  <p v-if="editMode && !modifiedProfile.sectionId"  class="missing-field-alert">Selectionne d'abord une section</p>
                 <ion-input v-if="!editMode" type="text" readonly="true" @click="goToTeamPage(userProfile.team)">{{ userProfile.team }}</ion-input>
               </ion-item>
               <div v-if="showFullProfile">
@@ -61,7 +61,6 @@
                     <span v-if="userProfile.morningGame">{{ userProfile.morningGame }}: {{getGameName(userProfile.morningGame)}}</span>
                     </ion-input>
                   <ion-icon v-if="editMode && !editGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames"></ion-icon>
-
                 </ion-item>
                 <ion-item lines="full">
                   <ion-label position="stacked" color="primary">Épreuve de l'après-midi</ion-label>
@@ -74,7 +73,6 @@
                     <span v-if="userProfile.afternoonGame">{{ userProfile.afternoonGame }}: {{getGameName(userProfile.afternoonGame)}}</span>
                   </ion-input>
                   <ion-icon v-if="editMode && !editGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames"></ion-icon>
-
                 </ion-item>
                 <ion-item lines="full">
                   <ion-label position="stacked" color="primary">Role</ion-label>
@@ -82,6 +80,12 @@
                     <ion-select-option v-for="(value, role) in ROLES" :key="value" :value="value">{{ role }}</ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" readonly="true">{{ getRoleByValue(userProfile.role) }}</ion-input>
+                </ion-item>
+                <ion-item lines="full" v-if="editMode && !canSetRole && isOwnProfile">
+                  <ion-button  expand="block" color="medium" @click="requestPromotion">
+                    <ion-spinner v-if="isRequestingPromotion"></ion-spinner>
+                    <span v-else>Demander une promotion</span>
+                  </ion-button>
                 </ion-item>
                 <ion-item lines="full">
                   <ion-label position="stacked" color="primary">Adresse email</ion-label>
@@ -100,6 +104,7 @@
               </ion-col>
               <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
                 <ion-button v-if="editMode && canDeleteProfile" expand="block" class="ion-margin-top" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
+                <ion-button slot="end" expand="block" color="medium" @click="requestPromotion">Demander promotion</ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -138,6 +143,7 @@ const editMode = ref(false);
 const editGames = ref(false);
 const games = ref();
 const isUpdating = ref(false);
+const isRequestingPromotion = ref(false);
 
 // lifecicle hooks
 
@@ -301,6 +307,18 @@ const deleteAccount = async () => {
   }
   confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
 }
+const requestPromotion = () => {
+  console.debug("promotionRequested", userProfile.value.promotionRequested);
+  if (userProfile.value.promotionRequested) return errorPopup("Tu as déjà demandé une promotion");
+  isRequestingPromotion.value = true;
+  userStore.updateProfile(userId.value, {promotionRequested: true}).then(() => {
+    toastPopup("Une demande de promotion a été envoyé aux administrateurs");
+    isRequestingPromotion.value = false;
+  }).catch((error: any) => {
+    errorPopup(`La requête à échoué: ${error.message}`);
+    isRequestingPromotion.value = false;
+  });
+}
 </script>
 
 <style scoped>
@@ -308,4 +326,10 @@ ion-select {
   width: 100%;
   max-width: 100%;
 }
+ .missing-field-alert{
+   color: var(--ion-color-danger);
+   font-size: small;
+   text-align: center;
+   margin: auto auto;
+ }
 </style>

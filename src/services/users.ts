@@ -50,6 +50,7 @@ export interface Profile {
   sectionName: string;
   sectionId: string;
   category: string;
+  promotionRequested: boolean;
 }
 
 ///////////////////////
@@ -70,6 +71,7 @@ export function usersDefaults(payload?: any) {
     sectionName: "",
     sectionId: "",
     category: "",
+    promotionRequested: false,
   }
   return { ...defaults, ...payload }
 }
