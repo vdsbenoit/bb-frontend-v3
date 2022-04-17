@@ -56,12 +56,12 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # Pages
 
-- [ ] Accueil
+- [x] Accueil
   - [x] Si pas connecté : invitation à s'inscrire
-  - [ ] Si connecté
-    - [ ] Si pas de jeu : inviter à s'inscrire à un jeu / une équipe
-    - [ ] Sinon liens vers Mon programme / Mon jeu
-    - [ ] Compléter profil
+  - [x] Si connecté
+    - [x] Si pas de jeu : inviter à s'inscrire à un jeu / une équipe
+    - [x] Sinon liens vers Mon programme / Mon jeu
+    - [x] Compléter profil
 
 - [x] About
   - [ ] Explication sur le scoring (2 pt par victoire, 1pt par égalité)

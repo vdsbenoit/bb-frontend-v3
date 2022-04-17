@@ -34,10 +34,10 @@
             Pour toute information complémentaire, n'hésitez pas à nous joindre sur notre
             <a href="https://www.facebook.com/badenbattle/">page Facebook</a> ou via notre <a href="mailto:infobadenbattle@gmail.com">adresse email</a>.
           </p>
+          <div class="version-info">
+            <span>{{buildInfo.buildVersion}} - {{buildDate}}</span>
+          </div>
         </ion-list>
-      </div>
-      <div class="version-info">
-        <span>{{buildInfo.buildVersion}} - {{buildDate}}</span>
       </div>
     </ion-content>
   </ion-page>

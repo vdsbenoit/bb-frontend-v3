@@ -153,7 +153,7 @@ const match = computed((): Match => {
   return getMatch(matchId.value as string) as Match;
 });
 const game = computed((): Game | undefined => {
-  return match.value?.game_id ? (getGame(match.value?.game_id.toString()) as Game) : undefined;
+  return match.value?.game_id ? (getGame(match.value?.game_id) as Game) : undefined;
 });
 const isMatch = computed(() => {
   if (match.value?.id) {
@@ -200,7 +200,7 @@ const formatedDate = computed(() => {
 // async update canSetScore value
 watchEffect(async () => {
   if (!match.value?.game_id) return; // do not run this watcher if match is not initialized
-  canSetScore.value = await canSetGameScore(match.value.game_id.toString());
+  canSetScore.value = await canSetGameScore(match.value.game_id);
 });
 
 // Methods

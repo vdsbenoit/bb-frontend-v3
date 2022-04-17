@@ -19,7 +19,7 @@
       </div>
       <div v-else class="container">
         <h1 color="primary">Bienvenue</h1>
-        <p>Pour utiliser cette app, il faut d'abord</p>
+        <p>Pour utiliser l'app, il faut d'abord</p>
         <ion-button class="ion-text-lowercase" color="primary" @click="router.push('/login')">te connecter</ion-button>
       </div>
     </ion-content>
