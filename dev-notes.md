@@ -175,8 +175,7 @@ export const setEven = async (matchId: string) => {
 - [ ] Désactiver les domaines inutiles [ici](https://console.firebase.google.com/u/0/project/badenbattle-a0dec/authentication/providers)
 - [ ] Désactiver le logging magnetar
 - [ ] Checker tous les fixme
-- [ ] Checker tous les console.debug
-- [ ] Ajouter "Animateurs" dans settings/catégorie
+- [ ] Retirer tous les console.debug
 
 # Nice to have
 

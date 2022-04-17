@@ -67,7 +67,9 @@ const sendEmail = async () => {
 
 onMounted(async () => {
   if (props.validation) {
+    const loading = await loadingPopup();
     const success = await processSignInLink(window.location.href);
+    loading.dismiss()
     if (success) router.replace("/home");
   }
 });

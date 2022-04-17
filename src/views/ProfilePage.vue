@@ -279,12 +279,14 @@ const saveProfile = async () => {
   editMode.value = false;
   editGames.value = false;
 };
-const logOut = async () => {
-  const loading = await loadingPopup("Déconnexion");
-  await stopMagnetar();
-  const result = await userStore.logout();
-  if (result) router.replace("/guest");
-  loading.dismiss();
+const logOut = () => {
+  confirmPopup("Es-tu certain.e de vouloir te déconnecter ?", async () => {
+    const loading = await loadingPopup("Déconnexion");
+    await stopMagnetar();
+    const result = await userStore.logout();
+    if (result) router.replace("/guest");
+    loading.dismiss(); 
+  })
 };
 const deleteAccount = async () => {
   const confirmTitle = "Es-tu sûr.e ?"
