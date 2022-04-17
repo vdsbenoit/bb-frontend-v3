@@ -29,5 +29,5 @@ export const magnetar = Magnetar({
 });
 
 export const stopMagnetar = async () => {
-  await magnetar.closeAllStreams;
+  return magnetar.closeAllStreams();
 }

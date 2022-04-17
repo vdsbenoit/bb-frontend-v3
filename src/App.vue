@@ -46,12 +46,6 @@ const router = useRouter();
 const route = useRoute();
 const user = useAuthStore();
 
-// lifecicle hooks
-
-onMounted(() => {
-  streamSettings(); 
-})
-
 // Computed
 
 const name = computed(() => {

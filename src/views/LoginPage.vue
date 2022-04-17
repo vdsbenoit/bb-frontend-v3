@@ -52,7 +52,7 @@ const sendButtonText = computed(() => {
   return isEmailSent.value ? "Renvoyer" : "Envoyer";
 });
 const sendButtonColor = computed(() => {
-  return isEmailSent.value ? "warning": "primary";
+  return isEmailSent.value ? "medium": "primary";
 })
 
 // methods
