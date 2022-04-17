@@ -1,4 +1,4 @@
-import { confirmPopup, toastPopup } from './services/popup';
+import { confirmPopup, toastPopup, errorPopup } from './services/popup';
 /* eslint-disable no-console */
 /* tslint:disable-next-line */
 import { register } from 'register-service-worker'
@@ -25,7 +25,13 @@ if (process.env.NODE_ENV === 'production') {
     updated () {
       confirmPopup(
         "Elle ne sera appliquée qu'après avoir fermé complètement l'app. Veux-tu le faire maintenant ?", 
-        () => { window.close() },
+        () => { 
+          try{
+            window.close();
+          } catch {
+            errorPopup("Ton navigateur n'a pas voulu laisser l'app se fermer. Fais le manuellement pour appliquer la mise à jour");
+          }
+        },
         () => void 0,
         "Mise à jour disonible"
       )
