@@ -53,8 +53,7 @@ const name = computed(() => {
   return user.getName(user.uid);
 });
 const appPages = computed(() => {
-  if (!user.isLoggedIn) return [homePage, aboutPage];
-  // if (!user.isLoggedIn) return [homePage, loginPage, aboutPage]; // fixme: add login page back
+  if (!user.isLoggedIn) return [homePage, loginPage, aboutPage];
   let pages = [homePage];
   if (user.profile.team) pages = [...pages,  {
     title: "Mon Equipe",

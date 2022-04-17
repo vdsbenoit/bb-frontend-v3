@@ -26,7 +26,7 @@ import HomePageVue from '../views/HomePage.vue';
     if (to.name === "login") {
       return true;
     } else {
-      return { name: "login" };
+      return { name: "redirectLogin" };
     }
   }
 };
@@ -98,16 +98,22 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: authCheck,
   },
   {
-    name: 'settings',
-    path: '/settings',
+    name: 'redirectLogin',
+    path: '/redirectLogin',
     component: () => import ('../views/LoginPage.vue'),
-    beforeEnter: authCheck,
+    props: { redirect: true }
   },
   {
     name: 'validation',
     path: '/validation',
     component: () => import ('../views/LoginPage.vue'),
     props: { validation: true }
+  },
+  {
+    name: 'settings',
+    path: '/settings',
+    component: () => import ('../views/LoginPage.vue'),
+    beforeEnter: authCheck,
   },
   {
     name: 'about',

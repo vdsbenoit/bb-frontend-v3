@@ -5,7 +5,7 @@
       <div class="logo">
         <img src="@/assets/img/Logo-bb.png" alt="Logo Baden Battle" />
       </div>
-      <ion-text class="ion-text-center">
+      <ion-text class="ion-text-center" v-if="props.redirect">
         <p>Connecte-toi pour accéder à ce contenu</p>
       </ion-text>
       <form v-on:submit.prevent="sendEmail">
@@ -38,7 +38,7 @@ import { onMounted, ref } from "vue";
 import { defineProps } from "vue";
 import { computed } from "@vue/reactivity";
 
-const props = defineProps(["validation"]);
+const props = defineProps(["validation", "redirect"]);
 const user = useAuthStore();
 const { sendSignInEmail, processSignInLink } = user;
 const router = useRouter();
@@ -111,12 +111,10 @@ const showPrivacyNotice = () => {
   height: 30%;
   margin-bottom: 20px;
 }
-
 .logo img {
   max-width: 100%;
   max-height: 100%;
 }
-
 ion-button {
   margin: 15px;
 }
