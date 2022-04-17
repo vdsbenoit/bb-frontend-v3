@@ -54,7 +54,7 @@
                   <ion-label position="stacked" color="primary">Épreuve du matin</ion-label>
                   <ion-select v-if="editMode && editGames" v-model="modifiedProfile.morningGame" cancel-text="Annuler">
                     <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">
-                      {{ game.id }} - {{ game.name }}
+                      {{isGameFullEmoji(game.morningLeaders)}}{{ game.id }} - {{ game.name }}
                     </ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.morningGame)">
@@ -65,8 +65,8 @@
                 <ion-item lines="full">
                   <ion-label position="stacked" color="primary">Épreuve de l'après-midi</ion-label>
                   <ion-select v-if="editMode && editGames" v-model="modifiedProfile.afternoonGame" cancel-text="Annuler">
-                    <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">
-                      {{ game.id }} - {{ game.name }}
+                    <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id" color="danger">
+                       {{isGameFullEmoji(game.afternoonLeaders)}}{{ game.id }} - {{ game.name }}
                     </ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" readonly="true" @click="goToGamePage(userProfile.afternoonGame)">
@@ -119,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSelect, IonSelectOption, IonCard, IonGrid, IonRow, IonCol, IonIcon, IonSpinner } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonBadge, IonButton, IonSelect, IonSelectOption, IonCard, IonGrid, IonRow, IonCol, IonIcon, IonSpinner } from "@ionic/vue";
 import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
@@ -128,7 +128,7 @@ import { computed, onBeforeMount, ref, watch } from "vue";
 import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
-import { getAppSettings } from "@/services/settings";
+import { getAppSettings, getMaxGameLeaders } from "@/services/settings";
 import { fetchCategorySections, getSection, Section } from "@/services/sections";
 import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
 
@@ -318,6 +318,9 @@ const requestPromotion = () => {
     errorPopup(`La requête à échoué: ${error.message}`);
     isRequestingPromotion.value = false;
   });
+}
+const isGameFullEmoji = (leaders: string[]): string => {
+  return leaders.length >= getMaxGameLeaders() ? "❌ " : "";
 }
 </script>
 
