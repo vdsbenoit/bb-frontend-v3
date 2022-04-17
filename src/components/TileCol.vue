@@ -16,9 +16,6 @@ const router = useRouter();
 </script>
 <style scoped>
 .tile {
-  border: 3px;
-  border-style: solid ;
-  border-color: var(--ion-color-primary);
   border-radius: 15px;
   background-color: var(--ion-color-primary);
   aspect-ratio: 1;
@@ -36,5 +33,13 @@ const router = useRouter();
 }
 .tile span {
   color: var(--ion-color-light)
+}
+@media (prefers-color-scheme: dark) {
+  .tile {
+    background-color: var(--ion-color-light);
+  }
+  .tile span {
+  color: var(--ion-color-primary);
+}
 }
 </style>
