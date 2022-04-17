@@ -1,8 +1,8 @@
 <template>
-  <ion-app>
+  <ion-app class="dark">
     <ion-split-pane content-id="main-content">
       <ion-menu content-id="main-content" type="overlay">
-        <ion-content>
+        <ion-content style="height: 100%">
           <ion-list id="menu-list">
             <ion-list-header>Baden Battle</ion-list-header>
             <ion-note class="ion-text-uppercase">score app</ion-note>
@@ -14,6 +14,15 @@
               </ion-item>
             </ion-menu-toggle>
           </ion-list>
+          <div style="position: absolute; bottom: 0; width: 100%;">
+            <ion-item lines="none" class="no-pointer ion-margin-bottom">
+                <ion-icon slot="start" :ios="moonOutline" :md="moonSharp" ></ion-icon>
+                <ion-label>
+                  Dark Mode
+                </ion-label>
+                <ion-toggle @IonChange="toggleDarkMode" :checked="isDarkModeEnabled"></ion-toggle>
+              </ion-item>
+          </div>
         </ion-content>
         <ion-menu-toggle auto-hide="false">
           <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">
@@ -33,17 +42,32 @@
 
 <script setup lang="ts">
 import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonRouterOutlet, 
-IonSplitPane, IonText, IonFooter } from "@ionic/vue";
-import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, 
-homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, 
+IonSplitPane, IonText, IonFooter, IonToggle } from "@ionic/vue";
+import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, moonOutline,
+homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, moonSharp,
 podiumOutline, podiumSharp, albumsOutline, albumsSharp, documentOutline, documentSharp } from "ionicons/icons";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
 const user = useAuthStore();
+
+// reactive data
+
+const isDarkModeEnabled = ref(false);
+
+// Lifecycle hooks
+onMounted(() => {
+  isDarkModeEnabled.value = window.localStorage.getItem('darkMode') === "true";
+});
+
+// Watchers
+watch(isDarkModeEnabled, (shouldEnable: boolean) => {
+  if (shouldEnable) document.body.classList.add('dark');
+  else document.body.classList.remove('dark');
+})
 
 // Computed
 
@@ -84,6 +108,11 @@ const appPages = computed(() => {
 // Methods
 
 const isSelected = (url: string) => url === route.path;
+const toggleDarkMode = (value: any) => {
+  const isEnabled = value.detail.checked;
+  isDarkModeEnabled.value = isEnabled;
+  window.localStorage.setItem('darkMode', isEnabled);
+}
 
 // Data
 
