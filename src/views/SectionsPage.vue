@@ -40,7 +40,7 @@
                 </ion-list>
               </ion-card-content>
             </ion-card>
-            <ion-card v-if="showRanking && selectedSectionId">
+            <ion-card v-if="showRanking && selectedSectionId && isPlayer">
               <ion-card-header>
                 <ion-card-title> Classement </ion-card-title>
               </ion-card-header>
@@ -60,7 +60,7 @@
             </ion-card>
           </ion-col>
           <ion-col size="12" size-sm="6">
-            <ion-card v-if="selectedSectionId">
+            <ion-card v-if="selectedSectionId && isPlayer">
               <ion-card-header>
                 <ion-card-title>Équipes</ion-card-title>
               </ion-card-header>
@@ -115,7 +115,7 @@ import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { fetchCategorySections, getSection, Section } from "@/services/sections";
-import { onBeforeMount, onMounted, watch } from "vue";
+import { onBeforeMount, watch } from "vue";
 import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
 
 const user = useAuthStore();
@@ -167,6 +167,9 @@ const sectionUsers = computed(() => {
 });
 const showLeaderRegistration = computed(() => {
   return selectedSection.value?.category === getLeaderCategoryName();
+});
+const isPlayer = computed(() => {
+  if(selectedSection.value) return selectedSection.value.category != getLeaderCategoryName();
 });
 
 // Watchers

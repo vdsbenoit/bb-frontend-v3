@@ -52,6 +52,9 @@ export const streamSettings = () => {
     console.error(`App settings stream failed`, error);
   })
 }
+export const closeSettingsStream = () => {
+  appSettingsModule.closeStream();
+}
 
 ///////////////
 /// Getters //

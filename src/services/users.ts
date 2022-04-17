@@ -1,4 +1,4 @@
-import { streamSettings } from './settings';
+import { streamSettings, closeSettingsStream } from './settings';
 import { errorPopup } from './popup';
 import { User as fbUser } from "firebase/auth";
 import { defineStore } from "pinia";
@@ -117,8 +117,10 @@ export const useAuthStore = defineStore("authStore", {
             this.streamProfile(user.uid as string);
             this.profileObject = usersModule.doc(user.uid as string);
           } else {
-            this.user = null;
+            if (this.profileObject) this.profileObject.closeStream();
             this.profileObject = null;
+            closeSettingsStream();
+            this.user = null;
           }
           resolve(true);
         });
@@ -167,9 +169,10 @@ export const useAuthStore = defineStore("authStore", {
      */
     async logout() {
       try {
+        this.profileObject.closeStream();
+        this.profileObject = null;
         await fbSignOut();
         this.user = null;
-        this.profileObject = null;
         return true;
       } catch (e: any) {
         errorPopup(e.message);
