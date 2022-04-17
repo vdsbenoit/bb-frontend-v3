@@ -1,6 +1,8 @@
 <template>
   <ion-page>
-    <header-template :pageTitle="pageTitle"></header-template>
+    <header-template :pageTitle="pageTitle">
+      <ion-button v-if="canEditGame" @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
+    </header-template>
     <ion-content :fullscreen="true">
       <div v-if="isGame || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
@@ -25,36 +27,36 @@
           <ion-card-content>
             <ion-list lines="none" class="ion-no-margin ion-no-padding">
               <ion-text color="primary"><h2>Matin</h2></ion-text>
-              <ion-spinner v-if="isLoadingMorningLeaders" class="ion-margin-start" ></ion-spinner>
+              <ion-spinner v-if="isLoadingMorningLeaders" class="ion-margin-start"></ion-spinner>
               <span class="ion-padding-start" v-else-if="leaders.morning.length < 1">Pas encore de responsable inscrit</span>
-              <ion-item v-for="leader in leaders.morning" :key="leader.uid" :routerLink="`/profile/${leader.uid}`">
+              <ion-item v-else v-for="leader in leaders.morning" :key="leader.uid" @click="goToProfile(leader.uid)">
                 <ion-label class="ion-text-wrap">
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
                   <ion-text color="medium" v-if="leader.section">&nbsp;({{ leader.section }})</ion-text>
                 </ion-label>
+                <ion-icon v-if="editMode" :ios="closeOutline" :md="closeSharp" @click="removeLeader(leader.uid, 'morning')"></ion-icon>
               </ion-item>
             </ion-list>
             <ion-list lines="none" class="ion-no-margin ion-no-padding">
               <ion-text color="primary"><h2>Après-midi</h2></ion-text>
               <ion-spinner v-if="isLoadingAfternoonLeaders" class="ion-margin-start"></ion-spinner>
               <span class="ion-padding-start" v-else-if="leaders.afternoon.length < 1">Pas encore de responsable inscrit</span>
-              <ion-item v-for="leader in leaders.afternoon" :key="leader.uid" :routerLink="`/profile/${leader.uid}`">
+              <ion-item v-else v-for="leader in leaders.afternoon" :key="leader.uid" @click="goToProfile(leader.uid)">
                 <ion-label class="ion-text-wrap">
                   <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
                   <ion-text color="medium" v-if="leader.section">&nbsp;({{ leader.section }})</ion-text>
                 </ion-label>
+                <ion-icon v-if="editMode" :ios="closeOutline" :md="closeSharp" @click="removeLeader(leader.uid, 'afternoon')"></ion-icon>
               </ion-item>
             </ion-list>
 
             <ion-grid class="ion-margin-top">
               <ion-row>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                    <ion-button @click="register" expand="block" color="primary" v-if="canRegister" >
-                      S'inscrire
-                    </ion-button>
+                  <ion-button @click="register" expand="block" color="primary" v-if="canRegister"> S'inscrire </ion-button>
                 </ion-col>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                  <ion-button @click="unRegister" expand="block" color="danger" v-if="canRegister" >
+                  <ion-button @click="unRegister" expand="block" color="danger" v-if="canRegister">
                     <ion-spinner v-if="isUnregistering"></ion-spinner>
                     <span v-else>Se désinscrire</span>
                   </ion-button>
@@ -74,9 +76,9 @@
               </div>
               <ion-item v-else v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
-                  <ion-text >⌚ {{ getSchedule(match.time-1).start }} - {{ getSchedule(match.time-1).stop }} : </ion-text>
+                  <ion-text>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} : </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[0] }}</ion-text>
-                  <ion-text > vs </ion-text>
+                  <ion-text> vs </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
                 </ion-label>
                 <ion-badge slot="end" class="ion-no-margin" :color="match.draw ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
@@ -95,14 +97,14 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, 
-IonBadge, IonGrid, IonText, IonButton, useIonRouter, IonSpinner } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, IonBadge, IonGrid, IonText, IonButton, useIonRouter, IonSpinner, IonIcon } from "@ionic/vue";
+import { closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
-import {  choicePopup, errorPopup, infoPopup, toastPopup } from "@/services/popup";
+import { choicePopup, errorPopup, infoPopup, loadingPopup, toastPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { forceFetchGame, Game,  getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
+import { forceFetchGame, Game, getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
 import { getGameMatches } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
@@ -113,17 +115,18 @@ const router = useIonRouter();
 
 // reactive data
 
+const editMode = ref(false);
 const gameId = ref(0);
 // store more information about the leaders than their IDs
 type leaderInfo = {
-  uid: string,
-  name: string,
-  section: string,
-}
+  uid: string;
+  name: string;
+  section: string;
+};
 const leaders = reactive({
   morning: [] as leaderInfo[],
-  afternoon: [] as leaderInfo[]
-})
+  afternoon: [] as leaderInfo[],
+});
 const isLoading = ref(true);
 const isLoadingMorningLeaders = ref(false);
 const isLoadingAfternoonLeaders = ref(false);
@@ -134,36 +137,42 @@ const isUnregistering = ref(false);
 onBeforeMount(() => {
   if (route.params.gameId) gameId.value = +route.params.gameId;
   if (!gameId.value) console.error("Game ID not set in the URL");
-})
+});
 onMounted(() => {
   setTimeout(() => {
     isLoading.value = false;
   }, 5000);
 });
 
-// Computed 
+// Computed
 
 const game = computed((): Game => {
   return getGame(gameId.value) as Game;
-})
+});
 const isGame = computed(() => {
   if (game.value?.id) {
     isLoading.value = false;
     return true;
   }
-  return false; 
-})
+  return false;
+});
 const canRegister = computed(() => {
-  return isLeaderRegistrationOpen() && user.profile.role >= ROLES.Animateur; 
-})
+  return isLeaderRegistrationOpen() && user.profile.role >= ROLES.Animateur;
+});
 const matches = computed(() => {
   return game.value?.id ? getGameMatches(game.value?.id) : new Map();
-})
+});
 const pageTitle = computed(() => {
   if (isGame.value) return `Épreuve ${gameId.value}`;
   if (isLoading.value) return "Chargement";
   return "Épreuve inconnue";
-})
+});
+const canEditGame = computed(() => {
+  return user.profile.role >= ROLES.Modérateur;
+});
+const editIcon = computed(() => {
+  return editMode.value ? { ios: closeOutline, md: closeSharp } : { ios: pencilOutline, md: pencilSharp };
+});
 
 // Watchers
 
@@ -176,7 +185,7 @@ watchEffect(async () => {
   leaders.morning = newLeaders;
   isLoadingMorningLeaders.value = false;
   console.log("Morning leaders info updated", newLeaders);
-})
+});
 // async update morning leaders information
 watchEffect(async () => {
   if (!isGame.value) return; // do not run this watcher if game is not initialized
@@ -186,47 +195,67 @@ watchEffect(async () => {
   leaders.afternoon = newLeaders;
   isLoadingAfternoonLeaders.value = false;
   console.log("Afternoon leaders info updated", newLeaders);
-})
+});
 
 // Methods
 
 const loadLeaderInfo = async (leaders: string[]) => {
   const leaderInfo = [] as leaderInfo[];
-  await Promise.all(leaders.map(async (leaderId) => {
-    await user.asyncFetchProfile(leaderId);
-    const section = user.getProfile(leaderId).sectionName;
-    const name = user.getName(leaderId);
-    leaderInfo.push({uid: leaderId, name, section});
-  }))
+  await Promise.all(
+    leaders.map(async (leaderId) => {
+      await user.asyncFetchProfile(leaderId);
+      const section = user.getProfile(leaderId).sectionName;
+      const name = user.getName(leaderId);
+      leaderInfo.push({ uid: leaderId, name, section });
+    })
+  );
   return leaderInfo;
-}
-
+};
 const register = () => {
   choicePopup("A quel moment de la journée ?", ["Matin", "Après-midi"], async (choice: string) => {
     try {
       if (choice === "Matin") await setMorningLeader(gameId.value);
       if (choice === "Après-midi") await setAfternoonLeader(gameId.value);
-    } catch(error: any) {
+    } catch (error: any) {
       errorPopup(error.message);
     }
-  })
-}
+  });
+};
 const unRegister = async () => {
   isUnregistering.value = true;
+  let morningPromise;
+  let afternoonPromise;
   try {
-    const morningPromise = removeMorningLeader(gameId.value);
-    const afternoonPromise = removeAfternoonLeader(gameId.value);
+    if (game.value.morningLeaders.includes(user.uid)) morningPromise = removeMorningLeader(gameId.value);
+    if (game.value.afternoonLeaders.includes(user.uid)) afternoonPromise = removeAfternoonLeader(gameId.value);
     await Promise.all([morningPromise, afternoonPromise]);
     forceFetchGame(gameId.value); // this is required, otherwise the leader arrays does not update
-  } catch(error: any){
-    errorPopup(`Nous n'avons pas pu te désincrire : ${error.message}`)
+  } catch (error: any) {
+    errorPopup(`Nous n'avons pas pu te désincrire : ${error.message}`);
   }
   isUnregistering.value = false;
-}
+};
+const removeLeader = async (uid: string, schedule: string) => {
+  const loading = await loadingPopup();
+  try {
+    if (schedule == "morning") await removeMorningLeader(gameId.value, uid);
+    if (schedule == "afternoon") await removeAfternoonLeader(gameId.value, uid);
+    forceFetchGame(gameId.value); // this is required, otherwise the leader arrays does not update
+  } catch (error: any) {
+    errorPopup(`Nous n'avons pas pu désinscrire l'utilisateur : ${error.message}`);
+  }
+  loading.dismiss();
+};
 const getWinner = (match: any) => {
   if (match.winner) return match.winner;
   if (match.draw === true) return "Égalité";
   return "";
+};
+const toggleEditMode = () => {
+  editMode.value = !editMode.value;
+};
+const goToProfile = (uid: string) => {
+  if (!editMode) router.push(`/profile/${uid}`);
 };
 </script>
 <style scoped>

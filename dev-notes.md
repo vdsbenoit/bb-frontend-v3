@@ -180,8 +180,6 @@ export const setEven = async (matchId: string) => {
 
 # Nice to have
 
-- Page d'information post-connexion (choisir son équipe / jeu)
-- PWA
 - Dark theme
 - Description de jeu
 - Système de recherche de joueur
@@ -189,6 +187,7 @@ export const setEven = async (matchId: string) => {
 - Description de jeu
 - Fix bug uncaught promise après déconnexion
 - OSS License
+- CI/CD pour check qu'un npm i fonctionne à travers le temps
 
 # Next release
 

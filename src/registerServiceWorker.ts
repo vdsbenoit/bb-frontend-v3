@@ -1,4 +1,4 @@
-import { confirmPopup } from './services/popup';
+import { confirmPopup, toastPopup } from './services/popup';
 /* eslint-disable no-console */
 /* tslint:disable-next-line */
 import { register } from 'register-service-worker'
@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'production') {
     },
     updatefound () {
       console.log('New content is downloading.')
+      toastPopup("Une mise à jour est en train d'être appliquée à l'app")
     },
     updated () {
       confirmPopup(
