@@ -66,7 +66,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 - [x] Login
   - [x] Split login & profile
-  - [ ] RGPD
+  - [x] RGPD
   
 - [x] Profil (perso & qqun d'autre)
 
