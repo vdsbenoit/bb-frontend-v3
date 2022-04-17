@@ -206,7 +206,10 @@ watchEffect(async () => {
 // Methods
 
 const winHandler = async (winner: string) => {
-  if(match.value.winner == winner) return errorPopup(`L'équipe ${winner} est déjà enregistrée comme gagnante`);
+  if(match.value.winner == winner) {
+    isSettingScore.value = false;
+    return errorPopup(`L'équipe ${winner} est déjà enregistrée comme gagnante`);
+  }
   let winningSection: string;
   let losingSection: string;
   const promises = [];
@@ -238,9 +241,13 @@ const winHandler = async (winner: string) => {
   } catch(error: any) {
     errorPopup(`L'enregistrement du score a échoué : ${error.message}`);
   }
+  isSettingScore.value = false;
 }
 const drawHandler = async () => {
-  if(match.value.draw) return errorPopup("Ce duel est déjà enregistré comme égalité");
+  if(match.value.draw) {
+    isSettingScore.value = false;
+    return errorPopup("Ce duel est déjà enregistré comme égalité");
+  }
   const promises = [];
   try{
     if(match.value.winner) {
@@ -259,6 +266,7 @@ const drawHandler = async () => {
   } catch(error: any) {
     errorPopup(`L'enregistrement du score a échoué : ${error.message}`);
   }
+  isSettingScore.value = false;
 }
 
 const setScore = () => {
@@ -266,12 +274,16 @@ const setScore = () => {
     errorPopup("Il n'est pas ou plus possible d'enregistrer des scores");
     return;
   }
+  isSettingScore.value = true;
   choicePopup("Est-ce une victoire ?", ["Victoire", "Égalité"], (choice: string) => {
     if (choice === "Égalité") {
       drawHandler();
     } else if (choice === "Victoire") {
       choicePopup("Qui est l'heureux gagnant ?", [match.value.player_ids[0], match.value.player_ids[1]], winHandler);
-    } else console.error(`Unknown choice: ${choice}`);
+    } else {
+      console.error(`Unknown choice: ${choice}`);
+      isSettingScore.value = false;
+    }
   });
 };
 

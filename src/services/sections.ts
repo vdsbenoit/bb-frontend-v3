@@ -58,24 +58,32 @@ export const getSection = (id: string) => {
   });
   return sectionModule.data;
 }
+export const forceFetchSection = (id: string) => {
+  if(!id) return undefined;
+  return sectionsModule.doc(id).fetch({force: true});
+}
 
 ///////////////
 /// Setters //
 /////////////
 
-export const addSectionWin = (sectionId: string) => {
+export const addSectionWin = async (sectionId: string) => {
   console.log(`Adding 2 points to section ${sectionId}`);
-  return incrementDocField(SECTIONS_COLLECTION, sectionId, "score", 2);
+  await incrementDocField(SECTIONS_COLLECTION, sectionId, "score", 2);
+  await forceFetchSection(sectionId);
 }
-export const removeSectionWin = (sectionId: string) => {
+export const removeSectionWin = async (sectionId: string) => {
   console.log(`Removing 2 points to section ${sectionId}`);
-  return incrementDocField(SECTIONS_COLLECTION, sectionId, "score", -2);
+  await incrementDocField(SECTIONS_COLLECTION, sectionId, "score", -2);
+  await forceFetchSection(sectionId);
 }
-export const addSectionDraw = (sectionId: string) => {
+export const addSectionDraw = async (sectionId: string) => {
   console.log(`Adding 1 points to section ${sectionId}`);
-  return incrementDocField(SECTIONS_COLLECTION, sectionId, "score", 1);
+  await incrementDocField(SECTIONS_COLLECTION, sectionId, "score", 1);
+  await forceFetchSection(sectionId);
 }
-export const removeSectionDraw = (sectionId: string) => {
+export const removeSectionDraw = async (sectionId: string) => {
   console.log(`Removing 1 points to section ${sectionId}`);
-  return incrementDocField(SECTIONS_COLLECTION, sectionId, "score", -1);
+  await incrementDocField(SECTIONS_COLLECTION, sectionId, "score", -1);
+  await forceFetchSection(sectionId);
 }

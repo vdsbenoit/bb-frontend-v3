@@ -58,24 +58,32 @@ export const getTeam = (id: string) => {
   });
   return teamModule.data;
 };
+export const forceFetchTeam = (id: string) => {
+  if(!id) return undefined;
+  return teamsModule.doc(id).fetch({force: true});
+}
 
 ///////////////
 /// Setters //
 /////////////
 
-export const addTeamWin = (teamId: string) => {
+export const addTeamWin = async (teamId: string) => {
   console.log(`Adding 2 points to team ${teamId}`);
-  return incrementDocField(TEAMS_COLLECTION, teamId, "score", 2);
+  await incrementDocField(TEAMS_COLLECTION, teamId, "score", 2);
+  await forceFetchTeam(teamId);
 }
-export const removeTeamWin = (teamId: string) => {
+export const removeTeamWin = async (teamId: string) => {
   console.log(`Removing 2 points to team ${teamId}`);
-  return incrementDocField(TEAMS_COLLECTION, teamId, "score", -2);
+  await incrementDocField(TEAMS_COLLECTION, teamId, "score", -2);
+  await forceFetchTeam(teamId);
 }
-export const addTeamDraw = (teamId: string) => {
+export const addTeamDraw = async (teamId: string) => {
   console.log(`Adding 1 points to team ${teamId}`);
-  return incrementDocField(TEAMS_COLLECTION, teamId, "score", 1);
+  await incrementDocField(TEAMS_COLLECTION, teamId, "score", 1);
+  await forceFetchTeam(teamId);
 }
-export const removeTeamDraw = (teamId: string) => {
+export const removeTeamDraw = async (teamId: string) => {
   console.log(`Removing 1 points to team ${teamId}`);
-  return incrementDocField(TEAMS_COLLECTION, teamId, "score", -1);
+  await incrementDocField(TEAMS_COLLECTION, teamId, "score", -1);
+  await forceFetchTeam(teamId);
 }

@@ -50,6 +50,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] fix bug menu
 - [x] Mettre à jour le field `teams` des documents de la collection sections
 - [x] Refactor even with draw
+- [ ] Comparer & re-init db pour changer game_id en number
 
 # Pages
 

@@ -78,6 +78,11 @@ export const isNewUser = (user: User) => {
   return user.metadata.creationTime === user.metadata.lastSignInTime
 }
 
+/**
+ * Beware!
+ * When using the following function, magnetar does not gets the update through its streams
+ * One needs to fetch the updated document manually
+ */
 export const addToDocArray = async (collection: string, docId: string, key: string, arrayValue: any) => {
   const docRef = doc(db, collection, docId);
   return updateDoc(docRef, { [key]: arrayUnion(arrayValue) });
