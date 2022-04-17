@@ -257,7 +257,6 @@ ion-note {
   font-size: 14px;
   font-weight: bold;
   
-  /* color: var(--ion-color-dark); */
 }
 
 ion-item.selected {

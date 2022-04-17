@@ -19,8 +19,20 @@
           </ion-item>
 
           <ion-item>
+            <ion-icon :icon="trophyOutline" slot="start"></ion-icon>
+            <ion-label>Scores</ion-label>
+          </ion-item>
+
+          <p class="ion-padding-start ion-padding-end">
+            Chaque section est divisée en plusieurs équipes d'entre 5 et 10 joueurs. Les équipes s'affrontent à travers des duels durant toute la journée.
+            Chaque victoire fait gagner 2 points à l'équipe gagante. Chaque égalité fait gagner 1 points aux deux équipes. Les défaites n'affectent pas le score.
+            A la fin de la journée, les 3 équipes qui ont remporté le plus de points sont invitées à monter sur le podium. Il y a un podium par catégorie 
+            de section (par ex. un podium louveteaux, un podium Lutins, etc). Les champions de chaque podium remprotent des prix.
+          </p>
+
+          <ion-item>
             <ion-icon :icon="informationCircleOutline" slot="start"></ion-icon>
-            <ion-label>A propos</ion-label>
+            <ion-label>À propos de la Baden Battle</ion-label>
           </ion-item>
 
           <p class="ion-padding-start ion-padding-end">
@@ -44,8 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import { calendar, pin, informationCircleOutline } from "ionicons/icons";
-import { IonContent, IonPage, IonIcon, IonLabel, IonList, IonItem, IonText } from "@ionic/vue";
+import { IonContent, IonPage, IonIcon, IonLabel, IonList, IonItem } from "@ionic/vue";
+import { calendar, pin, informationCircleOutline, trophyOutline} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { buildInfo } from "@/app/buildinfo";
 
@@ -54,7 +66,7 @@ const buildDate = new Date(buildInfo.buildDate).toLocaleString("fr-BE");
 
 <style scoped>
 .background-image{
-    --background: url(@/assets/img/Logo-bb.png) 50% 10%/80%  no-repeat;
+    --background: url(@/assets/img/Logo-bb.png) 50% 11%/80%  no-repeat;
 }
 .logo img {
   max-width: 100%;
