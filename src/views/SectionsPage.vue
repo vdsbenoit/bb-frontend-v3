@@ -21,7 +21,7 @@
           </ion-grid>
         </ion-card-content>
       </ion-card>
-      <ion-grid class="ion-no-padding">
+      <ion-grid class="ion-no-padding" v-if="selectedSectionId">
         <ion-row>
           <ion-col size="12" size-sm="6">
             <ion-card v-if="selectedSectionId">
@@ -83,30 +83,36 @@
               </ion-card-content>
             </ion-card>
           </ion-col>
+          <ion-col  size="12" size-sm="6">
+             <ion-button v-if="!shouldLoadUsers && selectedSectionId && showUsers" expand="block" color="primary" @click="loadUsers" class="ion-margin-horizontal">
+              Charger les utilisateurs
+            </ion-button>
+            <ion-card v-if="shouldLoadUsers && showUsers">
+              <ion-card-header>
+                <ion-card-title>Utilisateurs</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                  <ion-spinner></ion-spinner>
+                </div>
+                <div v-else>
+                  <ion-list-header v-if="sectionUsers.size < 1"><h2>Aucun utilisateur trouvé</h2></ion-list-header>
+                  <ion-list v-else>
+                    <ion-item v-for="sectionUser in sectionUsers.values()" :key="sectionUser.uid" :routerLink="`/profile/${sectionUser.uid}`">
+                      <ion-label>{{ user.getName(sectionUser.uid) }}</ion-label>
+                      <ion-badge v-if="showLeaderRegistration" slot="end" :color="registrationStatus(sectionUser).color">{{ registrationStatus(sectionUser).text }}</ion-badge>
+                    </ion-item>
+                  </ion-list>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-button v-if="!shouldLoadUsers && selectedSectionId && showUsers" expand="block" color="primary" @click="loadUsers" class="ion-margin-horizontal">
-        Charger les utilisateurs
-      </ion-button>
-      <ion-card v-if="shouldLoadUsers && showUsers">
-        <ion-card-header>
-          <ion-card-title>Utilisateurs</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
-            <ion-spinner></ion-spinner>
-          </div>
-          <div v-else>
-            <ion-list-header v-if="sectionUsers.size < 1"><h2>Aucun utilisateur trouvé</h2></ion-list-header>
-            <ion-list v-else>
-              <ion-item v-for="sectionUser in sectionUsers.values()" :key="sectionUser.uid" :routerLink="`/profile/${sectionUser.uid}`">
-                <ion-label>{{ user.getName(sectionUser.uid) }}</ion-label>
-                <ion-badge v-if="showLeaderRegistration" slot="end" :color="registrationStatus(sectionUser).color">{{ registrationStatus(sectionUser).text }}</ion-badge>
-              </ion-item>
-            </ion-list>
-          </div>
-        </ion-card-content>
-      </ion-card>
+      <div v-else class="not-found">
+        <h2 class="ion-text-center ion-align-items-center" >Sélectionne une catégorie et une section ⬆</h2>
+      </div>
+     
     </ion-content>
   </ion-page>
 </template>
