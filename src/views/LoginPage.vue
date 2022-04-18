@@ -12,7 +12,7 @@
         <ion-list  id="login-form">
           <ion-item lines="full">
             <ion-label position="stacked">Email</ion-label>
-            <ion-input placeholder="schtroumpf@badenbattle.be" v-model="email" name="email" type="email" inputmode="email" autocomplete="email" required autocapitalize="off" clear-input="true"></ion-input>
+            <ion-input placeholder="Entre ton email ici" v-model="email" name="email" type="email" inputmode="email" autocomplete="email" required autocapitalize="off" clear-input="true"></ion-input>
           </ion-item>
           <ion-item lines="none">
           <ion-checkbox slot="start" class="ion-no-margin ion-margin-end" v-model="dgprChecked"></ion-checkbox>

@@ -11,8 +11,8 @@
           <tile-col v-if="showUpdateProfile" target="/profile">Compléter mon profil</tile-col>
           <tile-col v-if="showSelectGame" target="/games">M'inscire à une épreuve</tile-col>
           <tile-col v-if="showSelectTeam" target="/sections">Trouver ma section</tile-col>
-          <tile-col v-if="user.profile.morningGame" :target="`/team/${user.profile.morningGame}`">Mon épreuve du matin</tile-col>
-          <tile-col v-if="user.profile.afternoonGame" :target="`/team/${user.profile.afternoonGame}`">Mon épreuve de l'après-midi</tile-col>
+          <tile-col v-if="user.profile.morningGame" :target="`/game/${user.profile.morningGame}`">Mon épreuve du matin</tile-col>
+          <tile-col v-if="user.profile.afternoonGame" :target="`/game/${user.profile.afternoonGame}`">Mon épreuve de l'après-midi</tile-col>
           <tile-col v-if="user.profile.team" :target="`/team/${user.profile.team}`">Mon équipe</tile-col>
         </ion-row>
       </ion-grid>

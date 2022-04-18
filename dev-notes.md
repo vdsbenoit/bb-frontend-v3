@@ -55,6 +55,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] config firebase blaze
 - [ ] rules DB
 - [ ] Ajouter les animateurs
+- [ ] Feuilles de route
 
 # Pages
 
@@ -115,7 +116,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] réduire nbTeams de la section (pour le score)
   - [ ] afficher l'équipe d'une certaine manière aux animateurs
 
-- [ ] role guards -> ajouter au guard actuel
+- [ ] role guards -> ajouter au guards actuel
 
 - [ ] Gestion équipes (voir app précédente)
 
@@ -210,8 +211,9 @@ export const setEven = async (matchId: string) => {
 - Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
 - La catégorie `Animateurs` n'est actuellement pas créée dans settings/app/categories par le script d'init DB 
 - Modifier détails section depuis SectionsPage
-- implémenter les weights
+- remove weights
+- Push notification (par ex pour rappeler d'enregistrer un score manquant)
 
 # Désistement
 
-- Si bcp de désistement, activer l'argument "ignore_score" des équipes manquantes. Les équipes qui se retrouvent seules à un jeu joue contre elle même et sont directement marquées comme gagnantes
+- Si bcp de désistements, activer l'argument "ignore_score" des équipes manquantes. Les équipes qui se retrouvent seules à un jeu joue contre elle même et sont directement marquées comme gagnantes

@@ -24,11 +24,11 @@ if (process.env.NODE_ENV === 'production') {
     updated () {
       confirmPopup(
         `Elle ne sera appliquée qu'après avoir fermé complètement l'app. Veux-tu le faire maintenant ?<br><br>
-         Si ce pop apparait à chaque ouverture de l'app, ferme complètement ton navigateur web aussi.`, 
+         Si ce popup apparait à chaque ouverture de l'app, ferme complètement ton navigateur web aussi.`, 
         () => { 
           window.close();
           setTimeout(() => {
-            errorPopup("Ton navigateur ne veut visiblement pas laisser l'app se fermer. Fais le manuellement pour appliquer la mise à jour stp");
+            errorPopup("Ton navigateur ne veut visiblement pas laisser l'app se fermer. Fais le manuellement pour appliquer la mise à jour.");
           }, 1000)
         },
         () => void 0,
