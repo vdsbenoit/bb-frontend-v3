@@ -30,7 +30,7 @@
 import { IonContent, IonPage, IonButton, IonGrid, IonRow } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "@/services/users";
+import { ROLES, useAuthStore } from "@/services/users";
 import TileCol from "@/components/TileCol.vue";
 import { computed } from "vue";
 import { getLeaderCategoryName } from "@/services/settings";
@@ -51,6 +51,7 @@ const showSelectTeam = computed(() => {
 });
 const showSelectGame = computed(() => {
   if (!user.profile.email) return false;
+  if (user.profile.role < ROLES.Animateur) return false;
   return !user.profile.morningGame || !user.profile.afternoonGame;
 });
 
