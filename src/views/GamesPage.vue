@@ -45,7 +45,7 @@
         </div>
       </ion-list>
       <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center" >Sélectionne un circuit ⬆</h2>
+        <h2 class="ion-text-center ion-align-items-center" >Sélectionne un circuit <ion-icon :icon="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
     </ion-content>
   </ion-page>
@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, useIonRouter, IonSpinner, IonSelect, IonSelectOption, IonButton, IonIcon, IonInput } from "@ionic/vue";
-import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
+import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp, arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { toastPopup } from "@/services/popup";

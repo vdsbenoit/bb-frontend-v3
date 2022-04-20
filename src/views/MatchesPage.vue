@@ -26,7 +26,7 @@
         </div>
       </ion-list>
       <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">Sélectionner un horaire ⬆</h2>
+        <h2 class="ion-text-center ion-align-items-center">Sélectionner un horaire <ion-icon :icon="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
     </ion-content>
   </ion-page>
@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, IonSpinner, IonSelect, IonSelectOption } from "@ionic/vue";
+import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { computed, ref } from "@vue/reactivity";
 import { getAppSettings } from "@/services/settings";

@@ -110,7 +110,7 @@
         </ion-row>
       </ion-grid>
       <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center" >Sélectionne une catégorie et une section ⬆</h2>
+        <h2 class="ion-text-center ion-align-items-center" >Sélectionne une catégorie et une section <ion-icon :icon="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
      
     </ion-content>
@@ -120,7 +120,7 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonNote, IonGrid, IonRow, IonCol, 
 IonListHeader, IonSelect, IonSelectOption, IonBadge, useIonRouter, IonSpinner, IonButton } from "@ionic/vue";
-import { informationCircleOutline, informationCircleSharp } from "ionicons/icons";
+import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
