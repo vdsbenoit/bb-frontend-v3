@@ -1,5 +1,5 @@
 import { streamSettings, closeSettingsStream } from './settings';
-import { errorPopup } from './popup';
+import { errorPopup, choicePopup, loadingPopup } from './popup';
 import { User as fbUser } from "firebase/auth";
 import { defineStore } from "pinia";
 import {
@@ -138,29 +138,48 @@ export const useAuthStore = defineStore("authStore", {
     },
     async processSignInLink(href: string) {
       let email = window.localStorage.getItem('emailForSignIn');
-      //fixme: replace this with an error, it should not happen
+      let displayEmailError = true;
       if (!email) {
-        email = window.prompt('Quel email as-tu utilisé pour te connecter ?')!;
-        email = email.trim();
+        const choiceHandler = (choice: string) => {
+          switch(choice){
+            case "D'accord":
+              displayEmailError = false;
+              break;
+            case "Je veux quand même essayer ici":
+              email = window.prompt('Quel email as-tu utilisé pour te connecter ?') ?? "";
+              email = email.trim();
+              break;
+          }
+        }
+        await choicePopup(`On dirait que tu n'as pas ouvert le lien depuis le même endroit que là où tu as essayé.e de te connecter.\n\n
+        Il devrait y avoir une option dans le menu en haut de ton écran pour ouvrir le lien dans ton navigateur ou dans l'app. 
+        Si pas, essaie de copier/coller le lien dans ton navigateur.`, ["Je veux quand même essayer ici", "D'accord"], choiceHandler)   
       }
+      if(!email){
+        if(displayEmailError) throw new Error("Impossible de récupérer l'email d'authentification");
+        else return;
+      }
+      const loading = await loadingPopup();
       try {
-        if(!email) throw new Error("Impossible de récupérer l'email d'authentification");
         const response = await fbSignInWithEmailLink(email, href);
         if(response.user) {
           this.user = response.user as fbUser;
           if(isNewUser(this.user)) this.createProfile(this.user.uid as string, this.user.email as string);
           window.localStorage.removeItem('emailForSignIn');
+          loading.dismiss();
           return true;
         } else {
           this.user = null;
+          loading.dismiss();
           return false;
         }
       } catch (e: any) {
         this.user = null;
         if (e.code === "auth/invalid-action-code") errorPopup(
-          "Le lien que tu viens d'utiliser n'est plus valide. Clique sur le lien du dernier email que tu as reçu."
+          "Le lien que tu viens d'utiliser n'est plus valide. Clique sur le lien du dernier email que tu as reçu ou réessaie depuis le début."
           );
         else errorPopup(e.message);
+        loading.dismiss();
         return false;
       }
     },
