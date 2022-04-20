@@ -57,7 +57,7 @@ export const confirmPopup = async (text: string, confirmHandler: any, declineHan
  * @param options 
  * @param handler 
  */
-export const choicePopup = async (text: string, options: string[], handler: any) => {
+export const choicePopup = async (text: string, options: string[], handler: any, cssClass="") => {
   const buttons = [] as any[];
   options.forEach((option: string) => {
     buttons.push(
@@ -72,7 +72,7 @@ export const choicePopup = async (text: string, options: string[], handler: any)
   })
   const alert = await alertController.create({
     header: text,
-    cssClass: "choice-popup",
+    cssClass: cssClass,
     buttons: buttons,
   });
   await alert.present();
