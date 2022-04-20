@@ -7,7 +7,8 @@ export const errorPopup = async (text: string, title = "Erreur") => {
     buttons: ["OK"],
   });
 
-  return alert.present();
+  await alert.present();
+  return alert.onDidDismiss();
 };
 
 export const infoPopup = async (text: string, title?: string) => {
@@ -17,7 +18,8 @@ export const infoPopup = async (text: string, title?: string) => {
     buttons: ["OK"],
   });
 
-  return alert.present();
+  await alert.present();
+  return alert.onDidDismiss();
 };
 
 export const confirmPopup = async (text: string, confirmHandler: any, declineHandler?: any, title="") => {
@@ -44,7 +46,8 @@ export const confirmPopup = async (text: string, confirmHandler: any, declineHan
     ],
   });
 
-  return alert.present();
+  await alert.present();
+  return alert.onDidDismiss();
 };
 
 /**
@@ -72,7 +75,8 @@ export const choicePopup = async (text: string, options: string[], handler: any)
     cssClass: "choice-popup",
     buttons: buttons,
   });
-  return alert.present();
+  await alert.present();
+  return alert.onDidDismiss();
 };
 
 export const loadingPopup = async (message = "Chargement", timeout = 60000) => {
