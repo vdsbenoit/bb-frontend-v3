@@ -126,6 +126,7 @@ export const useAuthStore = defineStore("authStore", {
       });
     },
     async sendSignInEmail(email: string) {
+      email = email.trim();
       try {
         await fbSendSignInEmail(email);
         window.localStorage.setItem('emailForSignIn', email);
@@ -140,6 +141,7 @@ export const useAuthStore = defineStore("authStore", {
       //fixme: replace this with an error, it should not happen
       if (!email) {
         email = window.prompt('Quel email as-tu utilisé pour te connecter ?')!;
+        email = email.trim();
       }
       try {
         if(!email) throw new Error("Impossible de récupérer l'email d'authentification");
