@@ -110,7 +110,7 @@
         </ion-row>
       </ion-grid>
       <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center" >Sélectionne une catégorie et une section <ion-icon :icon="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+        <h2 class="ion-text-center ion-align-items-center" >Sélectionne une catégorie et une section <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
      
     </ion-content>
@@ -193,7 +193,6 @@ watch(selectedSectionId, async () => {
 });
 watchEffect(() => {
     if(selectedSection.value?.category && !selectedCategory.value){
-      console.debug(`category set to ${selectedSection.value.category}`)
       selectedCategory.value = selectedSection.value.category;
     }
   }

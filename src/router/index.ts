@@ -13,7 +13,6 @@ import Nprogress from 'nprogress';
  */
  const authCheck = (to: any, from: any) => {
   const user = useAuthStore();
-  console.log("authCheck", user.isLoggedIn);
   if (to.name === "settings"){
     if(user.profile.role >= ROLES.Administrateur) return true;
     else return { name: 'home' };

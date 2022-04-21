@@ -330,7 +330,6 @@ const deleteAccount = async () => {
   confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
 };
 const requestPromotion = () => {
-  console.debug("promotionRequested", userProfile.value.promotionRequested);
   if (userProfile.value.promotionRequested) return errorPopup("Tu as déjà demandé une promotion");
   isRequestingPromotion.value = true;
   userStore

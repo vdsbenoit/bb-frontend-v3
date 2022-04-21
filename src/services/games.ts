@@ -149,7 +149,6 @@ export const setMorningLeader = async (gameId: number, uid = "") => {
   const gameModule = gamesModule.doc(gameId.toString());
   // Checks
   if (gameModule.data?.morningLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} le matin`);
-  console.debug("profile", profile);
   if (profile?.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
   const maxGameLeaders = await getMaxGameLeaders();
   if ((gameModule.data?.morningLeaders.length as number) >= maxGameLeaders) throw new Error(`Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} au matin`);
