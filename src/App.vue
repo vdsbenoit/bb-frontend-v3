@@ -321,8 +321,8 @@ ion-label p {
 }
 .numberCircle {
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   padding: 15px;
   display: inline-flex;
   flex-grow: 0;
@@ -330,11 +330,11 @@ ion-label p {
 }
 .numberCircle span {
   text-align: center;
-  width: 25px;
+  width: 30px;
   display: inline-block;
   margin: auto;
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 }
 .can-go-back ion-menu-button {
