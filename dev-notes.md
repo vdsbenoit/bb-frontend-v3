@@ -54,7 +54,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Feuilles de route
 - [x] Comparer & re-init db pour changer game_id en number
 - [x] badges manquants
-- [ ] config firebase blaze
+- [x] config firebase blaze
+- [x] export DB
 - [ ] Ajouter les animateurs
 - [ ] rules DB
 
@@ -110,6 +111,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] trier par date d'inscription
   
 - [x] Classement
+
+  - [ ] choisir le nombre de sect
 
 - [ ] Paramètres généraux de l'app
 
@@ -221,6 +224,7 @@ export const setEven = async (matchId: string) => {
 - Push notification (par ex pour rappeler d'enregistrer un score manquant)
 - Optimize index (game_id>time and time>game_id)
 - Intégrer la couleur d'équipe dans l'app et la DB
+- Improve initialization script in order not to play against its own section or againt another section too many times (cf. validation script)
 
 # Désistement
 
