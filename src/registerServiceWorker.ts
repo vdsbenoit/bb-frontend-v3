@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'production') {
           }, 1000)
         },
         () => void 0,
-        "Mise à jour disonible"
+        "Mise à jour disponible"
       )
     },
     offline () {

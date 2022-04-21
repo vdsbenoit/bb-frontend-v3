@@ -109,7 +109,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] filtre demande de promotion
   - [ ] trier par date d'inscription
   
-- [ ] Classement
+- [x] Classement
 
 - [ ] Paramètres généraux de l'app
 
@@ -203,7 +203,7 @@ export const setEven = async (matchId: string) => {
 - Fix bug uncaught promise après déconnexion
 - OSS License
 - CI/CD pour check qu'un npm i fonctionne à travers le temps
-- Cloud functions qui aggregate le score moyen de ch
+- Cloud functions qui aggregate le score moyen de chaque section
 
 # Next release
 

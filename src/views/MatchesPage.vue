@@ -26,7 +26,7 @@
         </div>
       </ion-list>
       <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">Sélectionner un horaire <ion-icon :icon="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+        <h2 class="ion-text-center ion-align-items-center">Sélectionne un horaire <ion-icon :icon="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
     </ion-content>
   </ion-page>

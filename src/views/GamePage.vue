@@ -59,7 +59,8 @@
                     </ion-button>
                 </ion-col>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canEditGame">
-                  <ion-button @click="toggleEditMode" expand="block" color="warning" > Inscrire quelqu'un </ion-button>
+                  <ion-button v-if="editMode" @click="toggleEditMode" expand="block" color="medium" > Arrêter la modification </ion-button>
+                  <ion-button e-else @click="toggleEditMode" expand="block" color="warning" > Modifier les animateurs </ion-button>
                 </ion-col>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister">
                   <ion-button @click="unRegister" expand="block" color="danger" :disabled="isUnregistering">
