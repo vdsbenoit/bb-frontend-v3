@@ -52,14 +52,56 @@
 
             <ion-grid class="ion-margin-top">
               <ion-row>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                  <ion-button @click="register" expand="block" color="primary" v-if="canRegister"> S'inscrire </ion-button>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister">
+                  <ion-button @click="register" expand="block" color="primary" :disabled="isRegistering">
+                    <ion-spinner v-if="isRegistering"></ion-spinner>
+                    <span v-else>S'Inscrire</span>
+                    </ion-button>
                 </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                  <ion-button @click="unRegister" expand="block" color="danger" v-if="canRegister">
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canEditGame">
+                  <ion-button @click="toggleEditMode" expand="block" color="warning" > Inscrire quelqu'un </ion-button>
+                </ion-col>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister">
+                  <ion-button @click="unRegister" expand="block" color="danger" :disabled="isUnregistering">
                     <ion-spinner v-if="isUnregistering"></ion-spinner>
                     <span v-else>Se désinscrire</span>
                   </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+         <ion-card v-if="editMode">
+          <ion-card-header>
+            <ion-card-title>Enregistrer un animateur</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid class="">
+              <ion-row>
+                <ion-col size="12" size-sm="6">
+                  <ion-select v-model="selectedLeaderSection" interface="popover" placeholder="Choisir section">
+                    <ion-select-option v-for="section in leaderSections?.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <ion-col size="12" size-sm="6" v-if="selectedLeaderSection">
+                    <ion-spinner v-if="isLoadingLeaders"></ion-spinner>
+                    <ion-select v-else v-model="selectedLeaderId" placeholder="Choisir animateur" interface="popover">
+                      <ion-select-option color="dark" v-for="leader in sectionLeaders?.values()" :value="leader.uid" :key="leader.uid"> {{ user.getName(leader.uid) }} </ion-select-option>
+                    </ion-select>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="selectedLeaderId">
+                  <ion-button @click="registerMorningLeader" expand="block" color="primary" :disabled="isRegistering">
+                    <ion-spinner v-if="isRegistering"></ion-spinner>
+                    <span v-else>Ajouter {{ user.getName(selectedLeaderId) }} au matin </span>
+                  </ion-button>
+                </ion-col>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="selectedLeaderId">
+                  <ion-button @click="registerAfternoonLeader" expand="block" color="primary" :disabled="isRegistering">                   
+                    <ion-spinner v-if="isRegistering"></ion-spinner>
+                    <span v-else>Ajouter {{ user.getName(selectedLeaderId) }} l'après-midi </span>
+                   </ion-button>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -97,17 +139,19 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, IonBadge, IonGrid, IonText, IonButton, useIonRouter, IonSpinner, IonIcon } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, IonBadge, 
+IonGrid, IonText, IonButton, useIonRouter, IonSpinner, IonIcon, IonSelect, IonSelectOption } from "@ionic/vue";
 import { closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES } from "@/services/users";
+import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { choicePopup, errorPopup, infoPopup, loadingPopup, toastPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { forceFetchGame, Game, getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
 import { getGameMatches } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
-import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
+import { getLeaderCategoryName, getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
+import { getCategorySections, Section } from "@/services/sections";
 
 const user = useAuthStore();
 const route = useRoute();
@@ -130,7 +174,10 @@ const leaders = reactive({
 const isLoading = ref(true);
 const isLoadingMorningLeaders = ref(false);
 const isLoadingAfternoonLeaders = ref(false);
+const isRegistering = ref(false);
 const isUnregistering = ref(false);
+const selectedLeaderSection = ref("");
+const selectedLeaderId = ref("");
 
 // lifecicle hooks
 
@@ -161,6 +208,16 @@ const canRegister = computed(() => {
 });
 const matches = computed(() => {
   return game.value?.id ? getGameMatches(game.value?.id) : new Map();
+});
+const leaderSections = computed(() => {
+  return editMode.value ? getCategorySections(getLeaderCategoryName()) : new Map();
+});
+const sectionLeaders = computed(() => {
+  return selectedLeaderSection.value ? user.getSectionUsers(selectedLeaderSection.value) : undefined;
+});
+const isLoadingLeaders = computed(() => {
+  if (selectedLeaderSection.value && !sectionLeaders.value) return true;
+  return false;
 });
 const pageTitle = computed(() => {
   if (isGame.value) return `Épreuve ${gameId.value}`;
@@ -199,10 +256,10 @@ watchEffect(async () => {
 
 // Methods
 
-const loadLeaderInfo = async (leaders: string[]) => {
+const loadLeaderInfo = async (newLeaderIds: string[]) => {
   const leaderInfo = [] as leaderInfo[];
   await Promise.all(
-    leaders.map(async (leaderId) => {
+    newLeaderIds.map(async (leaderId) => {
       await user.asyncFetchProfile(leaderId);
       const section = user.getProfile(leaderId).sectionName;
       const name = user.getName(leaderId);
@@ -212,6 +269,7 @@ const loadLeaderInfo = async (leaders: string[]) => {
   return leaderInfo;
 };
 const register = () => {
+  isRegistering.value = true;
   choicePopup("A quel moment de la journée ?", ["Matin", "Après-midi"], async (choice: string) => {
     try {
       if (choice === "Matin") await setMorningLeader(gameId.value);
@@ -220,7 +278,22 @@ const register = () => {
       errorPopup(error.message);
     }
   });
+  isRegistering.value = false;
 };
+const registerMorningLeader = async () => {
+  isRegistering.value = true;
+  await setMorningLeader(gameId.value, selectedLeaderId.value).catch((error:any) => {
+    errorPopup(error.message); 
+  }); 
+  isRegistering.value = false;
+}
+const registerAfternoonLeader = async () => {
+  isRegistering.value = true;
+  await setAfternoonLeader(gameId.value, selectedLeaderId.value).catch((error:any) => {
+    errorPopup(error.message); 
+  }); 
+  isRegistering.value = false;
+}
 const unRegister = async () => {
   isUnregistering.value = true;
   let morningPromise;
@@ -264,5 +337,14 @@ const goToProfile = (uid: string) => {
   --padding-end: 0px;
   --inner-padding-start: 0px;
   --inner-padding-end: 0px;
+}
+ion-select {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  color: var(--ion-color-dark);
+  --placeholder-color: var(--ion-color-dark);
+  /* Set full opacity on the placeholder */
+  --placeholder-opacity: 1;
 }
 </style>

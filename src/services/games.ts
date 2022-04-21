@@ -146,10 +146,12 @@ const addAfternoonLeaders = async (gameId: number, uid: string) => {
 export const setMorningLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
   const profile = await user.getLatestProfileData(uid);
+  if(!profile) throw new Error(`Nous n'avons pas réussi à retrouver le profil de l'utilisateur ${uid}`);
   const gameModule = gamesModule.doc(gameId.toString());
   // Checks
   if (gameModule.data?.morningLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} le matin`);
-  if (profile.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
+  console.debug("profile", profile);
+  if (profile?.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
   const maxGameLeaders = await getMaxGameLeaders();
   if ((gameModule.data?.morningLeaders.length as number) >= maxGameLeaders) throw new Error(`Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} au matin`);
   if (profile.morningGame) {
@@ -173,6 +175,7 @@ export const setMorningLeader = async (gameId: number, uid = "") => {
 export const setAfternoonLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
   const profile = await user.getLatestProfileData(uid);
+  if(!profile) throw new Error(`Nous n'avons pas réussi à retrouver le profil de l'utilisateur ${uid}`);
   const gameModule = gamesModule.doc(gameId.toString());
   // Checks
   if (gameModule.data?.afternoonLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} l'après-midi`);

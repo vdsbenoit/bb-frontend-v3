@@ -43,8 +43,9 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION, {
 /// Getters //
 /////////////
 
-export const fetchCategorySections = (category: string) => {
+export const getCategorySections = (category: string) => {
   console.log(`Fetching sections from category '${category}'`);
+  if (!category) return undefined;
   const filteredSectionsModule = sectionsModule.where("category", "==", category);
   filteredSectionsModule.stream(); // using stream because the fetch() method is bugged
   return filteredSectionsModule.data;

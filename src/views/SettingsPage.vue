@@ -26,7 +26,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { fetchCategorySections, getSection, Section } from "@/services/sections";
+import { getCategorySections, getSection, Section } from "@/services/sections";
 import { onBeforeMount, onMounted, watch } from "vue";
 import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
 import { confirmPopup } from "@/services/popup";

@@ -5,7 +5,7 @@
     </header-template>
     <ion-content :fullscreen="true">
       <ion-item color="primary">
-        <ion-label class="ion-text-center">Circuit</ion-label>
+        <ion-label class="ion-text-center">Choisir un circuit</ion-label>
         <ion-select v-model="selectedCircuit" interface="popover">
           <ion-select-option v-for="(circuit, index) in circuits" :value="circuit" :key="index">{{ circuit }}</ion-select-option>
         </ion-select>

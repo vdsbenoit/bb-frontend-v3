@@ -33,7 +33,7 @@
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Section</ion-label>
               <ion-select v-if="editMode && modifiedProfile.category" v-model="modifiedProfile.sectionId" cancel-text="Annuler">
-                <ion-select-option v-for="section in getCategorySections()?.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
+                <ion-select-option v-for="section in getCategorySections(modifiedProfile.value.category)?.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
               </ion-select>
               <p v-if="editMode && !modifiedProfile.category" class="missing-field-alert">Selectionne d'abord une catégorie</p>
               <ion-input v-if="!editMode" name="section" type="text">{{ userProfile.sectionName }}</ion-input>
@@ -122,7 +122,7 @@ import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/p
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
 import { getAppSettings, getMaxGameLeaders } from "@/services/settings";
-import { fetchCategorySections, getSection, Section } from "@/services/sections";
+import { getCategorySections, getSection, Section } from "@/services/sections";
 import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
 
 const userStore = useAuthStore();
@@ -216,9 +216,6 @@ watch(
 const toggleEditMode = () => {
   if (!editMode.value) modifiedProfile.value = { ...userProfile.value }; // deep copy
   editMode.value = !editMode.value;
-};
-const getCategorySections = (): Map<string, Section> | undefined => {
-  return modifiedProfile.value.category ? fetchCategorySections(modifiedProfile.value.category) : undefined;
 };
 const getSectionTeams = (): string[] => {
   const section = getSection(modifiedProfile.value.sectionId);

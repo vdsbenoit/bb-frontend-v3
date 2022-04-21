@@ -229,7 +229,8 @@ export const useAuthStore = defineStore("authStore", {
      */
     async getLatestProfileData(uid: string){
       if (this.isCurrentUserId(uid)) return this.profile;
-      const profile = await usersModule.doc(uid).fetch({ force: true }).catch(error => {
+      const profile = usersModule.doc(uid)
+      await profile.fetch({ force: true }).catch(error => {
         console.error(`Error occurred while fetching the profile uid ${uid}`, error);
       });
       return profile?.data;
@@ -238,7 +239,9 @@ export const useAuthStore = defineStore("authStore", {
      * Fetch user profile & return the promise.
      */
     async asyncFetchProfile(uid: string){
-      return usersModule.doc(uid).fetch()
+      const profile = usersModule.doc(uid)
+      await profile.fetch()
+      return profile.data
     },
     /**
      * Get user profile data without waiting for it.

@@ -51,11 +51,14 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] fix bug menu
 - [x] Mettre à jour le field `teams` des documents de la collection sections
 - [x] Refactor even with draw
-- [ ] Comparer & re-init db pour changer game_id en number
+- [x] Feuilles de route
+- [x] Comparer & re-init db pour changer game_id en number
+- [x] badges manquants
 - [ ] config firebase blaze
-- [ ] rules DB
 - [ ] Ajouter les animateurs
-- [ ] Feuilles de route
+- [ ] rules DB
+
+
 
 # Pages
 
@@ -104,7 +107,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] Liste utilisateurs
   - [ ] filtre par section
   - [ ] filtre demande de promotion
-
+  - [ ] trier par date d'inscription
+  
 - [ ] Classement
 
 - [ ] Paramètres généraux de l'app
@@ -188,6 +192,7 @@ export const setEven = async (matchId: string) => {
 - [ ] Désactiver le logging magnetar
 - [ ] Checker tous les fixme
 - [ ] Retirer tous les console.debug
+- [ ] Hardcode schedule
 
 # Nice to have
 
@@ -213,6 +218,8 @@ export const setEven = async (matchId: string) => {
 - Modifier détails section depuis SectionsPage
 - remove weights
 - Push notification (par ex pour rappeler d'enregistrer un score manquant)
+- Optimize index (game_id>time and time>game_id)
+- Intégrer la couleur d'équipe dans l'app et la DB
 
 # Désistement
 

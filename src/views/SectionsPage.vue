@@ -7,13 +7,13 @@
           <ion-grid class="">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ion-select v-model="selectedCategory" interface="popover" placeholder="Catégorie">
+                <ion-select v-model="selectedCategory" interface="popover" placeholder="Choisir une catégorie">
                   <ion-select-option v-for="(category, index) in categories" :value="category" :key="index">{{ category }}</ion-select-option>
                 </ion-select>
               </ion-col>
               <ion-col size="12" size-sm="6" v-if="selectedCategory">
                   <ion-spinner v-if="isLoadingSections"></ion-spinner>
-                  <ion-select v-else v-model="selectedSectionId" placeholder="Section" interface="popover">
+                  <ion-select v-else v-model="selectedSectionId" placeholder="Choisir une section" interface="popover">
                     <ion-select-option color="dark" v-for="section in sections?.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
                   </ion-select>
               </ion-col>
@@ -125,7 +125,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { fetchCategorySections, getSection, Section } from "@/services/sections";
+import { getCategorySections, getSection, Section } from "@/services/sections";
 import { onBeforeMount, watch } from "vue";
 import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
@@ -159,7 +159,7 @@ const showUsers = computed(() => {
   return user.profile.role >= ROLES.Modérateur;
 });
 const sections = computed((): Map<string, Section> | undefined => {
-  return selectedCategory.value ? fetchCategorySections(selectedCategory.value) : undefined;
+  return selectedCategory.value ? getCategorySections(selectedCategory.value) : undefined;
 });
 const selectedSection = computed((): Section | undefined => {
   return selectedSectionId.value ? getSection(selectedSectionId.value) : undefined;

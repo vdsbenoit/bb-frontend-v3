@@ -3,7 +3,7 @@
     <header-template pageTitle="Duels"> </header-template>
     <ion-content :fullscreen="true">
       <ion-item color="primary">
-        <ion-label class="ion-text-center">Horaire</ion-label>
+        <ion-label class="ion-text-center">Choisir un horaire</ion-label>
         <ion-select v-model="selectedTime" interface="popover">
           <ion-select-option v-for="(timing, index) in schedule" :value="index + 1" :key="index">{{ timing.start }} - {{ timing.stop }}</ion-select-option>
         </ion-select>
