@@ -172,9 +172,9 @@ const registerPlayer = () => {
   if (team.value) user.updateProfile(
     user.uid, {
       team: team.value.id,
-      sectionId: section.value?.id,
-      sectionName: section.value?.name,
-      category: section.value?.category
+      sectionId: team.value?.sectionId,
+      sectionName: team.value?.sectionName,
+      category: team.value?.category
       }
     ).then(() => {
     toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`);
