@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import { useAuthStore } from "@/services/users";
 import HomePageVue from '../views/HomePage.vue';
+import Nprogress from 'nprogress';
 
 /**
  * 
@@ -142,6 +143,20 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeResolve((to, from, next) => {
+  // If this isn't an initial page load.
+  if (to.name) {
+    // Start the route progress bar.
+    Nprogress.start()
+  }
+  next()
+})
+
+router.afterEach((to, from) => {
+  // Complete the animation of the route progress bar.
+  Nprogress.done()
 })
 
 export default router
