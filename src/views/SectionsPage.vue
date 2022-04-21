@@ -126,7 +126,7 @@ import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { getCategorySections, getSection, Section } from "@/services/sections";
-import { onBeforeMount, onMounted, watch } from "vue";
+import { onBeforeMount, onMounted, watch, watchEffect } from "vue";
 import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
 
@@ -148,7 +148,9 @@ onBeforeMount(async () => {
   categories.value = await getCategories();
 });
 onMounted(() => {
-  if (route.params.sectionId) selectedSectionId.value = route.params.sectionId as string;
+  if (route.params.sectionId) {
+    selectedSectionId.value = route.params.sectionId as string;
+  }
 });
 
 // Computed
@@ -189,6 +191,13 @@ const isPlayer = computed(() => {
 watch(selectedSectionId, async () => {
   shouldLoadUsers.value = false;
 });
+watchEffect(() => {
+    if(selectedSection.value?.category && !selectedCategory.value){
+      console.debug(`category set to ${selectedSection.value.category}`)
+      selectedCategory.value = selectedSection.value.category;
+    }
+  }
+);
 
 // Methods
 

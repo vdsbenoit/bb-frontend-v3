@@ -8,7 +8,7 @@
       <div v-if="isTeam || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
-            <ion-col class="ion-padding-start">
+            <ion-col class="ion-padding-start" :router-link="`/sections/${section?.id}`">
               <ion-card-subtitle v-if="team?.city">{{ team.city }}</ion-card-subtitle>
               <h1 v-if="team?.sectionName" class="ion-no-margin" style="font-weight: bold">{{ team.sectionName }}</h1>
               <ion-spinner v-else></ion-spinner>

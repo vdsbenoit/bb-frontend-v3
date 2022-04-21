@@ -36,7 +36,7 @@
                 <ion-select-option v-for="section in categorySections.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
               </ion-select>
               <p v-if="editMode && !modifiedProfile.category" class="missing-field-alert">Selectionne d'abord une catégorie</p>
-              <ion-input v-if="!editMode" name="section" type="text" readonly="true">{{ userProfile.sectionName }}</ion-input>
+              <ion-input v-if="!editMode" name="section" type="text" readonly="true" @click="goToSectionPage(userProfile.sectionId)">{{ userProfile.sectionName }}</ion-input>
             </ion-item>
             <ion-item lines="full" v-if="isPlayer">
               <ion-label position="stacked" color="primary">Équipe</ion-label>
@@ -243,6 +243,9 @@ const toggleEditMode = () => {
 const loadGames = () => {
   games.value = getAllGames();
   editGames.value = true;
+};
+const goToSectionPage = (sectionId: string) => {
+  if (sectionId) router.push(`/sections/${sectionId}`);
 };
 const goToTeamPage = (teamId: string) => {
   if (teamId) router.push(`/team/${teamId}`);
