@@ -1,8 +1,7 @@
-import { confirmPopup, toastPopup, errorPopup } from './services/popup';
+import { confirmPopup, errorPopup } from './services/popup';
 /* eslint-disable no-console */
 /* tslint:disable-next-line */
 import { register } from 'register-service-worker'
-import { infoPopup } from './services/popup'
 
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {

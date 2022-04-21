@@ -144,15 +144,15 @@ import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTit
 IonGrid, IonText, IonButton, useIonRouter, IonSpinner, IonIcon, IonSelect, IonSelectOption } from "@ionic/vue";
 import { closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES, Profile } from "@/services/users";
-import { choicePopup, errorPopup, infoPopup, loadingPopup, toastPopup } from "@/services/popup";
+import { useAuthStore, ROLES } from "@/services/users";
+import { choicePopup, errorPopup, loadingPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { forceFetchGame, Game, getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
 import { getGameMatches } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getLeaderCategoryName, getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
-import { getCategorySections, Section } from "@/services/sections";
+import { getCategorySections } from "@/services/sections";
 
 const user = useAuthStore();
 const route = useRoute();

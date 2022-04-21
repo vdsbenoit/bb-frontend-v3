@@ -32,8 +32,8 @@
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSpinner, IonCheckbox } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore } from "@/services/users";
-import { infoPopup, loadingPopup, toastPopup } from "@/services/popup";
-import { useRoute, useRouter } from "vue-router";
+import { infoPopup, toastPopup } from "@/services/popup";
+import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { defineProps } from "vue";
 import { computed } from "@vue/reactivity";

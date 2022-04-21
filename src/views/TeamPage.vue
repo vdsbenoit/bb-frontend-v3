@@ -90,7 +90,7 @@ import { getTeam, Team } from "@/services/teams";
 import { getTeamMatches } from "@/services/matches";
 import { getSchedule, isShowRankingToAll } from "@/services/settings";
 import { getSection, Section } from "@/services/sections";
-import { errorPopup, infoPopup, toastPopup } from "@/services/popup";
+import { errorPopup, toastPopup } from "@/services/popup";
 
 const user = useAuthStore();
 const route = useRoute();

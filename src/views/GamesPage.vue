@@ -58,13 +58,11 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { toastPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
-import { useRoute } from "vue-router";
 import { Game, getCircuitGames, setName } from "@/services/games";
 import { onBeforeMount } from "vue";
 import { getCircuits, getMaxGameLeaders } from "@/services/settings";
 
 const user = useAuthStore();
-const route = useRoute();
 const router = useIonRouter();
 
 // reactive data

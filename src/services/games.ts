@@ -2,7 +2,6 @@ import { confirmPopup, toastPopup } from "./popup";
 import { useAuthStore, ROLES, getRoleByValue } from "./users";
 import { magnetar } from "./magnetar";
 import { getMaxGameLeaders, canSetScoreAnywhere, isScoresFrozen } from "./settings";
-import { DocInstance } from "magnetar";
 import { addToDocArray, removeFromDocArray } from "./firebase";
 
 const GAMES_COLLECTION = "games";

@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote } from "@ionic/vue";
+import { IonContent, IonPage } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useRouter } from 'vue-router';
 const router = useRouter();

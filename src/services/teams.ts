@@ -1,9 +1,7 @@
 import { incrementDocField } from './firebase';
-import { useAuthStore, ROLES, getRoleByValue } from './users';
 import { magnetar } from "./magnetar";
 
 const TEAMS_COLLECTION = "teams";
-const user = useAuthStore();
 
 /////////////////////
 /// configuration //

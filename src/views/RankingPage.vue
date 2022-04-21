@@ -148,20 +148,11 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonGrid, IonRow, IonCol, IonText, IonBadge, useIonRouter, IonSpinner } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonGrid, IonRow, IonCol, IonText, IonBadge, IonSpinner } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
-import { useRoute } from "vue-router";
-import { getCategorySections, getSection, getTopSections, Section } from "@/services/sections";
-import { onBeforeMount, watch } from "vue";
-import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
-import InfoCardComponent from "@/components/InfoCardComponent.vue";
+import { getTopSections } from "@/services/sections";
 import { getTopTeams } from "@/services/teams";
-
-const user = useAuthStore();
-const route = useRoute();
-const router = useIonRouter();
 
 // reactive data
 

@@ -116,8 +116,8 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonBadge, IonButton, IonSelect, IonSelectOption, IonCard, IonGrid, IonRow, IonCol, IonIcon, IonSpinner } from "@ionic/vue";
-import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonButton, IonSelect, IonSelectOption, IonCard, IonGrid, IonRow, IonCol, IonIcon, IonSpinner } from "@ionic/vue";
+import { pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
@@ -126,7 +126,7 @@ import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/p
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
 import { getAppSettings, getMaxGameLeaders } from "@/services/settings";
-import { getCategorySections, getSection, Section } from "@/services/sections";
+import { getCategorySections, getSection } from "@/services/sections";
 import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
 
 const userStore = useAuthStore();

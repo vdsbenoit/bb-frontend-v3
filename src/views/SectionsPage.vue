@@ -119,10 +119,10 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonNote, IonGrid, IonRow, IonCol, IonIcon,
-IonListHeader, IonSelect, IonSelectOption, IonBadge, useIonRouter, IonSpinner, IonButton } from "@ionic/vue";
+IonListHeader, IonSelect, IonSelectOption, IonBadge, IonSpinner, IonButton } from "@ionic/vue";
 import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES, Profile } from "@/services/users";
+import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { getCategorySections, getSection, Section } from "@/services/sections";
@@ -133,7 +133,6 @@ import InfoCardComponent from "@/components/InfoCardComponent.vue";
 
 const user = useAuthStore();
 const route = useRoute();
-const router = useIonRouter();
 
 // reactive data
 
