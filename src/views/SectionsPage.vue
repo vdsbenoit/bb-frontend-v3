@@ -59,8 +59,8 @@
               </ion-card-content>
             </ion-card>
           </ion-col>
-          <ion-col size="12" size-sm="6">
-            <ion-card v-if="selectedSectionId && isPlayer">
+          <ion-col size="12" size-sm="6" v-if="selectedSectionId && isPlayer">
+            <ion-card>
               <ion-card-header>
                 <ion-card-title>Équipes</ion-card-title>
               </ion-card-header>
@@ -189,7 +189,8 @@ const isPlayer = computed(() => {
 // Watchers
 
 watch(selectedSectionId, async () => {
-  shouldLoadUsers.value = false;
+  if(selectedSection.value?.category == getLeaderCategoryName()) shouldLoadUsers.value = true;
+  else shouldLoadUsers.value = false;
 });
 watchEffect(() => {
     if(selectedSection.value?.category && !selectedCategory.value){
