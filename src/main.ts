@@ -29,6 +29,8 @@ import { defineCustomElements } from '@ionic/pwa-elements/loader';
 import { createPinia } from "pinia";
 import { useAuthStore } from "./services/users";
 
+import Nprogress from 'nprogress';
+
 
 const app = createApp(App)
   .use(IonicVue)
@@ -45,3 +47,5 @@ store.initializeAuthListener().then(() => {
 
 // Call the element loader after the platform has been bootstrapped
 defineCustomElements(window);
+
+Nprogress.configure({ parent: '#app' });
