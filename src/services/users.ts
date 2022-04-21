@@ -10,7 +10,6 @@ import {
   isNewUser,
 } from "./firebase";
 import { magnetar } from "./magnetar";
-import { processIf } from '@vue/compiler-core';
 
 const USER_PROFILES_COLLECTION = "users";
 
@@ -34,9 +33,7 @@ export const getRoleByValue = (role: number): string => {
   throw console.error(`Role inconnu: ${role}`);
 }
 
-interface UserSettings {
-  autoRefreshRaking: boolean;
-}
+
 
 export interface Profile {
   uid: string;
@@ -44,7 +41,7 @@ export interface Profile {
   totem: string;
   name: string;
   role: number;
-  settings: UserSettings;
+  settings: any;
   team: string;
   morningGame: number;
   afternoonGame: number;

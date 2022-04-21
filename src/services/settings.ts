@@ -24,7 +24,7 @@ export interface AppSetting {
   everyoneCanSetScoreAnywhere: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
   schedule: Schedule[];
-  showRakingToAll: boolean;
+  showRankingToAll: boolean;
 }
 
 const appSettingsDefaults = {
@@ -37,7 +37,7 @@ const appSettingsDefaults = {
   everyoneCanSetScoreAnywhere: false,
   leaderRegistration: true, // fixme: change to false
   schedule: [] as Schedule[],
-  showRakingToAll: false,
+  showRankingToAll: false,
 };
 
 function appSettingsDefaultsFunc(payload?: Partial<AppSetting>): AppSetting {
@@ -98,8 +98,8 @@ export const getLeaderCategoryName = (): string => {
   return appSettingsDefaults.leaderCategoryName;
 };
 export const isShowRankingToAll = (): boolean => {
-  if (appSettingsModule.data?.showRakingToAll) return appSettingsModule.data.showRakingToAll;
-  return appSettingsDefaults.showRakingToAll;
+  if (appSettingsModule.data?.showRankingToAll) return appSettingsModule.data.showRankingToAll;
+  return appSettingsDefaults.showRankingToAll;
 };
 export const getAppSettings = computed(() => {
   return appSettingsModule.data;

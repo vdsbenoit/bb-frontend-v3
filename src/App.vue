@@ -125,7 +125,7 @@ const modPages = [
   },
   {
     title: "Classement",
-    url: "/raking",
+    url: "/ranking",
     iosIcon: podiumOutline,
     mdIcon: podiumSharp,
   },

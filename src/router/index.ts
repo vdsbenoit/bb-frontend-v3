@@ -18,7 +18,7 @@ import Nprogress from 'nprogress';
     if(user.profile.role >= ROLES.Administrateur) return true;
     else return { name: 'home' };
   }
-  if (to.name === "raking"){
+  if (to.name === "ranking"){
     if(user.profile.role >= ROLES.Modérateur) return true;
     if(isShowRankingToAll()) return true;
     else return { name: 'home' };
@@ -88,9 +88,9 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: authCheck,
   },
   {
-    name: 'raking',
-    path: '/raking',
-    component: () => import ('../views/RakingPage.vue'),
+    name: 'ranking',
+    path: '/ranking',
+    component: () => import ('../views/RankingPage.vue'),
     beforeEnter: authCheck,
   },
   {
