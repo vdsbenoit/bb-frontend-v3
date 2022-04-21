@@ -143,8 +143,7 @@ const showRanking = computed(() => {
 });
 const showRegisterButton = computed(() => {
   if (isMyTeam.value) return false;
-  if (user.profile.role >= ROLES.Modérateur) return true;
-  return team.value?.sectionId && user.profile.sectionId === team.value.sectionId;
+  return user.profile.role == ROLES.Participant;
 });
 const isMyTeam = computed(() => {
   if (!user.profile.team) return false;
@@ -170,7 +169,14 @@ const statusIcon = (match: any) => {
   return { md: undefined, ios: undefined };
 };
 const registerPlayer = () => {
-  if (team.value) user.updateProfile(user.uid, {team: team.value.id}).then(() => {
+  if (team.value) user.updateProfile(
+    user.uid, {
+      team: team.value.id,
+      sectionId: section.value?.id,
+      sectionName: section.value?.name,
+      category: section.value?.category
+      }
+    ).then(() => {
     toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`);
   }).catch((e) => {
     errorPopup(`Une erreur s'est produite lors de la modification de ton profil`); 
