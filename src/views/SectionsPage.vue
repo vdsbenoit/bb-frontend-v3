@@ -53,7 +53,7 @@
                     <ion-label>Score accumulé</ion-label><ion-note slot="end">{{ selectedSection?.score }}</ion-note></ion-item
                   >
                   <ion-item>
-                    <ion-label>Score moyen</ion-label><ion-note slot="end">{{ sectionMeanScore }}</ion-note>
+                    <ion-label>Score moyen</ion-label><ion-note slot="end">{{ selectedSection?.meanScore }}</ion-note>
                   </ion-item>
                 </ion-list>
               </ion-card-content>
@@ -118,7 +118,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonNote, IonGrid, IonRow, IonCol, 
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonNote, IonGrid, IonRow, IonCol, IonIcon,
 IonListHeader, IonSelect, IonSelectOption, IonBadge, useIonRouter, IonSpinner, IonButton } from "@ionic/vue";
 import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
@@ -126,7 +126,7 @@ import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { getCategorySections, getSection, Section } from "@/services/sections";
-import { onBeforeMount, watch } from "vue";
+import { onBeforeMount, onMounted, watch } from "vue";
 import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
 
@@ -148,6 +148,9 @@ onBeforeMount(async () => {
   // We take this approach to ensure categories is not stuck to undefined
   categories.value = await getCategories();
 });
+onMounted(() => {
+  if (route.params.sectionId) selectedSectionId.value = route.params.sectionId as string;
+});
 
 // Computed
 
@@ -164,15 +167,12 @@ const sections = computed((): Map<string, Section> | undefined => {
 const selectedSection = computed((): Section | undefined => {
   return selectedSectionId.value ? getSection(selectedSectionId.value) : undefined;
 });
-const sectionMeanScore = computed(() => {
-  return selectedSection.value?.score ? (selectedSection.value.score / selectedSection.value.nbTeams || 0).toFixed(2) : 0;
-});
 const isLoadingSections = computed(() => {
   if (selectedCategory.value && !sections.value) return true;
   return false;
 });
 const isLoadingSection = computed(() => {
-  if (selectedSection.value && !sections.value) return true;
+  if (selectedSectionId.value && !selectedSection.value) return true;
   return false;
 });
 const sectionUsers = computed(() => {

@@ -1,0 +1,120 @@
+<template>
+  <ion-page>
+    <header-template pageTitle="Classement"></header-template>
+    <ion-content :fullscreen="true" class="ion-padding">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Lutins</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid class="ion-no-padding">
+            <ion-row>
+              <ion-col size="12" size-sm="6">
+                <ion-card>
+                  <ion-card-header>
+                    <ion-card-title>Sections</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <div v-if="!lutinTopSections" class="ion-text-center ion-align-items-center">
+                      <ion-spinner></ion-spinner>
+                    </div>
+                    <ion-list v-else>
+                      <ion-item v-for="(section, index) in lutinTopSections?.values()" :key="`s-lutin-${index}`" :routerLink="`/sections/${section.id}`">
+                        <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index+1 }}</ion-badge>
+                        <ion-label>
+                          {{ section.name }} <ion-text color="medium">({{ section.city }})</ion-text>
+                        </ion-label>
+                        <ion-badge slot="end" class="ion-no-margin" color="primary">{{ section.meanScore }}</ion-badge>
+                      </ion-item>
+                    </ion-list>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+              <ion-col size="12" size-sm="6">
+                <ion-card>
+                  <ion-card-header>
+                    <ion-card-title>Équipes</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <div v-if="!lutinTopTeams" class="ion-text-center ion-align-items-center">
+                      <ion-spinner></ion-spinner>
+                    </div>
+                    <ion-list v-else>
+                      <ion-item v-for="(team, index) in lutinTopTeams?.values()" :key="`t-lutin-${index}`" :routerLink="`/team/${team.id}`">
+                        <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index+1 }}</ion-badge>
+                        <ion-label>
+                          <b>{{ team.id }}</b> {{ team.sectionName }} <ion-text color="medium">({{ team.city }})</ion-text>
+                        </ion-label>
+                        <ion-badge slot="end" class="ion-no-margin" color="primary">{{ team.score }}</ion-badge>
+                      </ion-item>
+                    </ion-list>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+    </ion-content>
+  </ion-page>
+</template>
+
+<script setup lang="ts">
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonGrid, IonRow, IonCol, IonText, IonBadge, useIonRouter, IonSpinner } from "@ionic/vue";
+import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import { useAuthStore, ROLES, Profile } from "@/services/users";
+import { computed, ref } from "@vue/reactivity";
+import { useRoute } from "vue-router";
+import { getCategorySections, getSection, getTopSections, Section } from "@/services/sections";
+import { onBeforeMount, watch } from "vue";
+import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
+import InfoCardComponent from "@/components/InfoCardComponent.vue";
+import { getTopTeams } from "@/services/teams";
+
+const user = useAuthStore();
+const route = useRoute();
+const router = useIonRouter();
+
+// reactive data
+
+const maxItems = ref(10);
+
+// lifecicle hooks
+
+
+// Computed
+
+const lutinTopSections = computed(() => {
+  return getTopSections("Lutins", maxItems.value);
+});
+const lutinTopTeams = computed(() => {
+  return getTopTeams("Lutins", maxItems.value);
+});
+const loupTopSections = computed(() => {
+  return getTopSections("Louveteaux", maxItems.value);
+});
+const loupTopTeams = computed(() => {
+  return getTopTeams("Louveteaux", maxItems.value);
+});
+const nutonTopSections = computed(() => {
+  return getTopSections("Baladins & Nutons", maxItems.value);
+});
+const nutonTopTeams = computed(() => {
+  return getTopTeams("Baladins & Nutons", maxItems.value);
+});
+
+// Watchers
+
+// Methods
+</script>
+<style scoped>
+ion-select {
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  color: var(--ion-color-dark);
+  --placeholder-color: var(--ion-color-dark);
+  /* Set full opacity on the placeholder */
+  --placeholder-opacity: 1;
+}
+</style>

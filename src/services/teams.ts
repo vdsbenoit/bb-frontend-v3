@@ -58,9 +58,18 @@ export const getTeam = (id: string) => {
   });
   return teamModule.data;
 };
-export const forceFetchTeam = (id: string) => {
+export const forceFetchTeam = async (id: string) => {
   if(!id) return undefined;
-  return teamsModule.doc(id).fetch({force: true});
+  const team = teamsModule.doc(id);
+  await team.fetch({force: true});
+  return team.data;
+}
+export const getTopTeams = (category: string, limit: number) => {
+  console.log(`Fetching top teams from category '${category}'`);
+  if (!category) return undefined;
+  const filteredTeamsModule = teamsModule.where("category", "==", category).orderBy("score", "desc").limit(limit);
+  filteredTeamsModule.stream();
+  return filteredTeamsModule.data;
 }
 
 ///////////////

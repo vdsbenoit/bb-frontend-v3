@@ -1,3 +1,4 @@
+import { isShowRankingToAll } from './../services/settings';
 import { ROLES } from './../services/users';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
@@ -14,6 +15,11 @@ import HomePageVue from '../views/HomePage.vue';
   console.log("authCheck", user.isLoggedIn);
   if (to.name === "settings"){
     if(user.profile.role >= ROLES.Administrateur) return true;
+    else return { name: 'home' };
+  }
+  if (to.name === "raking"){
+    if(user.profile.role >= ROLES.Modérateur) return true;
+    if(isShowRankingToAll()) return true;
     else return { name: 'home' };
   }
   if (user.isLoggedIn) {
@@ -72,6 +78,18 @@ const routes: Array<RouteRecordRaw> = [
     name: 'sections',
     path: '/sections',
     component: () => import ('../views/SectionsPage.vue'),
+    beforeEnter: authCheck,
+  },
+  {
+    name: 'section',
+    path: '/sections/:sectionId',
+    component: () => import ('../views/SectionsPage.vue'),
+    beforeEnter: authCheck,
+  },
+  {
+    name: 'raking',
+    path: '/raking',
+    component: () => import ('../views/RakingPage.vue'),
     beforeEnter: authCheck,
   },
   {

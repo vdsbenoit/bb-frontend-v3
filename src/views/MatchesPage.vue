@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, IonSpinner, IonSelect, IonSelectOption } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, IonSpinner, IonSelect, IonSelectOption, IonIcon } from "@ionic/vue";
 import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { computed, ref } from "@vue/reactivity";

@@ -85,7 +85,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] Equipe (avec liste matches, ordonnés par temps)
 
 - [x] Jeu (avec liste matches, ordonnés par temps)
-  - [ ] Ajouter bouton "Inscrire quelqu'un"
+  - [x] Ajouter bouton "Inscrire quelqu'un"
 
 - [x] Sections (avec liste d'équipe)
 
@@ -203,6 +203,7 @@ export const setEven = async (matchId: string) => {
 - Fix bug uncaught promise après déconnexion
 - OSS License
 - CI/CD pour check qu'un npm i fonctionne à travers le temps
+- Cloud functions qui aggregate le score moyen de ch
 
 # Next release
 
