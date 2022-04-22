@@ -25,7 +25,7 @@
             </ion-item>
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Catégorie</ion-label>
-              <ion-select v-if="editMode && isPlayer" v-model="modifiedProfile.category" cancel-text="Annuler">
+              <ion-select v-if="editMode && (isPlayer || isAdmin)" v-model="modifiedProfile.category" cancel-text="Annuler">
                 <ion-select-option v-for="(category, index) in categories" :key="index" :value="category">{{ category }}</ion-select-option>
               </ion-select>
               <ion-input v-else name="category" type="text" readonly="true" inputmode="none">{{ userProfile.category }}</ion-input>
@@ -148,7 +148,7 @@ onBeforeMount(() => {
   userId.value = route.params.userId ? (route.params.userId as string) : userStore.uid;
 });
 onMounted(() => {
-  if(!userProfile.value.email) userStore.forceFetchCurrentUserProfile();
+  if(! userProfile.value || !userProfile.value.email) userStore.forceFetchCurrentUserProfile();
 });
 
 // Computed variables
@@ -173,6 +173,9 @@ const isPlayer = computed(() => {
 });
 const isLeader = computed(() => {
   return userProfile.value.role >= ROLES.Animateur; 
+});
+const isAdmin = computed(() => {
+  return userProfile.value.role >= ROLES.Administrateur; 
 });
 const showFullProfile = computed(() => {
   return canEditProfile.value;
