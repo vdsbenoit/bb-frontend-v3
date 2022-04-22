@@ -228,6 +228,15 @@ export const useAuthStore = defineStore("authStore", {
       return false;
     },
     /**
+     * Force a fetch of the current user profile
+     * Never use it in a computed property, it would lead to infinite db calls.
+     */
+    async forceFetchCurrentUserProfile(){
+      usersModule.doc(this.uid).fetch({ force: true }).catch(error => {
+        console.error(`Error occurred while fetching the current user profile: ${error}`);
+      });
+    },
+    /**
      * Force a fetch of the latest profile data.
      * Never use it in a computed property, it would lead to infinite db calls.
      */
@@ -253,7 +262,7 @@ export const useAuthStore = defineStore("authStore", {
      */
     getProfile(uid: string): Profile{
       const profile = usersModule.doc(uid);
-      profile.fetch().catch(error => {
+      profile.stream().catch(error => {
         console.error(`Error occurred while fetching the profile uid ${uid}`, error);
       });
       return profile.data as Profile;

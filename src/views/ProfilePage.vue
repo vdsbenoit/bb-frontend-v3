@@ -121,7 +121,7 @@ import { pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/i
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
-import { computed, onBeforeMount, ref, watch } from "vue";
+import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
@@ -146,6 +146,9 @@ const isRequestingPromotion = ref(false);
 
 onBeforeMount(() => {
   userId.value = route.params.userId ? (route.params.userId as string) : userStore.uid;
+});
+onMounted(() => {
+  if(!userProfile.value.email) userStore.forceFetchCurrentUserProfile();
 });
 
 // Computed variables
