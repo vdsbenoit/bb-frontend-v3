@@ -28,7 +28,7 @@
               <ion-select v-if="editMode && isPlayer" v-model="modifiedProfile.category" cancel-text="Annuler">
                 <ion-select-option v-for="(category, index) in categories" :key="index" :value="category">{{ category }}</ion-select-option>
               </ion-select>
-              <ion-input v-else name="category" type="text" readonly="true">{{ userProfile.category }}</ion-input>
+              <ion-input v-else name="category" type="text" readonly="true" inputmode="none">{{ userProfile.category }}</ion-input>
             </ion-item>
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Section</ion-label>
@@ -36,7 +36,7 @@
                 <ion-select-option v-for="section in categorySections.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
               </ion-select>
               <p v-if="editMode && !modifiedProfile.category" class="missing-field-alert">Selectionne d'abord une catégorie</p>
-              <ion-input v-if="!editMode" name="section" type="text" readonly="true" @click="goToSectionPage(userProfile.sectionId)">{{ userProfile.sectionName }}</ion-input>
+              <ion-input v-if="!editMode" name="section" type="text" readonly="true" inputmode="none" @click="goToSectionPage(userProfile.sectionId)">{{ userProfile.sectionName }}</ion-input>
             </ion-item>
             <ion-item lines="full" v-if="isPlayer">
               <ion-label position="stacked" color="primary">Équipe</ion-label>

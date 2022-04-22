@@ -6,6 +6,12 @@ import { useAuthStore } from "@/services/users";
 import HomePageVue from '../views/HomePage.vue';
 import Nprogress from 'nprogress';
 
+const ADMIN_PAGES = [
+  "settings",
+  "users",
+  "promotions",
+]
+
 /**
  * 
  * @param to 
@@ -13,17 +19,24 @@ import Nprogress from 'nprogress';
  */
  const authCheck = (to: any, from: any) => {
   const user = useAuthStore();
-  if (to.name === "settings"){
+  if (ADMIN_PAGES.includes(to.name)){
     if(user.profile.role >= ROLES.Administrateur) return true;
-    else return { name: 'home' };
+    else {
+      console.log("redirected");
+      return { name: 'home' };
+    }
   }
   if (to.name === "ranking"){
     if(user.profile.role >= ROLES.Modérateur) return true;
     if(isShowRankingToAll()) return true;
-    else return { name: 'home' };
+    else {
+      console.log("redirected");
+      return { name: 'home' };
+    }
   }
   if (user.isLoggedIn) {
     if (to.name === "login") {
+      console.log("redirected");
       return { name: 'home' }
     } else {
       return true;
@@ -32,6 +45,7 @@ import Nprogress from 'nprogress';
     if (to.name === "login") {
       return true;
     } else {
+      console.log("redirected");
       return { name: "redirectLogin" };
     }
   }
@@ -122,12 +136,25 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/LoginPage.vue'),
     props: { validation: true }
   },
-  // {
-  //   name: 'settings',
-  //   path: '/settings',
-  //   component: () => import ('../views/LoginPage.vue'),
-  //   beforeEnter: authCheck,
-  // },
+  {
+    name: 'settings',
+    path: '/settings',
+    component: () => import ('../views/SettingsPage.vue'),
+    beforeEnter: authCheck,
+  },
+  {
+    name: 'users',
+    path: '/users',
+    component: () => import ('../views/UsersPage.vue'),
+    beforeEnter: authCheck,
+  },
+  {
+    name: 'promotions',
+    path: '/promotions',
+    component: () => import ('../views/UsersPage.vue'),
+    beforeEnter: authCheck,
+    props: { promotions: true }
+  },
   {
     name: 'about',
     path: '/about',

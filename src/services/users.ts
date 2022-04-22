@@ -49,6 +49,7 @@ export interface Profile {
   sectionId: string;
   category: string;
   promotionRequested: boolean;
+  creationDate: Date;
 }
 
 ///////////////////////
@@ -70,6 +71,7 @@ export function usersDefaults(payload?: any) {
     sectionId: "",
     category: "",
     promotionRequested: false,
+    creationDate: new Date(),
   }
   return { ...defaults, ...payload }
 }
@@ -207,7 +209,11 @@ export const useAuthStore = defineStore("authStore", {
       });
     },
     async createProfile(uid: string, email: string) {
-      usersModule.doc(uid).insert({uid, email, role: ROLES.Participant});
+      usersModule.doc(uid).insert({
+        uid, email,
+        role: ROLES.Participant,
+        creationDate: new Date(),
+      });
     },
     async updateProfile(uid: string, profileData: any) {
       return usersModule.doc(uid).merge(profileData);
@@ -270,6 +276,18 @@ export const useAuthStore = defineStore("authStore", {
     getSectionUsers(sectionId: string){
       console.log(`Fetching users from section '${sectionId}'`);
       const filteredUsersModule = usersModule.where("sectionId", "==", sectionId);
+      filteredUsersModule.stream(); // using stream because fetch is buggy
+      return filteredUsersModule.data;
+    },
+    getPromotionUsers(limit: number){
+      console.log(`Fetching users who requrested a promotion`);
+      const filteredUsersModule = usersModule.where("promotionRequested", "==", true).limit(limit);
+      filteredUsersModule.stream(); // using stream because fetch is buggy
+      return filteredUsersModule.data;
+    },
+    getLatestUsers(limit: number){
+      console.log(`Fetching users who requrested a promotion`);
+      const filteredUsersModule = usersModule.orderBy("creationDate", "desc").limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data;
     }

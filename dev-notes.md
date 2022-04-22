@@ -105,14 +105,14 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   
 - [x] Liste matches, filter temps (pour vérifier les inscriptions)
 
-- [ ] Liste utilisateurs
-  - [ ] filtre par section
-  - [ ] filtre demande de promotion
-  - [ ] trier par date d'inscription
+- [x] Listes utilisateurs
+  - [x] filtre par section -> dans la page section
+  - [x] filtre demande de promotion
+  - [x] trier par date d'inscription
   
 - [x] Classement
 
-  - [ ] choisir le nombre de sect
+  - [ ] choisir le nombre de section à afficher
 
 - [ ] Paramètres généraux de l'app
 
