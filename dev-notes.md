@@ -112,7 +112,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   
 - [x] Classement
 
-  - [ ] choisir le nombre de section à afficher
+  - [x] choisir le nombre de section à afficher
 
 - [ ] Paramètres généraux de l'app
 
@@ -123,7 +123,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] réduire nbTeams de la section (pour le score)
   - [ ] afficher l'équipe d'une certaine manière aux animateurs
 
-- [ ] role guards -> ajouter au guards actuel
+- [x] role guards -> ajouter au guards actuel
 
 - [ ] Gestion équipes (voir app précédente)
 

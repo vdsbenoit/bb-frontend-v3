@@ -169,7 +169,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonGrid, IonRow, IonCol, IonText, IonBadge, 
-IonSpinner, AlertInput, alertController, IonIcon } from "@ionic/vue";
+IonSpinner, AlertInput, alertController, IonIcon, IonButton } from "@ionic/vue";
 import { settingsOutline, settingsSharp} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { computed, ref } from "@vue/reactivity";
