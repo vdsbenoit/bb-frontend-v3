@@ -10,6 +10,7 @@ import {
   isNewUser,
 } from "./firebase";
 import { magnetar } from "./magnetar";
+import { Timestamp } from '@firebase/firestore';
 
 const USER_PROFILES_COLLECTION = "users";
 
@@ -49,7 +50,7 @@ export interface Profile {
   sectionId: string;
   category: string;
   promotionRequested: boolean;
-  creationDate: Date;
+  creationDate: Timestamp;
 }
 
 ///////////////////////
@@ -71,7 +72,7 @@ export function usersDefaults(payload?: any) {
     sectionId: "",
     category: "",
     promotionRequested: false,
-    creationDate: new Date(),
+    creationDate: new Timestamp(Math.floor(Date.now() / 1000), 0),
   }
   return { ...defaults, ...payload }
 }

@@ -25,7 +25,7 @@
             <ion-item>
               <ion-icon v-if="userFilter == 'promotions'" @click="removePromotion(user.uid)" slot="start" :ios="closeOutline" :md="closeSharp"></ion-icon>
               <ion-label :routerLink="`/profile/${user.uid}`">
-                <ion-text v-if="userFilter == ''" style="font-size: small;">{{ user.creationDate.toLocaleString("fr-BE") }}</ion-text>
+                <ion-text v-if="userFilter == ''" style="font-size: small;">{{ getDate(user.creationDate) }}</ion-text>
                 <ion-text style="font-weight: bold"  class="ion-padding-start">{{ userStore.getName(user.uid) }} </ion-text>
               </ion-label>
               <!-- <ion-input slot="end" type="text" readonly="true">{{ getRoleByValue(user.role) }}</ion-input> -->
@@ -97,6 +97,10 @@ const pageTitle = computed(() => {
 
 // Methods
 
+const getDate = (timestamp: any) => {
+  const date = timestamp.toDate();
+  return date.toLocaleString("fr-BE");
+}
 const removePromotion = (uid: string) => {
   return userStore.updateProfile(uid, { promotionRequested: false });
 };
