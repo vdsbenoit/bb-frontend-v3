@@ -34,7 +34,7 @@ export const appSettingsDefaults = {
   circuits: [],
   leaderCategoryName: "Animateurs",
   everyoneCanSetScoreAnywhere: false,
-  leaderRegistration: true, // fixme: change to false
+  leaderRegistration: true,
   schedule: [] as Schedule[],
   showRankingToAll: false,
 };

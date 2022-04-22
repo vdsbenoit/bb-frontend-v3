@@ -25,7 +25,7 @@ export const magnetar = Magnetar({
     write: ["local", "remote"],
     delete: ["local", "remote"],
   },
-  on: { success: logger }, // fixme: disable this on production builds
+  // on: { success: logger }, // fixme: disable this on production builds
 });
 
 export const stopMagnetar = async () => {

@@ -106,7 +106,6 @@ const removePromotion = (uid: string) => {
 };
 const toggleEditRole = (user: Profile | null) => {
   if (user) {
-    console.debug("toggleEdit", user);
     editedRoleValue.value = user.role;
     editedUid.value = user.uid;
   } else {

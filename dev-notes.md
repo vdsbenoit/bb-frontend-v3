@@ -157,13 +157,13 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # Règles db
 
-- seuls les modos peuvent modifier les noms de jeu
-- tous les users peuvent modifier leur profile sauf leur role
-- seuls les admins peuvent modifier le profile des autres
-- Seuls les admins peuvent voir le classement en temps réel
-- Il faut être animateur pour s'inscrire à une épreuve
-- seul les admins & propriétaire peuvent supprimer un profil
-- Traduire les if conditions des services magnetar
+- [ ] seuls les modos peuvent modifier les noms de jeu
+- [x] tous les users peuvent modifier leur profile sauf leur role
+- [x] seuls les admins peuvent modifier le profile des autres
+- [ ] Seuls les admins peuvent voir le classement en temps réel
+- [x] il faut être au minimum animateurs pour écrire dans la db
+- [x] seul les admins & propriétaire peuvent supprimer un profil
+- [ ] Traduire les if conditions des services magnetar
 
 ````typescript
 export const setScore = async (matchId: string, winner: string, loser: string) => {
@@ -189,7 +189,7 @@ export const setEven = async (matchId: string) => {
 
 # Avant de mettre en prod
 
-- [ ] vérifier les DB rules
+- [x] vérifier les DB rules
 - [ ] Désactiver les API key inutiles [ici](https://console.cloud.google.com/apis/credentials?project=badenbattle-a0dec)
 - [ ] Désactiver les domaines inutiles [ici](https://console.firebase.google.com/u/0/project/badenbattle-a0dec/authentication/providers)
 - [ ] Désactiver le logging magnetar
