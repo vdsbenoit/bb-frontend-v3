@@ -3,7 +3,7 @@
     <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true">
       <div v-if="isMatch || isLoading">
-        <ion-grid class="ion-padding-horizontal ion-padding-top">
+        <ion-grid class="ion-padding-horizontal ion-padding-top" @click="router.navigate(`/game/${match.game_id}`, 'back', 'push')">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
               <ion-card-subtitle>{{ schedule.start }} - {{ schedule.stop }}</ion-card-subtitle>
@@ -11,7 +11,7 @@
               <ion-spinner v-else></ion-spinner>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
-              <span v-if="match?.game_id" @click="router.navigate(`/game/${match.game_id}`, 'back', 'push')">
+              <span v-if="match?.game_id">
                 {{ match.game_id }}
               </span>
               <ion-spinner v-else></ion-spinner>
