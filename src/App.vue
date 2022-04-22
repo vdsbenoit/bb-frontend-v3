@@ -13,16 +13,14 @@
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
-          </ion-list>
-          <div style="position: absolute; bottom: 0; width: 100%;">
-            <ion-item lines="none" class="no-pointer ion-margin-bottom">
+              <ion-item lines="none" class="no-pointer ion-margin-bottom hydrated" detail="false">
                 <ion-icon slot="start" :ios="moonOutline" :md="moonSharp" ></ion-icon>
                 <ion-label>
                   Dark Mode
                 </ion-label>
                 <ion-toggle @IonChange="toggleDarkMode" :checked="isDarkModeEnabled"></ion-toggle>
               </ion-item>
-          </div>
+          </ion-list>
         </ion-content>
         <ion-menu-toggle auto-hide="false">
           <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">

@@ -114,7 +114,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
   - [x] choisir le nombre de section à afficher
 
-- [ ] Paramètres généraux de l'app
+- [x] Paramètres généraux de l'app
 
   - [ ] set schedule
 
