@@ -32,7 +32,7 @@
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSpinner, IonCheckbox } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore } from "@/services/users";
-import { infoPopup, toastPopup } from "@/services/popup";
+import { errorPopup, infoPopup, toastPopup } from "@/services/popup";
 import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { defineProps } from "vue";
@@ -71,11 +71,15 @@ const sendButtonColor = computed(() => {
 // methods
 
 const sendEmail = async () => {
-  if(!dgprChecked.value || !email.value) return;
+  if (!dgprChecked.value || !email.value) return;
   isSendingEmail.value = true;
-  await sendSignInEmail(email.value);
-  isEmailSent.value = true;
-  toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 10000);
+  try {
+    await sendSignInEmail(email.value);
+    isEmailSent.value = true;
+    toastPopup("On t'a envoyé un email<br/>Clique sur le lien qui s'y trouve pour te connecter", 10000);
+  } catch(error: any){
+    errorPopup(`Impossible de se connecter: ${error.message}`)
+  }
   isSendingEmail.value = false;
 };
 

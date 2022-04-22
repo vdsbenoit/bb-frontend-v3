@@ -233,7 +233,7 @@ export const useAuthStore = defineStore("authStore", {
      */
     async forceFetchCurrentUserProfile(){
       usersModule.doc(this.uid).fetch({ force: true }).catch(error => {
-        console.error(`Error occurred while fetching the current user profile: ${error}`);
+        console.error(`Error occurred while fetching the current user profile: ${error.message}`);
       });
     },
     /**
