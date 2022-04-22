@@ -4,7 +4,7 @@
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true" class="ion-padding">
-      <ion-list v-if="users || isLoading">
+      <ion-list v-if="users?.size > 0 || isLoading">
         <div v-if="!users || users?.size < 1" class="ion-text-center" style="background: transparent">
           <ion-spinner></ion-spinner>
         </div>
