@@ -56,10 +56,9 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [x] badges manquants
 - [x] config firebase blaze
 - [x] export DB
-- [ ] Ajouter les animateurs
-- [ ] rules DB
-
-
+- [x] Ajouter les animateurs
+- [x] rules DB
+- [ ] fix infinite spinner on empty ranking page
 
 # Pages
 
@@ -192,10 +191,10 @@ export const setEven = async (matchId: string) => {
 - [x] vérifier les DB rules
 - [ ] Désactiver les API key inutiles [ici](https://console.cloud.google.com/apis/credentials?project=badenbattle-a0dec)
 - [ ] Désactiver les domaines inutiles [ici](https://console.firebase.google.com/u/0/project/badenbattle-a0dec/authentication/providers)
-- [ ] Désactiver le logging magnetar
-- [ ] Checker tous les fixme
-- [ ] Retirer tous les console.debug
-- [ ] Hardcode schedule
+- [x] Désactiver le logging magnetar
+- [x] Checker tous les fixme
+- [x] Retirer tous les console.debug
+- [x] Hardcode schedule
 
 # Nice to have
 
