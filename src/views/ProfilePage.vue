@@ -122,7 +122,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, getRoleByValue, Profile, usersDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
-import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
+import { confirmPopup, errorPopup, infoPopup, loadingPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
 import { getAppSettings, getMaxGameLeaders } from "@/services/settings";
@@ -337,6 +337,7 @@ const deleteAccount = async () => {
 };
 const requestPromotion = () => {
   if (userProfile.value.promotionRequested) return errorPopup("Tu as déjà demandé une promotion");
+  if (showFillingInfo.value || !userProfile.value?.sectionId) infoPopup("Complète ton profil (totem, section) pour aider les administrateurs à traiter ta demande");
   isRequestingPromotion.value = true;
   userStore
     .updateProfile(userId.value, { promotionRequested: true })
