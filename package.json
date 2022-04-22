@@ -1,11 +1,12 @@
 {
   "name": "baden-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Baden Battle Score App",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "npm version patch --no-git-tag-version && ionic-build-info && vue-cli-service build",
+    "patchBuild": "npm version patch --no-git-tag-version && ionic-build-info && vue-cli-service build",
+    "build": "ionic-build-info && vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",

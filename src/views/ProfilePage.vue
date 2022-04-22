@@ -74,7 +74,7 @@
                 </ion-select>
                 <ion-input v-else type="text" readonly="true" inputmode="none">{{ getRoleByValue(userProfile.role) }}</ion-input>
               </ion-item>
-              <ion-item lines="full" v-if="editMode && !canSetRole && isOwnProfile">
+              <ion-item lines="full" v-if="!canSetRole && isOwnProfile">
                 <ion-button v-if="userProfile.promotionRequested" expand="block" color="medium" disabled="true">
                   <ion-spinner v-if="isRequestingPromotion"></ion-spinner>
                   <span v-else>Promotion demandée</span>
