@@ -1,5 +1,6 @@
 import { computed } from "vue";
 import { magnetar } from "./magnetar";
+import { toastPopup } from "./popup";
 
 const SETTINGS_COLLECTION = "settings";
 const SETTINGS_DOCUMENT = "app";
@@ -15,7 +16,6 @@ interface Schedule {
 
 // App settings (from firestore, through magneta)
 export interface AppSetting {
-  lastGameDbUpdate: Date; // last time the game DB was updated on the remote, to avoid streaming it
   maxGameLeaders: number; // max allowed leaders per game
   freezeScore: boolean;
   categories: string[];
@@ -27,8 +27,7 @@ export interface AppSetting {
   showRankingToAll: boolean;
 }
 
-const appSettingsDefaults = {
-  lastGameDbUpdate: new Date(0),
+export const appSettingsDefaults = {
   maxGameLeaders: 2,
   freezeScore: true,
   categories: [],
@@ -109,6 +108,10 @@ export const getAppSettings = computed(() => {
 /// Setters //
 /////////////
 
+export const updateAppSettings = async (settingsData: any) => {
+  await appSettingsModule.merge(settingsData);
+  toastPopup("Les paramètres de l'app ont été mis à jour");
+} 
 export const setSchedule = async (schedule: Schedule[]) => {
   return appSettingsModule.merge({ schedule });
 } 
