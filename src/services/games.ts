@@ -144,12 +144,13 @@ const addAfternoonLeaders = async (gameId: number, uid: string) => {
  */
 export const setMorningLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
+  if (uid !== user.uid && user.profile.role < ROLES.Modérateur) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(6)}`);
   const profile = await user.getLatestProfileData(uid);
   if(!profile) throw new Error(`Nous n'avons pas réussi à retrouver le profil de l'utilisateur ${uid}`);
   const gameModule = gamesModule.doc(gameId.toString());
   // Checks
   if (gameModule.data?.morningLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} le matin`);
-  if (profile?.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
+  if (profile?.role < ROLES.Animateur) throw new Error(`Le rôle de ${user.getName(uid)} est ${getRoleByValue(profile.role)}. Le rôle minimum pour s'inscrire à une épreuve est ${getRoleByValue(4)}`);
   const maxGameLeaders = await getMaxGameLeaders();
   if ((gameModule.data?.morningLeaders.length as number) >= maxGameLeaders) throw new Error(`Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} au matin`);
   if (profile.morningGame) {
@@ -162,7 +163,7 @@ export const setMorningLeader = async (gameId: number, uid = "") => {
         await addMorningLeaders(gameId, uid);
         await forceFetchGame(gameId);
       },
-      () => toastPopup("Enresitrement annulé")
+      () => toastPopup("Enregistrement annulé")
     );
   } else {
     await addMorningLeaders(gameId, uid);
@@ -172,12 +173,13 @@ export const setMorningLeader = async (gameId: number, uid = "") => {
 
 export const setAfternoonLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
+  if (uid !== user.uid && user.profile.role < ROLES.Modérateur) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(6)}`);
   const profile = await user.getLatestProfileData(uid);
   if(!profile) throw new Error(`Nous n'avons pas réussi à retrouver le profil de l'utilisateur ${uid}`);
   const gameModule = gamesModule.doc(gameId.toString());
   // Checks
   if (gameModule.data?.afternoonLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} l'après-midi`);
-  if (profile.role < ROLES.Animateur) throw new Error(`Le role ${getRoleByValue(profile.role)} ne permet pas de s'inscrire à une épreuve`);
+  if (profile.role < ROLES.Animateur) throw new Error(`Le rôle de ${user.getName(uid)} est ${getRoleByValue(profile.role)}. Le rôle minimum pour s'inscrire à une épreuve est ${getRoleByValue(4)}`);
   const maxGameLeaders = await getMaxGameLeaders();
   if ((gameModule.data?.afternoonLeaders.length as number) >= maxGameLeaders) throw new Error(`Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} l'après-midi`);
   if (profile.afternoonGame) {
@@ -190,7 +192,7 @@ export const setAfternoonLeader = async (gameId: number, uid = "") => {
         await addAfternoonLeaders(gameId, uid);
         await forceFetchGame(gameId);
       },
-      () => toastPopup("Enresitrement annulé")
+      () => toastPopup("Enregistrement annulé")
     );
   } else {
     await addAfternoonLeaders(gameId, uid);
