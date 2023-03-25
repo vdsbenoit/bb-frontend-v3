@@ -34,47 +34,51 @@ export const getRoleByValue = (role: number): string => {
   throw console.error(`Role inconnu: ${role}`);
 }
 
-
-
-export interface Profile {
+export type Profile = {
   uid: string;
   email: string;
-  totem: string;
-  name: string;
   role: number;
-  settings: any;
-  team: string;
-  morningGame: number;
-  afternoonGame: number;
-  sectionName: string;
-  sectionId: string;
-  category: string;
-  promotionRequested: boolean;
   creationDate: Timestamp;
+  totem?: string;
+  name?: string;
+  settings?: any;
+  team?: string;
+  morningGame?: number;
+  afternoonGame?: number;
+  sectionName?: string;
+  sectionId?: string;
+  category?: string;
+  promotionRequested?: boolean;
+}
+
+// Generate a timestamp in the Firestore format
+const fireStoreNow = (): Timestamp => {
+  return new Timestamp(Math.floor(Date.now() / 1000), 0)
+}
+
+const Profiledefaults: Profile = { 
+  uid: "",
+  email: "",
+  totem: "",
+  name: "",
+  role: 0,
+  settings: {},
+  team: "",
+  morningGame: 0,
+  afternoonGame: 0,
+  sectionName: "",
+  sectionId: "",
+  category: "",
+  promotionRequested: false,
+  creationDate: fireStoreNow(),
 }
 
 ///////////////////////
 /// Magnetar config //
 /////////////////////
 
-export function usersDefaults(payload?: any) {
-  const defaults = { 
-    uid: "",
-    email: "",
-    totem: "",
-    name: "",
-    role: 0,
-    settings: {},
-    team: "",
-    morningGame: 0,
-    afternoonGame: 0,
-    sectionName: "",
-    sectionId: "",
-    category: "",
-    promotionRequested: false,
-    creationDate: new Timestamp(Math.floor(Date.now() / 1000), 0),
-  }
-  return { ...defaults, ...payload }
+export function usersDefaults(payload: Partial<Profile>): Profile {
+  return { ...Profiledefaults, ...payload }
 }
 
 const usersModule = magnetar.collection(USER_PROFILES_COLLECTION_NAME, {
@@ -98,7 +102,7 @@ export const useAuthStore = defineStore("authStore", {
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null,
-    profile: (state): Profile => state.profileObject?.data ? state.profileObject.data : usersDefaults(),
+    profile: (state): Profile => state.profileObject?.data ? state.profileObject.data : Profiledefaults,
     uid: (state): string => state.user ? state.user.uid : "undefined",
   },
   actions: {
@@ -213,7 +217,7 @@ export const useAuthStore = defineStore("authStore", {
       usersModule.doc(uid).insert({
         uid, email,
         role: ROLES.Participant,
-        creationDate: new Date(),
+        creationDate: fireStoreNow(),
       });
     },
     async updateProfile(uid: string, profileData: any) {

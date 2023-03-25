@@ -10,7 +10,7 @@ const user = useAuthStore();
 /////////////////////
 /// configuration //
 //////////////////
-export interface Game {
+export type Game = {
   id: number;
   hash: string;
   name: string;
@@ -21,8 +21,8 @@ export interface Game {
   weight: number;
 }
 
-export function gamesDefaults(payload?: Partial<Game>): Game {
-  const defaults = {
+export function gamesDefaults(payload: Partial<Game>): Game {
+  const defaults: Game = {
     id: -1,
     hash: "",
     name: "",
@@ -158,8 +158,10 @@ export const setMorningLeader = async (gameId: number, uid = "") => {
     confirmPopup(
       message,
       async () => {
-        await removeMorningLeader(profile.morningGame, uid);
-        await forceFetchGame(profile.morningGame);
+        if (profile.morningGame) { //todo: set default profiel.afternoonGame value (e.g. 0 or -1) & remove if condition
+          await removeMorningLeader(profile.morningGame, uid);
+          await forceFetchGame(profile.morningGame);
+        }
         await addMorningLeaders(gameId, uid);
         await forceFetchGame(gameId);
       },
@@ -187,8 +189,10 @@ export const setAfternoonLeader = async (gameId: number, uid = "") => {
     confirmPopup(
       message,
       async () => {
-        await removeAfternoonLeader(profile.afternoonGame, uid);
-        await forceFetchGame(profile.afternoonGame);
+        if(profile.afternoonGame) { //todo: set default profiel.afternoonGame value (e.g. 0 or -1) & remove if condition
+          await removeAfternoonLeader(profile.afternoonGame, uid); 
+          await forceFetchGame(profile.afternoonGame);
+        }
         await addAfternoonLeaders(gameId, uid);
         await forceFetchGame(gameId);
       },

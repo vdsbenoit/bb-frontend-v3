@@ -15,7 +15,7 @@ interface Schedule {
 }
 
 // App settings (from firestore, through magneta)
-export interface AppSetting {
+export type AppSetting = {
   maxGameLeaders: number; // max allowed leaders per game
   freezeScore: boolean;
   categories: string[];
@@ -27,7 +27,7 @@ export interface AppSetting {
   showRankingToAll: boolean;
 }
 
-export const appSettingsDefaults = {
+export const appSettingsDefaults: AppSetting = {
   maxGameLeaders: 2,
   freezeScore: true,
   categories: [],
@@ -39,7 +39,7 @@ export const appSettingsDefaults = {
   showRankingToAll: false,
 };
 
-function appSettingsDefaultsFunc(payload?: Partial<AppSetting>): AppSetting {
+function appSettingsDefaultsFunc(payload: Partial<AppSetting>): AppSetting {
   return { ...appSettingsDefaults, ...payload }
 }
 const appSettingsModule = magnetar.doc<AppSetting>(`${SETTINGS_COLLECTION_NAME}/${SETTINGS_DOCUMENT_KEY}`, {

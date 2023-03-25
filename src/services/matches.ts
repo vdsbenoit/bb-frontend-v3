@@ -8,7 +8,7 @@ const user = useAuthStore();
 /// configuration //
 //////////////////
 
-export interface Match {
+export type Match = {
   id: string;
   game_id: number;
   game_name: string;
@@ -22,8 +22,8 @@ export interface Match {
   lastModified: string;
 }
 
-function matchesDefaults(payload?: Partial<Match>): Match {
-  const defaults = { 
+function matchesDefaults(payload: Partial<Match>): Match {
+  const defaults: Match = { 
     id: "",
     game_id: 0,
     game_name: "",

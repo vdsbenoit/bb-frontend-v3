@@ -23,7 +23,7 @@
     "@ionic/vue-router": "^6.0.0",
     "core-js": "^3.6.5",
     "firebase": "^9.6.8",
-    "magnetar": "^0.5.4",
+    "magnetar": "^0.11.4",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.11",
     "register-service-worker": "^1.7.2",

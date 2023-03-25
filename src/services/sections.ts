@@ -6,7 +6,7 @@ const SECTIONS_COLLECTION_NAME = "sections";
 /////////////////////
 /// configuration //
 //////////////////
-export interface Section {
+export type Section = {
   id: string;
   name: string;
   city: string;
@@ -20,8 +20,8 @@ export interface Section {
   meanScore: number;
 }
 
-function sectionsDefaults(payload?: Partial<Section>): Section {
-  const defaults = { 
+function sectionsDefaults(payload: Partial<Section>): Section {
+  const defaults: Section = { 
     id: "",
     name: "",
     city: "",

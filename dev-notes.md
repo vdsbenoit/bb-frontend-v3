@@ -42,6 +42,7 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 - [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
 - [ ] Inscription aux épreuves
 - [ ] Faire la distribution + générer les roadmaps/badges dans l'app
+- [ ] Avoid undefined values. For instance, default game (e.g. afternoonGame) is 0 and means no game is set yet.
 
 # User feedback
 

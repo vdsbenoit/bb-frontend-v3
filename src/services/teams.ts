@@ -6,7 +6,7 @@ const TEAMS_COLLECTION_NAME = "teams";
 /////////////////////
 /// configuration //
 //////////////////
-export interface Team {
+export type Team = {
   id: string;
   hash: string;
   number: number;
@@ -21,8 +21,8 @@ export interface Team {
   ignoreScore: boolean;
 }
 
-function teamsDefaults(payload?: Partial<Team>): Team {
-  const defaults = { 
+function teamsDefaults(payload: Partial<Team>): Team {
+  const defaults: Team = { 
     id: "",
     hash: "",
     number: -1,
