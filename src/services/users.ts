@@ -12,7 +12,7 @@ import {
 import { magnetar } from "./magnetar";
 import { Timestamp } from '@firebase/firestore';
 
-const USER_PROFILES_COLLECTION = "users";
+const USER_PROFILES_COLLECTION_NAME = "users";
 
 ///////////////////////
 /// Interfaces & co //
@@ -77,7 +77,7 @@ export function usersDefaults(payload?: any) {
   return { ...defaults, ...payload }
 }
 
-const usersModule = magnetar.collection(USER_PROFILES_COLLECTION, {
+const usersModule = magnetar.collection(USER_PROFILES_COLLECTION_NAME, {
   modifyPayloadOn: { insert: usersDefaults },
   modifyReadResponseOn: { added: usersDefaults },
 });
@@ -206,7 +206,7 @@ export const useAuthStore = defineStore("authStore", {
       if(!uid) return undefined;
       usersModule.doc(uid).stream().catch((error: any) => {
         if(error.code === 'resource-exhausted' ) errorPopup("Impossible de lancer l'app. Le quota Firestore est épuisé");
-        console.error(`Error occurred while streaming the ${USER_PROFILES_COLLECTION} collection`, error);
+        console.error(`Error occurred while streaming the ${USER_PROFILES_COLLECTION_NAME} collection`, error);
       });
     },
     async createProfile(uid: string, email: string) {

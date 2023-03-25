@@ -4,7 +4,7 @@ import { magnetar } from "./magnetar";
 import { getMaxGameLeaders, canSetScoreAnywhere, isScoresFrozen } from "./settings";
 import { addToDocArray, removeFromDocArray } from "./firebase";
 
-const GAMES_COLLECTION = "games";
+const GAMES_COLLECTION_NAME = "games";
 const user = useAuthStore();
 
 /////////////////////
@@ -34,7 +34,7 @@ export function gamesDefaults(payload?: Partial<Game>): Game {
   };
   return { ...defaults, ...payload };
 }
-const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION, {
+const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION_NAME, {
   modifyPayloadOn: { insert: gamesDefaults },
   modifyReadResponseOn: { added: gamesDefaults },
 });
@@ -46,7 +46,7 @@ const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION, {
 export const getAllGames = () => {
   console.log(`Streaming all games`); // using stream because the fetch() method is bugged
   gamesModule.orderBy("id").stream().catch((error) => {
-    console.error(`Error occurred while streaming the ${GAMES_COLLECTION} collection`, error);
+    console.error(`Error occurred while streaming the ${GAMES_COLLECTION_NAME} collection`, error);
   });
   return gamesModule.data;
 };
@@ -55,7 +55,7 @@ export const getCircuitGames = (circuit: string) => {
   console.log(`Streaming games from circuit '${circuit}'`);
   const filteredGamesModule = gamesModule.where("circuit", "==", circuit).orderBy("id");
   filteredGamesModule.stream().catch((error) => {
-    console.error(`Error occurred while streaming the ${GAMES_COLLECTION} collection`, error);
+    console.error(`Error occurred while streaming the ${GAMES_COLLECTION_NAME} collection`, error);
   });
   return filteredGamesModule.data;
 };
@@ -119,7 +119,7 @@ export const setName = (gameId: number, name: string) => {
  */
 const addMorningLeaders = async (gameId: number, uid: string) => {
   console.log(`Adding user ${uid} to game ${gameId}`);
-  const gameMergePromise = addToDocArray(GAMES_COLLECTION, gameId.toString(), "morningLeaders", uid)
+  const gameMergePromise = addToDocArray(GAMES_COLLECTION_NAME, gameId.toString(), "morningLeaders", uid)
   console.log(`Adding game ${gameId} to user ${uid}`);
   const userMergePromise = user.updateProfile(uid, { morningGame: gameId });
   await Promise.all([gameMergePromise, userMergePromise]);
@@ -127,7 +127,7 @@ const addMorningLeaders = async (gameId: number, uid: string) => {
 };
 const addAfternoonLeaders = async (gameId: number, uid: string) => {
   console.log(`Adding user ${uid} to game ${gameId}`);
-  const gameMergePromise = addToDocArray(GAMES_COLLECTION, gameId.toString(), "afternoonLeaders", uid)
+  const gameMergePromise = addToDocArray(GAMES_COLLECTION_NAME, gameId.toString(), "afternoonLeaders", uid)
   console.log(`Adding game ${gameId} to user ${uid}`);
   const userMergePromise = user.updateProfile(uid, { afternoonGame: gameId });
   await Promise.all([gameMergePromise, userMergePromise]);
@@ -209,7 +209,7 @@ export const removeMorningLeader = async (gameId: number, uid = "") => {
 
   // remove from game
   console.log(`Removing user ${uid} from game ${gameId} (morning)`);
-  const gameMergePromise = removeFromDocArray(GAMES_COLLECTION, gameId.toString(), "morningLeaders", uid);
+  const gameMergePromise = removeFromDocArray(GAMES_COLLECTION_NAME, gameId.toString(), "morningLeaders", uid);
 
   // remove from user profile
   console.log(`Removing game ${gameId} from user profile ${uid} (morning)`);
@@ -224,7 +224,7 @@ export const removeAfternoonLeader = async (gameId: number, uid = "") => {
 
   // remove from game
   console.log(`Removing user ${uid} from game ${gameId} (afternoon)`);
-  const gameMergePromise = removeFromDocArray(GAMES_COLLECTION, gameId.toString(), "afternoonLeaders", uid);
+  const gameMergePromise = removeFromDocArray(GAMES_COLLECTION_NAME, gameId.toString(), "afternoonLeaders", uid);
 
   // remove from user profile
   console.log(`Removing game ${gameId} from user profile ${uid} (afternoon)`);

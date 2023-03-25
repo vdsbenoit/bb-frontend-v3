@@ -2,8 +2,8 @@ import { computed } from "vue";
 import { magnetar } from "./magnetar";
 import { toastPopup } from "./popup";
 
-const SETTINGS_COLLECTION = "settings";
-const SETTINGS_DOCUMENT = "app";
+const SETTINGS_COLLECTION_NAME = "settings";
+const SETTINGS_DOCUMENT_KEY = "app";
 
 /////////////////////
 /// configuration //
@@ -42,7 +42,7 @@ export const appSettingsDefaults = {
 function appSettingsDefaultsFunc(payload?: Partial<AppSetting>): AppSetting {
   return { ...appSettingsDefaults, ...payload }
 }
-const appSettingsModule = magnetar.doc<AppSetting>(`${SETTINGS_COLLECTION}/${SETTINGS_DOCUMENT}`, {
+const appSettingsModule = magnetar.doc<AppSetting>(`${SETTINGS_COLLECTION_NAME}/${SETTINGS_DOCUMENT_KEY}`, {
   modifyPayloadOn: { insert: appSettingsDefaultsFunc },
   modifyReadResponseOn: { added: appSettingsDefaultsFunc },
 });

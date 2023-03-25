@@ -1,7 +1,7 @@
 import { incrementDocField } from './firebase';
 import { magnetar } from "./magnetar";
 
-const SECTIONS_COLLECTION = "sections";
+const SECTIONS_COLLECTION_NAME = "sections";
 
 /////////////////////
 /// configuration //
@@ -36,7 +36,7 @@ function sectionsDefaults(payload?: Partial<Section>): Section {
   }
   return { ...defaults, ...payload }
 }
-const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION, {
+const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION_NAME, {
   modifyPayloadOn: { insert: sectionsDefaults },
   modifyReadResponseOn: { added: sectionsDefaults },
 });
@@ -88,21 +88,21 @@ const updateSectionMeanScore =async (sectionId: string) => {
 
 export const addSectionWin = async (sectionId: string) => {
   console.log(`Adding 2 points to section ${sectionId}`);
-  await incrementDocField(SECTIONS_COLLECTION, sectionId, "score", 2);
+  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId, "score", 2);
   await updateSectionMeanScore(sectionId);
 }
 export const removeSectionWin = async (sectionId: string) => {
   console.log(`Removing 2 points to section ${sectionId}`);
-  await incrementDocField(SECTIONS_COLLECTION, sectionId, "score", -2);
+  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId, "score", -2);
   await updateSectionMeanScore(sectionId);
 }
 export const addSectionDraw = async (sectionId: string) => {
   console.log(`Adding 1 points to section ${sectionId}`);
-  await incrementDocField(SECTIONS_COLLECTION, sectionId, "score", 1);
+  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId, "score", 1);
   await updateSectionMeanScore(sectionId);
 }
 export const removeSectionDraw = async (sectionId: string) => {
   console.log(`Removing 1 points to section ${sectionId}`);
-  await incrementDocField(SECTIONS_COLLECTION, sectionId, "score", -1);
+  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId, "score", -1);
   await updateSectionMeanScore(sectionId);
 }

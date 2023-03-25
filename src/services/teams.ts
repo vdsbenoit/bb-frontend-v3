@@ -1,7 +1,7 @@
 import { incrementDocField } from './firebase';
 import { magnetar } from "./magnetar";
 
-const TEAMS_COLLECTION = "teams";
+const TEAMS_COLLECTION_NAME = "teams";
 
 /////////////////////
 /// configuration //
@@ -38,7 +38,7 @@ function teamsDefaults(payload?: Partial<Team>): Team {
   }
   return { ...defaults, ...payload }
 }
-const teamsModule = magnetar.collection<Team>(TEAMS_COLLECTION, {
+const teamsModule = magnetar.collection<Team>(TEAMS_COLLECTION_NAME, {
   modifyPayloadOn: { insert: teamsDefaults },
   modifyReadResponseOn: { added: teamsDefaults },
 });
@@ -76,21 +76,21 @@ export const getTopTeams = (category: string, limit: number) => {
 
 export const addTeamWin = async (teamId: string) => {
   console.log(`Adding 2 points to team ${teamId}`);
-  await incrementDocField(TEAMS_COLLECTION, teamId, "score", 2);
+  await incrementDocField(TEAMS_COLLECTION_NAME, teamId, "score", 2);
   await forceFetchTeam(teamId);
 }
 export const removeTeamWin = async (teamId: string) => {
   console.log(`Removing 2 points to team ${teamId}`);
-  await incrementDocField(TEAMS_COLLECTION, teamId, "score", -2);
+  await incrementDocField(TEAMS_COLLECTION_NAME, teamId, "score", -2);
   await forceFetchTeam(teamId);
 }
 export const addTeamDraw = async (teamId: string) => {
   console.log(`Adding 1 points to team ${teamId}`);
-  await incrementDocField(TEAMS_COLLECTION, teamId, "score", 1);
+  await incrementDocField(TEAMS_COLLECTION_NAME, teamId, "score", 1);
   await forceFetchTeam(teamId);
 }
 export const removeTeamDraw = async (teamId: string) => {
   console.log(`Removing 1 points to team ${teamId}`);
-  await incrementDocField(TEAMS_COLLECTION, teamId, "score", -1);
+  await incrementDocField(TEAMS_COLLECTION_NAME, teamId, "score", -1);
   await forceFetchTeam(teamId);
 }

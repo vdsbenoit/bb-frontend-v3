@@ -1,7 +1,7 @@
 import { useAuthStore } from './users';
 import { magnetar } from "./magnetar";
 
-const MATCHES_COLLECTION = "matches";
+const MATCHES_COLLECTION_NAME = "matches";
 const user = useAuthStore();
 
 /////////////////////
@@ -38,7 +38,7 @@ function matchesDefaults(payload?: Partial<Match>): Match {
   }
   return { ...defaults, ...payload }
 }
-const matchesModule = magnetar.collection<Match>(MATCHES_COLLECTION, {
+const matchesModule = magnetar.collection<Match>(MATCHES_COLLECTION_NAME, {
   modifyPayloadOn: { insert: matchesDefaults },
   modifyReadResponseOn: { added: matchesDefaults },
 });
