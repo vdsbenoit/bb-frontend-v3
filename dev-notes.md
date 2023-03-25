@@ -38,121 +38,37 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # To do 
 
-- [x] Lire & comprendre `firebase.ts` et `user.ts
-- [x] comprendre les base de la composition API
-- [x] Continuer à parser les pages d'auth management depuis "vue-firebase-auth-tuto"
-- [x] parser & adapter le popup manager depuis BadenBattle/frontend
-- [x] merger login & settings page into ProfilePage
-- [x] popup enregistrement settings
-- [x] `users.ts`: retirer prop `error`
-- [x] Magnetar
-  - [x] checker si merge fonction avec les arrays (games.ts) -> non, il faut déstructurer l'array précédent et merger soi-même
-- [x] Split profile & login
-- [x] fix bug menu
-- [x] Mettre à jour le field `teams` des documents de la collection sections
-- [x] Refactor even with draw
-- [x] Feuilles de route
-- [x] Comparer & re-init db pour changer game_id en number
-- [x] badges manquants
-- [x] config firebase blaze
-- [x] export DB
-- [x] Ajouter les animateurs
-- [x] rules DB
 - [ ] fix infinite spinner on empty ranking page
+- [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
+- [ ] Inscription aux épreuves
+- [ ] Faire la distribution + générer les roadmaps/badges dans l'app
+
+# User feedback
+
+- [ ] indiquer lorsqu'un timing a complétement été encodé
+- [ ] ajouter un attribut sur les épreuves sans score (e.g. pause)
+- [ ] ajouter un attribut aux matches du type "hasScore" et le mettre à vrai pour les épreuve sans score
+- [ ] ne pas mettre libre sur les épreuves où il y a déjà 1 personne. Avoir un 3e state
+- [ ] Mettre le plan en dessous de chaque épreuve
+- [ ] Faire en sorte que les sections ne tombent pas contre elles-mêmes (sinon ça fait tjrs une défaite et une victoire dans la même section)
+- [ ] Imprimer les classements
+- [ ] Système pour vérifier si les animateurs étaient présents ou non.
+- [ ] Bouton pour demander de l'aide
 
 # Pages
 
-- [x] Accueil
-  - [x] Si pas connecté : invitation à s'inscrire
-  - [x] Si connecté
-    - [x] Si pas de jeu : inviter à s'inscrire à un jeu / une équipe
-    - [x] Sinon liens vers Mon programme / Mon jeu
-    - [x] Compléter profil
-
-- [x] About
-  - [x] Explication sur le scoring (2 pt par victoire, 1pt par égalité)
-
-- [x] Login
-  - [x] Split login & profile
-  - [x] RGPD
-  
-- [x] Profil (perso & qqun d'autre)
-
-  - [x] mettre condition sur ce qu'on peut modifier
-  - [x] erreurs enregistrement settings
-  - [x] bouton pour demander une promotion
-  
-- [x] Equipe (avec liste matches, ordonnés par temps)
-
-- [x] Jeu (avec liste matches, ordonnés par temps)
-  - [x] Ajouter bouton "Inscrire quelqu'un"
-
-- [x] Sections (avec liste d'équipe)
-
-- [x] Match
-  - [x] Enregistrer le score au niveau 
-    - [x] du match
-    - [x] des **équipes**
-    - [x] des **sections**
-  - [x] +2 par victoires
-  - [x] +1 égalité
-  - [x] Ajouter [back button](https://ionicframework.com/docs/api/back-button)
-
-- [x] Liste des jeux 
-  - [x] filtre par circuit
-  - [x] si admin : bouton pour éditer nom & description
-  
-- [x] Liste matches, filter temps (pour vérifier les inscriptions)
-
-- [x] Listes utilisateurs
-  - [x] filtre par section -> dans la page section
-  - [x] filtre demande de promotion
-  - [x] trier par date d'inscription
-  
-- [x] Classement
-
-  - [x] choisir le nombre de section à afficher
-
-- [x] Paramètres généraux de l'app
+- [ ] Paramètres généraux de l'app
 
   - [ ] set schedule
-
 - [ ] ignore_score
 
   - [ ] réduire nbTeams de la section (pour le score)
   - [ ] afficher l'équipe d'une certaine manière aux animateurs
-
-- [x] role guards -> ajouter au guards actuel
-
 - [ ] Gestion équipes (voir app précédente)
-
-- [x] Dark theme
-
-  
 
 # Modification DB
 
-- [x] games
-  - [x] faire morningLeaders & afternoonLeaders
-
-- [x] teams
-  - [x] ajouter scores: number[]
-
-- [x] Créer une DB "sections". 
-  - [x] ~~Chaque collection est un type de section (e.g. loups, lutins, baladins, animateurs).~~ 
-  - [x] Chaque document est une section
-  - [x] Fields name, city, code d'unité, category (loups, lutins, balas, animateur), nbTeams, teams: []
-  - [x] La liste teams se fait compléter par le script de distribution
-
-- [x] Créer une DB settigns avec 1 seul document avec les settings de l'app
-  - freezeScores: boolean
-  - gameLeaderSections : [] (liste des noms de sections animatrices)
-  - lastGameDbUpdate: date de la dernière modification de la db de jeu
-  - maxGameLeaders : number (max amount of leaders per game)
-
-- [x] Match : retirer game_name (on obtient cette info des documents de games)
-
-  
+- [ ] 
 
 # Règles db
 
@@ -184,8 +100,6 @@ export const setEven = async (matchId: string) => {
 }
 ````
 
-
-
 # Avant de mettre en prod
 
 - [x] vérifier les DB rules
@@ -198,14 +112,14 @@ export const setEven = async (matchId: string) => {
 
 # Nice to have
 
-- Description de jeu
-- Système de recherche de joueur
-- séparation pour midi dans l'horaire
-- Description de jeu
-- Fix bug uncaught promise après déconnexion
-- OSS License
-- CI/CD pour check qu'un npm i fonctionne à travers le temps
-- Cloud functions qui aggregate le score moyen de chaque section
+- [ ] Description de jeu
+- [ ] Système de recherche de joueur
+- [ ] séparation pour midi dans l'horaire
+- [ ] Description de jeu
+- [ ] Fix bug uncaught promise après déconnexion
+- [ ] OSS License
+- [ ] CI/CD pour check qu'un npm i fonctionne à travers le temps
+- [ ] Cloud functions qui aggregate le score moyen de chaque section
 
 # Next release
 
