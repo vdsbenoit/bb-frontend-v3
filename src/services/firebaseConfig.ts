@@ -1,4 +1,4 @@
-let firebaseConfig;
+let firebaseConfig: any;
 
 if (process.env.NODE_ENV === "production") {
     // prod DB
