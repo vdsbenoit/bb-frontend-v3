@@ -38,11 +38,13 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # To do 
 
+- [ ] Backup DB 2022
 - [ ] fix infinite spinner on empty ranking page
 - [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
 - [ ] Inscription aux épreuves
 - [ ] Faire la distribution + générer les roadmaps/badges dans l'app
 - [ ] Avoid undefined values. For instance, default game (e.g. afternoonGame) is 0 and means no game is set yet.
+- [ ] Stats
 
 # User feedback
 

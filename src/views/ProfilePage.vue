@@ -142,7 +142,7 @@ const games = ref();
 const isUpdating = ref(false);
 const isRequestingPromotion = ref(false);
 
-// lifecicle hooks
+// lifecycle hooks
 
 onBeforeMount(() => {
   userId.value = route.params.userId ? (route.params.userId as string) : userStore.uid;

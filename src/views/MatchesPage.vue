@@ -43,7 +43,7 @@ import { getTimeMatches, Match } from "@/services/matches";
 // reactive data
 const selectedTime = ref(0);
 
-// lifecicle hooks
+// lifecycle hooks
 
 // Computed
 const schedule = computed(() => {

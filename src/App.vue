@@ -7,13 +7,13 @@
             <ion-list-header>Baden Battle</ion-list-header>
             <ion-note class="ion-text-uppercase">score app</ion-note>
 
-            <ion-menu-toggle auto-hide="false" v-for="(p, i) in appPages" :key="i">
-              <ion-item router-direction="root" :router-link="p.url" lines="none" detail="false" class="hydrated" :class="{ selected: isSelected(p.url) }">
+            <ion-menu-toggle :auto-hide="false" v-for="(p, i) in appPages" :key="i">
+              <ion-item router-direction="root" :router-link="p.url" lines="none" :detail="false" class="hydrated" :class="{ selected: isSelected(p.url) }">
                 <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
-              <ion-item lines="none" class="no-pointer ion-margin-bottom hydrated" detail="false">
+              <ion-item lines="none" class="no-pointer ion-margin-bottom hydrated" :detail="false">
                 <ion-icon slot="start" :ios="moonOutline" :md="moonSharp" ></ion-icon>
                 <ion-label>
                   Dark Mode
@@ -22,7 +22,7 @@
               </ion-item>
           </ion-list>
         </ion-content>
-        <ion-menu-toggle auto-hide="false">
+        <ion-menu-toggle :auto-hide="false">
           <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">
             <div v-if="user.isLoggedIn">
               <ion-text>Connecté en tant que {{ name }}</ion-text>

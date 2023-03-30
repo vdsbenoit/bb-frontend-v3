@@ -33,10 +33,10 @@
                   <ion-spinner></ion-spinner>
                 </div>
                 <ion-list v-else>
-                  <ion-item> <ion-label>Nom</ion-label>{{ selectedSection.name }} </ion-item>
-                  <ion-item> <ion-label>Ville</ion-label>{{ selectedSection.city }} </ion-item>
-                  <ion-item> <ion-label>Unité</ion-label>{{ selectedSection.unit }} </ion-item>
-                  <ion-item> <ion-label>Nombre d'équipes</ion-label>{{ selectedSection.nbTeams }} </ion-item>
+                  <ion-item> <ion-label>Nom</ion-label>{{ selectedSection?.name }} </ion-item>
+                  <ion-item> <ion-label>Ville</ion-label>{{ selectedSection?.city }} </ion-item>
+                  <ion-item> <ion-label>Unité</ion-label>{{ selectedSection?.unit }} </ion-item>
+                  <ion-item> <ion-label>Nombre d'équipes</ion-label>{{ selectedSection?.nbTeams }} </ion-item>
                 </ion-list>
               </ion-card-content>
             </ion-card>
@@ -72,8 +72,8 @@
                   <ion-spinner></ion-spinner>
                 </div>
                 <div v-else>
-                  <ion-list v-if="selectedSection?.teams.length > 0">
-                    <ion-item v-for="teamId in selectedSection.teams" :key="teamId" :routerLink="`/team/${teamId}`">
+                  <ion-list v-if="selectedSection && selectedSection.teams.length > 0">
+                    <ion-item v-for="teamId in selectedSection!.teams" :key="teamId" :routerLink="`/team/${teamId}`">
                       <ion-label>{{ teamId }}</ion-label>
                       <ion-badge v-if="teamId === user.profile.team" slot="end" color="primary" class="ion-padding-horizontal">Ton équipe</ion-badge>
                     </ion-item>
@@ -141,7 +141,7 @@ const selectedSectionId = ref("");
 const categories = ref();
 const shouldLoadUsers = ref(false); // true after clicking on the show button
 
-// lifecicle hooks
+// lifecycle hooks
 
 onBeforeMount(async () => {
   // We take this approach to ensure categories is not stuck to undefined
@@ -208,7 +208,7 @@ const registrationStatus = (user: any) => {
   if (!user.morningGame && !user.afternoonGame) return { text: "Pas inscrit", color: "danger" };
   if (user.morningGame && !user.afternoonGame) return { text: "Matin", color: "warning" };
   if (!user.morningGame && user.afternoonGame) return { text: "Arpèm", color: "warning" };
-  if (user.morningGame && user.afternoonGame) return { text: "Ok", color: "success" };
+  if (user.morningGame && user.afternoonGame) return { text: "Matin & aprèm", color: "success" };
   return { text: "inconnu", color: "medium" };
 };
 </script>

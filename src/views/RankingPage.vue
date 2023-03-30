@@ -180,7 +180,7 @@ import { getTopTeams } from "@/services/teams";
 
 const maxItems = ref(10);
 
-// lifecicle hooks
+// lifecycle hooks
 
 // Computed
 

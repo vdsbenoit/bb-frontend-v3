@@ -73,7 +73,7 @@ const editedGameId = ref(-1);
 const newGameName = ref("");
 const isUpdating = ref(false);
 
-// lifecicle hooks
+// lifecycle hooks
 
 onBeforeMount(async () => {
   // We take this approach to ensure circuits is not stuck to undefined

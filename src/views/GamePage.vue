@@ -180,7 +180,7 @@ const isUnregistering = ref(false);
 const selectedLeaderSection = ref("");
 const selectedLeaderId = ref("");
 
-// lifecicle hooks
+// lifecycle hooks
 
 onBeforeMount(() => {
   if (route.params.gameId) gameId.value = +route.params.gameId;

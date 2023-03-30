@@ -294,14 +294,20 @@ export const useAuthStore = defineStore("authStore", {
       return filteredUsersModule.data;
     },
     getPromotionUsers(limit: number){
-      console.log(`Fetching users who requrested a promotion`);
+      console.log(`Fetching users who requested a promotion`);
       const filteredUsersModule = usersModule.where("promotionRequested", "==", true).limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data;
     },
     getLatestUsers(limit: number){
-      console.log(`Fetching users who requrested a promotion`);
+      console.log(`Fetching latest registered userd`);
       const filteredUsersModule = usersModule.orderBy("creationDate", "desc").limit(limit);
+      filteredUsersModule.stream(); // using stream because fetch is buggy
+      return filteredUsersModule.data;
+    },
+    getUsersWithoutSection(limit: number){
+      console.log(`Fetching users without any sections`);
+      const filteredUsersModule = usersModule.where("sectionId", "==", []).orderBy("creationDate", "desc").limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data;
     }

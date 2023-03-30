@@ -102,7 +102,7 @@ const teamId = ref("");
 const isLoading = ref(true);
 const isRegistering = ref(false);
 
-// lifecicle hooks
+// lifecycle hooks
 
 onBeforeMount(() => {
   if (route.params.teamId) teamId.value = route.params.teamId as string;

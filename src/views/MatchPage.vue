@@ -135,7 +135,7 @@ const canSetScore = ref(false);
 const isLoading = ref(true);
 const isSettingScore = ref(false);
 
-// lifecicle hooks
+// lifecycle hooks
 
 onBeforeMount(() => {
   if (route.params.matchId) matchId.value = route.params.matchId as string;
