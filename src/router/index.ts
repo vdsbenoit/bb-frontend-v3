@@ -1,3 +1,4 @@
+import { toastPopup } from './../services/popup';
 import { isShowRankingToAll } from './../services/settings';
 import { ROLES } from './../services/users';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
@@ -19,43 +20,23 @@ const ADMIN_PAGES = [
  */
  const authCheck = (to: any, from: any) => {
   const user = useAuthStore();
-  if (ADMIN_PAGES.includes(to.name)){
-    if(user.profile.role >= ROLES.Administrateur) return true;
-    else {
-      console.log("redirected");
-      return { name: 'home' };
-    }
-  }
+  if (ADMIN_PAGES.includes(to.name) && user.profile.role >= ROLES.Administrateur) return true
   if (to.name === "ranking"){
-    if(user.profile.role >= ROLES.Modérateur) return true;
-    if(isShowRankingToAll()) return true;
-    else {
-      console.log("redirected");
-      return { name: 'home' };
-    }
+    if(user.profile.role >= ROLES.Modérateur) return true
+    if(isShowRankingToAll()) return true
   }
-  if (user.isLoggedIn) {
-    if (to.name === "login") {
-      console.log("redirected");
-      return { name: 'home' }
-    } else {
-      return true;
-    }
-  } else {
-    if (to.name === "login") {
-      return true;
-    } else {
-      console.log("redirected");
-      return { name: "redirectLogin" };
-    }
-  }
+  if (user.isLoggedIn && to.name !== "login") return true
+  if (!user.isLoggedIn && to.name === "login") return true
+  console.log("Acces refused, redirected");
+  toastPopup("Tu n'as pas le droit d'accéder à cette page");
+  return { name: 'home' };
 };
 
 const routes: Array<RouteRecordRaw> = [
+  { path: '', redirect: 'home'},
   {
     name: 'home',
-    path: '/',
-    alias: '/home',
+    path: '/home',
     component: HomePageVue
   },
   {
