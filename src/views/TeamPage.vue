@@ -52,11 +52,8 @@
             <ion-card-title>Programme</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list v-if="isLoading || matches.size > 0">
-              <div v-if="isLoading" class="ion-text-center">
-                <ion-spinner></ion-spinner>
-              </div>
-              <ion-item v-else v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding">
+            <ion-list v-if="matches && matches.size > 0">
+              <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="ion-no-padding">
                 <ion-label>
                   <span>{{ match.game_name }}</span>
                   <p>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} | 📍 Jeu n° {{ match.game_id }}</p>
@@ -65,6 +62,9 @@
                 <ion-badge slot="end" class="ion-no-margin" color="warning" v-if="match.draw">Égalité</ion-badge>
               </ion-item>
             </ion-list>
+            <div v-else-if="isLoading" class="ion-text-center">
+              <ion-spinner></ion-spinner>
+            </div>
             <ion-list-header v-else><h2>Aucun jeu trouvé</h2></ion-list-header>
           </ion-card-content>
         </ion-card>

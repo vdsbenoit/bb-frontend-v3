@@ -36,11 +36,11 @@ export const getRoleByValue = (role: number): string => {
 
 export type Profile = {
   uid: string;
-  email: string;
-  role: number;
   creationDate: Timestamp;
+  email: string;
   totem?: string;
   name?: string;
+  role: number;
   settings?: any;
   team?: string;
   morningGame?: number;
@@ -56,8 +56,9 @@ const fireStoreNow = (): Timestamp => {
   return new Timestamp(Math.floor(Date.now() / 1000), 0)
 }
 
-const Profiledefaults: Profile = { 
+export const ProfileDefaults: Profile = { 
   uid: "",
+  creationDate: fireStoreNow(),
   email: "",
   totem: "",
   name: "",
@@ -70,15 +71,14 @@ const Profiledefaults: Profile = {
   sectionId: "",
   category: "",
   promotionRequested: false,
-  creationDate: fireStoreNow(),
 }
 
 ///////////////////////
 /// Magnetar config //
 /////////////////////
 
-export function usersDefaults(payload: Partial<Profile>): Profile {
-  return { ...Profiledefaults, ...payload }
+function usersDefaults(payload: Partial<Profile>): Profile {
+  return { ...ProfileDefaults, ...payload }
 }
 
 const usersModule = magnetar.collection(USER_PROFILES_COLLECTION_NAME, {
@@ -102,7 +102,7 @@ export const useAuthStore = defineStore("authStore", {
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null,
-    profile: (state): Profile => state.profileObject?.data ? state.profileObject.data : Profiledefaults,
+    profile: (state): Profile => state.profileObject?.data ? state.profileObject.data : ProfileDefaults,
     uid: (state): string => state.user ? state.user.uid : "undefined",
   },
   actions: {

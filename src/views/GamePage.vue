@@ -113,11 +113,8 @@
             <ion-card-title>Programme</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list v-if="isLoading || matches.size > 0">
-              <div v-if="isLoading" class="ion-text-center">
-                <ion-spinner></ion-spinner>
-              </div>
-              <ion-item v-else v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
+            <ion-list v-if="matches && matches.size > 0">
+              <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
                   <ion-text>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} : </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[0] }}</ion-text>
@@ -127,7 +124,12 @@
                 <ion-badge slot="end" class="ion-no-margin" :color="match.draw ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
               </ion-item>
             </ion-list>
-            <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
+            <div v-else>
+              <div v-if="isLoading" class="ion-text-center">
+                <ion-spinner></ion-spinner>
+              </div>
+              <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
+            </div>
           </ion-card-content>
         </ion-card>
       </div>
@@ -165,8 +167,8 @@ const gameId = ref(0);
 // store more information about the leaders than their IDs
 type leaderInfo = {
   uid: string;
-  name: string;
-  section: string;
+  name: string | undefined;
+  section: string | undefined;
 };
 const leaders = reactive({
   morning: [] as leaderInfo[],
@@ -198,7 +200,7 @@ const game = computed((): Game => {
   return getGame(gameId.value) as Game;
 });
 const isGame = computed(() => {
-  if (game.value?.id) {
+  if (game.value && game.value.id) {
     isLoading.value = false;
     return true;
   }

@@ -9,8 +9,8 @@
         </ion-select>
       </ion-item>
       <ion-list v-if="selectedTime">
-        <div v-if="matches?.size > 1">
-          <ion-item v-for="match in matches?.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="">
+        <div v-if="matches && matches.size > 0">
+          <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="">
             <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ match.game_id }}</ion-badge>
             <ion-label>
               <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[0] }}</ion-text>
@@ -21,12 +21,15 @@
             <ion-badge v-else slot="end" class="ion-no-margin" color="danger">Pas de score</ion-badge>
           </ion-item>
         </div>
-        <div v-else class="ion-text-center" style="background: transparent">
+        <div v-else-if="isLoading" class="ion-text-center" style="background: transparent">
           <ion-spinner></ion-spinner>
         </div>
       </ion-list>
       <div v-else class="not-found">
         <h2 class="ion-text-center ion-align-items-center">Sélectionne un horaire <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+      </div>
+      <div v-if="selectedTime && !isLoading && (!matches || matches.size < 1)" class="not-found">
+        <h2 class="ion-text-center ion-align-items-center">Aucun duel trouvé</h2>
       </div>
     </ion-content>
   </ion-page>
@@ -39,11 +42,18 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { computed, ref } from "@vue/reactivity";
 import { getAppSettings } from "@/services/settings";
 import { getTimeMatches, Match } from "@/services/matches";
+import { onMounted } from "vue";
 
 // reactive data
 const selectedTime = ref(0);
+const isLoading = ref(true);
 
 // lifecycle hooks
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 5000);
+});
 
 // Computed
 const schedule = computed(() => {

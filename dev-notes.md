@@ -40,7 +40,6 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 - [ ] Backup DB 2022
 - [ ] fix infinite spinner on empty ranking page
-- [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
 - [ ] Inscription aux épreuves
 - [ ] Faire la distribution + générer les roadmaps/badges dans l'app
 - [ ] Avoid undefined values. For instance, default game (e.g. afternoonGame) is 0 and means no game is set yet.
@@ -68,6 +67,8 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
   - [ ] réduire nbTeams de la section (pour le score)
   - [ ] afficher l'équipe d'une certaine manière aux animateurs
 - [ ] Gestion équipes (voir app précédente)
+- [ ] Créer des utilisateurs
+- [ ] Créer de
 
 # Modification DB
 
@@ -116,13 +117,13 @@ export const setEven = async (matchId: string) => {
 # Nice to have
 
 - [ ] Description de jeu
-- [ ] Système de recherche de joueur
 - [ ] séparation pour midi dans l'horaire
-- [ ] Description de jeu
+- [ ] Système de recherche de joueur
 - [ ] Fix bug uncaught promise après déconnexion
 - [ ] OSS License
 - [ ] CI/CD pour check qu'un npm i fonctionne à travers le temps
 - [ ] Cloud functions qui aggregate le score moyen de chaque section
+- [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
 
 # Next release
 

@@ -113,7 +113,6 @@ const showGames = () => {
   return games.value && games.value.size > 0
 }
 const showNotFound = () => {
-  // return true;
   return selectedCircuit.value && !isLoading.value && (!games.value || games.value.size < 1);
 }
 

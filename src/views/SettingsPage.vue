@@ -33,7 +33,7 @@
               <ion-input v-if="editMaxGameLeaders" v-model="editedItem.maxGameLeaders" name="maxGameLeaders" type="number" autocorrect="off"  slot="start"></ion-input>
               <ion-label v-else  @click="toggleEditMaxGameLeaders" class="ion-text-wrap fixedLabel" slot="start">Max animateurs par épreuve</ion-label>
               <ion-button v-if="editMaxGameLeaders" @click="setMaxLeaders" color="success" slot="end"><ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp"></ion-icon></ion-button>
-              <ion-input v-else @click="toggleEditMaxGameLeaders" name="maxGameLeaders" type="number" readonly="true" inputmode="none" slot="end">{{ getMaxGameLeaders() }}</ion-input>
+              <ion-input v-else @click="toggleEditMaxGameLeaders" name="maxGameLeaders" type="number" :readonly="true" inputmode="none" slot="end">{{ getMaxGameLeaders() }}</ion-input>
             </ion-item>
           </ion-list>
           <ion-list>
