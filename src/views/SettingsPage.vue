@@ -8,12 +8,14 @@
         </ion-card-header>
         <ion-card-content class="ion-no-padding">
           <ion-list>
-            <ion-item routerLink="/promotions">
+            <ion-item routerLink="/users/promotions">
               <ion-label>Demandes de promotions</ion-label>
               <ion-icon slot="end" :ios="chevronForwardOutline" :md="chevronForwardSharp"></ion-icon>
             </ion-item>
-          </ion-list>
-          <ion-list>
+            <ion-item routerLink="/users/withoutSection">
+              <ion-label>Utilisateurs sans section</ion-label>
+              <ion-icon slot="end" :ios="chevronForwardOutline" :md="chevronForwardSharp"></ion-icon>
+            </ion-item>
             <ion-item routerLink="/users">
               <ion-label>Nouveaux utilisateurs</ion-label>
               <ion-icon slot="end" :ios="chevronForwardOutline" :md="chevronForwardSharp"></ion-icon>
@@ -85,7 +87,7 @@ const router = useIonRouter();
 const editedItem = reactive(appSettingsDefaults);
 const editMaxGameLeaders = ref(false);
 
-// lifecicle hooks
+// lifecycle hooks
 
 // Computed
 

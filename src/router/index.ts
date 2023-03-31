@@ -125,7 +125,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'users',
-    path: '/users',
+    path: '/users/:userFilter?',
+    props: true,
     component: () => import ('../views/UsersPage.vue'),
     beforeEnter: authCheck,
   },

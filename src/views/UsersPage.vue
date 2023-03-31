@@ -4,11 +4,11 @@
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true" class="ion-padding">
-      <ion-list v-if="users?.size > 0 || isLoading">
-        <div v-if="!users || users?.size < 1" class="ion-text-center" style="background: transparent">
-          <ion-spinner></ion-spinner>
-        </div>
-        <div v-else v-for="user in users.values()" :key="user.uid">
+      <div v-if="showSpinner()" class="ion-text-center" style="background: transparent">
+        <ion-spinner></ion-spinner>
+      </div>
+      <ion-list v-if="showUsers()">
+        <div v-for="user in users.values()" :key="user.uid">
           <div v-if="user.uid === editedUid">
             <ion-item>
               <ion-label :routerLink="`/profile/${user.uid}`">
@@ -34,7 +34,7 @@
           </div>
         </div>
       </ion-list>
-      <div v-else class="not-found">
+      <div v-if="showNotFound()" class="not-found">
         <h2 class="ion-text-center ion-align-items-center">Pas d'utilisateurs</h2>
       </div>
     </ion-content>
@@ -47,27 +47,20 @@ import { pencilOutline, pencilSharp, closeOutline, closeSharp, checkmarkOutline,
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
-import { onBeforeMount, onMounted, defineProps } from "vue";
+import { onMounted, defineProps } from "vue";
 import { getLeaderCategoryName } from "@/services/settings";
 
-const props = defineProps(["promotions"]);
+const props = defineProps(["userFilter"]);
 const userStore = useAuthStore();
 
 // reactive data
-
-const userFilter = ref("");
 const pageSize = ref(15);
 const isLoading = ref(true);
 const editedUid = ref("");
 const editedRoleValue = ref(0);
 
-// lifecicle hooks
+// lifecycle hooks
 
-onBeforeMount(async () => {
-  if (props.promotions) {
-    userFilter.value = "promotions";
-  }
-});
 onMounted(() => {
   setTimeout(() => {
     isLoading.value = false;
@@ -77,21 +70,34 @@ onMounted(() => {
 // Computed
 
 const users = computed(() => {
-  switch (userFilter.value) {
+  switch (props.userFilter) {
     case "promotions":
       return userStore.getPromotionUsers(pageSize.value);
+    case "withoutSection":
+      return userStore.getUsersWithoutSection(pageSize.value);
     default:
       return userStore.getLatestUsers(pageSize.value);
   }
 });
 const pageTitle = computed(() => {
-  switch (userFilter.value) {
+  switch (props.userFilter) {
     case "promotions":
       return "Demandes de promotions";
+    case "withoutSection":
+      return "Utilisateurs sans section";
     default:
       return "Utilisateurs";
   }
 });
+const showSpinner = () => {
+  return isLoading.value && (!users.value || users.value.size < 1);
+}
+const showUsers = () => {
+  return users.value && users.value.size > 0
+}
+const showNotFound = () => {
+  return !isLoading.value && (!users.value || users.value.size < 1);
+}
 
 // Watchers
 
