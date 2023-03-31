@@ -12,46 +12,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>Sections</ion-card-title>
-                  </ion-card-header>
-                  <ion-card-content class="ion-no-padding ion-padding-vertical">
-                    <div v-if="!lutinTopSections || lutinTopSections.size < 1" class="ion-text-center ion-align-items-center">
-                      <ion-spinner></ion-spinner>
-                    </div>
-                    <ion-list v-else>
-                      <ion-item v-for="(section, index) in lutinTopSections?.values()" :key="`s-lutin-${index}`" :routerLink="`/sections/${section.id}`">
-                        <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
-                        <ion-label>
-                          {{ section.name }} <ion-text color="medium">({{ section.city }})</ion-text>
-                        </ion-label>
-                        <ion-badge slot="end" class="ion-no-margin" color="primary">{{ section.meanScore }}</ion-badge>
-                      </ion-item>
-                    </ion-list>
-                  </ion-card-content>
-                </ion-card>
+                <ranking-component type="section" :ranking-list="lutinTopSections"/>
               </ion-col>
               <ion-col size="12" size-sm="6">
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>Équipes</ion-card-title>
-                  </ion-card-header>
-                  <ion-card-content class="ion-no-padding ion-padding-vertical">
-                    <div v-if="!lutinTopTeams || lutinTopSections.size < 1" class="ion-text-center ion-align-items-center">
-                      <ion-spinner></ion-spinner>
-                    </div>
-                    <ion-list v-else>
-                      <ion-item v-for="(team, index) in lutinTopTeams?.values()" :key="`t-lutin-${index}`" :routerLink="`/team/${team.id}`">
-                        <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
-                        <ion-label>
-                          <b>{{ team.id }}</b> {{ team.sectionName }} <ion-text color="medium">({{ team.city }})</ion-text>
-                        </ion-label>
-                        <ion-badge slot="end" class="ion-no-margin" color="primary">{{ team.score }}</ion-badge>
-                      </ion-item>
-                    </ion-list>
-                  </ion-card-content>
-                </ion-card>
+                <ranking-component type="team" :ranking-list="lutinTopTeams"/>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -65,46 +29,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>Sections</ion-card-title>
-                  </ion-card-header>
-                  <ion-card-content class="ion-no-padding ion-padding-vertical">
-                    <div v-if="!loupTopSections || loupTopSections.size < 1" class="ion-text-center ion-align-items-center">
-                      <ion-spinner></ion-spinner>
-                    </div>
-                    <ion-list v-else>
-                      <ion-item v-for="(section, index) in loupTopSections?.values()" :key="`s-loup-${index}`" :routerLink="`/sections/${section.id}`">
-                        <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
-                        <ion-label>
-                          {{ section.name }} <ion-text color="medium">({{ section.city }})</ion-text>
-                        </ion-label>
-                        <ion-badge slot="end" class="ion-no-margin" color="primary">{{ section.meanScore }}</ion-badge>
-                      </ion-item>
-                    </ion-list>
-                  </ion-card-content>
-                </ion-card>
+                <ranking-component type="section" :ranking-list="loupTopSections"/>
               </ion-col>
               <ion-col size="12" size-sm="6">
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>Équipes</ion-card-title>
-                  </ion-card-header>
-                  <ion-card-content class="ion-no-padding ion-padding-vertical">
-                    <div v-if="!loupTopTeams || loupTopSections.size < 1" class="ion-text-center ion-align-items-center">
-                      <ion-spinner></ion-spinner>
-                    </div>
-                    <ion-list v-else>
-                      <ion-item v-for="(team, index) in loupTopTeams?.values()" :key="`t-loup-${index}`" :routerLink="`/team/${team.id}`">
-                        <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
-                        <ion-label>
-                          <b>{{ team.id }}</b> {{ team.sectionName }} <ion-text color="medium">({{ team.city }})</ion-text>
-                        </ion-label>
-                        <ion-badge slot="end" class="ion-no-margin" color="primary">{{ team.score }}</ion-badge>
-                      </ion-item>
-                    </ion-list>
-                  </ion-card-content>
-                </ion-card>
+                <ranking-component type="team" :ranking-list="loupTopTeams"/>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -118,46 +46,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>Sections</ion-card-title>
-                  </ion-card-header>
-                  <ion-card-content class="ion-no-padding ion-padding-vertical">
-                    <div v-if="!nutonTopSections || nutonTopSections.size < 1" class="ion-text-center ion-align-items-center">
-                      <ion-spinner></ion-spinner>
-                    </div>
-                    <ion-list v-else>
-                      <ion-item v-for="(section, index) in nutonTopSections?.values()" :key="`s-nuton-${index}`" :routerLink="`/sections/${section.id}`">
-                        <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
-                        <ion-label>
-                          {{ section.name }} <ion-text color="medium">({{ section.city }})</ion-text>
-                        </ion-label>
-                        <ion-badge slot="end" class="ion-no-margin" color="primary">{{ section.meanScore }}</ion-badge>
-                      </ion-item>
-                    </ion-list>
-                  </ion-card-content>
-                </ion-card>
+                <ranking-component type="section" :ranking-list="nutonTopSections"/>
               </ion-col>
               <ion-col size="12" size-sm="6">
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>Équipes</ion-card-title>
-                  </ion-card-header>
-                  <ion-card-content class="ion-no-padding ion-padding-vertical">
-                    <div v-if="!nutonTopTeams || nutonTopSections.size < 1" class="ion-text-center ion-align-items-center">
-                      <ion-spinner></ion-spinner>
-                    </div>
-                    <ion-list v-else>
-                      <ion-item v-for="(team, index) in nutonTopTeams?.values()" :key="`t-nuton-${index}`" :routerLink="`/team/${team.id}`">
-                        <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
-                        <ion-label>
-                          <b>{{ team.id }}</b> {{ team.sectionName }} <ion-text color="medium">({{ team.city }})</ion-text>
-                        </ion-label>
-                        <ion-badge slot="end" class="ion-no-margin" color="primary">{{ team.score }}</ion-badge>
-                      </ion-item>
-                    </ion-list>
-                  </ion-card-content>
-                </ion-card>
+                <ranking-component type="team" :ranking-list="nutonTopTeams"/>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -168,10 +60,11 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem, IonLabel, IonGrid, IonRow, IonCol, IonText, IonBadge, 
-IonSpinner, AlertInput, alertController, IonIcon, IonButton } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonText, IonBadge, 
+AlertInput, alertController, IonIcon, IonButton } from "@ionic/vue";
 import { settingsOutline, settingsSharp} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import RankingComponent from "@/components/RankingComponent.vue";
 import { computed, ref } from "@vue/reactivity";
 import { getTopSections } from "@/services/sections";
 import { getTopTeams } from "@/services/teams";
