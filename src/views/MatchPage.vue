@@ -282,9 +282,10 @@ const setScore = () => {
       choicePopup("Qui est l'heureux gagnant ?", [match.value.player_ids[0], match.value.player_ids[1]], winHandler, "score-choice-popup");
     } else {
       console.error(`Unknown choice: ${choice}`);
-      isSettingScore.value = false;
     }
-  }, "score-choice-popup");
+  }, "score-choice-popup").then(() => {
+    isSettingScore.value = false; 
+  });
 };
 
 const scoreColor = (playerId: string | undefined) => {
