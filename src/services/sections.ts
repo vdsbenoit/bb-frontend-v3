@@ -17,6 +17,7 @@ export type Section = {
   teams: string[];
   nbPlayers: number;
   nbTeams: number;
+  playersPerTeam: number;
   meanScore: number;
 }
 
@@ -32,6 +33,7 @@ function sectionsDefaults(payload: Partial<Section>): Section {
     teams: [],
     nbPlayers: 0,
     nbTeams: 0,
+    playersPerTeam: 0,
     meanScore: 0
   }
   return { ...defaults, ...payload }
