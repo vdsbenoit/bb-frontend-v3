@@ -120,15 +120,15 @@ const modPages = [
     url: "/matches",
     iosIcon: documentOutline,
     mdIcon: documentSharp,
-  },
+  }
+]
+const adminPages = [
   {
     title: "Classement",
     url: "/ranking",
     iosIcon: podiumOutline,
     mdIcon: podiumSharp,
   },
-]
-const adminPages = [
   {
     title: "Paramètres",
     url: "/settings",

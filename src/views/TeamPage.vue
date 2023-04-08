@@ -139,7 +139,7 @@ const matches = computed(() => {
 });
 const showRanking = computed(() => {
   if(isShowRankingToAll()) return true;
-  return user.profile.role >= ROLES.Modérateur;
+  return user.profile.role >= ROLES.Administrateur;
 });
 const showRegisterButton = computed(() => {
   if (isMyTeam.value) return false;

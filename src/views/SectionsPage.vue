@@ -157,7 +157,7 @@ onMounted(() => {
 
 const showRanking = computed(() => {
   if(isShowRankingToAll()) return true;
-  return user.profile.role >= ROLES.Modérateur;
+  return user.profile.role >= ROLES.Administrateur;
 });
 const showUsers = computed(() => {
   return user.profile.role >= ROLES.Modérateur;

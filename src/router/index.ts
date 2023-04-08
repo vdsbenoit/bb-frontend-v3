@@ -22,7 +22,7 @@ const ADMIN_PAGES = [
   const user = useAuthStore();
   if (ADMIN_PAGES.includes(to.name) && user.profile.role >= ROLES.Administrateur) return true
   if (to.name === "ranking"){
-    if(user.profile.role >= ROLES.Modérateur) return true
+    if(user.profile.role >= ROLES.Administrateur) return true
     if(isShowRankingToAll()) return true
   }
   if (user.isLoggedIn && to.name !== "login") return true
