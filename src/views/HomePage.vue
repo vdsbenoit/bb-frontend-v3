@@ -3,7 +3,7 @@
     <header-template pageTitle="Accueil"></header-template>
     <ion-content :fullscreen="true">
       <div class="logo">
-        <img src="@/assets/img/Logo-bb.png" alt="Logo Baden Battle" />
+        <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
       <div v-if="user.isLoggedIn">
       <ion-grid class="home-grid">
@@ -18,9 +18,14 @@
       </ion-grid>
       </div>
       <div v-else class="container">
+        <!-- 
         <h1 color="primary">Bienvenue</h1>
         <p>Pour utiliser l'app, il faut d'abord</p>
         <ion-button class="ion-text-lowercase" color="primary" @click="router.push('/login')">te connecter</ion-button>
+        -->
+        <h1 color="primary">Hey!</h1>
+        <p>🚧 L'app est en construction 🚧</p>
+        <p>Reviens nous voir plus tard 😉</p>
       </div>
     </ion-content>
   </ion-page>

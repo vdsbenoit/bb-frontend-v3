@@ -3,7 +3,7 @@
     <header-template pageTitle="Connexion"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
       <div class="logo">
-        <img src="@/assets/img/Logo-bb.png" alt="Logo Baden Battle" />
+        <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
       <ion-text class="ion-text-center" v-if="props.redirect">
         <p>Connecte-toi pour accéder à ce contenu</p>

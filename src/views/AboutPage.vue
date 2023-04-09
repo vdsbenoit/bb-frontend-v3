@@ -66,7 +66,7 @@ const buildDate = new Date(buildInfo.buildDate).toLocaleString("fr-BE");
 
 <style scoped>
 .background-image{
-    --background: url(@/assets/img/Logo-bb.png) 50% 11%/80%  no-repeat;
+    --background: url(@/assets/img/logo-bb.png) 50% 11%/80%  no-repeat;
     background-color: var(--ion-background-color);
 }
 .logo img {
