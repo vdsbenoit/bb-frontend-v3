@@ -36,43 +36,18 @@ ionic form template : https://github.com/ionicthemes/ionic-forms-and-validations
 
 # ⚠ LAISSE LES DATA MAGNETAR DANS DES COMPUTED METHODS BEN !!
 
-# To do 
+# Distribution équipes
 
-- [ ] Backup DB 2022
-- [ ] fix infinite spinner on empty ranking page
-- [ ] Inscription aux épreuves
-- [ ] Faire la distribution + générer les roadmaps/badges dans l'app
-- [ ] Avoid undefined values. For instance, default game (e.g. afternoonGame) is 0 and means no game is set yet.
-- [ ] Stats
+### Paramètres
 
-# User feedback
+- `MIN_PLAYERS_PER_TEAM` 
+- `MAX_PLAYERS_PER_TEAM`
+- teams_per_circuit (games_per_circuit \* 2)
+- nb_players (par sections)
 
-- [ ] indiquer lorsqu'un timing a complétement été encodé
-- [ ] ajouter un attribut sur les épreuves sans score (e.g. pause)
-- [ ] ajouter un attribut aux matches du type "hasScore" et le mettre à vrai pour les épreuve sans score
-- [ ] ne pas mettre libre sur les épreuves où il y a déjà 1 personne. Avoir un 3e state
-- [ ] Mettre le plan en dessous de chaque épreuve
-- [ ] Faire en sorte que les sections ne tombent pas contre elles-mêmes (sinon ça fait tjrs une défaite et une victoire dans la même section)
-- [ ] Imprimer les classements
-- [ ] Système pour vérifier si les animateurs étaient présents ou non.
-- [ ] Bouton pour demander de l'aide
+### Conditions
 
-# Pages
-
-- [ ] Paramètres généraux de l'app
-
-  - [ ] set schedule
-- [ ] ignore_score
-
-  - [ ] réduire nbTeams de la section (pour le score)
-  - [ ] afficher l'équipe d'une certaine manière aux animateurs
-- [ ] Gestion équipes (voir app précédente)
-- [ ] Créer des utilisateurs
-- [ ] Créer de
-
-# Modification DB
-
-- [ ] 
+-  `MAX_PLAYERS_PER_TEAM` >= `MIN_PLAYERS_PER_TEAM`
 
 # Règles db
 
@@ -114,35 +89,7 @@ export const setEven = async (matchId: string) => {
 - [x] Retirer tous les console.debug
 - [x] Hardcode schedule
 
-# Nice to have
-
-- [ ] Description de jeu
-- [ ] séparation pour midi dans l'horaire
-- [ ] Système de recherche de joueur
-- [ ] Fix bug uncaught promise après déconnexion
-- [ ] OSS License
-- [ ] CI/CD pour check qu'un npm i fonctionne à travers le temps
-- [ ] Cloud functions qui aggregate le score moyen de chaque section
-- [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
-
-# Next release
-
-- Retirer matches des collection games & teams (utiliser des queries à la place). Vérifier tout de même si ce n'est pas utile pour la validation de la db à la fin de l'initialisation.
-- QR codes
-- Create DB from web app
-- Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
-- Get rid of snake case in the DB
-- Keep match times starting at 1 instead of 0 (even though [it might sound retarded](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2)). That's useful in some checks like in the `MatchesPage`. Same same for game numbers
-- Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore). Je verrais mieux ça au niveau des Pages, vu que ça touche à plusieurs services.
-- Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
-- La catégorie `Animateurs` n'est actuellement pas créée dans settings/app/categories par le script d'init DB 
-- Modifier détails section depuis SectionsPage
-- remove weights
-- Push notification (par ex pour rappeler d'enregistrer un score manquant)
-- Optimize index (game_id>time and time>game_id)
-- Intégrer la couleur d'équipe dans l'app et la DB
-- Improve initialization script in order not to play against its own section or againt another section too many times (cf. validation script)
-
 # Désistement
 
 - Si bcp de désistements, activer l'argument "ignore_score" des équipes manquantes. Les équipes qui se retrouvent seules à un jeu joue contre elle même et sont directement marquées comme gagnantes
+
