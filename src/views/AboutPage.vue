@@ -4,10 +4,6 @@
     <ion-content :fullscreen="true" class="ion-padding background-image">
       <div class="about-info">
         <ion-list lines="none" class="ion-padding-vertical" style="border-radius: 5px">
-          <ion-item>
-            <ion-icon :icon="calendar" slot="start"></ion-icon>
-            <ion-label>23 Avril 2022</ion-label>
-          </ion-item>
 
           <ion-item>
             <ion-icon :icon="pin" slot="start"></ion-icon>
