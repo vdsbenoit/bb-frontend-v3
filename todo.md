@@ -6,9 +6,9 @@
 - [x] fix infinite spinner on empty ranking page
 - [ ] Inscription aux épreuves
 - [x] Refactor `categories` into  `sectionType`
-- [ ] Ne plus afficher les animateurs dans les sections
+- [x] Split SectionsPage in two -> LeadersPage
 - [x] Fix SectionsPage
-- [ ] Ajouter fields membres & chefs dans LeaderSection 
+- [x] Ajouter fields membres & chefs dans LeaderSection -> non, le faire via une query
 
 ## User feedback
 

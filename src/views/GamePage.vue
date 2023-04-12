@@ -216,7 +216,7 @@ const leaderSections = computed(() => {
   return editMode.value ? getLeaderSections() : new Map();
 });
 const sectionLeaders = computed(() => {
-  return selectedLeaderSection.value ? user.getSectionUsers(selectedLeaderSection.value) : undefined;
+  return selectedLeaderSection.value ? user.getSectionMembers(selectedLeaderSection.value) : undefined;
 });
 const isLoadingLeaders = computed(() => {
   if (selectedLeaderSection.value && !sectionLeaders.value) return true;

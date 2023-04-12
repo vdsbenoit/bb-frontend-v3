@@ -47,6 +47,7 @@ podiumOutline, podiumSharp, albumsOutline, albumsSharp, documentOutline, documen
 import { computed, onMounted, ref, watch } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
+import { isShowRankingToAll } from "./services/settings";
 
 const router = useRouter();
 const route = useRoute();
@@ -76,30 +77,18 @@ const name = computed(() => {
 const appPages = computed(() => {
   if (!user.isLoggedIn) return [homePage, loginPage, aboutPage];
   let pages = [homePage];
-  if (user.profile.team) pages = [...pages,  {
-    title: "Mon Equipe",
-    url: `/team/${user.profile.team}`,
-    iosIcon: peopleCircleOutline,
-    mdIcon: peopleCircleSharp,
-  }]
+  if (user.profile.team) pages = [...pages,  teamPage]
   if (user.profile.role >= ROLES.Animateur) {
-    if (user.profile.morningGame) pages = [...pages, {
-      title: "Mon épreuve du matin",
-      url: `/game/${user.profile.morningGame}`,
-      iosIcon: footballOutline,
-      mdIcon: footballSharp,
-    }]
-    if (user.profile.afternoonGame) pages = [...pages, {
-      title: "Mon épreuve de l'aprèm",
-      url: `/game/${user.profile.afternoonGame}`,
-      iosIcon: footballOutline,
-      mdIcon: footballSharp,
-    }]
+    if (user.profile.morningGame) pages = [...pages, morningGamePage]
+    if (user.profile.afternoonGame) pages = [...pages, afternoonGamePage]
+    pages = [...pages, leadersPage]
   }
-  pages = [...pages, gamesPage, sectionsPage];
-  if (user.profile.role >= ROLES.Modérateur) pages = [...pages, ...modPages];
-  if (user.profile.role >= ROLES.Administrateur) pages = [...pages, ...adminPages];
-  pages = [...pages, ...bottomPages];
+  pages = [...pages, sectionsPage, gamesPage];
+  if (user.profile.role >= ROLES.Modérateur) pages = [...pages, matchesPage];
+  if (user.profile.role >= ROLES.Administrateur) pages = [...pages, rankingPage, settingsPage];
+  if (isShowRankingToAll() && user.profile.role < ROLES.Administrateur) pages = [...pages, rankingPage];
+  // bottom pages
+  pages = [...pages, profilePage,  aboutPage];
   return pages;
 });
 
@@ -114,28 +103,24 @@ const toggleDarkMode = (value: any) => {
 
 // Data
 
-const modPages = [
-  {
-    title: "Duels",
-    url: "/matches",
-    iosIcon: documentOutline,
-    mdIcon: documentSharp,
-  }
-]
-const adminPages = [
-  {
-    title: "Classement",
-    url: "/ranking",
-    iosIcon: podiumOutline,
-    mdIcon: podiumSharp,
-  },
-  {
-    title: "Paramètres",
-    url: "/settings",
-    iosIcon: optionsOutline,
-    mdIcon: optionsSharp,
-  },
-]
+const matchesPage = {
+  title: "Duels",
+  url: "/matches",
+  iosIcon: documentOutline,
+  mdIcon: documentSharp,
+}
+const rankingPage = {
+  title: "Classement",
+  url: "/ranking",
+  iosIcon: podiumOutline,
+  mdIcon: podiumSharp,
+}
+const settingsPage = {
+  title: "Paramètres",
+  url: "/settings",
+  iosIcon: optionsOutline,
+  mdIcon: optionsSharp,
+}
 const homePage =   {
   title: "Accueil",
   url: "/home",
@@ -154,12 +139,35 @@ const profilePage = {
   iosIcon: personCircleOutline,
   mdIcon: personCircleSharp,
 }
-const aboutPage = 
-{
+const aboutPage = {
   title: "A propos",
   url: "/about",
   iosIcon: informationCircleOutline,
   mdIcon: informationCircleSharp,
+}
+const teamPage = {
+    title: "Mon Equipe",
+    url: `/team/${user.profile.team}`,
+    iosIcon: peopleCircleOutline,
+    mdIcon: peopleCircleSharp,
+}
+const morningGamePage = {
+  title: "Mon épreuve du matin",
+  url: `/game/${user.profile.morningGame}`,
+  iosIcon: footballOutline,
+  mdIcon: footballSharp,
+}
+const afternoonGamePage = {
+  title: "Mon épreuve de l'aprèm",
+  url: `/game/${user.profile.afternoonGame}`,
+  iosIcon: footballOutline,
+  mdIcon: footballSharp,
+}
+const leadersPage = {
+  title: "Animateurs",
+  url: "/leaders",
+  iosIcon: peopleOutline,
+  mdIcon: peopleSharp,
 }
 const gamesPage = {
   title: "Épreuves",
@@ -173,10 +181,6 @@ const sectionsPage = {
   iosIcon: peopleOutline,
   mdIcon: peopleSharp,
 }
-const bottomPages = [
-  profilePage,
-  aboutPage
-]
 
 </script>
 

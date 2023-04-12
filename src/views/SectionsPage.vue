@@ -7,15 +7,17 @@
           <ion-grid class="">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ion-select v-model="selectedSectionType" interface="popover" placeholder="Type de section">
+                <ion-select v-if="sectionTypes && sectionTypes.size > 0" v-model="selectedSectionType" interface="popover" placeholder="Type de section">
                   <ion-select-option v-for="(sectionType, index) in sectionTypes" :value="sectionType" :key="index">{{ sectionType }}</ion-select-option>
                 </ion-select>
+                <div v-else>Pas de type de section configuré</div>
               </ion-col>
               <ion-col size="12" size-sm="6" v-if="selectedSectionType">
-                  <ion-spinner v-if="isLoadingSections"></ion-spinner>
-                  <ion-select v-else v-model="selectedSectionId" placeholder="Choisir une section" interface="popover">
-                    <ion-select-option color="dark" v-for="section in sections.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
-                  </ion-select>
+                <ion-select v-if="sections && sections.size > 0" v-model="selectedSectionId" placeholder="Section" interface="popover">
+                  <ion-select-option color="dark" v-for="section in sections.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
+                </ion-select>
+                <ion-spinner v-else-if="isLoadingSections"></ion-spinner>
+                <div v-else>Pas de section configurée</div>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -24,95 +26,103 @@
       <ion-grid class="ion-no-padding" v-if="selectedSectionId">
         <ion-row>
           <ion-col size="12" size-sm="6">
-            <ion-card v-if="selectedSectionId">
+            <ion-card>
               <ion-card-header>
                 <ion-card-title>Détails</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                <ion-list v-if="selectedSection">
+                  <ion-item> <ion-label>Nom</ion-label>{{ selectedSection.name }} </ion-item>
+                  <ion-item> <ion-label>Ville</ion-label>{{ selectedSection.city }} </ion-item>
+                  <ion-item> <ion-label>Unité</ion-label>{{ selectedSection.unit }} </ion-item>
+                  <ion-item> <ion-label>Nombre d'animés inscrits</ion-label>{{ selectedSection.nbPlayers }} </ion-item>
+                  <ion-item> <ion-label>Nombre d'animateurs inscrits</ion-label>{{ selectedSection.nbLeaders }} </ion-item>
+                  <ion-item> <ion-label>Nombre d'équipes</ion-label>{{ selectedSection.nbTeams }} </ion-item>
+                </ion-list>
+                <div v-else-if="isLoadingSection" class="ion-text-center ion-align-items-center">
                   <ion-spinner></ion-spinner>
                 </div>
-                <ion-list v-else>
-                  <ion-item> <ion-label>Nom</ion-label>{{ selectedSection?.name }} </ion-item>
-                  <ion-item> <ion-label>Ville</ion-label>{{ selectedSection?.city }} </ion-item>
-                  <ion-item> <ion-label>Unité</ion-label>{{ selectedSection?.unit }} </ion-item>
-                  <ion-item> <ion-label>Nombre d'équipes</ion-label>{{ selectedSection?.nbTeams }} </ion-item>
-                </ion-list>
+                <ion-list-header v-else>
+                  <h2>Nous n'avons pas trouvé cette section</h2>
+                </ion-list-header>
               </ion-card-content>
             </ion-card>
-            <ion-card v-if="showRanking && selectedSectionId && isPlayer">
+            <ion-card v-if="showRanking">
               <ion-card-header>
                 <ion-card-title> Classement </ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
-                  <ion-spinner></ion-spinner>
-                </div>
-                <ion-list v-else class="no-pointer">
+                <ion-list v-if="selectedSection" class="no-pointer">
                   <ion-item>
-                    <ion-label>Score accumulé</ion-label><ion-note slot="end">{{ selectedSection?.score }}</ion-note></ion-item
-                  >
+                    <ion-label>Score accumulé</ion-label><ion-note slot="end">{{ selectedSection.score }}</ion-note></ion-item>
                   <ion-item>
-                    <ion-label>Score moyen</ion-label><ion-note slot="end">{{ selectedSection?.meanScore }}</ion-note>
+                    <ion-label>Score moyen</ion-label><ion-note slot="end">{{ selectedSection.meanScore }}</ion-note>
                   </ion-item>
                 </ion-list>
+                <div v-else-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                  <ion-spinner></ion-spinner>
+                </div>
+                <ion-list-header v-else>
+                  <h2>Nous n'avons pas trouvé cette section</h2>
+                </ion-list-header>
               </ion-card-content>
             </ion-card>
           </ion-col>
-          <ion-col size="12" size-sm="6" v-if="selectedSectionId && isPlayer">
+          <ion-col size="12" size-sm="6">
             <ion-card>
               <ion-card-header>
                 <ion-card-title>Équipes</ion-card-title>
               </ion-card-header>
-                <info-card-component v-if="selectedSectionId && isPlayer && !user.profile.team">
+                <info-card-component v-if="selectedSectionId && !user.profile.team">
                   Tu peux sélectionner une équipe ci-dessous et la marquer comme ton équipe
                 </info-card-component>
               <ion-card-content>
-                <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
-                  <ion-spinner></ion-spinner>
-                </div>
-                <div v-else>
-                  <ion-list v-if="selectedSection && selectedSection.teams.length > 0">
-                    <ion-item v-for="teamId in selectedSection!.teams" :key="teamId" :routerLink="`/team/${teamId}`">
+                <div v-if="selectedSection">
+                  <ion-list v-if="selectedSection.teams.length > 0">
+                    <ion-item v-for="teamId in selectedSection.teams" :key="teamId" :routerLink="`/team/${teamId}`">
                       <ion-label>{{ teamId }}</ion-label>
                       <ion-badge v-if="teamId === user.profile.team" slot="end" color="primary" class="ion-padding-horizontal">Ton équipe</ion-badge>
                     </ion-item>
                   </ion-list>
                   <ion-list-header v-else> Aucune équipe trouvée </ion-list-header>
                 </div>
+                <div v-else-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                  <ion-spinner></ion-spinner>
+                </div>
+                <ion-list-header v-else>
+                  <h2>Nous n'avons pas trouvé cette section</h2>
+                </ion-list-header>
               </ion-card-content>
             </ion-card>
           </ion-col>
-          <ion-col  size="12" size-sm="6">
-             <ion-button v-if="!shouldLoadUsers && selectedSectionId && showUsers" expand="block" color="primary" @click="loadUsers" class="ion-margin-horizontal">
-              Charger les utilisateurs
+          <ion-col  size="12" size-sm="6" v-if="canSeeMembers">
+             <ion-button v-if="!shouldLoadMembers && selectedSectionId" expand="block" color="primary" @click="loadUsers" class="ion-margin-horizontal">
+              Charger les membres
             </ion-button>
-            <ion-card v-if="shouldLoadUsers && showUsers">
+            <ion-card v-if="shouldLoadMembers">
               <ion-card-header>
-                <ion-card-title>Utilisateurs</ion-card-title>
+                <ion-card-title>Membres</ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <div v-if="isLoadingSection" class="ion-text-center ion-align-items-center">
+                <ion-list v-if="sectionMembers && sectionMembers.size > 0">
+                  <ion-item v-for="member in sectionMembers.values()" :key="member.uid" :routerLink="`/profile/${member.uid}`">
+                    <ion-label>{{ user.getName(member.uid) }}</ion-label>
+                  </ion-item>
+                </ion-list>
+                <div v-else-if="isLoadingMembers" class="ion-text-center ion-align-items-center">
                   <ion-spinner></ion-spinner>
                 </div>
-                <div v-else>
-                  <ion-list-header v-if="sectionUsers.size < 1"><h2>Aucun utilisateur trouvé</h2></ion-list-header>
-                  <ion-list v-else>
-                    <ion-item v-for="sectionUser in sectionUsers.values()" :key="sectionUser.uid" :routerLink="`/profile/${sectionUser.uid}`">
-                      <ion-label>{{ user.getName(sectionUser.uid) }}</ion-label>
-                      <ion-badge v-if="showLeaderRegistration" slot="end" :color="registrationStatus(sectionUser).color">{{ registrationStatus(sectionUser).text }}</ion-badge>
-                    </ion-item>
-                  </ion-list>
-                </div>
+                <ion-list-header v-else>
+                  <h2>Aucun membre trouvé</h2>
+                </ion-list-header>
               </ion-card-content>
             </ion-card>
           </ion-col>
         </ion-row>
       </ion-grid>
       <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center" >Sélectionne une catégorie et une section <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+        <h2 class="ion-text-center ion-align-items-center" >Sélectionne un type de section et une section <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
-     
     </ion-content>
   </ion-page>
 </template>
@@ -139,17 +149,49 @@ const route = useRoute();
 const selectedSectionType = ref("");
 const selectedSectionId = ref("");
 const sectionTypes = ref();
-const shouldLoadUsers = ref(false); // true after clicking on the show button
+const shouldLoadMembers = ref(false); // true after clicking on the show button
+const isLoadingSections = ref(true);
+const isLoadingSection = ref(false);
+const isLoadingMembers = ref(false);
 
 // lifecycle hooks
 
 onBeforeMount(async () => {
-  // We take this approach to ensure categories is not stuck to undefined
+  // We take this approach to ensure sectionTypes is not stuck to undefined
   sectionTypes.value = await getSectionTypes();
 });
 onMounted(() => {
+  setTimeout(() => {
+    isLoadingSections.value = false;
+  }, 5000);
   if (route.params.sectionId) {
     selectedSectionId.value = route.params.sectionId as string;
+  }
+});
+
+// Watchers
+
+// The following watchEffect watcher complements the above onMounted definition
+watchEffect(() => {
+    if(selectedSectionId.value && selectedSection.value?.sectionType && !selectedSectionType.value){
+      selectedSectionType.value = selectedSection.value.sectionType;
+    }
+  }
+);
+watch(selectedSectionId, (newVal) => {
+  if (newVal) {
+    isLoadingSection.value = true;
+    setTimeout(() => {
+      isLoadingSection.value = false;
+    }, 5000);
+  }
+});
+watch(shouldLoadMembers, (newVal) => {
+  if (newVal) {
+    isLoadingMembers.value = true;
+    setTimeout(() => {
+      isLoadingMembers.value = false;
+    }, 5000);
   }
 });
 
@@ -159,53 +201,24 @@ const showRanking = computed(() => {
   if(isShowRankingToAll()) return true;
   return user.profile.role >= ROLES.Administrateur;
 });
-const showUsers = computed(() => {
+const canSeeMembers = computed(() => {
   return user.profile.role >= ROLES.Modérateur;
 });
 const sections = computed((): Map<string, Section> => {
-  return getSectionsBySectionType(selectedSectionType.value);
+  return getSectionsBySectionType(selectedSectionType.value); 
 });
 const selectedSection = computed((): Section | undefined => {
   return selectedSectionId.value ? getSection(selectedSectionId.value) : undefined;
 });
-const isLoadingSections = computed(() => {
-  if (selectedSectionType.value && !sections.value) return true;
-  return false;
-});
-const isLoadingSection = computed(() => {
-  if (selectedSectionId.value && !selectedSection.value) return true;
-  return false;
-});
-const sectionUsers = computed(() => {
-  return shouldLoadUsers.value ? user.getSectionUsers(selectedSectionId.value) : new Map();
-});
-const showLeaderRegistration = computed(() => {
-  return false; //fixme
-});
-const isPlayer = computed(() => {
-  return true;
+const sectionMembers = computed(() => {
+  return shouldLoadMembers.value ? user.getSectionMembers(selectedSectionId.value) : new Map();
 });
 
-// Watchers
-
-watchEffect(() => {
-    if(selectedSection.value?.sectionType && !selectedSectionType.value){
-      selectedSectionType.value = selectedSection.value.sectionType;
-    }
-  }
-);
 
 // Methods
 
 const loadUsers = () => {
-  shouldLoadUsers.value = true;
-};
-const registrationStatus = (user: any) => {
-  if (!user.morningGame && !user.afternoonGame) return { text: "Pas inscrit", color: "danger" };
-  if (user.morningGame && !user.afternoonGame) return { text: "Matin", color: "warning" };
-  if (!user.morningGame && user.afternoonGame) return { text: "Arpèm", color: "warning" };
-  if (user.morningGame && user.afternoonGame) return { text: "Matin & aprèm", color: "success" };
-  return { text: "inconnu", color: "medium" };
+  shouldLoadMembers.value = true;
 };
 </script>
 <style scoped>

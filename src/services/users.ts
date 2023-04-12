@@ -67,7 +67,7 @@ export const profileDefaults: Profile = {
   email: "",
   totem: "",
   name: "",
-  role: 0,
+  role: -1,
   settings: {},
   team: "",
   morningGame: 0,
@@ -76,7 +76,7 @@ export const profileDefaults: Profile = {
   sectionName: "",
   sectionId: "",
   leaderSectionId: "",
-  requestedRole: 0,
+  requestedRole: -1,
   requestedSection: "",
   rejectionReason : ""
 }
@@ -244,7 +244,7 @@ export const useAuthStore = defineStore("authStore", {
      * Never use it in a computed property, it would lead to infinite db calls.
      */
     async forceFetchCurrentUserProfile(){
-      usersModule.doc(this.uid).fetch({ force: true }).catch(error => {
+      return usersModule.doc(this.uid).fetch({ force: true }).catch(error => {
         console.error(`Error occurred while fetching the current user profile: ${error.message}`);
       });
     },
@@ -295,9 +295,15 @@ export const useAuthStore = defineStore("authStore", {
     canRegister(){
       return this.profile.role >= ROLES.Animateur;
     },
-    getSectionUsers(sectionId: string){
+    getSectionMembers(sectionId: string){
       console.log(`Fetching users from section '${sectionId}'`);
       const filteredUsersModule = usersModule.where("sectionId", "==", sectionId);
+      filteredUsersModule.stream(); // using stream because fetch is buggy
+      return filteredUsersModule.data;
+    },
+    getLeaderSectionMembers(sectionId: string){
+      console.log(`Fetching users from leader section '${sectionId}'`);
+      const filteredUsersModule = usersModule.where("leaderSectionId", "==", sectionId);
       filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data;
     },

@@ -31,6 +31,7 @@ Les participants peuvent:
 
 - Modifier leur profil, sauf le rôle
 - Voir la liste des sections
+- Voir la liste des épreuves
 - S'assigner une équipe
 
 La page d'accueil des participants est soit :
