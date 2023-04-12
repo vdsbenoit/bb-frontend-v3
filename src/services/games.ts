@@ -98,6 +98,7 @@ export const canSetGameScore = async (gameId: number) => {
   if (user.profile.role >= ROLES.Modérateur) return true;
   // Check if global setting allow leaders to set any scores
   if (canSetScoreAnywhere()) return true;
+  // Check if leader assinged to the game
   const gameModule = gamesModule.doc(gameId.toString());
   await gameModule.fetch();
   if (gameModule.data?.morningLeaders.includes(user.uid) || gameModule.data?.afternoonLeaders.includes(user.uid)){

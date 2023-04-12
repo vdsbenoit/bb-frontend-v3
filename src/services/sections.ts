@@ -83,30 +83,30 @@ export const getTopSections = (sectionType: string, limit: number) => {
 /// Setters //
 /////////////
 
-const updateSectionMeanScore =async (sectionId: string) => {
-  const section = await forceFetchSection(sectionId);
+const updateSectionMeanScore =async (sectionId: number) => {
+  const section = await forceFetchSection(sectionId.toString());
   if (!section) throw new Error("Impossible de mettre à jour la moyenne de la section")
   const meanScore = + (section.score / section.nbTeams || 0).toFixed(2)
-  return sectionsModule.doc(sectionId).merge({meanScore})
+  return sectionsModule.doc(sectionId.toString()).merge({meanScore})
 }
 
-export const addSectionWin = async (sectionId: string) => {
+export const addSectionWin = async (sectionId: number) => {
   console.log(`Adding 2 points to section ${sectionId}`);
-  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId, "score", 2);
+  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId.toString(), "score", 2);
   await updateSectionMeanScore(sectionId);
 }
-export const removeSectionWin = async (sectionId: string) => {
+export const removeSectionWin = async (sectionId: number) => {
   console.log(`Removing 2 points to section ${sectionId}`);
-  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId, "score", -2);
+  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId.toString(), "score", -2);
   await updateSectionMeanScore(sectionId);
 }
-export const addSectionDraw = async (sectionId: string) => {
+export const addSectionDraw = async (sectionId: number) => {
   console.log(`Adding 1 points to section ${sectionId}`);
-  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId, "score", 1);
+  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId.toString(), "score", 1);
   await updateSectionMeanScore(sectionId);
 }
-export const removeSectionDraw = async (sectionId: string) => {
+export const removeSectionDraw = async (sectionId: number) => {
   console.log(`Removing 1 points to section ${sectionId}`);
-  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId, "score", -1);
+  await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId.toString(), "score", -1);
   await updateSectionMeanScore(sectionId);
 }

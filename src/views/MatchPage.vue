@@ -210,28 +210,37 @@ const winHandler = async (winner: string) => {
     isSettingScore.value = false;
     return errorPopup(`L'équipe ${winner} est déjà enregistrée comme gagnante`);
   }
-  let winningSection: string;
-  let losingSection: string;
+  let winningSection: number;
+  let losingSection: number;
   const promises = [];
   const loser = match.value.player_ids[0] === winner ? match.value.player_ids[1] : match.value.player_ids[0];
-  if (firstPlayer.value?.id == winner) {
-    winningSection = firstPlayer.value?.sectionId as string;
-    losingSection = secondPlayer.value?.sectionId as string;
+  if (firstPlayer.value && secondPlayer.value) {
+    if(firstPlayer.value.id == winner){
+      winningSection = firstPlayer.value.sectionId;
+      losingSection = secondPlayer.value.sectionId;
+    } else {
+      winningSection = secondPlayer.value.sectionId;
+      losingSection = firstPlayer.value.sectionId;
+    }
   } else {
-    winningSection = secondPlayer.value?.sectionId as string;
-    losingSection = firstPlayer.value?.sectionId as string;
+    isSettingScore.value = false;
+    console.error(`firstPlayer or secondPlayer is undefined`, firstPlayer.value, secondPlayer.value);
+    return errorPopup(`Le match n'a pas encore été chargé`);
   }
   try {
+    // if a scores was already set, remove it
     if(match.value.winner) {
       promises.push(removeTeamWin(loser));
       promises.push(removeSectionWin(losingSection));
     }
+    // if a scores was already set, remove it
     if(match.value.draw) {
       promises.push(removeTeamDraw(winner));
       promises.push(removeTeamDraw(loser));
       promises.push(removeSectionDraw(winningSection));
       promises.push(removeSectionDraw(losingSection));
     }
+    // set the new score
     promises.push(addTeamWin(winner));
     promises.push(addSectionWin(winningSection));
     promises.push(setMatchScore(matchId.value, winner, loser));
@@ -240,6 +249,7 @@ const winHandler = async (winner: string) => {
     toastPopup("Le score a été enregistré");
   } catch(error: any) {
     errorPopup(`L'enregistrement du score a échoué : ${error.message}`);
+    console.log(error);
   }
   isSettingScore.value = false;
 }
@@ -249,22 +259,28 @@ const drawHandler = async () => {
     return errorPopup("Ce duel est déjà enregistré comme égalité");
   }
   const promises = [];
+  if (!firstPlayer.value || !secondPlayer.value) {
+      isSettingScore.value = false;
+      console.error(`firstPlayer or secondPlayer is undefined`, firstPlayer.value, secondPlayer.value);
+      return errorPopup(`Le match n'a pas encore été chargé`);
+  }
   try{
     if(match.value.winner) {
-      const previousWinner = firstPlayer.value?.id == match.value.winner ? firstPlayer.value?.sectionId : secondPlayer.value?.sectionId;
+      const previousWinningSection = firstPlayer.value.id == match.value.winner ? firstPlayer.value.sectionId : secondPlayer.value.sectionId;
       promises.push(removeTeamWin(match.value.winner));
-      promises.push(removeSectionWin(previousWinner as string));
+      promises.push(removeSectionWin(previousWinningSection));
     }
-    promises.push(addTeamDraw(firstPlayer.value?.id as string));
-    promises.push(addTeamDraw(secondPlayer.value?.id as string));
-    promises.push(addSectionDraw(firstPlayer.value?.sectionId as string));
-    promises.push(addSectionDraw(secondPlayer.value?.sectionId as string));
+    promises.push(addTeamDraw(firstPlayer.value.id as string));
+    promises.push(addTeamDraw(secondPlayer.value.id as string));
+    promises.push(addSectionDraw(firstPlayer.value.sectionId));
+    promises.push(addSectionDraw(secondPlayer.value.sectionId));
     promises.push(setMatchDraw(matchId.value));
 
     await Promise.all(promises);
     toastPopup("Le score a été enregistré");
   } catch(error: any) {
     errorPopup(`L'enregistrement du score a échoué : ${error.message}`);
+    console.log(error);
   }
   isSettingScore.value = false;
 }

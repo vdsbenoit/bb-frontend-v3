@@ -11,7 +11,7 @@ export type Team = {
   hash: string;
   number: number;
   sectionType: string;
-  sectionId: string;
+  sectionId: number;
   sectionName: string;
   city: string;
   scores: number[];
@@ -27,7 +27,7 @@ function teamsDefaults(payload: Partial<Team>): Team {
     hash: "",
     number: -1,
     sectionType: "",
-    sectionId: "",
+    sectionId: -1,
     sectionName: "",
     city: "",
     scores: [],
