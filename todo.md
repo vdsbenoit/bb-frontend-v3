@@ -5,9 +5,10 @@
 - [x] Backup DB 2022
 - [x] fix infinite spinner on empty ranking page
 - [ ] Inscription aux épreuves
-- [ ] Refactor `categories` into  `sectionType`
+- [x] Refactor `categories` into  `sectionType`
 - [ ] Ne plus afficher les animateurs dans les sections
-- [ ] Fix SectionsPage
+- [x] Fix SectionsPage
+- [ ] Ajouter fields membres & chefs dans LeaderSection 
 
 ## User feedback
 
@@ -19,9 +20,8 @@
 - [x] ne pas mettre libre sur les épreuves où il y a déjà 1 personne. Avoir un 3e state
 - [ ] Mettre le plan en dessous de chaque épreuve
 - [x] Faire en sorte que les sections ne tombent pas contre elles-mêmes (sinon ça fait tjrs une défaite et une victoire dans la même section)
-- [ ] Imprimer les classements
-- [ ] Système pour vérifier si les animateurs étaient présents ou non.
-- [ ] Bouton pour demander de l'aide
+- [ ] Système pour générer un version imprimable des classements
+- [ ] Bouton pour demander de l'aide -> notif aux modérateurs
 
 ## Pages
 
@@ -77,4 +77,7 @@
 - [ ] Regular CI/CD pour check qu'un npm i fonctionne à travers le temps
 - [ ] Avoid undefined values. 
   For instance, set default game (e.g. afternoonGame) value to 0. Where 0 means no game is set yet.
-- [ ] QR codes
+- [ ] QR codes pour vérifier la présence des animateurs
+  - [ ] Les modérateurs scan le QR code des animateurs
+  - [ ] Le QR code contient l'ID de l'animateur + un timestamp pour éviter les screenshots
+- [ ] Get rid of `?` and handle undefined data.

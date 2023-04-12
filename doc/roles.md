@@ -18,8 +18,9 @@ Les newbies peuvent:
 
 La page d'accueil des newbies est soit :
 
-- Une invitation à choisir leur rôle
-  - Une invitation à choisir leur section (si animateur ou chef)
+- Une invitation à compléter le profile
+  - Choisir son rôle
+  - Choisir sa section (si animateur ou chef)
 - Un notification comme quoi leur rôle est en cours de validation 
   - Préciser qui est la personne qui doit valider leur rôle (chef, modérateur ou admin)
 - Une notif comme quoi leur demande a été refusée

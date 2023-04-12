@@ -39,8 +39,8 @@ function matchesDefaults(payload: Partial<Match>): Match {
   return { ...defaults, ...payload }
 }
 const matchesModule = magnetar.collection<Match>(MATCHES_COLLECTION_NAME, {
-  modifyPayloadOn: { insert: matchesDefaults },
-  modifyReadResponseOn: { added: matchesDefaults },
+  modifyPayloadOn: { insert: (payload) => matchesDefaults(payload) },
+  modifyReadResponseOn: { added: (payload) => matchesDefaults(payload) },
 });
 
 ///////////////

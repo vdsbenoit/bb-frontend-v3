@@ -174,7 +174,7 @@ const registerPlayer = () => {
       team: team.value.id,
       sectionId: team.value?.sectionId,
       sectionName: team.value?.sectionName,
-      category: team.value?.category
+      sectionType: team.value?.sectionType,
       }
     ).then(() => {
     toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`);

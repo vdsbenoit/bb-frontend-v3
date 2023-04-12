@@ -20,8 +20,10 @@ const USER_PROFILES_COLLECTION_NAME = "users";
 
 export const ROLES = {
   Anonyme:        0,
+  Newbie:         1,
   Participant:    2,
   Animateur:      4,
+  Chef:           5,
   Modérateur:     6,
   Administrateur: 8,
 }
@@ -38,17 +40,20 @@ export type Profile = {
   uid: string;
   creationDate: Timestamp;
   email: string;
-  totem?: string;
-  name?: string;
+  totem: string;
+  name: string;
   role: number;
-  settings?: any;
-  team?: string;
-  morningGame?: number;
-  afternoonGame?: number;
-  sectionName?: string;
-  sectionId?: string;
-  category?: string;
-  promotionRequested?: boolean;
+  settings: any;
+  team: string;
+  morningGame: number;
+  afternoonGame: number;
+  sectionType: string;
+  sectionName: string;
+  sectionId: string;
+  leaderSectionId: string;
+  requestedRole: number;
+  requestedSection: string;
+  rejectionReason: string;
 }
 
 // Generate a timestamp in the Firestore format
@@ -56,7 +61,7 @@ const fireStoreNow = (): Timestamp => {
   return new Timestamp(Math.floor(Date.now() / 1000), 0)
 }
 
-export const ProfileDefaults: Profile = { 
+export const profileDefaults: Profile = { 
   uid: "",
   creationDate: fireStoreNow(),
   email: "",
@@ -67,10 +72,13 @@ export const ProfileDefaults: Profile = {
   team: "",
   morningGame: 0,
   afternoonGame: 0,
+  sectionType: "",
   sectionName: "",
   sectionId: "",
-  category: "",
-  promotionRequested: false,
+  leaderSectionId: "",
+  requestedRole: 0,
+  requestedSection: "",
+  rejectionReason : ""
 }
 
 ///////////////////////
@@ -78,12 +86,12 @@ export const ProfileDefaults: Profile = {
 /////////////////////
 
 function usersDefaults(payload: Partial<Profile>): Profile {
-  return { ...ProfileDefaults, ...payload }
+  return { ...profileDefaults, ...payload }
 }
 
 const usersModule = magnetar.collection(USER_PROFILES_COLLECTION_NAME, {
-  modifyPayloadOn: { insert: usersDefaults },
-  modifyReadResponseOn: { added: usersDefaults },
+  modifyPayloadOn: { insert: (payload) => usersDefaults(payload) },
+  modifyReadResponseOn: { added: (payload) => usersDefaults(payload) },
 });
 
 //////////////////
@@ -102,7 +110,7 @@ export const useAuthStore = defineStore("authStore", {
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null,
-    profile: (state): Profile => state.profileObject?.data ? state.profileObject.data : ProfileDefaults,
+    profile: (state): Profile => state.profileObject?.data ? state.profileObject.data : profileDefaults,
     uid: (state): string => state.user ? state.user.uid : "undefined",
   },
   actions: {

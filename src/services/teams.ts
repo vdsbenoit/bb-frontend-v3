@@ -10,10 +10,10 @@ export type Team = {
   id: string;
   hash: string;
   number: number;
+  sectionType: string;
   sectionId: string;
   sectionName: string;
   city: string;
-  category: string;
   scores: number[];
   score: number;
   matches: string[];
@@ -26,10 +26,10 @@ function teamsDefaults(payload: Partial<Team>): Team {
     id: "",
     hash: "",
     number: -1,
+    sectionType: "",
     sectionId: "",
     sectionName: "",
     city: "",
-    category: "",
     scores: [],
     score: 0,
     matches: [],
@@ -39,8 +39,8 @@ function teamsDefaults(payload: Partial<Team>): Team {
   return { ...defaults, ...payload }
 }
 const teamsModule = magnetar.collection<Team>(TEAMS_COLLECTION_NAME, {
-  modifyPayloadOn: { insert: teamsDefaults },
-  modifyReadResponseOn: { added: teamsDefaults },
+  modifyPayloadOn: { insert: (payload) => teamsDefaults(payload) },
+  modifyReadResponseOn: { added: (payload) => teamsDefaults(payload) },
 });
 
 ///////////////
@@ -62,10 +62,10 @@ export const forceFetchTeam = async (id: string) => {
   await team.fetch({force: true});
   return team.data;
 }
-export const getTopTeams = (category: string, limit: number) => {
-  console.log(`Fetching top teams from category '${category}'`);
-  if (!category) return undefined;
-  const filteredTeamsModule = teamsModule.where("category", "==", category).orderBy("score", "desc").limit(limit);
+export const getTopTeams = (sectionType: string, limit: number) => {
+  console.log(`Fetching top teams from sectionType '${sectionType}'`);
+  if (!sectionType) return undefined;
+  const filteredTeamsModule = teamsModule.where("sectionType", "==", sectionType).orderBy("score", "desc").limit(limit);
   filteredTeamsModule.stream();
   return filteredTeamsModule.data;
 }

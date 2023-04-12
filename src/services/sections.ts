@@ -11,7 +11,7 @@ export type Section = {
   name: string;
   city: string;
   unit: string;
-  category: string;
+  sectionType: string;
   scores: number[];
   score: number;
   teams: string[];
@@ -27,7 +27,7 @@ function sectionsDefaults(payload: Partial<Section>): Section {
     name: "",
     city: "",
     unit: "",
-    category: "",
+    sectionType: "",
     scores: [],
     score: 0,
     teams: [],
@@ -39,18 +39,18 @@ function sectionsDefaults(payload: Partial<Section>): Section {
   return { ...defaults, ...payload }
 }
 const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION_NAME, {
-  modifyPayloadOn: { insert: sectionsDefaults },
-  modifyReadResponseOn: { added: sectionsDefaults },
+  modifyPayloadOn: { insert: (payload) => sectionsDefaults(payload) },
+  modifyReadResponseOn: { added: (payload) => sectionsDefaults(payload) },
 });
 
 ///////////////
 /// Getters //
 /////////////
 
-export const getCategorySections = (category: string) => {
-  console.log(`Fetching sections from category '${category}'`);
-  if (!category) return undefined;
-  const filteredSectionsModule = sectionsModule.where("category", "==", category);
+export const getSectionsBySectionType = (sectionType: string): Map<string, Section> => {
+  console.log(`Fetching sections of type '${sectionType}'`);
+  if (!sectionType) return new Map();
+  const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType);
   filteredSectionsModule.stream(); // using stream because the fetch() method is bugged
   return filteredSectionsModule.data;
 }
@@ -69,10 +69,10 @@ export const forceFetchSection = async (id: string) => {
   await section.fetch({force: true});
   return section.data;
 }
-export const getTopSections = (category: string, limit: number) => {
-  console.log(`Fetching top sections from category '${category}'`);
-  if (!category) return undefined;
-  const filteredSectionsModule = sectionsModule.where("category", "==", category).orderBy("meanScore", "desc").limit(limit);
+export const getTopSections = (sectionType: string, limit: number) => {
+  console.log(`Fetching top sections of '${sectionType}'`);
+  if (!sectionType) return undefined;
+  const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType).orderBy("meanScore", "desc").limit(limit);
   filteredSectionsModule.stream();
   return filteredSectionsModule.data;
 }

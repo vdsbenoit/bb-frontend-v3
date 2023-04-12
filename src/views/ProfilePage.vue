@@ -24,18 +24,18 @@
               <ion-input v-else name="name" type="text" :readonly="true" inputmode="none">{{ userProfile.name }}</ion-input>
             </ion-item>
             <ion-item lines="full">
-              <ion-label position="stacked" color="primary">Catégorie</ion-label>
-              <ion-select v-if="editMode && (isPlayer || isAdmin)" v-model="modifiedProfile.category" cancel-text="Annuler">
-                <ion-select-option v-for="(category, index) in categories" :key="index" :value="category">{{ category }}</ion-select-option>
+              <ion-label position="stacked" color="primary">Type de section</ion-label>
+              <ion-select v-if="editMode && (isPlayer || isAdmin)" v-model="modifiedProfile.sectionType" cancel-text="Annuler">
+                <ion-select-option v-for="(sectionType, index) in sectionTypes" :key="index" :value="sectionType">{{ sectionType }}</ion-select-option>
               </ion-select>
-              <ion-input v-else name="category" type="text" :readonly="true" inputmode="none">{{ userProfile.category }}</ion-input>
+              <ion-input v-else name="sectionType" type="text" :readonly="true" inputmode="none">{{ userProfile.sectionType }}</ion-input>
             </ion-item>
             <ion-item lines="full">
               <ion-label position="stacked" color="primary">Section</ion-label>
-              <ion-select v-if="editMode && modifiedProfile.category && categorySections && categorySections.size > 0" v-model="modifiedProfile.sectionId" cancel-text="Annuler">
-                <ion-select-option v-for="section in categorySections.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
+              <ion-select v-if="editMode && modifiedProfile.sectionType && sectionsBySectionType && sectionsBySectionType.size > 0" v-model="modifiedProfile.sectionId" cancel-text="Annuler">
+                <ion-select-option v-for="section in sectionsBySectionType.values()" :key="section.id" :value="section.id">{{ section.name }}</ion-select-option>
               </ion-select>
-              <p v-if="editMode && !modifiedProfile.category" class="missing-field-alert">Selectionne d'abord une catégorie</p>
+              <p v-if="editMode && !modifiedProfile.sectionType" class="missing-field-alert">Selectionne d'abord une catégorie</p>
               <ion-input v-if="!editMode" name="section" type="text" :readonly="true" inputmode="none" @click="goToSectionPage(userProfile.sectionId)">{{ userProfile.sectionName }}</ion-input>
             </ion-item>
             <ion-item lines="full" v-if="isPlayer">
@@ -75,7 +75,7 @@
                 <ion-input v-else type="text" :readonly="true" inputmode="none">{{ getRoleByValue(userProfile.role) }}</ion-input>
               </ion-item>
               <ion-item lines="full" v-if="!canSetRole && isOwnProfile">
-                <ion-button v-if="userProfile.promotionRequested" expand="block" color="medium" :disabled="true">
+                <ion-button v-if="userProfile.requestedRole > 0" expand="block" color="medium" :disabled="true">
                   <ion-spinner v-if="isRequestingPromotion"></ion-spinner>
                   <span v-else>Promotion demandée</span>
                 </ion-button>
@@ -119,14 +119,14 @@
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonButton, IonSelect, IonSelectOption, IonCard, IonGrid, IonRow, IonCol, IonIcon, IonSpinner } from "@ionic/vue";
 import { pencilOutline, pencilSharp, closeOutline, closeSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES, getRoleByValue, Profile, ProfileDefaults } from "@/services/users";
+import { useAuthStore, ROLES, getRoleByValue, Profile, profileDefaults } from "@/services/users";
 import { useRoute, useRouter } from "vue-router";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { confirmPopup, errorPopup, infoPopup, loadingPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
-import { getAppSettings, getMaxGameLeaders } from "@/services/settings";
-import { getCategorySections, getSection } from "@/services/sections";
+import { getAppSettings, getMaxGameLeaders, getSectionTypes } from "@/services/settings";
+import { getSectionsBySectionType, getSection } from "@/services/sections";
 import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
 
 const userStore = useAuthStore();
@@ -135,7 +135,7 @@ const route = useRoute();
 
 // reactive data
 const userId = ref(userStore.uid);
-const modifiedProfile = ref(ProfileDefaults);
+const modifiedProfile = ref(profileDefaults);
 const editMode = ref(false);
 const editGames = ref(false);
 const games = ref();
@@ -208,11 +208,11 @@ const pageTitle = computed(() => {
 const editIcon = computed(() => {
   return editMode.value ? { ios: closeOutline, md: closeSharp } : { ios: pencilOutline, md: pencilSharp };
 });
-const categories = computed(() => {
-  return getAppSettings.value?.categories;
+const sectionTypes = computed(() => {
+  return getSectionTypes() ?? [];
 });
-const categorySections = computed(() => {
-  return modifiedProfile.value.category ? getCategorySections(modifiedProfile.value.category) : new Map();
+const sectionsBySectionType = computed(() => {
+  return modifiedProfile.value.sectionType ? getSectionsBySectionType(modifiedProfile.value.sectionType) : new Map();
 });
 const sectionTeams = computed((): string[] => {
   if(modifiedProfile.value.sectionId){
@@ -223,10 +223,11 @@ const sectionTeams = computed((): string[] => {
 
 // Watchers
 watch(
-  () => modifiedProfile.value.category,
-  (newCategory, oldCategory) => {
-    if(newCategory && oldCategory && newCategory != oldCategory) {
+  () => modifiedProfile.value.sectionType,
+  (newValue, oldValue) => {
+    if(newValue && oldValue && newValue != oldValue) {
       modifiedProfile.value.sectionId = "";
+      modifiedProfile.value.sectionName = "";
       modifiedProfile.value.team = "";
     }
   }
@@ -265,7 +266,7 @@ const filterObject = (obj: any, acceptedKeys: string[]) => {
 };
 const saveProfile = async () => {
   let newProfile: Partial<Profile> = { ...modifiedProfile.value }; // deep copy before transformation
-  const toUpdateKeys = ["totem", "name", "category", "role"];
+  const toUpdateKeys = ["totem", "name", "sectionType", "role"];
   isUpdating.value = true;
   let morningGamePromise = null;
   let afternoonGamePromise = null;
@@ -336,7 +337,7 @@ const deleteAccount = async () => {
   confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
 };
 const requestPromotion = () => {
-  if (userProfile.value.promotionRequested) return errorPopup("Tu as déjà demandé une promotion");
+  if (userProfile.value.requestedRole > 0) return errorPopup("Tu as déjà demandé une promotion");
   if (showFillingInfo.value || !userProfile.value?.sectionId) infoPopup("Complète ton profil (totem, section) pour aider les administrateurs à traiter ta demande");
   isRequestingPromotion.value = true;
   userStore

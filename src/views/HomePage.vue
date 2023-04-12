@@ -38,7 +38,6 @@ import { useRouter } from "vue-router";
 import { ROLES, useAuthStore } from "@/services/users";
 import TileCol from "@/components/TileCol.vue";
 import { computed } from "vue";
-import { getLeaderCategoryName } from "@/services/settings";
 
 const router = useRouter();
 const user = useAuthStore();
@@ -51,8 +50,7 @@ const showUpdateProfile = computed(() => {
 });
 const showSelectTeam = computed(() => {
   if (!user.profile.email) return false;
-  if (user.profile.category == getLeaderCategoryName()) return false;
-  return !user.profile.team;
+  return user.profile.role == ROLES.Participant && !user.profile.team;
 });
 const showSelectGame = computed(() => {
   if (!user.profile.email) return false;

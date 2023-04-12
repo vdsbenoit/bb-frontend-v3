@@ -35,8 +35,8 @@ export function gamesDefaults(payload: Partial<Game>): Game {
   return { ...defaults, ...payload };
 }
 const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION_NAME, {
-  modifyPayloadOn: { insert: gamesDefaults },
-  modifyReadResponseOn: { added: gamesDefaults },
+  modifyPayloadOn: { insert: (payload) => gamesDefaults(payload) },
+  modifyReadResponseOn: { added: (payload) => gamesDefaults(payload) },
 });
 
 ///////////////

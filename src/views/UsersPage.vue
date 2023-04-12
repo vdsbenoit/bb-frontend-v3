@@ -48,7 +48,6 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { onMounted, defineProps } from "vue";
-import { getLeaderCategoryName } from "@/services/settings";
 
 const props = defineProps(["userFilter"]);
 const userStore = useAuthStore();
@@ -120,9 +119,7 @@ const toggleEditRole = (user: Profile | null) => {
   }
 };
 const setRole = (uid: string) => {
-  if (editedRoleValue.value != ROLES.Participant) {
-    userStore.updateProfile(uid, { role: editedRoleValue.value, categorie: getLeaderCategoryName() });
-  } else userStore.updateProfile(uid, { role: editedRoleValue.value });
+  userStore.updateProfile(uid, { role: editedRoleValue.value });
   toggleEditRole(null);
 };
 const setLimit = async () => {

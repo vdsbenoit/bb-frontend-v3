@@ -153,8 +153,8 @@ import { useRoute } from "vue-router";
 import { forceFetchGame, Game, getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
 import { getGameMatches } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
-import { getLeaderCategoryName, getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
-import { getCategorySections } from "@/services/sections";
+import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
+import { getLeaderSections } from "@/services/leaderSections";
 
 const user = useAuthStore();
 const route = useRoute();
@@ -213,7 +213,7 @@ const matches = computed(() => {
   return game.value?.id ? getGameMatches(game.value?.id) : new Map();
 });
 const leaderSections = computed(() => {
-  return editMode.value ? getCategorySections(getLeaderCategoryName()) : new Map();
+  return editMode.value ? getLeaderSections() : new Map();
 });
 const sectionLeaders = computed(() => {
   return selectedLeaderSection.value ? user.getSectionUsers(selectedLeaderSection.value) : undefined;

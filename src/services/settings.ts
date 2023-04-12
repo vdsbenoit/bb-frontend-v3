@@ -2,50 +2,74 @@ import { computed } from "vue";
 import { magnetar } from "./magnetar";
 import { toastPopup } from "./popup";
 
-const SETTINGS_COLLECTION_NAME = "settings";
-const SETTINGS_DOCUMENT_KEY = "app";
+const APP_COLLECTION_NAME = "app";
+const SETTINGS_DOCUMENT_KEY = "settings";
+const CONFIGURATION_DOCUMENT_KEY = "configuration";
 
-/////////////////////
-/// configuration //
-//////////////////
-
-interface Schedule {
-  start: string;
-  stop: string;
-}
-
+////////////////
+/// Settings //
 // App settings (from firestore, through magneta)
-export type AppSetting = {
+
+export type AppSettings = {
   maxGameLeaders: number; // max allowed leaders per game
   freezeScore: boolean;
-  categories: string[];
-  circuits: string[];
-  leaderCategoryName: string;
   everyoneCanSetScoreAnywhere: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
   schedule: Schedule[];
   showRankingToAll: boolean;
 }
 
-export const appSettingsDefaults: AppSetting = {
+export const appSettingsDefaults: AppSettings = {
   maxGameLeaders: 2,
   freezeScore: true,
-  categories: [],
-  circuits: [],
-  leaderCategoryName: "Animateurs",
   everyoneCanSetScoreAnywhere: false,
   leaderRegistration: true,
   schedule: [] as Schedule[],
   showRankingToAll: false,
 };
 
-function appSettingsDefaultsFunc(payload: Partial<AppSetting>): AppSetting {
+function appSettingsDefaultsFunc(payload: Partial<AppSettings>): AppSettings {
   return { ...appSettingsDefaults, ...payload }
 }
-const appSettingsModule = magnetar.doc<AppSetting>(`${SETTINGS_COLLECTION_NAME}/${SETTINGS_DOCUMENT_KEY}`, {
-  modifyPayloadOn: { insert: appSettingsDefaultsFunc },
-  modifyReadResponseOn: { added: appSettingsDefaultsFunc },
+const appSettingsModule = magnetar.doc<AppSettings>(`${APP_COLLECTION_NAME}/${SETTINGS_DOCUMENT_KEY}`, {
+  modifyPayloadOn: { insert: (payload) => appSettingsDefaultsFunc(payload) },
+  modifyReadResponseOn: { added: (payload) => appSettingsDefaultsFunc(payload) },
 });
+
+
+/////////////////////
+/// Configuration //
+// App configuration (from firestore, through magneta)
+
+interface Schedule {
+  start: string;
+  stop: string;
+}
+
+export type AppConfiguration = {
+  sectionTypes: string[];
+  circuits: any;
+  schedule: Schedule[];
+}
+
+export const appConfigurationDefaults: AppConfiguration = {
+  sectionTypes: [] as string[],
+  circuits: {},
+  schedule: [] as Schedule[],
+};
+
+function appConfigurationDefaultsFunc(payload: Partial<AppConfiguration>): AppConfiguration {
+  return { ...appConfigurationDefaults, ...payload }
+}
+const appConfigurationModule = magnetar.doc<AppConfiguration>(`${APP_COLLECTION_NAME}/${CONFIGURATION_DOCUMENT_KEY}`, {
+  modifyPayloadOn: { insert: (payload) => appConfigurationDefaultsFunc(payload) },
+  modifyReadResponseOn: { added: (payload) => appConfigurationDefaultsFunc(payload) },
+});
+
+///////////////
+/// Streams //
+/////////////
+
 export const streamSettings = () => {
   appSettingsModule.stream().catch(error => {
     console.error(`App settings stream failed`, error);
@@ -83,18 +107,13 @@ export const getSchedule = (time: number): Schedule => {
   console.error("appSettingsModule not loaded, returning empty schedule");
   return {start: "", stop: ""} as Schedule;
 };
-export const getCategories = async () => {
-  if (!appSettingsModule.data) await appSettingsModule.fetch();
-  return appSettingsModule.data?.categories;
+export const getSectionTypes = async () => {
+  if (!appConfigurationModule.data) await appConfigurationModule.fetch();
+  return appConfigurationModule.data?.sectionTypes;
 };
 export const getCircuits = async () => {
-  if (!appSettingsModule.data) await appSettingsModule.fetch();
-  return appSettingsModule.data?.circuits;
-};
-export const getLeaderCategoryName = (): string => {
-  if (appSettingsModule.data?.schedule) return appSettingsModule.data.leaderCategoryName;
-  console.error("appSettings not loaded, returning default leaderCategoryName");
-  return appSettingsDefaults.leaderCategoryName;
+  if (!appConfigurationModule.data) await appConfigurationModule.fetch();
+  return appConfigurationModule.data?.circuits;
 };
 export const isShowRankingToAll = (): boolean => {
   if (appSettingsModule.data?.showRankingToAll) return appSettingsModule.data.showRankingToAll;
@@ -137,5 +156,5 @@ export const hardcodeSchedule = async () => {
     {start: "15h51", stop: "16h06"},
     {start: "16h09", stop: "16h24"},
   ]
-  return appSettingsModule.merge({ schedule });
+  return appConfigurationModule.merge({ schedule });
 }

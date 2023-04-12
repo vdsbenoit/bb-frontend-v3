@@ -7,14 +7,14 @@
           <ion-grid class="">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ion-select v-model="selectedCategory" interface="popover" placeholder="Choisir une catégorie">
-                  <ion-select-option v-for="(category, index) in categories" :value="category" :key="index">{{ category }}</ion-select-option>
+                <ion-select v-model="selectedSectionType" interface="popover" placeholder="Type de section">
+                  <ion-select-option v-for="(sectionType, index) in sectionTypes" :value="sectionType" :key="index">{{ sectionType }}</ion-select-option>
                 </ion-select>
               </ion-col>
-              <ion-col size="12" size-sm="6" v-if="selectedCategory">
+              <ion-col size="12" size-sm="6" v-if="selectedSectionType">
                   <ion-spinner v-if="isLoadingSections"></ion-spinner>
                   <ion-select v-else v-model="selectedSectionId" placeholder="Choisir une section" interface="popover">
-                    <ion-select-option color="dark" v-for="section in sections?.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
+                    <ion-select-option color="dark" v-for="section in sections.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
                   </ion-select>
               </ion-col>
             </ion-row>
@@ -125,9 +125,9 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { getCategorySections, getSection, Section } from "@/services/sections";
+import { getSectionsBySectionType, getSection, Section } from "@/services/sections";
 import { onBeforeMount, onMounted, watch, watchEffect } from "vue";
-import { getCategories, getLeaderCategoryName, isShowRankingToAll } from "@/services/settings";
+import { getSectionTypes, isShowRankingToAll } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
 
 
@@ -136,16 +136,16 @@ const route = useRoute();
 
 // reactive data
 
-const selectedCategory = ref("");
+const selectedSectionType = ref("");
 const selectedSectionId = ref("");
-const categories = ref();
+const sectionTypes = ref();
 const shouldLoadUsers = ref(false); // true after clicking on the show button
 
 // lifecycle hooks
 
 onBeforeMount(async () => {
   // We take this approach to ensure categories is not stuck to undefined
-  categories.value = await getCategories();
+  sectionTypes.value = await getSectionTypes();
 });
 onMounted(() => {
   if (route.params.sectionId) {
@@ -162,14 +162,14 @@ const showRanking = computed(() => {
 const showUsers = computed(() => {
   return user.profile.role >= ROLES.Modérateur;
 });
-const sections = computed((): Map<string, Section> | undefined => {
-  return selectedCategory.value ? getCategorySections(selectedCategory.value) : undefined;
+const sections = computed((): Map<string, Section> => {
+  return getSectionsBySectionType(selectedSectionType.value);
 });
 const selectedSection = computed((): Section | undefined => {
   return selectedSectionId.value ? getSection(selectedSectionId.value) : undefined;
 });
 const isLoadingSections = computed(() => {
-  if (selectedCategory.value && !sections.value) return true;
+  if (selectedSectionType.value && !sections.value) return true;
   return false;
 });
 const isLoadingSection = computed(() => {
@@ -180,21 +180,17 @@ const sectionUsers = computed(() => {
   return shouldLoadUsers.value ? user.getSectionUsers(selectedSectionId.value) : new Map();
 });
 const showLeaderRegistration = computed(() => {
-  return selectedSection.value?.category === getLeaderCategoryName();
+  return false; //fixme
 });
 const isPlayer = computed(() => {
-  if(selectedSection.value) return selectedSection.value.category != getLeaderCategoryName();
+  return true;
 });
 
 // Watchers
 
-watch(selectedSectionId, async () => {
-  if(selectedSection.value?.category == getLeaderCategoryName()) shouldLoadUsers.value = true;
-  else shouldLoadUsers.value = false;
-});
 watchEffect(() => {
-    if(selectedSection.value?.category && !selectedCategory.value){
-      selectedCategory.value = selectedSection.value.category;
+    if(selectedSection.value?.sectionType && !selectedSectionType.value){
+      selectedSectionType.value = selectedSection.value.sectionType;
     }
   }
 );
