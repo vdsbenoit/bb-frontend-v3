@@ -100,6 +100,13 @@ export const setMatchDraw = async (matchId: string) => {
   return match.merge({winner: "", loser: "", draw: true, reporter, lastModified});
 };
 
+export const resetMatchScore = async (matchId: string) => {
+  const reporter = user.uid;
+  const lastModified = new Date().toISOString()
+  const match = matchesModule.doc(matchId);
+  return match.merge({winner: "", loser: "", draw: false, reporter, lastModified});
+};
+
 export const setMatchNoScores = async (matchId: string, noScores: boolean) => {
   const match = matchesModule.doc(matchId);
   return match.merge({ noScores: noScores });

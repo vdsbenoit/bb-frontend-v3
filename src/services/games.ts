@@ -104,7 +104,7 @@ export const canSetGameScore = async (gameId: number) => {
   if (gameModule.data?.morningLeaders.includes(user.uid) || gameModule.data?.afternoonLeaders.includes(user.uid)){
     return true;
   } else {
-    console.log(`User ${user.uid} is note registered at ${gameId}`);
+    console.log(`User ${user.uid} is not registered at ${gameId}`);
     return false;
   }
 };

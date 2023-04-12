@@ -100,7 +100,12 @@
             <span v-else-if="match.winner || match.draw">Modifier le score</span>
             <span v-else>Enregister le score</span>
           </ion-button>
-    
+          <ion-button v-if="isResettingScore" color="danger" class="ion-margin-horizontal ion-margin-top" expand="block" disabled>
+            <ion-spinner></ion-spinner>
+          </ion-button>
+          <ion-button v-else-if="match.winner || match.draw" color="danger" class="ion-margin-horizontal ion-margin-top" @click="resetScore" expand="block">
+            Effacer le score
+          </ion-button>
         </div>
       </div>
       <div v-else class="not-found">
@@ -120,7 +125,7 @@ import { ROLES, useAuthStore } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
-import { getMatch, Match, setMatchDraw, setMatchScore } from "@/services/matches";
+import { getMatch, Match, resetMatchScore, setMatchDraw, setMatchScore } from "@/services/matches";
 import { addTeamDraw, addTeamWin, getTeam, removeTeamDraw, removeTeamWin, Team } from "@/services/teams";
 import { canSetGameScore, Game, getGame } from "@/services/games";
 import { isScoresFrozen } from "@/services/settings";
@@ -138,6 +143,7 @@ const matchId = ref("");
 const canSetScore = ref(false);
 const isLoading = ref(true);
 const isSettingScore = ref(false);
+const isResettingScore = ref(false);
 
 // lifecycle hooks
 
@@ -197,7 +203,7 @@ const formatedDate = computed(() => {
   if(!showModeration) return // to prevent any unrequired db calls 
   const date = new Date(match.value.lastModified);
   return date.toLocaleString("fr-BE");
-})
+});
 
 // Watchers
 
@@ -306,6 +312,45 @@ const setScore = () => {
   }, "score-choice-popup").then(() => {
     isSettingScore.value = false; 
   });
+};
+
+const resetScore = async () => {
+  if (isScoresFrozen()) {
+    errorPopup("Il n'est pas ou plus possible de modifier des scores");
+    return;
+  }
+  if (!match.value.winner && !match.value.draw) {
+    errorPopup("Ce duel n'a pas encore de score");
+    return;
+  }
+  isResettingScore.value = true;
+  if (!firstPlayer.value || !secondPlayer.value) {
+    isResettingScore.value = false;
+    console.error(`firstPlayer or secondPlayer is undefined`, firstPlayer.value, secondPlayer.value);
+    return errorPopup(`Le match n'a pas encore été chargé`);
+  }
+  const promises = [];
+  try {
+    if(match.value.winner) {
+      const previousWinningSection = firstPlayer.value.id == match.value.winner ? firstPlayer.value.sectionId : secondPlayer.value.sectionId;
+      promises.push(removeTeamWin(match.value.winner));
+      promises.push(removeSectionWin(previousWinningSection));
+    }
+    if(match.value.draw) {
+      promises.push(removeTeamDraw(firstPlayer.value.id as string));
+      promises.push(removeTeamDraw(secondPlayer.value.id as string));
+      promises.push(removeSectionDraw(firstPlayer.value.sectionId));
+      promises.push(removeSectionDraw(secondPlayer.value.sectionId));
+    }
+    promises.push(resetMatchScore(matchId.value));
+    await Promise.all(promises);
+    toastPopup("Le score a été réinitialisé");
+    console.log(`Score reset for match ${matchId.value} by ${userStore.uid}`)
+  } catch(error: any) {
+    errorPopup(`La réinitialisation du score a échoué : ${error.message}`);
+    console.log(error);
+  }
+  isResettingScore.value = false;
 };
 
 const scoreColor = (playerId: string | undefined) => {
