@@ -19,7 +19,7 @@ export type Game = {
   afternoonLeaders: string[];
   matches: string[];
   weight: number;
-  noScore: boolean;
+  noScores: boolean;
 }
 
 export function gamesDefaults(payload: Partial<Game>): Game {
@@ -32,7 +32,7 @@ export function gamesDefaults(payload: Partial<Game>): Game {
     afternoonLeaders: [],
     matches: [],
     weight: 1,
-    noScore: false,
+    noScores: false,
   };
   return { ...defaults, ...payload };
 }
@@ -241,6 +241,12 @@ export const removeAfternoonLeader = async (gameId: number, uid = "") => {
     toastPopup(`Désinscription à l'épreuve ${gameId} effectuée`);
   });
 }
+
+export const setGameNoScores = async (gameId: number, noScores: boolean) => {
+  const gameModule = gamesModule.doc(gameId.toString());
+  await gameModule.merge({ noScores });
+  toastPopup(`Les scores de l'épreuve ${gameId} ont été ${noScores ? "désactivés" : "activés"}`);
+};
 
 export const hardcodeGameNames = () => {
   const gameNames = [

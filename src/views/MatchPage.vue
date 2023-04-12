@@ -92,11 +92,15 @@
           </ion-card-content>
         </ion-card>
         <div class="ion-margin-top" style="max-width: 600px; margin: 0 auto" v-if="canSetScore">
-          <ion-button class="ion-margin-horizontal ion-margin-top" @click="setScore" expand="block" :disabled="isSettingScore">
+          <ion-button v-if="match.noScores" class="ion-margin-horizontal ion-margin-top" color="medium" expand="block" disabled>
+            Pas de score pour ce jeu
+          </ion-button>
+          <ion-button v-else class="ion-margin-horizontal ion-margin-top" @click="setScore" expand="block" :disabled="isSettingScore">
             <ion-spinner v-if="isSettingScore"></ion-spinner>
             <span v-else-if="match.winner || match.draw">Modifier le score</span>
             <span v-else>Enregister le score</span>
           </ion-button>
+    
         </div>
       </div>
       <div v-else class="not-found">

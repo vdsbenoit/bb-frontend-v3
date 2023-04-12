@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <header-template :pageTitle="pageTitle">
-      <ion-button v-if="canEditGame" @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
+      <ion-button v-if="canEditLeaders" @click="toggleLeadersEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
       <div v-if="isGame || isLoading">
@@ -52,21 +52,36 @@
 
             <ion-grid class="ion-margin-top">
               <ion-row>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister">
-                  <ion-button @click="register" expand="block" color="primary" :disabled="isRegistering">
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister && !isMorningLeader">
+                  <ion-button @click="register('morning')" expand="block" color="primary" :disabled="isRegistering">
                     <ion-spinner v-if="isRegistering"></ion-spinner>
-                    <span v-else>S'Inscrire</span>
+                    <span v-else>Je m'inscris au matin</span>
                     </ion-button>
                 </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canEditGame">
-                  <ion-button v-if="editMode" @click="toggleEditMode" expand="block" color="medium" > Arrêter la modification </ion-button>
-                  <ion-button v-else @click="toggleEditMode" expand="block" color="tertiary" > Modifier les animateurs </ion-button>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister && !isAfternoonLeader">
+                  <ion-button @click="register('afternoon')" expand="block" color="primary" :disabled="isRegistering">
+                    <ion-spinner v-if="isRegistering"></ion-spinner>
+                    <span v-else>Je m'inscris l'après-midi</span>
+                    </ion-button>
                 </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister">
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister && (isMorningLeader || isAfternoonLeader)">
                   <ion-button @click="unRegister" expand="block" color="danger" :disabled="isUnregistering">
                     <ion-spinner v-if="isUnregistering"></ion-spinner>
                     <span v-else>Se désinscrire</span>
                   </ion-button>
+                </ion-col>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canEditLeaders">
+                  <ion-button v-if="editMode" @click="toggleLeadersEditMode" expand="block" color="medium" > Arrêter la modification </ion-button>
+                  <ion-button v-else @click="toggleLeadersEditMode" expand="block" color="tertiary" > Modifier les animateurs </ion-button>
+                </ion-col>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canEditGameSettings">
+                  <ion-button v-if="isTogglingNoScores" expand="block" color="medium" > 
+                    <ion-spinner></ion-spinner>
+                   </ion-button>
+                   <div v-else-if="game">
+                     <ion-button v-if="game.noScores" @click="toggleNoScores" expand="block" color="success" > Réactiver les scores </ion-button>
+                     <ion-button v-else @click="toggleNoScores" expand="block" color="danger" > Désactiver les scores </ion-button>
+                   </div>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -147,11 +162,11 @@ IonGrid, IonText, IonButton, useIonRouter, IonSpinner, IonIcon, IonSelect, IonSe
 import { closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
-import { choicePopup, errorPopup, loadingPopup } from "@/services/popup";
+import { errorPopup, loadingPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { forceFetchGame, Game, getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader } from "@/services/games";
-import { getGameMatches } from "@/services/matches";
+import { forceFetchGame, Game, getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader, setGameNoScores } from "@/services/games";
+import { getGameMatches, setMatchNoScores } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
 import { getLeaderSections } from "@/services/leaderSections";
@@ -181,6 +196,7 @@ const isRegistering = ref(false);
 const isUnregistering = ref(false);
 const selectedLeaderSection = ref("");
 const selectedLeaderId = ref("");
+const isTogglingNoScores = ref(false);
 
 // lifecycle hooks
 
@@ -227,11 +243,22 @@ const pageTitle = computed(() => {
   if (isLoading.value) return "Chargement";
   return "Épreuve inconnue";
 });
-const canEditGame = computed(() => {
-  return user.profile.role >= ROLES.Modérateur;
+const canEditLeaders = computed(() => {
+  return user.profile.role >= ROLES.Chef;
+});
+const canEditGameSettings = computed(() => {
+  return user.profile.role >= ROLES.Administrateur;
 });
 const editIcon = computed(() => {
   return editMode.value ? { ios: closeOutline, md: closeSharp } : { ios: pencilOutline, md: pencilSharp };
+});
+const isMorningLeader = computed(() => {
+  if (!isGame.value) return false;
+  return game.value.morningLeaders.includes(user.profile.uid);
+});
+const isAfternoonLeader = computed(() => {
+  if (!isGame.value) return false;
+  return game.value.afternoonLeaders.includes(user.profile.uid);
 });
 
 // Watchers
@@ -271,16 +298,24 @@ const loadLeaderInfo = async (newLeaderIds: string[]) => {
   );
   return leaderInfo;
 };
-const register = () => {
+const register = async (timeSlot: string) => {
   isRegistering.value = true;
-  choicePopup("A quel moment de la journée ?", ["Matin", "Après-midi"], async (choice: string) => {
-    try {
-      if (choice === "Matin") await setMorningLeader(gameId.value);
-      if (choice === "Après-midi") await setAfternoonLeader(gameId.value);
-    } catch (error: any) {
-      errorPopup(error.message);
+  try {
+    switch (timeSlot) {
+      case "morning":
+        await setMorningLeader(gameId.value);
+        break;
+      case "afternoon":
+        await setAfternoonLeader(gameId.value);
+        break;
+      default:
+        new Error(`Invalid time slot ${timeSlot}`);
+        break;
     }
-  });
+  } catch (error: any) {
+    errorPopup(error.message);
+    console.error(error);
+  }
   isRegistering.value = false;
 };
 const registerMorningLeader = async () => {
@@ -327,11 +362,20 @@ const getWinner = (match: any) => {
   if (match.draw === true) return "Égalité";
   return "";
 };
-const toggleEditMode = () => {
+const toggleLeadersEditMode = () => {
   editMode.value = !editMode.value;
 };
 const goToProfile = (uid: string) => {
   if (!editMode) router.push(`/profile/${uid}`);
+};
+const toggleNoScores = async () => {
+  isTogglingNoScores.value = true;
+  const previousValue = game.value.noScores;
+  const promises = [];
+  promises.push(setGameNoScores(gameId.value, !previousValue));
+  game.value.matches.forEach(matchId => promises.push(setMatchNoScores(matchId, !previousValue)));
+  await Promise.all(promises);
+  isTogglingNoScores.value = false;
 };
 </script>
 <style scoped>

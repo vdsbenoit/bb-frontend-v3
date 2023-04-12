@@ -9,15 +9,15 @@
 - [x] Split SectionsPage in two -> LeadersPage
 - [x] Fix SectionsPage
 - [x] Ajouter fields membres & chefs dans LeaderSection -> non, le faire via une query
+- [ ] Dans GamePage, créer un boutton "Reset scores"
 
 ## User feedback
 
 - [ ] indiquer lorsqu'un timing a complétement été encodé
 - [ ] ajouter un attribut sur les épreuves sans score (e.g. pause)
-- [x] ajouter un attribut aux matches du type "hasScore"
-  - [ ] le mettre à vrai pour les épreuve sans score
-  - [ ] créer un bouton pour configurer ceci sur GamePage
-  
+- [x] ajouter un attribut aux matches du type "noScores"
+  - [x] créer un bouton pour configurer ceci sur GamePage
+
 - [x] ne pas mettre libre sur les épreuves où il y a déjà 1 personne. Avoir un 3e state
 - [ ] Mettre le plan en dessous de chaque épreuve
 - [x] Faire en sorte que les sections ne tombent pas contre elles-mêmes (sinon ça fait tjrs une défaite et une victoire dans la même section)

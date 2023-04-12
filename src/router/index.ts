@@ -171,6 +171,7 @@ router.beforeEach(async (to, from, next) => {
   return next('/home');
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 router.afterEach((to, from) => {
   // Complete the animation of the route progress bar.
   Nprogress.done()
