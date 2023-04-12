@@ -19,6 +19,7 @@ export type Game = {
   afternoonLeaders: string[];
   matches: string[];
   weight: number;
+  noScore: boolean;
 }
 
 export function gamesDefaults(payload: Partial<Game>): Game {
@@ -31,6 +32,7 @@ export function gamesDefaults(payload: Partial<Game>): Game {
     afternoonLeaders: [],
     matches: [],
     weight: 1,
+    noScore: false,
   };
   return { ...defaults, ...payload };
 }

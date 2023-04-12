@@ -78,10 +78,17 @@ export const streamSettings = () => {
 export const closeSettingsStream = () => {
   appSettingsModule.closeStream();
 }
+export const fetchAppConfiguration = () => {
+  appConfigurationModule.fetch().catch(error => {
+    console.error(`App configuration fetch failed`, error);
+  })
+}
 
 ///////////////
 /// Getters //
 /////////////
+
+// App settings
 
 export const isScoresFrozen = (): boolean => {
   if (appSettingsModule.data) return appSettingsModule.data.freezeScore;
@@ -102,19 +109,6 @@ export const isLeaderRegistrationOpen = () => {
   if (appSettingsModule.data) return appSettingsModule.data.leaderRegistration;
   return appSettingsDefaults.leaderRegistration; 
 }
-export const getSchedule = (time: number): Schedule => {
-  if (appSettingsModule.data?.schedule) return appSettingsModule.data.schedule[time];
-  console.error("appSettingsModule not loaded, returning empty schedule");
-  return {start: "", stop: ""} as Schedule;
-};
-export const getSectionTypes = async () => {
-  if (!appConfigurationModule.data) await appConfigurationModule.fetch();
-  return appConfigurationModule.data?.sectionTypes;
-};
-export const getCircuits = async () => {
-  if (!appConfigurationModule.data) await appConfigurationModule.fetch();
-  return appConfigurationModule.data?.circuits;
-};
 export const isShowRankingToAll = (): boolean => {
   if (appSettingsModule.data?.showRankingToAll) return appSettingsModule.data.showRankingToAll;
   return appSettingsDefaults.showRankingToAll;
@@ -122,6 +116,26 @@ export const isShowRankingToAll = (): boolean => {
 export const getAppSettings = computed(() => {
   return appSettingsModule.data;
 });
+
+// App configuration
+
+export const getSchedule = (time: number): Schedule => {
+  if (appConfigurationModule.data?.schedule) return appConfigurationModule.data.schedule[time];
+  console.error("appSettingsModule not loaded, returning empty schedule");
+  return {start: "", stop: ""} as Schedule;
+};
+export const getSchedules = (): Schedule[] => {
+  return appConfigurationModule.data?.schedule ?? [] as Schedule[];
+};
+export const getSectionTypes = () => {
+  if (!appConfigurationModule.data) appConfigurationModule.fetch();
+  return appConfigurationModule.data?.sectionTypes;
+};
+export const getCircuits = () => {
+  if (!appConfigurationModule.data) appConfigurationModule.fetch();
+  return appConfigurationModule.data?.circuits;
+};
+
 
 ///////////////
 /// Setters //
@@ -132,7 +146,7 @@ export const updateAppSettings = async (settingsData: any) => {
   toastPopup("Les paramètres de l'app ont été mis à jour");
 } 
 export const setSchedule = async (schedule: Schedule[]) => {
-  return appSettingsModule.merge({ schedule });
+  return appConfigurationModule.merge({ schedule });
 } 
 
 // fixme
@@ -158,3 +172,4 @@ export const hardcodeSchedule = async () => {
   ]
   return appConfigurationModule.merge({ schedule });
 }
+// hardcodeSchedule();

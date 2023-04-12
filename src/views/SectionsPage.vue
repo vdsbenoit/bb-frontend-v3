@@ -7,9 +7,10 @@
           <ion-grid class="">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ion-select v-if="sectionTypes && sectionTypes.size > 0" v-model="selectedSectionType" interface="popover" placeholder="Type de section">
+                <ion-select v-if="sectionTypes && sectionTypes.length > 0" v-model="selectedSectionType" interface="popover" placeholder="Type de section">
                   <ion-select-option v-for="(sectionType, index) in sectionTypes" :value="sectionType" :key="index">{{ sectionType }}</ion-select-option>
                 </ion-select>
+                <ion-spinner v-else-if="isLoadingSectionTypes"></ion-spinner>
                 <div v-else>Pas de type de section configuré</div>
               </ion-col>
               <ion-col size="12" size-sm="6" v-if="selectedSectionType">
@@ -136,7 +137,7 @@ import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { getSectionsBySectionType, getSection, Section } from "@/services/sections";
-import { onBeforeMount, onMounted, watch, watchEffect } from "vue";
+import { onMounted, watch, watchEffect } from "vue";
 import { getSectionTypes, isShowRankingToAll } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
 
@@ -148,21 +149,17 @@ const route = useRoute();
 
 const selectedSectionType = ref("");
 const selectedSectionId = ref("");
-const sectionTypes = ref();
 const shouldLoadMembers = ref(false); // true after clicking on the show button
-const isLoadingSections = ref(true);
+const isLoadingSectionTypes = ref(true);
+const isLoadingSections = ref(false);
 const isLoadingSection = ref(false);
 const isLoadingMembers = ref(false);
 
 // lifecycle hooks
 
-onBeforeMount(async () => {
-  // We take this approach to ensure sectionTypes is not stuck to undefined
-  sectionTypes.value = await getSectionTypes();
-});
 onMounted(() => {
   setTimeout(() => {
-    isLoadingSections.value = false;
+    isLoadingSectionTypes.value = false;
   }, 5000);
   if (route.params.sectionId) {
     selectedSectionId.value = route.params.sectionId as string;
@@ -173,11 +170,24 @@ onMounted(() => {
 
 // The following watchEffect watcher complements the above onMounted definition
 watchEffect(() => {
-    if(selectedSectionId.value && selectedSection.value?.sectionType && !selectedSectionType.value){
+    if(
+      selectedSectionId.value &&
+      selectedSection.value && 
+      selectedSection.value.sectionType && 
+      !selectedSectionType.value
+      ){
       selectedSectionType.value = selectedSection.value.sectionType;
     }
   }
 );
+watch(selectedSectionType, (newVal) => {
+  if (newVal) {
+    isLoadingSections.value = true;
+    setTimeout(() => {
+      isLoadingSections.value = false;
+    }, 5000);
+  }
+});
 watch(selectedSectionId, (newVal) => {
   if (newVal) {
     isLoadingSection.value = true;
@@ -196,7 +206,9 @@ watch(shouldLoadMembers, (newVal) => {
 });
 
 // Computed
-
+const sectionTypes = computed(() => {
+  return getSectionTypes();
+});
 const showRanking = computed(() => {
   if(isShowRankingToAll()) return true;
   return user.profile.role >= ROLES.Administrateur;

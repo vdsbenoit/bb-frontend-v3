@@ -6,15 +6,14 @@
     <ion-content :fullscreen="true">
       <ion-item color="primary">
         <ion-label class="ion-text-center">Sélectionne un circuit</ion-label>
-        <ion-select v-model="selectedCircuit" interface="popover">
-          <ion-select-option v-for="(circuit, index) in circuits" :value="circuit" :key="index">{{ circuit }}</ion-select-option>
+        <ion-select v-if="circuits" v-model="selectedCircuit" interface="popover">
+          <ion-select-option v-for="letter in Object.keys(circuits).sort()" :value="letter" :key="letter"> {{ letter }} ({{ circuits[letter] }})</ion-select-option>
         </ion-select>
+        <ion-spinner v-else-if="isLoadingCircuits"></ion-spinner>
+        <div v-else>Pas de circuits configuré</div>
       </ion-item>
       <ion-list v-if="selectedCircuit">
-        <div v-if="showSpinner()" class="ion-text-center" style="background: transparent">
-          <ion-spinner></ion-spinner>
-        </div>
-        <div v-if="showGames()">
+        <div v-if="games && games.size > 0">
           <div v-for="game in games?.values()" :key="game.id">
             <div v-if="editMode">
               <div v-if="game.id === editedGameId && !isUpdating">
@@ -45,11 +44,14 @@
             </div>
           </div>
         </div>
+        <div v-else-if="isLoadingGames" class="ion-text-center" style="background: transparent">
+          <ion-spinner></ion-spinner>
+        </div>
       </ion-list>
       <div v-else class="not-found">
         <h2 class="ion-text-center ion-align-items-center" >Sélectionne un circuit <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
-      <div v-if="showNotFound()" class="not-found">
+      <div v-if="gamesNotFound()" class="not-found">
         <h2 class="ion-text-center ion-align-items-center">Pas d'épreuves</h2>
       </div>
     </ion-content>
@@ -64,7 +66,7 @@ import { ROLES, useAuthStore } from "@/services/users";
 import { toastPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
 import { Game, getCircuitGames, setName } from "@/services/games";
-import { onBeforeMount } from "vue";
+import { onMounted, watch } from "vue";
 import { getCircuits, getMaxGameLeaders } from "@/services/settings";
 
 const user = useAuthStore();
@@ -72,29 +74,36 @@ const router = useIonRouter();
 
 // reactive data
 const editMode = ref(false);
-const circuits = ref();
 const selectedCircuit = ref("");
 const editedGameId = ref(-1);
 const newGameName = ref("");
 const isUpdating = ref(false);
-const isLoading = ref(false);
+const isLoadingCircuits = ref(true);
+const isLoadingGames = ref(false);
 
 // lifecycle hooks
+onMounted(() => {
+  setTimeout(() => {
+    isLoadingCircuits.value = false;
+  }, 5000);
+});
 
-onBeforeMount(async () => {
-  // We take this approach to ensure circuits is not stuck to undefined
-  circuits.value = await getCircuits();
+// Watchers
+watch(selectedCircuit, () => {
+  if (selectedCircuit.value) {
+    isLoadingGames.value = true;
+    setTimeout(() => {
+      isLoadingGames.value = false;
+    }, 5000);
+  }
 });
 
 // Computed
+const circuits = computed(() => {
+  return getCircuits();
+});
 const games = computed((): Map<string, Game> | undefined => {
-  if(selectedCircuit.value){
-    isLoading.value = true;
-    setTimeout(() => {
-      isLoading.value = false;
-    }, 5000);
-    return getCircuitGames(selectedCircuit.value);
-  } else return undefined;
+  return getCircuitGames(selectedCircuit.value);
 });
 const pageTitle = computed(() => {
   if (editMode.value) return `Édition des épreuves`;
@@ -106,17 +115,9 @@ const canEditGames = computed(() => {
 const editIcon = computed(() => {
   return (editMode.value) ? {ios: closeOutline, md: closeSharp} : {ios: pencilOutline, md: pencilSharp}
 });
-const showSpinner = () => {
-  return isLoading.value && (!games.value || games.value.size < 1);
+const gamesNotFound = () => {
+  return selectedCircuit.value && !isLoadingGames.value && (!games.value || games.value.size < 1);
 }
-const showGames = () => {
-  return games.value && games.value.size > 0
-}
-const showNotFound = () => {
-  return selectedCircuit.value && !isLoading.value && (!games.value || games.value.size < 1);
-}
-
-// Watchers
 
 // Methods
 const isFull = (leaderList: string[]) => {

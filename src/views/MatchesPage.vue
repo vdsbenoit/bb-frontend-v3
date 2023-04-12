@@ -5,7 +5,7 @@
       <ion-item color="primary">
         <ion-label class="ion-text-center">Choisir un horaire</ion-label>
         <ion-select v-model="selectedTime" interface="popover">
-          <ion-select-option v-for="(timing, index) in schedule" :value="index + 1" :key="index">{{ timing.start }} - {{ timing.stop }}</ion-select-option>
+          <ion-select-option v-for="(timing, index) in schedules" :value="index + 1" :key="index">{{ timing.start }} - {{ timing.stop }}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-list v-if="selectedTime">
@@ -40,7 +40,7 @@ import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, Ion
 import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { computed, ref } from "@vue/reactivity";
-import { getAppSettings } from "@/services/settings";
+import { getSchedules } from "@/services/settings";
 import { getTimeMatches, Match } from "@/services/matches";
 import { onMounted } from "vue";
 
@@ -56,8 +56,9 @@ onMounted(() => {
 });
 
 // Computed
-const schedule = computed(() => {
-  return getAppSettings.value?.schedule;
+const schedules = computed(() => {
+  console.log("schedules", getSchedules());
+  return getSchedules();
 });
 const matches = computed((): Map<string, Match> | undefined => {
   return getTimeMatches(selectedTime.value);

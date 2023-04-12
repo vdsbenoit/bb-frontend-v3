@@ -1,4 +1,4 @@
-import { streamSettings, closeSettingsStream } from './settings';
+import { streamSettings, closeSettingsStream, fetchAppConfiguration } from './settings';
 import { errorPopup, choicePopup, loadingPopup } from './popup';
 import { User as fbUser } from "firebase/auth";
 import { defineStore } from "pinia";
@@ -125,6 +125,7 @@ export const useAuthStore = defineStore("authStore", {
           if (user) {
             this.user = user;
             streamSettings(); 
+            fetchAppConfiguration();
             this.streamProfile(user.uid as string);
             this.profileObject = usersModule.doc(user.uid as string);
           } else {

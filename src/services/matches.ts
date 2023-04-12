@@ -20,6 +20,7 @@ export type Match = {
   draw: boolean;
   reporter: string;
   lastModified: string;
+  hasScore: boolean;
 }
 
 function matchesDefaults(payload: Partial<Match>): Match {
@@ -35,6 +36,7 @@ function matchesDefaults(payload: Partial<Match>): Match {
     draw: false,
     reporter: "",
     lastModified: "",
+    hasScore: false,
   }
   return { ...defaults, ...payload }
 }
@@ -86,12 +88,12 @@ export const setMatchScore = async (matchId: string, winner: string, loser: stri
   const reporter = user.uid;
   const lastModified = new Date().toISOString()
   const match = matchesModule.doc(matchId);
-  return match.merge({winner, loser, draw: false, reporter, lastModified});
+  return match.merge({winner, loser, draw: false, reporter, lastModified, hasScore: true});
 };
 
 export const setMatchDraw = async (matchId: string) => {
   const reporter = user.uid;
   const lastModified = new Date().toISOString()
   const match = matchesModule.doc(matchId);
-  return match.merge({winner: "", loser: "", draw: true, reporter, lastModified});
+  return match.merge({winner: "", loser: "", draw: true, reporter, lastModified, hasScore: true});
 };
