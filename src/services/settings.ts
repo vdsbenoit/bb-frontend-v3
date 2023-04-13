@@ -127,7 +127,7 @@ export const getSchedule = (time: number): Schedule => {
 export const getSchedules = (): Schedule[] => {
   return appConfigurationModule.data?.schedule ?? [] as Schedule[];
 };
-export const getSectionTypes = () => {
+export const getSectionTypes = (): string[] | undefined => {
   if (!appConfigurationModule.data) appConfigurationModule.fetch();
   return appConfigurationModule.data?.sectionTypes;
 };

@@ -214,7 +214,7 @@ const showRanking = computed(() => {
   return user.profile.role >= ROLES.Administrateur;
 });
 const canSeeMembers = computed(() => {
-  return user.profile.role >= ROLES.Modérateur;
+  return user.profile.role >= ROLES.Organisateur;
 });
 const sections = computed((): Map<string, Section> => {
   return getSectionsBySectionType(selectedSectionType.value); 

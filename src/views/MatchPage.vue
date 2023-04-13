@@ -187,7 +187,7 @@ const schedule = computed(() => {
   return match.value?.time ? getSchedule(match.value?.time - 1) : { start: " ", stop: " " };
 });
 const showModeration = computed(() => {
-  return userStore.profile.role >= ROLES.Modérateur;
+  return userStore.profile.role >= ROLES.Organisateur;
 })
 const reporter = computed(() => {
   if(!showModeration) return // to prevent any unrequired db calls 

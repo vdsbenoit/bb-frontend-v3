@@ -22,7 +22,7 @@ La page d'accueil des newbies est soit :
   - Choisir son rôle
   - Choisir sa section (si animateur ou chef)
 - Un notification comme quoi leur rôle est en cours de validation 
-  - Préciser qui est la personne qui doit valider leur rôle (chef, modérateur ou admin)
+  - Préciser qui est la personne qui doit valider leur rôle (chef, organisateur ou admin)
 - Une notif comme quoi leur demande a été refusée
 
 ### Participant (2)
@@ -73,9 +73,9 @@ La page d'accueil des chefs est soit :
 - Une invitation à choisir leurs épreuves
 - Les liens vers leurs épreuves
 
-### Modérateurs (6)
+### Organisateurs (6)
 
-Les modérateurs peuvent : 
+Les organisateurs peuvent : 
 
 - Modifier n'importe quel profil, sauf le rôle
 - Voir la liste des sections
@@ -87,8 +87,9 @@ Les modérateurs peuvent :
 - Assigner n'importe qui à des épreuves
 - Valider les demandes des chefs de section
 - Valider les demandes d'animateurs de n'importe quelle section
+- Voir les profils des autres utilisateurs
 
-La page d'accueil des modérateurs est soit :
+La page d'accueil des organisateurs est soit :
 
 - Lien vers la page de notifications, s'ils en ont
 
@@ -122,14 +123,14 @@ Si participants -> le rôle est validé automatiquement.
 Si animateurs: 
 
 - il faut également préciser la section en question
-- le rôle doit être validé par un chef de la section en question ou un modérateur ou administrateur
+- le rôle doit être validé par un chef de la section en question ou un organisateur ou administrateur
 
 Si chef:
 
 -  il faut également préciser la section en question
-- le rôle doit être validé au minimum par un modérateur
+- le rôle doit être validé au minimum par un organisateur
 
-Si modérateur ou administrateur
+Si organisateur ou administrateur
 
 - la section est assignée à "Staff BB"
 - le rôle doit être validé par un administrateur

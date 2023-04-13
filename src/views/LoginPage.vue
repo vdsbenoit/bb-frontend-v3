@@ -11,8 +11,9 @@
       <form v-on:submit.prevent="sendEmail">
         <ion-list  id="login-form">
           <ion-item lines="full">
-            <ion-label position="stacked">Email</ion-label>
-            <ion-input placeholder="Entre ton email ici" v-model="email" name="email" type="email" inputmode="email" autocomplete="email" required autocapitalize="off" :clear-input="true"></ion-input>
+            <ion-label position="floating" color="primary">Entre ton email ici</ion-label>
+            <ion-input v-model="email" name="email" type="email" inputmode="email" autocomplete="email" required autocapitalize="off" :clear-input="true"></ion-input>
+            <ion-note slot="helper">Utilise une addresse à laquelle tu as accès depuis ton téléphone</ion-note>
           </ion-item>
           <ion-item lines="none">
           <ion-checkbox slot="start" class="ion-no-margin ion-margin-end" v-model="dgprChecked"></ion-checkbox>
@@ -29,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSpinner, IonCheckbox } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonText, IonButton, IonSpinner, IonCheckbox, IonNote } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore } from "@/services/users";
+import { ROLES, useAuthStore } from "@/services/users";
 import { errorPopup, infoPopup, toastPopup } from "@/services/popup";
 import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
@@ -55,7 +56,12 @@ const dgprChecked = ref(false);
 onMounted(async () => {
   if (props.validation) {
     const success = await processSignInLink(window.location.href);
-    if (success) router.replace("/home");
+    if (success) {
+      if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
+      if (user.profile.role === ROLES.Newbie) router.replace("/onboarding");
+      else router.replace("/home");
+    }
+    else errorPopup("Impossible de se connecter");
   }
 });
 
@@ -91,7 +97,7 @@ const showPrivacyNotice = () => {
   A tout moment, l'utilisateur peut supprimer son profil ainsi que toutes les données qui y sont liées. 
   Les données des utilisateurs sont effacées chaque année.<br/><br/>
   Les utilisateurs ne peuvent voir que le totem, le nom et la section des autres utilisateurs. 
-  Seuls les modérateurs & administrateurs de l'application peuvent voir les profils des autres utilisateurs.<br/><br/>
+  Seuls les organisateurs & administrateurs de l'application peuvent voir les profils des autres utilisateurs.<br/><br/>
   La base de donnée est localisée en Europe, sur le serveur europe-west3 appartenant à Google et situé à Francfort. 
   Cette application a été développée dans un but non-commercial. Aucune donnée n'est revendue à des tiers.<br/><br/>
   Cette application est la propriété de Benoit Vander Stappen. 

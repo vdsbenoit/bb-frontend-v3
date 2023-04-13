@@ -110,7 +110,7 @@ const pageTitle = computed(() => {
   return "Épreuves";
 });
 const canEditGames = computed(() => {
-  return user.profile.role >= ROLES.Modérateur;
+  return user.profile.role >= ROLES.Organisateur;
 });
 const editIcon = computed(() => {
   return (editMode.value) ? {ios: closeOutline, md: closeSharp} : {ios: pencilOutline, md: pencilSharp}

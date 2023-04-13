@@ -45,6 +45,13 @@ export const getLeaderSection = (id: string) => {
   });
   return leaderSectionModule.data;
 }
+export const getStaffSectionId = async () => {
+  const staffSection = leaderSectionsModule.where("name", "==", "Team BB");
+  await staffSection.fetch().catch((error) => {
+    console.error(`Staff section could not be fetched`, error);
+  });
+  return [...staffSection.data.values()][0].id;
+}
 
 
 ///////////////

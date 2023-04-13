@@ -24,7 +24,7 @@ export const ROLES = {
   Participant:    2,
   Animateur:      4,
   Chef:           5,
-  Modérateur:     6,
+  Organisateur:   6,
   Administrateur: 8,
 }
 
@@ -50,9 +50,8 @@ export type Profile = {
   sectionType: string;
   sectionName: string;
   sectionId: string;
-  leaderSectionId: string;
   requestedRole: number;
-  requestedSection: string;
+  requestedSectionId: string;
   rejectionReason: string;
 }
 
@@ -75,9 +74,8 @@ export const profileDefaults: Profile = {
   sectionType: "",
   sectionName: "",
   sectionId: "",
-  leaderSectionId: "",
   requestedRole: -1,
-  requestedSection: "",
+  requestedSectionId: "",
   rejectionReason : ""
 }
 
@@ -225,7 +223,7 @@ export const useAuthStore = defineStore("authStore", {
     async createProfile(uid: string, email: string) {
       usersModule.doc(uid).insert({
         uid, email,
-        role: ROLES.Participant,
+        role: ROLES.Newbie,
         creationDate: fireStoreNow(),
       });
     },

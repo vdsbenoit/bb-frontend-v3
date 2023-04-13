@@ -6,6 +6,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { useAuthStore } from "@/services/users";
 import HomePageVue from '../views/HomePage.vue';
 import Nprogress from 'nprogress';
+import OnboardingPage from '@/views/OnboardingPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   { path: '', redirect: 'home'},
@@ -13,6 +14,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     path: '/home',
     component: HomePageVue
+  },
+  {
+    name: 'onboarding',
+    path: '/onboarding',
+    component: OnboardingPage,
+    meta: { minimumRole: ROLES.Newbie }
   },
   {
     name: 'teams',
@@ -42,7 +49,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'matches',
     path: '/matches',
     component: () => import ('../views/MatchesPage.vue'),
-    meta: { minimumRole: ROLES.Modérateur }
+    meta: { minimumRole: ROLES.Organisateur }
   },
   {
     name: 'sections',
@@ -78,7 +85,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'profile',
     path: '/profile/:userId',
     component: () => import ('../views/ProfilePage.vue'),
-    meta: { minimumRole: ROLES.Newbie }
+    meta: { minimumRole: ROLES.Organisateur }
   },
   {
     name: 'login',
@@ -161,6 +168,16 @@ router.beforeEach(async (to, from, next) => {
   }
   if (user.isLoggedIn) {
     if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
+    if (to.name === "onboarding"){
+      if (user.profile.role > ROLES.Newbie) {
+        toastPopup("Tu as déjà fait l'onboarding");
+        return next('/home');
+      }
+    }
+    if (user.profile.role === ROLES.Newbie && to.name !== "onboarding") {
+      console.log("User is newbie, redirecting to onboarding");
+      return next('/onboarding');
+    }
     if (to.meta.minimumRole && user.profile.role >= to.meta.minimumRole) return next();
     else toastPopup(`Tu n'as pas le droit d'accéder à cette page avec ton role (${user.profile.role})`)
   }

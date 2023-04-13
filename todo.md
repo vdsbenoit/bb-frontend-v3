@@ -9,12 +9,12 @@
 - [x] Split SectionsPage in two -> LeadersPage
 - [x] Fix SectionsPage
 - [x] Ajouter fields membres & chefs dans LeaderSection -> non, le faire via une query
-- [ ] Dans GamePage, créer un boutton "Reset scores"
+- [x] Dans MatchPage, créer un boutton "Reset scores"
 
 ## User feedback
 
 - [ ] indiquer lorsqu'un timing a complétement été encodé
-- [ ] ajouter un attribut sur les épreuves sans score (e.g. pause)
+- [x] ajouter un attribut sur les épreuves sans score (e.g. pause)
 - [x] ajouter un attribut aux matches du type "noScores"
   - [x] créer un bouton pour configurer ceci sur GamePage
 
@@ -34,11 +34,10 @@
   - [ ] réduire nbTeams de la section (pour le score)
   - [ ] afficher l'équipe d'une certaine manière aux animateurs
 - [ ] Tableau de gestion équipes (voir app précédente)
-- [ ] 
 - [ ] Inscription : 
   - [ ] choisir sa section et son rôle
-
-- [ ] Animateurs : liste des animateurs avec filtre par section
+  - [ ] Compléter son profil
+- [x] Animateurs : liste des animateurs avec filtre par section
 - [ ] Notifications : demande d'accès
 
 ## Modification DB
@@ -79,6 +78,6 @@
 - [ ] Avoid undefined values. 
   For instance, set default game (e.g. afternoonGame) value to 0. Where 0 means no game is set yet.
 - [ ] QR codes pour vérifier la présence des animateurs
-  - [ ] Les modérateurs scan le QR code des animateurs
+  - [ ] Les organisateurs scan le QR code des animateurs
   - [ ] Le QR code contient l'ID de l'animateur + un timestamp pour éviter les screenshots
 - [ ] Get rid of `?` and handle undefined data.

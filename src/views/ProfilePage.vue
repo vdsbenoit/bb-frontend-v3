@@ -125,7 +125,7 @@ import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
 import { confirmPopup, errorPopup, infoPopup, loadingPopup, toastPopup } from "@/services/popup";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 import { stopMagnetar } from "@/services/magnetar";
-import { getAppSettings, getMaxGameLeaders, getSectionTypes } from "@/services/settings";
+import { getMaxGameLeaders, getSectionTypes } from "@/services/settings";
 import { getSectionsBySectionType, getSection } from "@/services/sections";
 import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
 
@@ -165,7 +165,7 @@ const isOwnProfile = computed(() => {
   return route.params.userId === userStore.uid;
 });
 const canEditProfile = computed(() => {
-  if (userStore.profile.role >= ROLES.Modérateur) return true;
+  if (userStore.profile.role >= ROLES.Organisateur) return true;
   return isOwnProfile.value;
 });
 const isPlayer = computed(() => {
