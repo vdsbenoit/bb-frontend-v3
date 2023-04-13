@@ -4,7 +4,7 @@
 
 - [x] Backup DB 2022
 - [x] fix infinite spinner on empty ranking page
-- [ ] Inscription aux épreuves
+- [x] Inscription aux épreuves
 - [x] Refactor `categories` into  `sectionType`
 - [x] Split SectionsPage in two -> LeadersPage
 - [x] Fix SectionsPage
@@ -12,6 +12,7 @@
 - [x] Dans MatchPage, créer un boutton "Reset scores"
 - [x] Add info ribbon homePage when pending request
 - [x] Add info ribbon when request is rejected
+- [ ] Fix Profile
 
 ## User feedback
 
@@ -70,6 +71,7 @@
 - [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
 - [ ] Try to replace some .stream() with .fetch() (the bug may be fixed)
 - [ ] get rid of snake case in firestore (e.g. matches collection)
+- [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 
 ## Nice to have
 

@@ -164,8 +164,8 @@ export const useAuthStore = defineStore("authStore", {
               break;
           }
         }
-        const message = `On dirait que tu n'as pas ouvert le lien depuis le même endroit que là où tu as essayé.e de te connecter.\n\n
-        Il devrait y avoir une option dans le menu en haut de ton écran pour ouvrir le lien dans ton navigateur ou dans l'app. 
+        const message = `On dirait que tu n'as pas ouvert le lien depuis le même navigateur que là où tu as essayé.e de te connecter.\n\n
+        Il devrait y avoir une option dans pour ouvrir le lien dans ton navigateur internet plutôt que ton app de mail. 
         Si pas, essaie de copier/coller le lien dans ton navigateur.`
         await choicePopup("Oops", ["Je veux quand même essayer ici", "D'accord"], choiceHandler, "", message);
       }

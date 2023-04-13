@@ -117,12 +117,14 @@ const handleRequest = (user: Profile) => {
     message = `Tu es sur le point d'ajouter ${userStore.getName(user.uid)} (${user.email})
     comme <b>${getRoleByValue(user.requestedRole)}</b> de la Baden Battle.`;
   }
+  const requestedSection = getLeaderSection(user.requestedSectionId)
   const choices = ["Accepter", "Refuser", "Annuler"]
   const reasonMessage = `Pourquoi refuse-tu la demande de ${userStore.getName(user.uid)} ?`;
   const acceptHandler = () => {
     userStore.updateProfile(user.uid, { 
           role: user.requestedRole,
           sectionId: user.requestedSectionId,
+          sectionName: requestedSection?.name,
           requestedRole: -1,
           requestedSectionId: "",
           rejectionReason: "" 

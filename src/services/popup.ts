@@ -94,7 +94,7 @@ export const toastPopup = async (message: string, duration = 3000) => {
   const toast = await toastController.create({
     message: message,
     duration: duration,
-    position: "top",
+    position: "bottom",
     cssClass: "ion-text-center",
   });
   return toast.present();

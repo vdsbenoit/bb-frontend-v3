@@ -184,7 +184,7 @@ const submitForm = async () => {
     if (selectedLeaderSectionId.value){
       const leaderSectionName = getLeaderSection(selectedLeaderSectionId.value)?.name;
       message = `Tu es choisi le role d'animateur. 
-      Cela signifie qu'un des chefs de la section '${leaderSectionName}' ou un organisateur de la Baden Battle devra
+      Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
     } else return errorPopup('Choisis une section');
   }
@@ -192,7 +192,7 @@ const submitForm = async () => {
     if (selectedLeaderSectionId.value){
       const leaderSectionName = getLeaderSection(selectedLeaderSectionId.value)?.name;
       message = `Tu es choisi le role de chef. 
-      Cela signifie qu'un des chefs de la section '${leaderSectionName}' ou un organisateur de la Baden Battle devra
+      Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
     } else return errorPopup('Choisis une section');
   }

@@ -74,7 +74,7 @@
               <ion-card-header>
                 <ion-card-title>Équipes</ion-card-title>
               </ion-card-header>
-                <info-card-component v-if="selectedSectionId && !user.profile.team">
+                <info-card-component v-if="selectedSectionId && user.profile.role == ROLES.Participant && !user.profile.team">
                   Tu peux sélectionner une équipe ci-dessous et la marquer comme ton équipe
                 </info-card-component>
               <ion-card-content>

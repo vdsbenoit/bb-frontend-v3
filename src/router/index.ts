@@ -1,6 +1,6 @@
 import { toastPopup } from './../services/popup';
 import { isShowRankingToAll } from './../services/settings';
-import { ROLES } from './../services/users';
+import { ROLES, getRoleByValue } from './../services/users';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import { useAuthStore } from "@/services/users";
@@ -183,7 +183,7 @@ router.beforeEach(async (to, from, next) => {
       }
       if (user.profile.role >= to.meta.minimumRole) return next();
       else {
-        toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${user.profile.role})`);
+        toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(user.profile.role)})`);
         return next('/home');
       }
     } else return next();
