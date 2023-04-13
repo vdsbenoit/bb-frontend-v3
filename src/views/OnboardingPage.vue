@@ -77,7 +77,6 @@ import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
 import { getSectionTypes } from "@/services/settings";
 import { getSection, getSectionsBySectionType, Section } from "@/services/sections";
 import { getLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
-import InfoCardComponent from "../components/InfoCardComponent.vue";
 
 const router = useRouter();
 const userStore = useAuthStore();

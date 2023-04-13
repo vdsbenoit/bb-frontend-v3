@@ -35,14 +35,12 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonGrid, IonRow } from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useRouter } from "vue-router";
 import { ROLES, useAuthStore } from "@/services/users";
 import TileCol from "@/components/TileCol.vue";
-import { computed, reactive } from "vue";
+import { computed } from "vue";
 import { isLeaderRegistrationOpen } from "@/services/settings";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
 
-const router = useRouter();
 const user = useAuthStore();
 
 // Computed vars
