@@ -47,11 +47,11 @@ export type Profile = {
   team: string;
   morningGame: number;
   afternoonGame: number;
-  sectionType: string;
   sectionName: string;
   sectionId: number;
   requestedRole: number;
   requestedSectionId: number;
+  requestedSectionName: string;
   rejectionReason: string;
   hasDoneOnboarding: boolean;
 }
@@ -72,11 +72,11 @@ export const profileDefaults: Profile = {
   team: "",
   morningGame: 0,
   afternoonGame: 0,
-  sectionType: "",
   sectionName: "",
   sectionId: -1,
   requestedRole: -1,
   requestedSectionId: -1,
+  requestedSectionName: "",
   rejectionReason : "",
   hasDoneOnboarding: false,
 }

@@ -42,7 +42,7 @@
               <ion-select-option v-for="sectionType in sectionTypes" :key="sectionType" :value="sectionType">{{ sectionType }}</ion-select-option>
             </ion-select>
           </ion-item>  
-          <ion-item v-if="isParticipant">
+          <ion-item v-if="isParticipant && selectedSectionType">
             <ion-label position="floating" color="primary">Section</ion-label>
             <ion-select v-model="selectedSectionId" interface="popover" required>
               <ion-select-option v-for="s in sections.values()" :key="s.id" :value="s.id"> {{ s.name }} ({{ s.city }}) </ion-select-option>
@@ -57,7 +57,7 @@
           </ion-item>
 
         </ion-list>
-          <ion-button type="submit" expand="block" class="ion-margin">
+          <ion-button type="submit" expand="block" class="ion-margin" :disabled="!canSubmit">
             Continuer
           </ion-button>
         </form>
@@ -122,6 +122,11 @@ const leaderSections = computed((): Map<string, LeaderSection> => {
 });
 const isParticipant = computed(() => selectedRole.value === ROLES.Participant && !nameError.value);
 const isLeader = computed(() => (selectedRole.value === ROLES.Animateur || selectedRole.value === ROLES.Chef) && !nameError.value);
+const canSubmit = computed(() => {
+  if (isParticipant.value && selectedSectionType.value && selectedSectionId.value > 0) return true
+  if (isLeader.value && selectedLeaderSectionId.value > 0) return true
+  return false;
+});
 
 // methods
 
@@ -154,6 +159,7 @@ const processForm = () => {
       name: name.value,
       requestedRole: selectedRole.value,
       requestedSectionId: selectedLeaderSectionId.value,
+      requestedSectionName: getLeaderSection(selectedLeaderSectionId.value)?.name,
       hasDoneOnboarding: true,
     }
   }

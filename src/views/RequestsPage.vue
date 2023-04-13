@@ -113,20 +113,19 @@ const handleRequest = (user: Profile) => {
   let message = `Il y a une erreur, ce rôle n'existe pas (${user.requestedRole})`;
   if (user.requestedRole === ROLES.Animateur || user.requestedRole === ROLES.Chef) {
     message = `Tu es sur le point d'ajouter ${userStore.getName(user.uid)} (${user.email})
-    comme <b>${getRoleByValue(user.requestedRole)}</b> de la section '${getLeaderSection(user.requestedSectionId)?.name}'.`;
+    comme <b>${getRoleByValue(user.requestedRole)}</b> de la section ${getLeaderSection(user.requestedSectionId)?.name}.`;
   }
   if (user.requestedRole >= ROLES.Organisateur){
     message = `Tu es sur le point d'ajouter ${userStore.getName(user.uid)} (${user.email})
     comme <b>${getRoleByValue(user.requestedRole)}</b> de la Baden Battle.`;
   }
-  const requestedSection = getLeaderSection(user.requestedSectionId)
   const choices = ["Accepter", "Refuser", "Annuler"]
   const reasonMessage = `Pourquoi refuse-tu la demande de ${userStore.getName(user.uid)} ?`;
   const acceptHandler = () => {
     userStore.updateProfile(user.uid, { 
           role: user.requestedRole,
           sectionId: user.requestedSectionId,
-          sectionName: requestedSection?.name,
+          sectionName: user.requestedSectionName,
           requestedRole: -1,
           requestedSectionId: "",
           rejectionReason: "" 
