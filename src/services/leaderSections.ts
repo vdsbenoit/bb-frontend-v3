@@ -1,6 +1,7 @@
 import { magnetar } from "./magnetar";
 
 const LEADER_SECTIONS_COLLECTION_NAME = "leaderSections";
+const STAFF_SECTION_NAME = "Team BB";
 
 /////////////////////
 /// configuration //
@@ -31,7 +32,7 @@ const leaderSectionsModule = magnetar.collection<LeaderSection>(LEADER_SECTIONS_
 /////////////
 
 export const getLeaderSections = () => {
-  leaderSectionsModule.stream().catch((error) => { // using stream because the fetch() method is bugged
+  leaderSectionsModule.where("name", "!=", STAFF_SECTION_NAME).stream().catch((error) => { // using stream because the fetch() method is bugged
     console.error(`Error occurred while streaming the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
   }); 
   return leaderSectionsModule.data;
@@ -46,7 +47,7 @@ export const getLeaderSection = (id: number) => {
   return leaderSectionModule.data;
 }
 export const getStaffSectionId = async () => {
-  const staffSection = leaderSectionsModule.where("name", "==", "Team BB");
+  const staffSection = leaderSectionsModule.where("name", "==", STAFF_SECTION_NAME);
   await staffSection.fetch().catch((error) => {
     console.error(`Staff section could not be fetched`, error);
   });
@@ -61,7 +62,7 @@ export const getStaffSectionId = async () => {
 // fixme
 export const hardcodeLeaderSections = () => {
   const leaderSections = [
-    {name: "Team BB", city: "Soignies", id: 0, unit: ""},
+    {name: STAFF_SECTION_NAME, city: "Soignies", id: 0, unit: ""},
     {name: "Pionniers Peter Pan", city: "Soignies", id: 0, unit: ""},
     {name: "Scouts Griffons", city: "Soignies", id: 0, unit: ""},
     {name: "Guides Amazones", city: "Soignies", id: 0, unit: ""},
