@@ -176,14 +176,14 @@ router.beforeEach(async (to, from, next) => {
         return next('/home');
       }
     }
-    if (!user.profile.hasDoneOnboarding && to.name !== "onboarding") {
-      console.log("User is newbie, redirecting to onboarding");
-      return next('/onboarding');
-    }
     if (to.meta.minimumRole){
+      if (!user.profile.hasDoneOnboarding && to.name !== "onboarding" && to.name !== "myProfile") {
+        console.log("User is newbie, redirecting to onboarding instead of ", to.name);
+        return next('/onboarding');
+      }
       if (user.profile.role >= to.meta.minimumRole) return next();
       else {
-        toastPopup(`Tu n'as pas le droit d'accéder à cette page avec ton role (${user.profile.role})`);
+        toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${user.profile.role})`);
         return next('/home');
       }
     } else return next();

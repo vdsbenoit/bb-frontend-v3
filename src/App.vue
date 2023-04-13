@@ -84,7 +84,7 @@ const appPages = computed(() => {
     pages = [...pages, leadersPage]
   }
   if (user.profile.role >= ROLES.Chef) pages = [...pages, requestsPage];
-  pages = [...pages, sectionsPage, gamesPage];
+  if (user.profile.role > ROLES.Newbie) pages = [...pages, sectionsPage, gamesPage];
   if (user.profile.role >= ROLES.Organisateur) pages = [...pages, matchesPage];
   if (user.profile.role >= ROLES.Administrateur) pages = [...pages, rankingPage, settingsPage];
   if (isShowRankingToAll() && user.profile.role < ROLES.Administrateur) pages = [...pages, rankingPage];

@@ -74,16 +74,6 @@
                 </ion-select>
                 <ion-input v-else type="text" :readonly="true" inputmode="none">{{ getRoleByValue(userProfile.role) }}</ion-input>
               </ion-item>
-              <ion-item lines="full" v-if="!canSetRole && isOwnProfile">
-                <ion-button v-if="userProfile.requestedRole > 0" expand="block" color="medium" :disabled="true">
-                  <ion-spinner v-if="isRequestingPromotion"></ion-spinner>
-                  <span v-else>Promotion demandée</span>
-                </ion-button>
-                <ion-button v-else expand="block" color="primary" @click="requestPromotion">
-                  <ion-spinner v-if="isRequestingPromotion"></ion-spinner>
-                  <span v-else>Demander une promotion</span>
-                </ion-button>
-              </ion-item>
               <ion-item lines="full">
                 <ion-label position="stacked" color="primary">Adresse email</ion-label>
                 <ion-input type="text" :readonly="true" inputmode="none">{{ userProfile.email }}</ion-input>
@@ -98,10 +88,6 @@
                   <ion-spinner v-if="isUpdating"></ion-spinner>
                   <span v-else>Enregistrer</span>
                 </ion-button>
-              </ion-col>
-              <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                <ion-button v-if="editMode && canDeleteProfile" expand="block" class="ion-margin-top" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
-                <ion-button slot="end" expand="block" color="medium" @click="requestPromotion">Demander promotion</ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -140,7 +126,6 @@ const editMode = ref(false);
 const editGames = ref(false);
 const games = ref();
 const isUpdating = ref(false);
-const isRequestingPromotion = ref(false);
 
 // lifecycle hooks
 
@@ -335,21 +320,6 @@ const deleteAccount = async () => {
     if (wasOwnProfile) await logOut();
   };
   confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
-};
-const requestPromotion = () => {
-  if (userProfile.value.requestedRole > 0) return errorPopup("Tu as déjà demandé une promotion");
-  if (showFillingInfo.value || !userProfile.value?.sectionId) infoPopup("Complète ton profil (totem, section) pour aider les administrateurs à traiter ta demande");
-  isRequestingPromotion.value = true;
-  userStore
-    .updateProfile(userId.value, { promotionRequested: true })
-    .then(() => {
-      toastPopup("Une demande de promotion a été envoyé aux administrateurs");
-      isRequestingPromotion.value = false;
-    })
-    .catch((error: any) => {
-      errorPopup(`La requête à échoué: ${error.message}`);
-      isRequestingPromotion.value = false;
-    });
 };
 const isGameFullEmoji = (leaders: string[]): string => {
   return leaders.length >= getMaxGameLeaders() ? "❌ " : "";

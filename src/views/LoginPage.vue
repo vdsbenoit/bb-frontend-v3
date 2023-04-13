@@ -58,7 +58,7 @@ onMounted(async () => {
     const success = await processSignInLink(window.location.href);
     if (success) {
       if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
-      if (user.profile.role === ROLES.Newbie) router.replace("/onboarding");
+      if (user.profile.role === ROLES.Newbie && ! user.profile.hasDoneOnboarding) router.replace("/onboarding");
       else router.replace("/home");
     }
     else errorPopup("Impossible de se connecter");
