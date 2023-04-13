@@ -15,7 +15,6 @@ export type AppSettings = {
   freezeScore: boolean;
   everyoneCanSetScoreAnywhere: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
-  schedule: Schedule[];
   showRankingToAll: boolean;
 }
 
@@ -24,7 +23,6 @@ export const appSettingsDefaults: AppSettings = {
   freezeScore: true,
   everyoneCanSetScoreAnywhere: false,
   leaderRegistration: true,
-  schedule: [] as Schedule[],
   showRankingToAll: false,
 };
 

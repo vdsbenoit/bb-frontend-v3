@@ -43,7 +43,7 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 IonSplitPane, IonText, IonFooter, IonToggle } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, moonOutline,
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, moonSharp,
-podiumOutline, podiumSharp, albumsOutline, albumsSharp, documentOutline, documentSharp, personAddOutline, personAddSharp, trophyOutline, trophySharp, timeOutline, timeSharp } from "ionicons/icons";
+personAddOutline, personAddSharp, trophyOutline, trophySharp, timeOutline, timeSharp } from "ionicons/icons";
 import { computed, onMounted, ref, watch } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
@@ -124,7 +124,7 @@ const settingsPage = {
 }
 const homePage =   {
   title: "Accueil",
-  url: "/home",
+  url: user.isLoggedIn ? "/home" : "/guest", 
   iosIcon: homeOutline,
   mdIcon: homeSharp,
 }

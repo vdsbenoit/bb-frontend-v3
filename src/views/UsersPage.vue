@@ -71,7 +71,7 @@ onMounted(() => {
 const users = computed(() => {
   switch (props.userFilter) {
     case "promotions":
-      return userStore.getApplicants(pageSize.value, userStore.profile.role);
+      return userStore.getApplicants(pageSize.value);
     case "withoutSection":
       return userStore.getUsersWithoutSection(pageSize.value, userStore.profile.role);
     default:

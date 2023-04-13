@@ -10,8 +10,8 @@
 - [x] Fix SectionsPage
 - [x] Ajouter fields membres & chefs dans LeaderSection -> non, le faire via une query
 - [x] Dans MatchPage, créer un boutton "Reset scores"
-- [ ] Add info ribbon homePage when pending request
-- [ ] Add info ribbon when request is rejected
+- [x] Add info ribbon homePage when pending request
+- [x] Add info ribbon when request is rejected
 
 ## User feedback
 
@@ -40,7 +40,7 @@
   - [x] choisir sa section et son rôle
   - [x] Compléter son profil
 - [x] Animateurs : liste des animateurs avec filtre par section
-- [ ] Notifications : demande d'accès
+- [x] Notifications : demande d'accès
 
 ## Modification DB
 

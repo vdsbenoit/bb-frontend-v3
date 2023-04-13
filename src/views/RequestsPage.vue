@@ -26,7 +26,7 @@
         </ion-card>
       </div>
       <div v-if="showNotFound()" class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">Pas d'utilisateurs</h2>
+        <h2 class="ion-text-center ion-align-items-center">Pas de demande d'accès</h2>
       </div>
     </ion-content>
   </ion-page>
@@ -68,7 +68,7 @@ const usersBySection = computed(() => {
     result.set(sectionId.toString(), [...usersById.values()]);
   }
   if (userStore.profile.role >= ROLES.Organisateur) {
-    usersById = userStore.getApplicants(pageSize.value, userStore.profile.role);
+    usersById = userStore.getApplicants(pageSize.value);
     result = Array.from(usersById.values()).reduce((map, profile: Profile) => {
       const { requestedSectionId } = profile;
       const profiles = map.get(requestedSectionId.toString()) ?? [];

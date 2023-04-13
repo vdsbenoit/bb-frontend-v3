@@ -311,13 +311,13 @@ export const useAuthStore = defineStore("authStore", {
       filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;
     },
-    getApplicants(limit: number, maxRole: number): Map<string, Profile>{
+    getApplicants(limit: number): Map<string, Profile>{
+      const maxRole = this.profile.role;
       console.log(`Fetching users who requested a role (max role: ${getRoleByValue(maxRole)})`);
       const filteredUsersModule = usersModule
         .where("requestedRole", ">=", ROLES.Animateur)
         .where("requestedRole", "<=", maxRole)
         .orderBy("requestedRole", "desc")
-        .orderBy("creationDate", "desc")
         .limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;

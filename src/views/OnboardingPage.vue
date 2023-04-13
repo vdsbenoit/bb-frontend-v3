@@ -3,8 +3,18 @@
     <header-template pageTitle="Onboarding"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
       <ion-card>
-        <ion-card-header>
-          <ion-card-title>Bienvenue!</ion-card-title>
+        <ion-card-header v-if="userStore.profile.rejectionReason">
+          <ion-card-title>Aille !</ion-card-title>
+          <p>
+            Il semblerait que ta demande d'accès ait été refusée. Voici la raison qui a été donnée :
+            <br><br>
+            {{ userStore.profile.rejectionReason }}
+            <br><br>
+            Est-ce que tu peux recommencer stp ?
+          </p>
+        </ion-card-header>
+        <ion-card-header v-else>
+          <ion-card-title>Bienvenue !</ion-card-title>
           <p>Avant d'aller plus loin, faisons connaissance.</p>
         </ion-card-header>
         <form @submit.prevent="submitForm"  @keydown.enter="submitForm">
@@ -19,7 +29,7 @@
             <ion-input v-model="name" name="name" type="text" autocorrect="off" @ionChange="handleNameChange"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label position="floating" color="primary">Quel sera ton role durant la Baden Battle ?</ion-label>
+            <ion-label position="floating" color="primary">Quel sera ton role durant la BB ?</ion-label>
             <ion-select v-model="selectedRole" required interface="popover" @ionChange="handleRoleChange">
               <ion-select-option v-for="(value, roleName) in roles" :key="value" :value="value">{{ roleName }}</ion-select-option>
             </ion-select>
@@ -67,6 +77,8 @@ import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
 import { getSectionTypes } from "@/services/settings";
 import { getSection, getSectionsBySectionType, Section } from "@/services/sections";
 import { getLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
+import InfoCardComponent from "../components/InfoCardComponent.vue";
+
 const router = useRouter();
 const userStore = useAuthStore();
 

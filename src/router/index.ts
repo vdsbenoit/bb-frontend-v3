@@ -5,15 +5,42 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import { useAuthStore } from "@/services/users";
 import HomePageVue from '../views/HomePage.vue';
+import GuestHomePageVue from '../views/GuestHomePage.vue';
 import Nprogress from 'nprogress';
 import OnboardingPage from '@/views/OnboardingPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
-  { path: '', redirect: 'home'},
+  { 
+    path: '', 
+    redirect: '/guest'
+  },
+  {
+    name: 'guest',
+    path: '/guest',
+    component: GuestHomePageVue
+  },
+  {
+    name: 'login',
+    path: '/login',
+    component: () => import ('../views/LoginPage.vue'),
+  },
+  {
+    name: 'redirectLogin',
+    path: '/redirectLogin',
+    component: () => import ('../views/LoginPage.vue'),
+    props: { redirect: true }
+  },
+  {
+    name: 'validation',
+    path: '/validation',
+    component: () => import ('../views/LoginPage.vue'),
+    props: { validation: true }
+  },
   {
     name: 'home',
     path: '/home',
-    component: HomePageVue
+    component: HomePageVue,
+    meta: { minimumRole: ROLES.Newbie }
   },
   {
     name: 'onboarding',
@@ -58,16 +85,22 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Participant }
   },
   {
+    name: 'section',
+    path: '/sections/:sectionId',
+    component: () => import ('../views/SectionsPage.vue'),
+    meta: { minimumRole: ROLES.Participant }
+  },
+  {
     name: 'leaders',
     path: '/leaders',
     component: () => import ('../views/LeadersPage.vue'),
     meta: { minimumRole: ROLES.Animateur }
   },
   {
-    name: 'section',
-    path: '/sections/:sectionId',
-    component: () => import ('../views/SectionsPage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    name: 'leader',
+    path: '/leader/:sectionId',
+    component: () => import ('../views/LeadersPage.vue'),
+    meta: { minimumRole: ROLES.Animateur }
   },
   {
     name: 'ranking',
@@ -88,24 +121,6 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Organisateur }
   },
   {
-    name: 'login',
-    path: '/login',
-    component: () => import ('../views/LoginPage.vue'),
-    meta: { minimumRole: ROLES.Anonyme }
-  },
-  {
-    name: 'redirectLogin',
-    path: '/redirectLogin',
-    component: () => import ('../views/LoginPage.vue'),
-    props: { redirect: true }
-  },
-  {
-    name: 'validation',
-    path: '/validation',
-    component: () => import ('../views/LoginPage.vue'),
-    props: { validation: true }
-  },
-  {
     name: 'settings',
     path: '/settings',
     component: () => import ('../views/SettingsPage.vue'),
@@ -124,13 +139,6 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
     component: () => import ('../views/RequestsPage.vue'),
     meta: { minimumRole: ROLES.Chef }
-  },
-  {
-    name: 'promotions',
-    path: '/promotions',
-    component: () => import ('../views/UsersPage.vue'),
-    props: { promotions: true },
-    meta: { minimumRole: ROLES.Administrateur }
   },
   {
     name: 'about',
@@ -155,25 +163,12 @@ router.beforeEach(async (to, from, next) => {
     Nprogress.start()
   }
   const user = useAuthStore();
-  if (!to.meta.minimumRole) return next();
-  if(to.meta.minimumRole === ROLES.Anonyme) return next();
-  if (to.name === "ranking"){
-    if(isShowRankingToAll()) return next();
-    if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
-    if(user.profile.role >= to.meta.minimumRole) return next();
-    else {
-      toastPopup("Seul les administrateurs peuvent voir le classement")
-      return next('/home');
-    }
-  }
-  if (to.name === "login"){
-    if (user.isLoggedIn) {
+  if (user.isLoggedIn) {
+    if (to.name === "guest") return next('/home');
+    if (to.name === "login"){
       toastPopup("Tu es déjà connecté");
       return next('/home');
     }
-    return next();
-  }
-  if (user.isLoggedIn) {
     if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
     if (to.name === "onboarding"){
       if (user.profile.hasDoneOnboarding) {
@@ -185,14 +180,21 @@ router.beforeEach(async (to, from, next) => {
       console.log("User is newbie, redirecting to onboarding");
       return next('/onboarding');
     }
-    if (to.meta.minimumRole && user.profile.role >= to.meta.minimumRole) return next();
-    else toastPopup(`Tu n'as pas le droit d'accéder à cette page avec ton role (${user.profile.role})`)
+    if (to.meta.minimumRole){
+      if (user.profile.role >= to.meta.minimumRole) return next();
+      else {
+        toastPopup(`Tu n'as pas le droit d'accéder à cette page avec ton role (${user.profile.role})`);
+        return next('/home');
+      }
+    } else return next();
   }
   else {
+    if (!to.meta.minimumRole) return next();
+    if(to.meta.minimumRole === ROLES.Anonyme) return next();
+    if (to.name === "ranking" && isShowRankingToAll()) return next();
     toastPopup("Tu dois être connecté pour accéder à cette page");
+    return next('/guest');
   }
-  console.log("Acces refused, redirected");
-  return next('/home');
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
