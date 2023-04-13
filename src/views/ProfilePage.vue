@@ -226,7 +226,7 @@ watch(
   () => modifiedProfile.value.sectionType,
   (newValue, oldValue) => {
     if(newValue && oldValue && newValue != oldValue) {
-      modifiedProfile.value.sectionId = "";
+      modifiedProfile.value.sectionId = -1;
       modifiedProfile.value.sectionName = "";
       modifiedProfile.value.team = "";
     }
@@ -251,7 +251,7 @@ const loadGames = () => {
   games.value = getAllGames();
   editGames.value = true;
 };
-const goToSectionPage = (sectionId: string | undefined) => {
+const goToSectionPage = (sectionId: number | undefined) => {
   if (sectionId) router.push(`/sections/${sectionId}`);
 };
 const goToTeamPage = (teamId: string | undefined) => {

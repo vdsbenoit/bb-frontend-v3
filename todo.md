@@ -10,6 +10,8 @@
 - [x] Fix SectionsPage
 - [x] Ajouter fields membres & chefs dans LeaderSection -> non, le faire via une query
 - [x] Dans MatchPage, créer un boutton "Reset scores"
+- [ ] Add info ribbon homePage when pending request
+- [ ] Add info ribbon when request is rejected
 
 ## User feedback
 
@@ -34,9 +36,9 @@
   - [ ] réduire nbTeams de la section (pour le score)
   - [ ] afficher l'équipe d'une certaine manière aux animateurs
 - [ ] Tableau de gestion équipes (voir app précédente)
-- [ ] Inscription : 
-  - [ ] choisir sa section et son rôle
-  - [ ] Compléter son profil
+- [x] Inscription : 
+  - [x] choisir sa section et son rôle
+  - [x] Compléter son profil
 - [x] Animateurs : liste des animateurs avec filtre par section
 - [ ] Notifications : demande d'accès
 
@@ -66,6 +68,8 @@
   - Créer les équipes (cf distribution équipe ci dessous)
   - Créer des jeux
 - [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
+- [ ] Try to replace some .stream() with .fetch() (the bug may be fixed)
+- [ ] get rid of snake case in firestore (e.g. matches collection)
 
 ## Nice to have
 

@@ -148,7 +148,7 @@ const route = useRoute();
 // reactive data
 
 const selectedSectionType = ref("");
-const selectedSectionId = ref("");
+const selectedSectionId = ref(0);
 const shouldLoadMembers = ref(false); // true after clicking on the show button
 const isLoadingSectionTypes = ref(true);
 const isLoadingSections = ref(false);
@@ -162,7 +162,7 @@ onMounted(() => {
     isLoadingSectionTypes.value = false;
   }, 5000);
   if (route.params.sectionId) {
-    selectedSectionId.value = route.params.sectionId as string;
+    selectedSectionId.value = Number(route.params.sectionId);
   }
 });
 

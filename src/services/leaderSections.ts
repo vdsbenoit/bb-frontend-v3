@@ -6,7 +6,7 @@ const LEADER_SECTIONS_COLLECTION_NAME = "leaderSections";
 /// configuration //
 //////////////////
 export type LeaderSection = {
-  id: string;
+  id: number;
   name: string;
   city: string;
   unit: string;
@@ -14,7 +14,7 @@ export type LeaderSection = {
 
 function leaderSectionsDefaults(payload: Partial<LeaderSection>): LeaderSection {
   const defaults: LeaderSection = { 
-    id: "",
+    id: -1,
     name: "",
     city: "",
     unit: "",
@@ -37,9 +37,9 @@ export const getLeaderSections = () => {
   return leaderSectionsModule.data;
 }
 // This method opens a stream on the game to get live updates
-export const getLeaderSection = (id: string) => {
+export const getLeaderSection = (id: number) => {
   if(!id) return undefined;
-  const leaderSectionModule = leaderSectionsModule.doc(id);
+  const leaderSectionModule = leaderSectionsModule.doc(id.toString());
   leaderSectionModule.stream().catch((error) => {
     console.error(`Leader Section ${id} stream was closed due to an error`, error);
   });
@@ -58,3 +58,21 @@ export const getStaffSectionId = async () => {
 /// Setters //
 /////////////
 
+// fixme
+export const hardcodeLeaderSections = () => {
+  const leaderSections = [
+    {name: "Team BB", city: "Soignies", id: 0, unit: ""},
+    {name: "Pionniers Peter Pan", city: "Soignies", id: 0, unit: ""},
+    {name: "Scouts Griffons", city: "Soignies", id: 0, unit: ""},
+    {name: "Guides Amazones", city: "Soignies", id: 0, unit: ""},
+    {name: "Guides Chamans", city: "Soignies", id: 0, unit: ""},
+    {name: "Pionniers de Dour", city: "Dour", id: 0, unit: ""},
+    {name: "Pionniers de Casteau", city: "Casteau", id: 0, unit: ""},
+  ]
+  leaderSections.forEach(async (leaderSection) => {
+    // generate unique numeric id
+    leaderSection.id = Math.floor(Math.random() * 10e12)
+    leaderSectionsModule.doc(leaderSection.id.toString()).insert(leaderSection);
+  });
+}
+// hardcodeLeaderSections();

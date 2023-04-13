@@ -43,7 +43,7 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 IonSplitPane, IonText, IonFooter, IonToggle } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, moonOutline,
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, moonSharp,
-podiumOutline, podiumSharp, albumsOutline, albumsSharp, documentOutline, documentSharp } from "ionicons/icons";
+podiumOutline, podiumSharp, albumsOutline, albumsSharp, documentOutline, documentSharp, personAddOutline, personAddSharp, trophyOutline, trophySharp, timeOutline, timeSharp } from "ionicons/icons";
 import { computed, onMounted, ref, watch } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
@@ -83,6 +83,7 @@ const appPages = computed(() => {
     if (user.profile.afternoonGame) pages = [...pages, afternoonGamePage]
     pages = [...pages, leadersPage]
   }
+  if (user.profile.role >= ROLES.Chef) pages = [...pages, requestsPage];
   pages = [...pages, sectionsPage, gamesPage];
   if (user.profile.role >= ROLES.Organisateur) pages = [...pages, matchesPage];
   if (user.profile.role >= ROLES.Administrateur) pages = [...pages, rankingPage, settingsPage];
@@ -106,14 +107,14 @@ const toggleDarkMode = (value: any) => {
 const matchesPage = {
   title: "Duels",
   url: "/matches",
-  iosIcon: documentOutline,
-  mdIcon: documentSharp,
+  iosIcon: timeOutline,
+  mdIcon: timeSharp,
 }
 const rankingPage = {
   title: "Classement",
   url: "/ranking",
-  iosIcon: podiumOutline,
-  mdIcon: podiumSharp,
+  iosIcon: trophyOutline,
+  mdIcon: trophySharp,
 }
 const settingsPage = {
   title: "Paramètres",
@@ -172,14 +173,20 @@ const leadersPage = {
 const gamesPage = {
   title: "Épreuves",
   url: "/games",
-  iosIcon: albumsOutline,
-  mdIcon: albumsSharp,
+  iosIcon: footballOutline,
+  mdIcon: footballSharp,
 }
 const sectionsPage = {
   title: "Sections",
   url: "/sections",
   iosIcon: peopleOutline,
   mdIcon: peopleSharp,
+}
+const requestsPage = {
+  title: "Demandes d'accès",
+  url: "/requests",
+  iosIcon: personAddOutline,
+  mdIcon: personAddSharp,
 }
 
 </script>

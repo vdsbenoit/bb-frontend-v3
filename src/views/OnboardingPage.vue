@@ -79,8 +79,8 @@ const name = ref('');
 const totem = ref('');
 const selectedRole = ref(-1);
 const selectedSectionType = ref('');
-const selectedSectionId = ref("");
-const selectedLeaderSectionId = ref("");
+const selectedSectionId = ref(-1);
+const selectedLeaderSectionId = ref(-1);
 const nameError = ref(false);
 const isLoadingSections = ref(false);
 const isUpdatingProfile = ref(false);
@@ -115,8 +115,8 @@ const isLeader = computed(() => (selectedRole.value === ROLES.Animateur || selec
 const handleRoleChange = () => {
     // Reset section and leaderSection values when changing the role
     selectedSectionType.value = ''
-    selectedSectionId.value = ""
-    selectedLeaderSectionId.value = ""
+    selectedSectionId.value = -1
+    selectedLeaderSectionId.value = -1
     if (!name.value && !totem.value) nameError.value = true;
 }
 const handleNameChange = () => {
@@ -133,6 +133,7 @@ const processForm = () => {
       role: ROLES.Participant,
       sectionId: selectedSectionId.value,
       sectionName: getSection(selectedSectionId.value)?.name,
+      hasDoneOnboarding: true,
     };
   } else {
     newProfile = {
@@ -140,6 +141,7 @@ const processForm = () => {
       name: name.value,
       requestedRole: selectedRole.value,
       requestedSectionId: selectedLeaderSectionId.value,
+      hasDoneOnboarding: true,
     }
   }
   userStore
@@ -170,7 +172,7 @@ const submitForm = async () => {
   if (selectedRole.value === ROLES.Animateur) {
     if (selectedLeaderSectionId.value){
       const leaderSectionName = getLeaderSection(selectedLeaderSectionId.value)?.name;
-      message = `Tu es choisi le role d'animateur de la section '${leaderSectionName}'. 
+      message = `Tu es choisi le role d'animateur. 
       Cela signifie qu'un des chefs de la section '${leaderSectionName}' ou un organisateur de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
     } else return errorPopup('Choisis une section');
@@ -178,7 +180,7 @@ const submitForm = async () => {
   if (selectedRole.value === ROLES.Chef) {
     if (selectedLeaderSectionId.value){
       const leaderSectionName = getLeaderSection(selectedLeaderSectionId.value)?.name;
-      message = `Tu es choisi le role de chef de la section '${leaderSectionName}'. 
+      message = `Tu es choisi le role de chef. 
       Cela signifie qu'un des chefs de la section '${leaderSectionName}' ou un organisateur de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
     } else return errorPopup('Choisis une section');

@@ -194,7 +194,7 @@ const isLoadingMorningLeaders = ref(false);
 const isLoadingAfternoonLeaders = ref(false);
 const isRegistering = ref(false);
 const isUnregistering = ref(false);
-const selectedLeaderSection = ref("");
+const selectedLeaderSection = ref(-1);
 const selectedLeaderId = ref("");
 const isTogglingNoScores = ref(false);
 

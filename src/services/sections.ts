@@ -57,17 +57,17 @@ export const getSectionsBySectionType = (sectionType: string): Map<string, Secti
   return filteredSectionsModule.data;
 }
 // This method opens a stream on the game to get live updates
-export const getSection = (id: string) => {
+export const getSection = (id: number) => {
   if(!id) return undefined;
-  const sectionModule = sectionsModule.doc(id);
+  const sectionModule = sectionsModule.doc(id.toString());
   sectionModule.stream().catch((error) => {
     console.error(`Section ${id} stream was closed due to an error`, error);
   });
   return sectionModule.data;
 }
-export const forceFetchSection = async (id: string) => {
+export const forceFetchSection = async (id: number) => {
   if(!id) return undefined;
-  const section = sectionsModule.doc(id);
+  const section = sectionsModule.doc(id.toString());
   await section.fetch({force: true});
   return section.data;
 }
@@ -84,7 +84,7 @@ export const getTopSections = (sectionType: string, limit: number) => {
 /////////////
 
 const updateSectionMeanScore =async (sectionId: number) => {
-  const section = await forceFetchSection(sectionId.toString());
+  const section = await forceFetchSection(sectionId);
   if (!section) throw new Error("Impossible de mettre à jour la moyenne de la section")
   const meanScore = + (section.score / section.nbTeams || 0).toFixed(2)
   return sectionsModule.doc(sectionId.toString()).merge({meanScore})

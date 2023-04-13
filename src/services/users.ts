@@ -49,10 +49,11 @@ export type Profile = {
   afternoonGame: number;
   sectionType: string;
   sectionName: string;
-  sectionId: string;
+  sectionId: number;
   requestedRole: number;
-  requestedSectionId: string;
+  requestedSectionId: number;
   rejectionReason: string;
+  hasDoneOnboarding: boolean;
 }
 
 // Generate a timestamp in the Firestore format
@@ -73,10 +74,11 @@ export const profileDefaults: Profile = {
   afternoonGame: 0,
   sectionType: "",
   sectionName: "",
-  sectionId: "",
+  sectionId: -1,
   requestedRole: -1,
-  requestedSectionId: "",
-  rejectionReason : ""
+  requestedSectionId: -1,
+  rejectionReason : "",
+  hasDoneOnboarding: false,
 }
 
 ///////////////////////
@@ -162,9 +164,10 @@ export const useAuthStore = defineStore("authStore", {
               break;
           }
         }
-        await choicePopup(`On dirait que tu n'as pas ouvert le lien depuis le même endroit que là où tu as essayé.e de te connecter.\n\n
+        const message = `On dirait que tu n'as pas ouvert le lien depuis le même endroit que là où tu as essayé.e de te connecter.\n\n
         Il devrait y avoir une option dans le menu en haut de ton écran pour ouvrir le lien dans ton navigateur ou dans l'app. 
-        Si pas, essaie de copier/coller le lien dans ton navigateur.`, ["Je veux quand même essayer ici", "D'accord"], choiceHandler)   
+        Si pas, essaie de copier/coller le lien dans ton navigateur.`
+        await choicePopup("Oops", ["Je veux quand même essayer ici", "D'accord"], choiceHandler, "", message);
       }
       if(!email){
         if(displayEmailError) throw new Error("Impossible de récupérer l'email d'authentification");
@@ -294,35 +297,49 @@ export const useAuthStore = defineStore("authStore", {
     canRegister(){
       return this.profile.role >= ROLES.Animateur;
     },
-    getSectionMembers(sectionId: string){
+    getSectionMembers(sectionId: number): Map<string, Profile>{
       console.log(`Fetching users from section '${sectionId}'`);
       const filteredUsersModule = usersModule.where("sectionId", "==", sectionId);
       filteredUsersModule.stream(); // using stream because fetch is buggy
-      return filteredUsersModule.data;
+      return filteredUsersModule.data as Map<string, Profile>;
     },
-    getLeaderSectionMembers(sectionId: string){
-      console.log(`Fetching users from leader section '${sectionId}'`);
-      const filteredUsersModule = usersModule.where("leaderSectionId", "==", sectionId);
+    getSectionApplicants(limit: number, sectionId: number): Map<string, Profile>{
+      console.log(`Fetching users who requested to be member of section '${sectionId}'`);
+      const filteredUsersModule = usersModule
+        .where("requestedSectionId", "==", sectionId)
+        .limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
-      return filteredUsersModule.data;
+      return filteredUsersModule.data as Map<string, Profile>;
     },
-    getPromotionUsers(limit: number){
-      console.log(`Fetching users who requested a promotion`);
-      const filteredUsersModule = usersModule.where("promotionRequested", "==", true).limit(limit);
+    getApplicants(limit: number, maxRole: number): Map<string, Profile>{
+      console.log(`Fetching users who requested a role (max role: ${getRoleByValue(maxRole)})`);
+      const filteredUsersModule = usersModule
+        .where("requestedRole", ">=", ROLES.Animateur)
+        .where("requestedRole", "<=", maxRole)
+        .orderBy("requestedRole", "desc")
+        .orderBy("creationDate", "desc")
+        .limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
-      return filteredUsersModule.data;
+      return filteredUsersModule.data as Map<string, Profile>;
     },
-    getLatestUsers(limit: number){
+    getLatestUsers(limit: number, maxRole: number): Map<string, Profile>{
       console.log(`Fetching latest registered userd`);
-      const filteredUsersModule = usersModule.orderBy("creationDate", "desc").limit(limit);
+      const filteredUsersModule = usersModule
+        .where("requestedRole", "<=", maxRole)
+        .orderBy("creationDate", "desc")
+        .limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
-      return filteredUsersModule.data;
+      return filteredUsersModule.data as Map<string, Profile>;
     },
-    getUsersWithoutSection(limit: number){
+    getUsersWithoutSection(limit: number, maxRole: number): Map<string, Profile>{
       console.log(`Fetching users without any sections`);
-      const filteredUsersModule = usersModule.where("sectionId", "==", []).orderBy("creationDate", "desc").limit(limit);
+      const filteredUsersModule = usersModule
+        .where("sectionId", "==", [])
+        .where("requestedRole", "<=", maxRole)
+        .orderBy("creationDate", "desc")
+        .limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
-      return filteredUsersModule.data;
+      return filteredUsersModule.data as Map<string, Profile>;
     }
   },
 });

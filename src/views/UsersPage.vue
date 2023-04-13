@@ -25,7 +25,7 @@
             <ion-item>
               <ion-icon v-if="userFilter == 'promotions'" @click="removePromotion(user.uid)" slot="start" :ios="closeOutline" :md="closeSharp"></ion-icon>
               <ion-label :routerLink="`/profile/${user.uid}`">
-                <ion-text v-if="userFilter == ''" style="font-size: small;">{{ getDate(user.creationDate) }}</ion-text>
+                <ion-text v-if="userFilter == ''" style="font-size: small;">{{ parseDate(user.creationDate) }}</ion-text>
                 <ion-text style="font-weight: bold"  class="ion-padding-start">{{ userStore.getName(user.uid) }} </ion-text>
               </ion-label>
               <!-- <ion-input slot="end" type="text" readonly="true">{{ getRoleByValue(user.role) }}</ion-input> -->
@@ -71,11 +71,11 @@ onMounted(() => {
 const users = computed(() => {
   switch (props.userFilter) {
     case "promotions":
-      return userStore.getPromotionUsers(pageSize.value);
+      return userStore.getApplicants(pageSize.value, userStore.profile.role);
     case "withoutSection":
-      return userStore.getUsersWithoutSection(pageSize.value);
+      return userStore.getUsersWithoutSection(pageSize.value, userStore.profile.role);
     default:
-      return userStore.getLatestUsers(pageSize.value);
+      return userStore.getLatestUsers(pageSize.value, userStore.profile.role);
   }
 });
 const pageTitle = computed(() => {
@@ -103,7 +103,7 @@ const showNotFound = () => {
 
 // Methods
 
-const getDate = (timestamp: any) => {
+const parseDate = (timestamp: any) => {
   const date = timestamp.toDate();
   return date.toLocaleString("fr-BE");
 }
@@ -118,10 +118,17 @@ const toggleEditRole = (user: Profile | null) => {
     editedUid.value = "";
   }
 };
+/**
+ * @description Set the role of the user
+ * @param uid The user id
+ */
 const setRole = (uid: string) => {
   userStore.updateProfile(uid, { role: editedRoleValue.value });
   toggleEditRole(null);
 };
+/**
+ * @description Set the number of users to display
+ */
 const setLimit = async () => {
   const inputs = [] as AlertInput[];
   const options = [15, 50, 100, 500]

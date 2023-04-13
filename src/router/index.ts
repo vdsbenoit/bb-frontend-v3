@@ -119,6 +119,13 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Administrateur }
   },
   {
+    name: 'requests',
+    path: '/requests',
+    props: true,
+    component: () => import ('../views/RequestsPage.vue'),
+    meta: { minimumRole: ROLES.Chef }
+  },
+  {
     name: 'promotions',
     path: '/promotions',
     component: () => import ('../views/UsersPage.vue'),
@@ -169,12 +176,12 @@ router.beforeEach(async (to, from, next) => {
   if (user.isLoggedIn) {
     if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
     if (to.name === "onboarding"){
-      if (user.profile.role > ROLES.Newbie) {
+      if (user.profile.hasDoneOnboarding) {
         toastPopup("Tu as déjà fait l'onboarding");
         return next('/home');
       }
     }
-    if (user.profile.role === ROLES.Newbie && to.name !== "onboarding") {
+    if (!user.profile.hasDoneOnboarding && to.name !== "onboarding") {
       console.log("User is newbie, redirecting to onboarding");
       return next('/onboarding');
     }
