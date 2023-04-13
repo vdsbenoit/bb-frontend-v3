@@ -5,6 +5,7 @@
       <ion-button v-if="showRegisterButton" @click="registerPlayer"><ion-icon slot="icon-only" :icon="starOutline"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <div v-if="isTeam || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
@@ -91,6 +92,7 @@ import { getTeamMatches } from "@/services/matches";
 import { getSchedule, isShowRankingToAll } from "@/services/settings";
 import { getSection, Section } from "@/services/sections";
 import { errorPopup, toastPopup } from "@/services/popup";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const user = useAuthStore();
 const route = useRoute();

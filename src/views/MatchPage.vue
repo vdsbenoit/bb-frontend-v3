@@ -2,6 +2,7 @@
   <ion-page>
     <header-template :pageTitle="pageTitle"></header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <div v-if="isMatch || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top" @click="router.navigate(`/game/${match.game_id}`, 'back', 'push')">
           <ion-row class="ion-align-items-center">
@@ -132,6 +133,7 @@ import { isScoresFrozen } from "@/services/settings";
 import { getSchedule } from "@/services/settings";
 import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
 import { addSectionDraw, addSectionWin, removeSectionDraw, removeSectionWin } from "@/services/sections";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const userStore = useAuthStore();
 const route = useRoute();

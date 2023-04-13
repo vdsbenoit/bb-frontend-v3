@@ -4,6 +4,7 @@
       <ion-button v-if="canEditGames" @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <ion-item color="primary">
         <ion-label class="ion-text-center">Sélectionne un circuit</ion-label>
         <ion-select v-if="circuits" v-model="selectedCircuit" interface="popover">
@@ -68,6 +69,7 @@ import { computed, ref } from "@vue/reactivity";
 import { Game, getCircuitGames, setName } from "@/services/games";
 import { onMounted, watch } from "vue";
 import { getCircuits, getMaxGameLeaders } from "@/services/settings";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const user = useAuthStore();
 const router = useIonRouter();

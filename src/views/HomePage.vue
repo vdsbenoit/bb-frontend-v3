@@ -2,6 +2,7 @@
   <ion-page>
     <header-template pageTitle="Accueil"></header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <div class="logo">
         <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
@@ -40,6 +41,7 @@ import TileCol from "@/components/TileCol.vue";
 import { computed } from "vue";
 import { isLeaderRegistrationOpen } from "@/services/settings";
 import InfoCardComponent from "../components/InfoCardComponent.vue";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const user = useAuthStore();
 

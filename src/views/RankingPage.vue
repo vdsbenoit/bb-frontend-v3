@@ -4,6 +4,7 @@
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <ion-card>
         <ion-card-header>
           <ion-card-title>Lutins</ion-card-title>
@@ -60,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonText, IonBadge, 
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, 
 AlertInput, alertController, IonIcon, IonButton } from "@ionic/vue";
 import { settingsOutline, settingsSharp} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
@@ -68,6 +69,7 @@ import RankingComponent from "@/components/RankingComponent.vue";
 import { computed, ref } from "@vue/reactivity";
 import { getTopSections } from "@/services/sections";
 import { getTopTeams } from "@/services/teams";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 // reactive data
 

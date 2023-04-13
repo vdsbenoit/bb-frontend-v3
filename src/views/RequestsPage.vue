@@ -4,6 +4,7 @@
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <div v-if="showSpinner()" class="not-found" style="background: transparent">
         <ion-spinner></ion-spinner>
       </div>
@@ -42,6 +43,7 @@ import { computed, ref } from "@vue/reactivity";
 import { onMounted } from "vue";
 import { getLeaderSection } from "@/services/leaderSections";
 import { choicePopup, textInputPopup } from "@/services/popup";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const userStore = useAuthStore();
 

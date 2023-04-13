@@ -7,6 +7,7 @@
       </ion-button>
     </header-template>
     <ion-content :fullscreen="true" class="ion-padding">
+      <refresher-component></refresher-component>
       <div v-if="isProfile">
         <info-card-component class="ion-no-margin ion-margin-bottom" v-if="showFillingInfo"> 
           Nhésite pas à compléter ou corriger les champs si dessous. Ca rend l'utilisation de l'app plus facile.
@@ -114,6 +115,7 @@ import { stopMagnetar } from "@/services/magnetar";
 import { getMaxGameLeaders, getSectionTypes } from "@/services/settings";
 import { getSectionsBySectionType, getSection } from "@/services/sections";
 import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const userStore = useAuthStore();
 const router = useRouter();

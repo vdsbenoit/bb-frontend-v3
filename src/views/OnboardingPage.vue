@@ -2,6 +2,7 @@
   <ion-page>
     <header-template pageTitle="Onboarding"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
+      <refresher-component></refresher-component>
       <ion-card>
         <ion-card-header v-if="userStore.profile.rejectionReason">
           <ion-card-title>Aille !</ion-card-title>
@@ -77,6 +78,7 @@ import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
 import { getSectionTypes } from "@/services/settings";
 import { getSection, getSectionsBySectionType, Section } from "@/services/sections";
 import { getLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const router = useRouter();
 const userStore = useAuthStore();

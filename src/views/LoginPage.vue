@@ -2,6 +2,7 @@
   <ion-page>
     <header-template pageTitle="Connexion"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
+      <refresher-component></refresher-component>
       <div class="logo">
         <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
@@ -38,6 +39,7 @@ import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { defineProps } from "vue";
 import { computed } from "@vue/reactivity";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const props = defineProps(["validation", "redirect"]);
 const user = useAuthStore();

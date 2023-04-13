@@ -2,6 +2,7 @@
   <ion-page>
     <header-template pageTitle="Duels"> </header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <ion-item color="primary">
         <ion-label class="ion-text-center">Choisir un horaire</ion-label>
         <ion-select v-model="selectedTime" interface="popover">
@@ -43,6 +44,7 @@ import { computed, ref } from "@vue/reactivity";
 import { getSchedules } from "@/services/settings";
 import { getTimeMatches, Match } from "@/services/matches";
 import { onMounted } from "vue";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 // reactive data
 const selectedTime = ref(0);

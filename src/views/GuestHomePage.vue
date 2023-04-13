@@ -2,6 +2,7 @@
   <ion-page>
     <header-template pageTitle="Accueil"></header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <div class="logo">
         <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle" />
       </div>
@@ -17,6 +18,7 @@
 import { IonContent, IonPage, IonButton,} from "@ionic/vue";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useRouter } from "vue-router";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const router = useRouter();
 </script>

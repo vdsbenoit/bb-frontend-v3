@@ -2,6 +2,7 @@
   <ion-page>
     <header-template pageTitle="Animateurs"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
+      <refresher-component></refresher-component>
       <ion-card>
         <ion-card-content class="ion-no-padding">
           <ion-grid class="">
@@ -97,6 +98,7 @@
 
 <script setup lang="ts">
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 import { getLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
 import { ROLES, useAuthStore } from "@/services/users";
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";

@@ -2,6 +2,7 @@
   <ion-page>
     <header-template pageTitle="Paramètres"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
+      <refresher-component></refresher-component>
       <ion-card>
         <ion-card-header>
           <ion-card-title>Utilisateurs</ion-card-title>
@@ -70,17 +71,12 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon, IonList, IonItem, IonLabel, useIonRouter, IonButton, IonToggle, IonInput } from "@ionic/vue";
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon, IonList, IonItem, IonLabel, IonButton, IonToggle, IonInput } from "@ionic/vue";
 import { chevronForwardOutline, chevronForwardSharp, checkmarkOutline, checkmarkSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore } from "@/services/users";
-import { useRoute } from "vue-router";
 import { appSettingsDefaults, getMaxGameLeaders, isScoresFrozen, isShowRankingToAll, updateAppSettings, canSetScoreAnywhere, isLeaderRegistrationOpen } from "@/services/settings";
 import { reactive, ref } from "vue";
-
-const user = useAuthStore();
-const route = useRoute();
-const router = useIonRouter();
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 // reactive data
 

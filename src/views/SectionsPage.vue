@@ -2,6 +2,7 @@
   <ion-page>
     <header-template pageTitle="Sections"></header-template>
     <ion-content :fullscreen="true" class="ion-padding">
+      <refresher-component></refresher-component>
       <ion-card>
         <ion-card-content class="ion-no-padding">
           <ion-grid class="">
@@ -140,6 +141,7 @@ import { getSectionsBySectionType, getSection, Section } from "@/services/sectio
 import { onMounted, watch, watchEffect } from "vue";
 import { getSectionTypes, isShowRankingToAll } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 
 const user = useAuthStore();

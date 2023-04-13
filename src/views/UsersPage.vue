@@ -4,6 +4,7 @@
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true" class="ion-padding">
+      <refresher-component></refresher-component>
       <div v-if="showSpinner()" class="ion-text-center" style="background: transparent">
         <ion-spinner></ion-spinner>
       </div>
@@ -48,6 +49,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { onMounted, defineProps } from "vue";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const props = defineProps(["userFilter"]);
 const userStore = useAuthStore();

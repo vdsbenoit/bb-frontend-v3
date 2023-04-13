@@ -4,6 +4,7 @@
       <ion-button v-if="canEditLeaders" @click="toggleLeadersEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
+      <refresher-component></refresher-component>
       <div v-if="isGame || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
@@ -170,6 +171,7 @@ import { getGameMatches, setMatchNoScores } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
 import { getLeaderSections } from "@/services/leaderSections";
+import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const user = useAuthStore();
 const route = useRoute();
