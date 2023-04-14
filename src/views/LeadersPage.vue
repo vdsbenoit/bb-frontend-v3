@@ -50,8 +50,8 @@
                   <ion-label>Membres en attente de validation</ion-label>
                   <ion-badge slot="end" color="warning">{{ pendingMembers }}</ion-badge>
                 </ion-item>
-                <ion-list v-if="sectionMembers && sectionMembers.size > 0">
-                  <ion-item v-for="member in sectionMembers.values()" :key="member.uid" :routerLink="`/profile/${member.uid}`">
+                <ion-list v-if="sectionMembers && sectionMembers.length > 0">
+                  <ion-item v-for="member in sectionMembers" :key="member.uid" :routerLink="`/profile/${member.uid}`">
                     <ion-label>{{ userStore.getName(member.uid) }}</ion-label>
                     <ion-badge v-if="member.role <= ROLES.Chef" slot="end" :color="registrationStatus(member).color">{{ registrationStatus(member).text }}</ion-badge>
                   </ion-item>
@@ -151,11 +151,15 @@ const sections = computed((): Map<string, LeaderSection> => {
 const section = computed((): LeaderSection | undefined => {
   return sectionId.value ? getLeaderSection(sectionId.value) : undefined;
 });
-const sectionMembers = computed(() => {
+const allSectionMembers = computed(() => {
+  if(!sectionId.value) return new Map();
   return userStore.getSectionMembers(sectionId.value);
 });
+const sectionMembers = computed(() => {
+  return Array.from(allSectionMembers.value.values()).filter((user) => user.role !== ROLES.Chef && user.role !== ROLES.Administrateur);
+});
 const sectionLeaders = computed(() => {
-  return Array.from(sectionMembers.value.values()).filter((user) => user.role === ROLES.Chef || user.role === ROLES.Administrateur);
+  return Array.from(allSectionMembers.value.values()).filter((user) => user.role === ROLES.Chef || user.role === ROLES.Administrateur);
 });
 const isStaff = computed(() => {
   return section.value && section.value.id === staffSectionId.value;

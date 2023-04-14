@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonIcon, IonText, IonSelect, IonSelectOption, IonSpinner, IonItem, IonList, IonLabel, IonButton, alertController, AlertInput} from "@ionic/vue";
-import { pencilOutline, pencilSharp, closeOutline, closeSharp, checkmarkOutline, checkmarkSharp, settingsOutline, settingsSharp} from "ionicons/icons";
+import { pencilOutline, pencilSharp, checkmarkOutline, checkmarkSharp, settingsOutline, settingsSharp} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";

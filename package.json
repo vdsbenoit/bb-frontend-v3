@@ -60,7 +60,7 @@
   "vue": {
     "pwa": {
       "name": "Baden Battle Score App",
-      "themeColor": "#0075CD",
+      "themeColor": "#FEE12B",
       "msTileColor": "#F1F6FA",
       "appleMobileWebAppCapable": "yes",
       "manifestOptions": {

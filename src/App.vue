@@ -43,7 +43,7 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 IonSplitPane, IonText, IonFooter, IonToggle } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, moonOutline,
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, moonSharp,
-personAddOutline, personAddSharp, trophyOutline, trophySharp, timeOutline, timeSharp } from "ionicons/icons";
+personAddOutline, personAddSharp, trophyOutline, trophySharp, timeOutline, timeSharp,  } from "ionicons/icons";
 import { computed, onMounted, ref, watch } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
@@ -97,8 +97,21 @@ const appPages = computed(() => {
       iosIcon: footballOutline,
       mdIcon: footballSharp,
     }]
+    if (user.profile.sectionId) pages = [...pages, {
+      title: "Ma section",
+      url: `/leader/${user.profile.sectionId}`,
+      iosIcon: peopleSharp,
+      mdIcon: peopleSharp,
+    }]
+    pages = [...pages, leadersPage];
   }
   if (user.profile.role >= ROLES.Chef) pages = [...pages, requestsPage];
+  if (user.profile.role == ROLES.Participant) pages = [...pages, {
+    title: "Ma section",
+    url: `/section/${user.profile.sectionId}`,
+    iosIcon: peopleSharp,
+    mdIcon: peopleSharp,
+  }];
   if (user.profile.role > ROLES.Newbie) pages = [...pages, sectionsPage, gamesPage];
   if (user.profile.role >= ROLES.Organisateur) pages = [...pages, matchesPage];
   if (user.profile.role >= ROLES.Administrateur) pages = [...pages, rankingPage, settingsPage];
@@ -167,23 +180,23 @@ const aboutPage = {
   iosIcon: informationCircleOutline,
   mdIcon: informationCircleSharp,
 }
+const sectionsPage = {
+  title: "Sections",
+  url: "/sections",
+  iosIcon: peopleOutline,
+  mdIcon: peopleOutline,
+}
 const leadersPage = {
   title: "Animateurs",
   url: "/leaders",
   iosIcon: peopleOutline,
-  mdIcon: peopleSharp,
+  mdIcon: peopleOutline,
 }
 const gamesPage = {
   title: "Épreuves",
   url: "/games",
   iosIcon: footballOutline,
   mdIcon: footballSharp,
-}
-const sectionsPage = {
-  title: "Sections",
-  url: "/sections",
-  iosIcon: peopleOutline,
-  mdIcon: peopleSharp,
 }
 const requestsPage = {
   title: "Demandes d'accès",

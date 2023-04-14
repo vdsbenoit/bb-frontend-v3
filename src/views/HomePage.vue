@@ -12,21 +12,28 @@
       </info-card-component>
       <ion-grid class="home-grid">
         <ion-row>
+          <!-- participant -->
           <tile-col v-if="showSelectTeam" :target="`/section/${user.profile.sectionId}`">Choisis une équipe</tile-col>
           <tile-col v-if="showSectionButton" :target="`/section/${user.profile.sectionId}`">Ma section</tile-col>
           <tile-col v-if="user.profile.team" :target="`/team/${user.profile.team}`">Mon équipe</tile-col>
 
+          <!-- >= chef -->
           <tile-col v-if="nbPendingRequests" target="/requests">
             {{ nbPendingRequests }} demande{{ nbPendingRequests > 1 ? "s" : "" }} d'accès
           </tile-col>
 
+          <!-- chef -->
           <tile-col v-if="showRegisterLeaders" :target="`/leader/${user.profile.sectionId}`">Inscris tes animés à des épreuves</tile-col>
 
+          <!-- animateur -->
           <tile-col v-if="showSelectMorningGame" target="/games">Inscris-toi à une épreuve du matin</tile-col>
           <tile-col v-if="showSelectAfternoonGame" target="/games">Inscris-toi à une épreuve de l'aprèm</tile-col>
           <tile-col v-if="showLeaderSectionButton" :target="`/leader/${user.profile.sectionId}`">Ma section</tile-col>
           <tile-col v-if="user.profile.morningGame" :target="`/game/${user.profile.morningGame}`">Mon épreuve du matin</tile-col>
           <tile-col v-if="user.profile.afternoonGame" :target="`/game/${user.profile.afternoonGame}`">Mon épreuve de l'aprèm</tile-col>
+
+          <!-- organisateur -->
+          <tile-col v-if="user.profile.role >= ROLES.Organisateur" target="/leaders">Animateurs</tile-col>
         </ion-row>
       </ion-grid>
     </ion-content>
@@ -56,7 +63,7 @@ const showSectionButton = computed(() => {
   return user.profile.role === ROLES.Participant && user.profile.sectionId;
 });
 const showLeaderSectionButton = computed(() => {
-  return user.profile.role >= ROLES.Animateur&& user.profile.sectionId;
+  return user.profile.role >= ROLES.Animateur && user.profile.sectionId;
 });
 const showRegisterLeaders = computed(() => {
   return (user.profile.role === ROLES.Chef) && isLeaderRegistrationOpen();
