@@ -59,14 +59,14 @@ const showLeaderSectionButton = computed(() => {
   return user.profile.role >= ROLES.Animateur&& user.profile.sectionId;
 });
 const showRegisterLeaders = computed(() => {
-  return (user.profile.role === ROLES.Chef) && isLeaderRegistrationOpen;
+  return (user.profile.role === ROLES.Chef) && isLeaderRegistrationOpen();
 });
 const showSelectMorningGame = computed(() => {
-  if (!isLeaderRegistrationOpen) return false;
+  if (!isLeaderRegistrationOpen()) return false;
   return ((user.profile.role === ROLES.Animateur || user.profile.role === ROLES.Chef) && !user.profile.morningGame);
 });
 const showSelectAfternoonGame = computed(() => {
-  if (!isLeaderRegistrationOpen) return false;
+  if (!isLeaderRegistrationOpen()) return false;
   return ((user.profile.role === ROLES.Animateur || user.profile.role === ROLES.Chef) && !user.profile.afternoonGame);
 });
 const pendingRequests = computed(() => {

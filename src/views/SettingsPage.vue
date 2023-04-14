@@ -36,26 +36,22 @@
               <ion-button v-if="editMaxGameLeaders" @click="setMaxLeaders" color="success" slot="end"><ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp"></ion-icon></ion-button>
               <ion-input v-else @click="toggleEditMaxGameLeaders" name="maxGameLeaders" type="number" :readonly="true" inputmode="none" slot="end">{{ getMaxGameLeaders() }}</ion-input>
             </ion-item>
-          </ion-list>
-          <ion-list>
             <ion-item>
               <ion-label>Geler les scores</ion-label>
               <ion-toggle @IonChange="freezeScores" :checked="isScoresFrozen()"></ion-toggle>
             </ion-item>
-          </ion-list>
-          <ion-list>
             <ion-item>
               <ion-label class="ion-text-wrap">Rendre les classements publiques</ion-label>
               <ion-toggle @IonChange="showRanking" :checked="isShowRankingToAll()"></ion-toggle>
             </ion-item>
-          </ion-list>
-          <ion-list>
             <ion-item>
               <ion-label>Inscriptions aux épreuves</ion-label>
               <ion-toggle @IonChange="setLeaderRegistration" :checked="isLeaderRegistrationOpen()"></ion-toggle>
             </ion-item>
-          </ion-list>
-          <ion-list>
+            <ion-item>
+              <ion-label>Afficher la disponibilités des épreuves</ion-label>
+              <ion-toggle @IonChange="setGameAvailabilites" :checked="isShowGameAvailabilities()"></ion-toggle>
+            </ion-item>
             <ion-item>
               <ion-label class="ion-text-wrap">
                 <h2>Autoriser l'enregistrement de scores dans n'importe quelle épreuve</h2>
@@ -74,7 +70,7 @@
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon, IonList, IonItem, IonLabel, IonButton, IonToggle, IonInput } from "@ionic/vue";
 import { chevronForwardOutline, chevronForwardSharp, checkmarkOutline, checkmarkSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { appSettingsDefaults, getMaxGameLeaders, isScoresFrozen, isShowRankingToAll, updateAppSettings, canSetScoreAnywhere, isLeaderRegistrationOpen } from "@/services/settings";
+import { appSettingsDefaults, getMaxGameLeaders, isScoresFrozen, isShowRankingToAll, updateAppSettings, canSetScoreAnywhere, isLeaderRegistrationOpen, isShowGameAvailabilities } from "@/services/settings";
 import { reactive, ref } from "vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
@@ -106,6 +102,9 @@ const showRanking = (value: any) => {
 };
 const setLeaderRegistration = (value: any) => {
   updateAppSettings({ leaderRegistration: value.detail.checked });
+};
+const setGameAvailabilites = (value: any) => {
+  updateAppSettings({ showGameAvailabilities: value.detail.checked });
 };
 const setScoreAnywhere = (value: any) => {
   updateAppSettings({ everyoneCanSetScoreAnywhere: value.detail.checked });

@@ -13,7 +13,7 @@
         <ion-spinner v-else-if="isLoadingCircuits"></ion-spinner>
         <div v-else>Pas de circuits configuré</div>
       </ion-item>
-      <ion-list v-if="selectedCircuit">
+      <ion-list v-if="selectedCircuit" lines="full">
         <div v-if="games && games.size > 0">
           <div v-for="game in games?.values()" :key="game.id">
             <div v-if="editMode">
@@ -40,7 +40,8 @@
                 <ion-label>
                   <ion-text>{{ game.name }}</ion-text>
                 </ion-label>
-                <ion-badge slot="end" class="ion-no-margin" :color="getStatus(game).color">{{ getStatus(game).text }}</ion-badge>
+                <ion-badge v-if="showGameAvailabilities()" slot="end" class="ion-no-margin" :color="getStatus(game.morningLeaders).color">M{{ getStatus(game.morningLeaders).nbLeaders }}</ion-badge>
+                <ion-badge v-if="showGameAvailabilities()" slot="end" class="ion-no-margin ion-margin-start" :color="getStatus(game.afternoonLeaders).color">A{{ getStatus(game.afternoonLeaders).nbLeaders }}</ion-badge>
               </ion-item>
             </div>
           </div>
@@ -68,7 +69,7 @@ import { toastPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
 import { Game, getCircuitGames, setName } from "@/services/games";
 import { onMounted, watch } from "vue";
-import { getCircuits, getMaxGameLeaders } from "@/services/settings";
+import { getCircuits, getMaxGameLeaders, isShowGameAvailabilities } from "@/services/settings";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const user = useAuthStore();
@@ -120,18 +121,16 @@ const editIcon = computed(() => {
 const gamesNotFound = () => {
   return selectedCircuit.value && !isLoadingGames.value && (!games.value || games.value.size < 1);
 }
+const showGameAvailabilities = () => {
+  return isShowGameAvailabilities();
+}
 
 // Methods
-const isFull = (leaderList: string[]) => {
-  return leaderList.length >= getMaxGameLeaders();
-};
-const getStatus = (game: Game) => {
-  if(!game.morningLeaders || ! game.afternoonLeaders) return { text: "inconnu", color: "medium" };
-  if (isFull(game.morningLeaders) && isFull(game.afternoonLeaders)) return { text: "Complet", color: "danger" };
-  if (!isFull(game.morningLeaders) && isFull(game.afternoonLeaders)) return { text: "Matin", color: "warning" };
-  if (isFull(game.morningLeaders) && !isFull(game.afternoonLeaders)) return { text: "Arpèm", color: "warning" };
-  if (!isFull(game.morningLeaders) && !isFull(game.afternoonLeaders)) return { text: "Libre", color: "primary" };
-  return { text: "inconnu", color: "medium" };
+const getStatus = (leaders: string[]) => {
+  const nbLeaders = leaders.length;
+  if (nbLeaders === 0) return { nbLeaders, color: "danger" };
+  if (nbLeaders < getMaxGameLeaders()) return { nbLeaders, color: "warning" };
+  return { nbLeaders, color: "primary" };
 };
 const toggleEditMode = () => {
   editMode.value = !editMode.value;

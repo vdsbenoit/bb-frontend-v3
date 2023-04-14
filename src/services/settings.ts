@@ -16,6 +16,7 @@ export type AppSettings = {
   everyoneCanSetScoreAnywhere: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
   showRankingToAll: boolean;
+  showGameAvailabilities: boolean;
 }
 
 export const appSettingsDefaults: AppSettings = {
@@ -24,6 +25,7 @@ export const appSettingsDefaults: AppSettings = {
   everyoneCanSetScoreAnywhere: false,
   leaderRegistration: true,
   showRankingToAll: false,
+  showGameAvailabilities: true,
 };
 
 function appSettingsDefaultsFunc(payload: Partial<AppSettings>): AppSettings {
@@ -88,28 +90,24 @@ export const fetchAppConfiguration = () => {
 
 // App settings
 
-export const isScoresFrozen = (): boolean => {
-  if (appSettingsModule.data) return appSettingsModule.data.freezeScore;
-  console.log("appSettingsModule not loaded, returning default value for freezeScore");
-  return appSettingsDefaults.freezeScore;
+export const isScoresFrozen = (): boolean | undefined => {
+  return appSettingsModule.data?.freezeScore;
 };
 export const getMaxGameLeaders = (): number => {
-  if (appSettingsModule.data) return appSettingsModule.data.maxGameLeaders;
-  console.error("appSettingsModule not loaded, returning default value for maxGameLeaders");
-  return appSettingsDefaults.maxGameLeaders;
+  return appSettingsModule.data?.maxGameLeaders ?? appSettingsDefaults.maxGameLeaders;
 };
-export const canSetScoreAnywhere = (): boolean => {
-  if (appSettingsModule.data) return appSettingsModule.data.everyoneCanSetScoreAnywhere;
-  console.error("appSettingsModule not loaded, returning default value for everyoneCanSetScoreAnywhere");
-  return appSettingsDefaults.everyoneCanSetScoreAnywhere;
+export const canSetScoreAnywhere = (): boolean | undefined => {
+  return appSettingsModule.data?.everyoneCanSetScoreAnywhere;
 };
 export const isLeaderRegistrationOpen = () => {
-  if (appSettingsModule.data) return appSettingsModule.data.leaderRegistration;
-  return appSettingsDefaults.leaderRegistration; 
+  return appSettingsModule.data?.leaderRegistration;
 }
 export const isShowRankingToAll = (): boolean => {
   if (appSettingsModule.data?.showRankingToAll) return appSettingsModule.data.showRankingToAll;
   return appSettingsDefaults.showRankingToAll;
+};
+export const isShowGameAvailabilities = (): boolean | undefined => {
+  return appSettingsModule.data?.showGameAvailabilities;
 };
 export const getAppSettings = computed(() => {
   return appSettingsModule.data;
