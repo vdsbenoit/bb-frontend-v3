@@ -156,7 +156,7 @@
                 <ion-button v-if="canDeleteProfile" expand="block" class="" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
               </ion-col>
               <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                <ion-button v-if="isStaff" expand="block" class="" color="medium" @click="resetOnboarding"> Reset onboarding </ion-button>
+                <ion-button v-if="canDeleteProfile" expand="block" class="" color="medium" @click="resetOnboarding"> Reset onboarding </ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -260,7 +260,7 @@ const isLeader = computed(() => {
   return userProfile.value.role === ROLES.Animateur || userProfile.value.role === ROLES.Chef; 
 });
 const isStaff = computed(() => {
-  return userStore.profile.role >= ROLES.Organisateur;
+  return userProfile.value.role >= ROLES.Organisateur;
 });
 const canSetRole = computed(() => {
   return userStore.profile.role >= ROLES.Administrateur;
