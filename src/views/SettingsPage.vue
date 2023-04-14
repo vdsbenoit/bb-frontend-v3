@@ -9,10 +9,6 @@
         </ion-card-header>
         <ion-card-content class="ion-no-padding">
           <ion-list>
-            <ion-item routerLink="/users/promotions">
-              <ion-label>Demandes de promotions</ion-label>
-              <ion-icon slot="end" :ios="chevronForwardOutline" :md="chevronForwardSharp"></ion-icon>
-            </ion-item>
             <ion-item routerLink="/users/withoutSection">
               <ion-label>Utilisateurs sans section</ion-label>
               <ion-icon slot="end" :ios="chevronForwardOutline" :md="chevronForwardSharp"></ion-icon>

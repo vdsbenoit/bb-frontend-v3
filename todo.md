@@ -13,11 +13,11 @@
 - [x] Add info ribbon homePage when pending request
 - [x] Add info ribbon when request is rejected
 - [x] Fix Profile
-- [ ] update DB rules
+- [x] update DB rules
 
 ## User feedback
 
-- [ ] indiquer lorsqu'un timing a complétement été encodé
+- [x] indiquer lorsqu'un timing a complétement été encodé
 - [x] ajouter un attribut sur les épreuves sans score (e.g. pause)
 - [x] ajouter un attribut aux matches du type "noScores"
   - [x] créer un bouton pour configurer ceci sur GamePage

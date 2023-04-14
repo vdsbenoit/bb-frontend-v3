@@ -170,7 +170,7 @@ import { forceFetchGame, Game, getGame, removeAfternoonLeader, removeMorningLead
 import { getGameMatches, setMatchNoScores } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
-import { getLeaderSections } from "@/services/leaderSections";
+import { getLeaderSection, getLeaderSections } from "@/services/leaderSections";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const user = useAuthStore();
@@ -231,7 +231,13 @@ const matches = computed(() => {
   return game.value?.id ? getGameMatches(game.value?.id) : new Map();
 });
 const leaderSections = computed(() => {
-  return editMode.value ? getLeaderSections() : new Map();
+  if (!editMode.value) return new Map(); // don't load sections if not in edit mode
+  if (user.profile.role === ROLES.Chef ) {
+    const sections = new Map();
+    sections.set(user.profile.sectionId, getLeaderSection(user.profile.sectionId));
+    return sections;
+  }
+  if (user.profile.role > ROLES.Chef) return getLeaderSections()
 });
 const sectionLeaders = computed(() => {
   return selectedLeaderSection.value ? user.getSectionMembers(selectedLeaderSection.value) : undefined;

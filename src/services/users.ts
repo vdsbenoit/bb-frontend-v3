@@ -322,20 +322,22 @@ export const useAuthStore = defineStore("authStore", {
       filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;
     },
-    getLatestUsers(limit: number, maxRole: number): Map<string, Profile>{
+    getLatestUsers(limit: number): Map<string, Profile>{
       console.log(`Fetching latest registered userd`);
       const filteredUsersModule = usersModule
-        .where("requestedRole", "<=", maxRole)
+        .where("requestedRole", "<=", this.profile.role)
+        .orderBy("requestedRole", "desc")
         .orderBy("creationDate", "desc")
         .limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;
     },
-    getUsersWithoutSection(limit: number, maxRole: number): Map<string, Profile>{
+    getUsersWithoutSection(limit: number): Map<string, Profile>{
       console.log(`Fetching users without any sections`);
       const filteredUsersModule = usersModule
         .where("sectionId", "==", [])
-        .where("requestedRole", "<=", maxRole)
+        .where("requestedRole", "<=", this.profile.role)
+        .orderBy("requestedRole", "desc")
         .orderBy("creationDate", "desc")
         .limit(limit);
       filteredUsersModule.stream(); // using stream because fetch is buggy

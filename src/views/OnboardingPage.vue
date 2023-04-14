@@ -125,6 +125,7 @@ const isLeader = computed(() => (selectedRole.value === ROLES.Animateur || selec
 const canSubmit = computed(() => {
   if (isParticipant.value && selectedSectionType.value && selectedSectionId.value > 0) return true
   if (isLeader.value && selectedLeaderSectionId.value > 0) return true
+  if (selectedRole.value >= ROLES.Organisateur) return true
   return false;
 });
 
@@ -170,7 +171,7 @@ const processForm = () => {
       isUpdatingProfile.value = false;
     })
     .catch((error: any) => {
-      errorPopup(`Le n'a pas pu être mis à jour : ${error.message}`);
+      errorPopup(`Le profile n'a pas pu être mis à jour : ${error.message}`);
       isUpdatingProfile.value = false;
     })
     .finally(() => {

@@ -70,18 +70,33 @@ watch(isDarkModeEnabled, (shouldEnable: boolean) => {
 
 // Computed
 
+
 const name = computed(() => {
   if (!user.isLoggedIn) return "undefined";
   return user.getName(user.uid);
 });
 const appPages = computed(() => {
-  if (!user.isLoggedIn) return [homePage, loginPage, aboutPage];
+  if (!user.isLoggedIn) return [guestHomePage, loginPage, aboutPage];
   let pages = [homePage];
-  if (user.profile.team) pages = [...pages,  teamPage]
+  if (user.profile.team) pages = [...pages,  {
+      title: "Mon Equipe",
+      url: `/team/${user.profile.team}`,
+      iosIcon: peopleCircleOutline,
+      mdIcon: peopleCircleSharp,
+  }]
   if (user.profile.role >= ROLES.Animateur) {
-    if (user.profile.morningGame) pages = [...pages, morningGamePage]
-    if (user.profile.afternoonGame) pages = [...pages, afternoonGamePage]
-    pages = [...pages, leadersPage]
+    if (user.profile.morningGame) pages = [...pages, {
+      title: "Mon épreuve du matin",
+      url: `/game/${user.profile.morningGame}`,
+      iosIcon: footballOutline,
+      mdIcon: footballSharp,
+    }]
+    if (user.profile.afternoonGame) pages = [...pages, {
+      title: "Mon épreuve de l'aprèm",
+      url: `/game/${user.profile.afternoonGame}`,
+      iosIcon: footballOutline,
+      mdIcon: footballSharp,
+    }]
   }
   if (user.profile.role >= ROLES.Chef) pages = [...pages, requestsPage];
   if (user.profile.role > ROLES.Newbie) pages = [...pages, sectionsPage, gamesPage];
@@ -124,7 +139,13 @@ const settingsPage = {
 }
 const homePage =   {
   title: "Accueil",
-  url: user.isLoggedIn ? "/home" : "/guest", 
+  url: "/home",
+  iosIcon: homeOutline,
+  mdIcon: homeSharp,
+}
+const guestHomePage =   {
+  title: "Accueil",
+  url: "/guest", 
   iosIcon: homeOutline,
   mdIcon: homeSharp,
 }
@@ -145,24 +166,6 @@ const aboutPage = {
   url: "/about",
   iosIcon: informationCircleOutline,
   mdIcon: informationCircleSharp,
-}
-const teamPage = {
-    title: "Mon Equipe",
-    url: `/team/${user.profile.team}`,
-    iosIcon: peopleCircleOutline,
-    mdIcon: peopleCircleSharp,
-}
-const morningGamePage = {
-  title: "Mon épreuve du matin",
-  url: `/game/${user.profile.morningGame}`,
-  iosIcon: footballOutline,
-  mdIcon: footballSharp,
-}
-const afternoonGamePage = {
-  title: "Mon épreuve de l'aprèm",
-  url: `/game/${user.profile.afternoonGame}`,
-  iosIcon: footballOutline,
-  mdIcon: footballSharp,
 }
 const leadersPage = {
   title: "Animateurs",

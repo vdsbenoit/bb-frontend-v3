@@ -24,7 +24,6 @@
           </div>
           <div v-else>
             <ion-item>
-              <ion-icon v-if="userFilter == 'promotions'" @click="removePromotion(user.uid)" slot="start" :ios="closeOutline" :md="closeSharp"></ion-icon>
               <ion-label :routerLink="`/profile/${user.uid}`">
                 <ion-text v-if="userFilter == ''" style="font-size: small;">{{ parseDate(user.creationDate) }}</ion-text>
                 <ion-text style="font-weight: bold"  class="ion-padding-start">{{ userStore.getName(user.uid) }} </ion-text>
@@ -72,18 +71,14 @@ onMounted(() => {
 
 const users = computed(() => {
   switch (props.userFilter) {
-    case "promotions":
-      return userStore.getApplicants(pageSize.value);
     case "withoutSection":
-      return userStore.getUsersWithoutSection(pageSize.value, userStore.profile.role);
+      return userStore.getUsersWithoutSection(pageSize.value);
     default:
-      return userStore.getLatestUsers(pageSize.value, userStore.profile.role);
+      return userStore.getLatestUsers(pageSize.value);
   }
 });
 const pageTitle = computed(() => {
   switch (props.userFilter) {
-    case "promotions":
-      return "Demandes de promotions";
     case "withoutSection":
       return "Utilisateurs sans section";
     default:
@@ -109,9 +104,6 @@ const parseDate = (timestamp: any) => {
   const date = timestamp.toDate();
   return date.toLocaleString("fr-BE");
 }
-const removePromotion = (uid: string) => {
-  return userStore.updateProfile(uid, { promotionRequested: false });
-};
 const toggleEditRole = (user: Profile | null) => {
   if (user) {
     editedRoleValue.value = user.role;

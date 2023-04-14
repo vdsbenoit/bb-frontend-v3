@@ -36,7 +36,7 @@
                 </ion-select>
                 <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('section')"></ion-icon>
               </ion-item>
-              <!-- Section (in edit mode) -->
+              <!-- Section (edit mode) -->
               <ion-item lines="full" v-if="isEditting.section">
                 <ion-label position="stacked" color="primary">Section</ion-label>
                 <p v-if="!target.sectionType" class="missing-field-alert">Selectionne d'abord un type de section</p>
@@ -48,12 +48,12 @@
                 <p v-else class="missing-field-alert">Pas de section pour ce type de section</p>
                 <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('section')"></ion-icon>
               </ion-item>
-              <!-- Section (not in edit mode) -->
+              <!-- Section (read mode) -->
               <ion-item lines="full" v-else>
                 <ion-label position="stacked" color="primary">Section</ion-label>
                 <ion-input name="section" type="text" :readonly="true" inputmode="none" @click="goToSectionPage(userProfile.sectionId)">{{ userProfile.sectionName }}</ion-input>
                 <ion-spinner v-if="isUpdating.section" slot="end"></ion-spinner>
-                <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="toggleEdit('section')"></ion-icon>
+                <ion-icon v-else-if="canEditSection" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="toggleEdit('section')"></ion-icon>
               </ion-item>
                 <!-- Team (edit mode)-->
               <ion-item lines="full" v-if="isEditting.team">
@@ -66,7 +66,7 @@
                 <p v-else class="missing-field-alert">Pas de team pour cette section</p>
                 <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('team')"></ion-icon>
               </ion-item>
-              <!-- Team (not edit mode)-->
+              <!-- Team (read mode)-->
               <ion-item lines="full" v-else>
                 <ion-label position="stacked" color="primary">Équipe</ion-label>
                 <ion-input type="text" :readonly="true" inputmode="none" @click="goToTeamPage(userProfile.team)">{{ userProfile.team }}</ion-input>
@@ -75,7 +75,7 @@
               </ion-item>
             </div>
             <div v-if="isLeader || isStaff">
-              <!-- Section (in edit mode) -->
+              <!-- Section (edit mode) -->
               <ion-item lines="full" v-if="isEditting.leaderSection">
                 <ion-label position="stacked" color="primary">Section</ion-label>
                 <ion-select v-if="leaderSections.size > 0" v-model="target.sectionId"
@@ -86,15 +86,14 @@
                 <p v-else class="missing-field-alert">Pas de section</p>
                 <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('leaderSection')"></ion-icon>
               </ion-item>
-              <!-- Section (not in edit mode) -->
+              <!-- Section (read mode) -->
               <ion-item lines="full" v-else>
                 <ion-label position="stacked" color="primary">Section</ion-label>
                 <ion-input name="section" type="text" :readonly="true" inputmode="none" @click="goToLeaderPage(userProfile.sectionId)">{{ userProfile.sectionName }}</ion-input>
                 <ion-spinner v-if="isUpdating.leaderSection" slot="end"></ion-spinner>
-                <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadLeaderSections"></ion-icon>
+                <ion-icon v-else-if="canEditSection" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadLeaderSections"></ion-icon>
               </ion-item>
             </div>
-            <div v-if="showFullProfile">
               <div v-if="isLeader">
                 <ion-item lines="full">
                   <!-- morningGame -->
@@ -140,6 +139,7 @@
                 <ion-spinner v-else-if="isUpdating.role" slot="end"></ion-spinner>
                 <ion-icon v-else-if="canSetRole" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="toggleEdit('role')"></ion-icon>
               </ion-item>
+            <div v-if="showEmail">
               <!-- email -->
               <ion-item lines="full">
                 <ion-label position="stacked" color="primary">Adresse email</ion-label>
@@ -155,7 +155,7 @@
               <ion-col v-if="canDeleteProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
                 <ion-button expand="block" class="" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
               </ion-col>
-              <ion-col v-if="canDeleteProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+              <ion-col v-if="canResetOnboarding" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
                 <ion-button expand="block" class="" color="medium" @click="resetOnboarding"> Reset onboarding </ion-button>
               </ion-col>
             </ion-row>
@@ -250,13 +250,17 @@ const canEditProfile = computed(() => {
   if (userStore.profile.role >= ROLES.Organisateur) return true;
   return isOwnProfile.value;
 });
+const showEmail = computed(() => {
+  return canEditProfile.value;
+});
 const canEditGames = computed(() => {
   if (canEditProfile.value) return true;
   if (userStore.profile.role == ROLES.Chef && userStore.profile.sectionId == userProfile.value.sectionId) return true;
   return false;
 });
-const showFullProfile = computed(() => {
-  return canEditProfile.value;
+const canEditSection = computed(() => {
+  if (userStore.profile.role >= ROLES.Organisateur) return true;
+  return false;
 });
 const isPlayer = computed(() => {
   return userProfile.value.role == ROLES.Participant;
@@ -268,6 +272,9 @@ const isStaff = computed(() => {
   return userProfile.value.role >= ROLES.Organisateur;
 });
 const canSetRole = computed(() => {
+  return userStore.profile.role >= ROLES.Administrateur;
+});
+const canResetOnboarding = computed(() => {
   return userStore.profile.role >= ROLES.Administrateur;
 });
 const canDeleteProfile = computed(() => {
