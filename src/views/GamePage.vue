@@ -225,7 +225,7 @@ const isGame = computed(() => {
   return false;
 });
 const canRegister = computed(() => {
-  return isLeaderRegistrationOpen() && user.profile.role >= ROLES.Animateur;
+  return isLeaderRegistrationOpen() && (user.profile.role == ROLES.Animateur || user.profile.role == ROLES.Chef);
 });
 const matches = computed(() => {
   return game.value?.id ? getGameMatches(game.value?.id) : new Map();

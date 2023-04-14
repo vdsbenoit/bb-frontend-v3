@@ -147,7 +147,7 @@ const addAfternoonLeaders = async (gameId: number, uid: string) => {
  */
 export const setMorningLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
-  if (uid !== user.uid && user.profile.role < ROLES.Organisateur) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(6)}`);
+  if (uid !== user.uid && user.profile.role < ROLES.Chef) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`);
   const profile = await user.getLatestProfileData(uid);
   if(!profile) throw new Error(`Nous n'avons pas réussi à retrouver le profil de l'utilisateur ${uid}`);
   const gameModule = gamesModule.doc(gameId.toString());
@@ -178,7 +178,7 @@ export const setMorningLeader = async (gameId: number, uid = "") => {
 
 export const setAfternoonLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
-  if (uid !== user.uid && user.profile.role < ROLES.Organisateur) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(6)}`);
+  if (uid !== user.uid && user.profile.role < ROLES.Chef) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`);
   const profile = await user.getLatestProfileData(uid);
   if(!profile) throw new Error(`Nous n'avons pas réussi à retrouver le profil de l'utilisateur ${uid}`);
   const gameModule = gamesModule.doc(gameId.toString());

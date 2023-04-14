@@ -12,7 +12,8 @@
 - [x] Dans MatchPage, créer un boutton "Reset scores"
 - [x] Add info ribbon homePage when pending request
 - [x] Add info ribbon when request is rejected
-- [ ] Fix Profile
+- [x] Fix Profile
+- [ ] update DB rules
 
 ## User feedback
 
@@ -25,7 +26,7 @@
 - [ ] Mettre le plan en dessous de chaque épreuve
 - [x] Faire en sorte que les sections ne tombent pas contre elles-mêmes (sinon ça fait tjrs une défaite et une victoire dans la même section)
 - [ ] Système pour générer un version imprimable des classements
-- [ ] Bouton pour demander de l'aide -> notif aux modérateurs
+- [ ] Bouton pour demander de l'aide -> notif aux organisat
 
 ## Pages
 

@@ -47,8 +47,8 @@ export type Profile = {
   team: string;
   morningGame: number;
   afternoonGame: number;
-  sectionName: string;
   sectionId: number;
+  sectionName: string;
   requestedRole: number;
   requestedSectionId: number;
   requestedSectionName: string;
@@ -72,8 +72,8 @@ export const profileDefaults: Profile = {
   team: "",
   morningGame: 0,
   afternoonGame: 0,
-  sectionName: "",
   sectionId: -1,
+  sectionName: "",
   requestedRole: -1,
   requestedSectionId: -1,
   requestedSectionName: "",

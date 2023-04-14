@@ -86,7 +86,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     name: 'section',
-    path: '/sections/:sectionId',
+    path: '/section/:sectionId',
     component: () => import ('../views/SectionsPage.vue'),
     meta: { minimumRole: ROLES.Participant }
   },
@@ -118,7 +118,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'profile',
     path: '/profile/:userId',
     component: () => import ('../views/ProfilePage.vue'),
-    meta: { minimumRole: ROLES.Organisateur }
+    meta: { minimumRole: ROLES.Participant }
   },
   {
     name: 'settings',

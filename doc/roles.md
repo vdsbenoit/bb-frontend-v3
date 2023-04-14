@@ -30,6 +30,7 @@ La page d'accueil des newbies est soit :
 Les participants peuvent:
 
 - Modifier leur profil, sauf le rôle
+- Voir les profils des autres
 - Voir la liste des sections
 - Voir la liste des épreuves
 - S'assigner une équipe
