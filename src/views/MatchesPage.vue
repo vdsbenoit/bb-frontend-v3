@@ -4,10 +4,13 @@
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <ion-item color="primary">
-        <ion-label class="ion-text-center">Choisir un horaire</ion-label>
+        <ion-label>Choisir un horaire</ion-label>
         <ion-select v-model="selectedTime" interface="popover">
           <ion-select-option v-for="(timing, index) in schedules" :value="index + 1" :key="index">{{ timing.start }} - {{ timing.stop }}</ion-select-option>
         </ion-select>
+      </ion-item>
+      <ion-item v-if="isFilled" color="warning">
+        <ion-label class="ion-text-center">Complet</ion-label>
       </ion-item>
       <ion-list v-if="selectedTime">
         <div v-if="matches && matches.size > 0">
@@ -18,7 +21,7 @@
               <ion-text> vs </ion-text>
               <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
             </ion-label>
-            <ion-badge v-if="getWinner(match)" slot="end" class="ion-no-margin" :color="match.draw ? 'warning' : 'success'">{{ getWinner(match) }}</ion-badge>
+            <ion-badge v-if="getWinner(match)" slot="end" class="ion-no-margin" :color="badgeColor(match)">{{ getWinner(match) }}</ion-badge>
             <ion-badge v-else slot="end" class="ion-no-margin" color="danger">Pas de score</ion-badge>
           </ion-item>
         </div>
@@ -65,15 +68,32 @@ const schedules = computed(() => {
 const matches = computed((): Map<string, Match> | undefined => {
   return getTimeMatches(selectedTime.value);
 });
+const isFilled = computed(() => {
+  if (matches.value && matches.value.size > 0) {
+    for (const match of matches.value.values()) {
+      if (match.noScores) continue
+      if (match.winner) continue
+      if (match.draw) continue
+      return false;
+    }
+    return true;
+  }
+  return false;
+});
 
 // Watchers
 
 // Methods
 
-const getWinner = (match: any) => {
+const getWinner = (match: Match) => {
   if (match.winner) return match.winner;
-  if (match.draw === true) return "Égalité";
+  if (match.draw) return "Égalité";
+  if (match.noScores) return "Pause";
   return "";
+};
+const badgeColor = (match: Match) => {
+  if (match.noScores) return "medium";
+  return match.draw ? 'warning' : 'success'
 };
 
 </script>
