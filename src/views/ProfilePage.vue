@@ -109,7 +109,7 @@
                   </ion-input>
                   <ion-icon v-if="isEditting.morningGame" slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('morningGame')"></ion-icon>
                   <ion-spinner v-else-if="isUpdating.morningGame" slot="end"></ion-spinner>
-                  <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames('morningGame')"></ion-icon>
+                  <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames('morningGame')"></ion-icon>
                 </ion-item>
                 <!-- afternoonGame -->
                 <ion-item lines="full">
@@ -124,7 +124,7 @@
                   </ion-input>
                   <ion-icon v-if="isEditting.afternoonGame" slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('afternoonGame')"></ion-icon>
                   <ion-spinner v-else-if="isUpdating.afternoonGame" slot="end"></ion-spinner>
-                  <ion-icon v-else-if="canEditProfile" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames('afternoonGame')"></ion-icon>
+                  <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames('afternoonGame')"></ion-icon>
                 </ion-item>
               </div>
               <!-- Role -->
@@ -249,6 +249,11 @@ const isOwnProfile = computed(() => {
 const canEditProfile = computed(() => {
   if (userStore.profile.role >= ROLES.Organisateur) return true;
   return isOwnProfile.value;
+});
+const canEditGames = computed(() => {
+  if (canEditProfile.value) return true;
+  if (userStore.profile.role == ROLES.Chef && userStore.profile.sectionId == userProfile.value.sectionId) return true;
+  return false;
 });
 const showFullProfile = computed(() => {
   return canEditProfile.value;
