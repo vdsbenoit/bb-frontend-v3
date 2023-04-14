@@ -149,14 +149,14 @@
           </ion-list>
           <ion-grid class="ion-no-padding">
             <ion-row>
-              <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                <ion-button v-if="isOwnProfile" expand="block" class="" color="warning" @click="logOut"> Se déconnecter </ion-button>
+              <ion-col v-if="isOwnProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+                <ion-button expand="block" class="" color="warning" @click="logOut"> Se déconnecter </ion-button>
               </ion-col>
-              <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                <ion-button v-if="canDeleteProfile" expand="block" class="" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
+              <ion-col v-if="canDeleteProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+                <ion-button expand="block" class="" color="danger" @click="deleteAccount"> Supprimer le compte </ion-button>
               </ion-col>
-              <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                <ion-button v-if="canDeleteProfile" expand="block" class="" color="medium" @click="resetOnboarding"> Reset onboarding </ion-button>
+              <ion-col v-if="canDeleteProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+                <ion-button expand="block" class="" color="medium" @click="resetOnboarding"> Reset onboarding </ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
