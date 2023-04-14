@@ -16,7 +16,7 @@
           <tile-col v-if="showSectionButton" :target="`/section/${user.profile.sectionId}`">Ma section</tile-col>
           <tile-col v-if="user.profile.team" :target="`/team/${user.profile.team}`">Mon équipe</tile-col>
 
-          <tile-col v-if="nbPendingRequests" :target="requestsPath">
+          <tile-col v-if="nbPendingRequests" target="/requests">
             {{ nbPendingRequests }} demande{{ nbPendingRequests > 1 ? "s" : "" }} d'accès
           </tile-col>
 
@@ -80,15 +80,6 @@ const pendingRequests = computed(() => {
 });
 const nbPendingRequests = computed(() => {
   return pendingRequests.value.size <= 15 ? pendingRequests.value.size : "15+";
-});
-const requestsPath = computed(() => {
-  if (user.profile.role === ROLES.Chef) {
-    return `/leader/${user.profile.sectionId}`;
-  }
-  if (user.profile.role > ROLES.Chef) {
-    return `/leaders`;
-  }
-  return "";
 });
 const requestValidator = computed(() => {
   switch (user.profile.requestedRole) {
