@@ -7,7 +7,7 @@
         <ion-card-header v-if="userStore.profile.rejectionReason">
           <ion-card-title>Aille !</ion-card-title>
           <p>
-            Il semblerait que ta demande d'accès ait été refusée. Voici la raison qui a été donnée :
+            Il semblerait que ta demande d'accès ait été refusée.
             <br><br>
             {{ userStore.profile.rejectionReason }}
             <br><br>

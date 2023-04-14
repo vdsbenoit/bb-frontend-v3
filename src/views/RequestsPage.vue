@@ -133,7 +133,8 @@ const handleRequest = (user: Profile) => {
     
   }
   const rejectHandler = (reason: string) => {
-    userStore.updateProfile(user.uid, {  requestedRole: -1, requestedSectionId: "", rejectionReason: reason, hasDoneOnboarding: false });
+    const fullReason = `${userStore.getName(userStore.uid)} (${getRoleByValue(userStore.profile.role)}) : "${reason}"`;
+    userStore.updateProfile(user.uid, {  requestedRole: -1, requestedSectionId: "", rejectionReason: fullReason, hasDoneOnboarding: false });
   }
   const choicePopupHandler = (choice: string) => {
     switch (choice) {
