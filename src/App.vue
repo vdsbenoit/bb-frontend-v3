@@ -103,9 +103,9 @@ const appPages = computed(() => {
       iosIcon: peopleSharp,
       mdIcon: peopleSharp,
     }]
+    if (user.profile.role >= ROLES.Chef) pages = [...pages, requestsPage];
     pages = [...pages, leadersPage];
   }
-  if (user.profile.role >= ROLES.Chef) pages = [...pages, requestsPage];
   if (user.profile.role == ROLES.Participant) pages = [...pages, {
     title: "Ma section",
     url: `/section/${user.profile.sectionId}`,
