@@ -58,7 +58,7 @@ const title = computed(() => {
 const link = computed(() => {
   switch (props.type) {
     case "section":
-      return "/sections" 
+      return "/section" 
     case "team":
       return "/team"
     default:

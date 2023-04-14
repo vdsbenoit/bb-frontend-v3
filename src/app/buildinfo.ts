@@ -1,5 +1,5 @@
 export const buildInfo = {
-  buildVersion: "0.2.1",
-  buildDate: 1681404582892,
-  buildDateStr: "Thu Apr 13 2023 18:49:42 GMT+0200 (heure d’été d’Europe centrale)"
+  buildVersion: "0.2.4",
+  buildDate: 1681452068630,
+  buildDateStr: "Fri Apr 14 2023 08:01:08 GMT+0200 (heure d’été d’Europe centrale)"
 }

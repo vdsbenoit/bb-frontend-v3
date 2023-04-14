@@ -41,7 +41,7 @@
       </ion-card>
       <ion-card>
         <ion-card-header>
-          <ion-card-title>Lutins</ion-card-title>
+          <ion-card-title>Baladins / Nutons</ion-card-title>
         </ion-card-header>
         <ion-card-content class="ion-no-padding">
           <ion-grid class="ion-no-padding">
