@@ -169,6 +169,7 @@ router.beforeEach(async (to, from, next) => {
       toastPopup("Tu es déjà connecté");
       return next('/home');
     }
+    if (to.name === "ranking" && isShowRankingToAll()) return next();
     if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
     if (to.name === "onboarding"){
       if (user.profile.hasDoneOnboarding) {
@@ -191,7 +192,7 @@ router.beforeEach(async (to, from, next) => {
   else {
     if (!to.meta.minimumRole) return next();
     if(to.meta.minimumRole === ROLES.Anonyme) return next();
-    if (to.name === "ranking" && isShowRankingToAll()) return next();
+    if (to.name === "ranking" && isShowRankingToAll()) return next(); // this does not work because settings are loaded only when logged in
     toastPopup("Tu dois être connecté pour accéder à cette page");
     return next('/guest');
   }

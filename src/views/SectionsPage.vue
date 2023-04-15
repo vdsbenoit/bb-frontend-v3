@@ -54,13 +54,19 @@
                 <ion-card-title> Classement </ion-card-title>
               </ion-card-header>
               <ion-card-content>
-                <ion-list v-if="selectedSection" class="no-pointer">
-                  <ion-item>
-                    <ion-label>Score accumulé</ion-label><ion-note slot="end">{{ selectedSection.score }}</ion-note></ion-item>
-                  <ion-item>
-                    <ion-label>Score moyen</ion-label><ion-note slot="end">{{ selectedSection.meanScore }}</ion-note>
-                  </ion-item>
-                </ion-list>
+                <div v-if="selectedSection" >
+                  <ion-list class="no-pointer">
+                    <ion-item>
+                      <ion-label>Score accumulé</ion-label><ion-note slot="end">{{ selectedSection.score }}</ion-note></ion-item>
+                    <ion-item>
+                      <ion-label>Score moyen</ion-label><ion-note slot="end">{{ selectedSection.meanScore }}</ion-note>
+                    </ion-item>
+                  </ion-list>
+                </div>
+                <ion-button v-if="isAdmin" expand="block" color="primary" @click="computeMeanScore" class="ion-margin-horizontal">
+                  Recalculer le score moyen
+                </ion-button>
+                <!-- todo: add a spinner -->
                 <div v-else-if="isLoadingSection" class="ion-text-center ion-align-items-center">
                   <ion-spinner></ion-spinner>
                 </div>
@@ -137,7 +143,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { getSectionsBySectionType, getSection, Section } from "@/services/sections";
+import { getSectionsBySectionType, getSection, Section, updateSectionMeanScore } from "@/services/sections";
 import { onMounted, watch, watchEffect } from "vue";
 import { getSectionTypes, isShowRankingToAll } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
@@ -227,6 +233,9 @@ const selectedSection = computed((): Section | undefined => {
 const sectionMembers = computed(() => {
   return shouldLoadMembers.value ? user.getSectionMembers(selectedSectionId.value) : new Map();
 });
+const isAdmin = computed(() => {
+  return user.profile.role >= ROLES.Administrateur;
+});
 
 
 // Methods
@@ -234,6 +243,11 @@ const sectionMembers = computed(() => {
 const loadUsers = () => {
   shouldLoadMembers.value = true;
 };
+const computeMeanScore = () => {
+  if (selectedSectionId.value) {
+    updateSectionMeanScore(selectedSectionId.value);
+  }
+}
 </script>
 <style scoped>
 ion-select {

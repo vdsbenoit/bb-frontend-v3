@@ -50,7 +50,6 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION_NAME, {
 /////////////
 
 export const getSectionsBySectionType = (sectionType: string): Map<string, Section> => {
-  console.log(`Fetching sections of type '${sectionType}'`);
   if (!sectionType) return new Map();
   const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType);
   filteredSectionsModule.stream(); // using stream because the fetch() method is bugged
@@ -72,7 +71,6 @@ export const forceFetchSection = async (id: number) => {
   return section.data;
 }
 export const getTopSections = (sectionType: string, limit: number) => {
-  console.log(`Fetching top sections of '${sectionType}'`);
   if (!sectionType) return undefined;
   const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType).orderBy("meanScore", "desc").limit(limit);
   filteredSectionsModule.stream();
@@ -83,7 +81,7 @@ export const getTopSections = (sectionType: string, limit: number) => {
 /// Setters //
 /////////////
 
-const updateSectionMeanScore =async (sectionId: number) => {
+export const updateSectionMeanScore = async (sectionId: number) => {
   const section = await forceFetchSection(sectionId);
   if (!section) throw new Error("Impossible de mettre à jour la moyenne de la section")
   const meanScore = + (section.score / section.nbTeams || 0).toFixed(2)
