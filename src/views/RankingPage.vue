@@ -1,6 +1,10 @@
 <template>
   <ion-page>
     <header-template pageTitle="Classement">
+      <ion-label v-if="isAdmin">
+        Printable
+      </ion-label>
+      <ion-toggle v-if="isAdmin" @IonChange="togglePrintable" :checked="showPrintableScores"></ion-toggle>
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
@@ -13,10 +17,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :ranking-list="lutinTopSections"/>
+                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="lutinTopSections"/>
               </ion-col>
               <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :ranking-list="lutinTopTeams"/>
+                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="lutinTopTeams"/>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -30,10 +34,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :ranking-list="loupTopSections"/>
+                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="loupTopSections"/>
               </ion-col>
               <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :ranking-list="loupTopTeams"/>
+                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="loupTopTeams"/>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -47,10 +51,10 @@
           <ion-grid class="ion-no-padding">
             <ion-row>
               <ion-col size="12" size-sm="6">
-                <ranking-component type="section" :ranking-list="nutonTopSections"/>
+                <ranking-component type="section" :printable-scores="showPrintableScores" :ranking-list="nutonTopSections"/>
               </ion-col>
               <ion-col size="12" size-sm="6">
-                <ranking-component type="team" :ranking-list="nutonTopTeams"/>
+                <ranking-component type="team" :printable-scores="showPrintableScores" :ranking-list="nutonTopTeams"/>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -61,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, 
+import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonLabel, IonToggle,
 AlertInput, alertController, IonIcon, IonButton } from "@ionic/vue";
 import { settingsOutline, settingsSharp} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
@@ -70,10 +74,14 @@ import { computed, ref } from "@vue/reactivity";
 import { getTopSections } from "@/services/sections";
 import { getTopTeams } from "@/services/teams";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import { ROLES, useAuthStore } from "@/services/users";
+
+const user = useAuthStore();
 
 // reactive data
 
 const maxItems = ref(10);
+const showPrintableScores = ref(false);
 
 // lifecycle hooks
 
@@ -96,6 +104,9 @@ const nutonTopSections = computed(() => {
 });
 const nutonTopTeams = computed(() => {
   return getTopTeams("Baladins & Nutons", maxItems.value);
+});
+const isAdmin = computed(() => {
+  return user.profile.role === ROLES.Administrateur
 });
 
 // Watchers
@@ -123,6 +134,9 @@ const setLimit = async () => {
   });
   await alert.present();
 };
+const togglePrintable = () => {
+  showPrintableScores.value = !showPrintableScores.value;
+}; 
 </script>
 <style scoped>
 ion-select {

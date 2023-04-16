@@ -3,7 +3,7 @@
     <ion-card-header>
       <ion-card-title>{{ title }}</ion-card-title>
     </ion-card-header>
-    <ion-card-content class="ion-no-padding ion-padding-vertical">
+    <ion-card-content v-if="!printableScores" class="ion-no-padding ion-padding-vertical">
       <ion-list v-if="rankingList && rankingList.size > 0">
         <ion-item v-for="(item, index) in rankingList.values()" :key="index" :routerLink="`${link}/${item.id}`">
           <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
@@ -24,6 +24,50 @@
         <h2 class="ion-text-center ion-align-items-center">Pas de classement</h2>
       </div>
     </ion-card-content>
+    <ion-card-content v-else>
+      <div v-if="type === 'section'">
+        <br><br>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Section</th>
+              <th>Ville</th>
+              <th>Moyenne</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in rankingList.values()" :key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.city }}</td>
+              <td>{{ item.meanScore }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-if="type === 'team'">
+        <br><br>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Équipe</th>
+              <th>Section</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in rankingList.values()" :key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ item.id }}</td>
+              <td>{{ item.sectionName }} ({{ item.city }})</td>
+              <td>{{ item.score }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ion-card-content>
   </ion-card>
 </template>
 
@@ -32,7 +76,7 @@ import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList, IonItem,
 import { computed } from "@vue/reactivity";
 
 import { defineProps, onMounted, ref } from "vue";
-const props = defineProps(["type", "rankingList"]);
+const props = defineProps(["type", "rankingList", "printableScores"]);
 
 // reactive data
 const isLoading = ref(true);
