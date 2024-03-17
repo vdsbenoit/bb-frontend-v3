@@ -7,6 +7,16 @@
 
 Pour appliquer des css à toute l'app, le faire dans `App.vue`.
 
+# Build & deploy
+
+```bash
+ionic serve
+npm build
+npm deploy
+```
+
+
+
 # Troubleshooting
 
 Quand tu as ce genre d'erreur 
@@ -15,7 +25,9 @@ Quand tu as ce genre d'erreur
 Uncaught ReferenceError: Cannot access 'useAuthStore' before initialization
 ````
 
-Ca veut dire que tu as une circular dependency dans tes imports. Check que tu n'importes pas d'autres services dans `users.ts` car ce module est importé presque partout.
+Ca veut dire que tu as une circular dependency dans tes imports. 
+
+Check que tu n'importes pas d'autres services dans `users.ts` car ce module est importé presque partout.
 
 # Tech stack
 

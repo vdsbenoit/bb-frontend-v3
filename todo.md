@@ -1,19 +1,18 @@
 # To do
 
-## Now
+## 2024
 
-- [x] Backup DB 2022
-- [x] fix infinite spinner on empty ranking page
-- [x] Inscription aux épreuves
-- [x] Refactor `categories` into  `sectionType`
-- [x] Split SectionsPage in two -> LeadersPage
-- [x] Fix SectionsPage
-- [x] Ajouter fields membres & chefs dans LeaderSection -> non, le faire via une query
-- [x] Dans MatchPage, créer un boutton "Reset scores"
-- [x] Add info ribbon homePage when pending request
-- [x] Add info ribbon when request is rejected
-- [x] Fix Profile
-- [x] update DB rules
+- [ ] Les chef Pios devraient avoir les mêmes accès que les organisateurs. Genre voir les duels pour checker qui a pas enregistré de score
+- [ ] empêcher les navigateurs de traduire l’app
+- [ ] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros  (comme dans RankingPage)
+- [ ] Lien vers section sur la TeamPage
+- [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
+- [ ] Renommer page « duel » en quelque chose comme « check scores »
+- [ ] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
+- [ ] Choisir qui voit le classement 
+- [ ] Editer les sections depuis l'app
+- [ ] Refresh page instead of quit page when update is available
+- [ ] Enable email enumeration (cf mail from Google)
 
 ## User feedback
 
@@ -21,12 +20,11 @@
 - [x] ajouter un attribut sur les épreuves sans score (e.g. pause)
 - [x] ajouter un attribut aux matches du type "noScores"
   - [x] créer un bouton pour configurer ceci sur GamePage
-
 - [x] ne pas mettre libre sur les épreuves où il y a déjà 1 personne. Avoir un 3e state
-- [ ] Mettre le plan en dessous de chaque épreuve
 - [x] Faire en sorte que les sections ne tombent pas contre elles-mêmes (sinon ça fait tjrs une défaite et une victoire dans la même section)
+- [ ] Mettre le plan en dessous de chaque épreuve
 - [ ] Système pour générer un version imprimable des classements
-- [ ] Bouton pour demander de l'aide -> notif aux organisat
+- [ ] Bouton pour demander de l'aide -> notif aux organisateurs
 
 ## Pages
 
@@ -61,7 +59,7 @@
 - [ ] Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
   - [ ] Cloud functions qui aggregate le score moyen de chaque section
 - [ ] Modifier détails section depuis SectionsPage
-- [ ] remove weights
+- [ ] Remove weights
 - [ ] Push notification (par ex pour rappeler d'enregistrer un score manquant)
 - [ ] ? Optimize index (game_id>time and time>game_id)
 - [ ] Intégrer la couleur d'équipe dans l'app et la DB
@@ -73,6 +71,7 @@
 - [ ] Try to replace some .stream() with .fetch() (the bug may be fixed)
 - [ ] get rid of snake case in firestore (e.g. matches collection)
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
+- [ ] Use phone number instead of email to log in
 
 ## Nice to have
 
@@ -88,3 +87,18 @@
   - [ ] Les organisateurs scan le QR code des animateurs
   - [ ] Le QR code contient l'ID de l'animateur + un timestamp pour éviter les screenshots
 - [ ] Get rid of `?` and handle undefined data.
+
+## 2023
+
+- [x] Backup DB 2022
+- [x] fix infinite spinner on empty ranking page
+- [x] Inscription aux épreuves
+- [x] Refactor `categories` into  `sectionType`
+- [x] Split SectionsPage in two -> LeadersPage
+- [x] Fix SectionsPage
+- [x] Ajouter fields membres & chefs dans LeaderSection -> non, le faire via une query
+- [x] Dans MatchPage, créer un boutton "Reset scores"
+- [x] Add info ribbon homePage when pending request
+- [x] Add info ribbon when request is rejected
+- [x] Fix Profile
+- [x] update DB rules
