@@ -43,7 +43,7 @@ import { IonApp, IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader,
 IonSplitPane, IonText, IonFooter, IonToggle } from "@ionic/vue";
 import { informationCircleOutline, informationCircleSharp, peopleOutline, peopleSharp, personCircleOutline, personCircleSharp, moonOutline,
 homeOutline, homeSharp, peopleCircleSharp, peopleCircleOutline, footballOutline, footballSharp, optionsOutline, optionsSharp, moonSharp,
-personAddOutline, personAddSharp, trophyOutline, trophySharp, timeOutline, timeSharp,  } from "ionicons/icons";
+personAddOutline, personAddSharp, trophyOutline, trophySharp, checkmarkCircleOutline, checkmarkCircleSharp,  } from "ionicons/icons";
 import { computed, onMounted, ref, watch } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
@@ -133,10 +133,10 @@ const toggleDarkMode = (value: any) => {
 // Data
 
 const matchesPage = {
-  title: "Duels",
+  title: "Check Scores",
   url: "/matches",
-  iosIcon: timeOutline,
-  mdIcon: timeSharp,
+  iosIcon: checkmarkCircleOutline,
+  mdIcon: checkmarkCircleSharp,
 }
 const rankingPage = {
   title: "Classement",

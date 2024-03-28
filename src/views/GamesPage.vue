@@ -130,7 +130,7 @@ const getStatus = (leaders: string[]) => {
   const nbLeaders = leaders.length;
   if (nbLeaders === 0) return { nbLeaders, color: "danger" };
   if (nbLeaders < getMaxGameLeaders()) return { nbLeaders, color: "warning" };
-  return { nbLeaders, color: "primary" };
+  return { nbLeaders, color: "success" };
 };
 const toggleEditMode = () => {
   editMode.value = !editMode.value;

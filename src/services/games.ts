@@ -248,6 +248,8 @@ export const setGameNoScores = async (gameId: number, noScores: boolean) => {
   toastPopup(`Les scores de l'épreuve ${gameId} ont été ${noScores ? "désactivés" : "activés"}`);
 };
 
+
+// todo: remove this
 export const hardcodeGameNames = () => {
   const gameNames = [
     ""

@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <header-template pageTitle="Duels"> </header-template>
+    <header-template pageTitle="Check scores"> </header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <ion-item color="primary">
@@ -21,8 +21,8 @@
               <ion-text> vs </ion-text>
               <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
             </ion-label>
-            <ion-badge v-if="getWinner(match)" slot="end" class="ion-no-margin" :color="badgeColor(match)">{{ getWinner(match) }}</ion-badge>
-            <ion-badge v-else slot="end" class="ion-no-margin" color="danger">Pas de score</ion-badge>
+            <ion-icon v-if="isScoreRegistered(match)" :color="iconColor(match)" slot="end" :ios="checkmarkCircle" :md="checkmarkCircleSharp"></ion-icon>
+            <ion-icon v-else color="danger" slot="end" :ios="closeCircle" :md="closeCircleSharp"></ion-icon>
           </ion-item>
         </div>
         <div v-else-if="isLoading" class="ion-text-center" style="background: transparent">
@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, IonSpinner, IonSelect, IonSelectOption, IonIcon } from "@ionic/vue";
-import { arrowUpOutline, arrowUpSharp } from "ionicons/icons";
+import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { computed, ref } from "@vue/reactivity";
 import { getSchedules } from "@/services/settings";
@@ -85,16 +85,13 @@ const isFilled = computed(() => {
 
 // Methods
 
-const getWinner = (match: Match) => {
-  if (match.winner) return match.winner;
-  if (match.draw) return "Égalité";
-  if (match.noScores) return "Pause";
-  return "";
-};
-const badgeColor = (match: Match) => {
+const iconColor = (match: Match) => {
   if (match.noScores) return "medium";
-  return match.draw ? 'warning' : 'success'
+  return 'success'
 };
+const isScoreRegistered = (match: Match) => {
+  return (match.winner || match.draw || match.noScores)
+}
 
 </script>
 <style scoped>

@@ -8,11 +8,14 @@
 - [x] Lien vers section sur la TeamPage
 - [ ] Update Magnetar & try to replace some .stream() with .fetch() (the bug may be fixed)
 - [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
-- [ ] Renommer page « duel » en quelque chose comme « check scores »
+- [x] Renommer page « duel » en quelque chose comme « check scores »
 - [ ] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
 - [ ] Choisir qui voit le classement 
 - [ ] Editer les sections depuis l'app
 - [ ] Refresh page instead of quit page when update is available
+- [ ] Build new DB
+  - [ ] Replace "match vs match" with game name in Check Scores page
+
 
 ## User feedback
 
@@ -68,6 +71,7 @@
   - Créer des utilisateurs	
   - Créer les équipes (cf distribution équipe ci dessous)
   - Créer des jeux
+  - Renommer jeux depuis l'app (attention: appliquer la modification à tous les matchs)
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 - [ ] Use phone number instead of email to log in
 

@@ -4,7 +4,7 @@
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <div v-if="isMatch || isLoading">
-        <ion-grid class="ion-padding-horizontal ion-padding-top" @click="router.navigate(`/game/${match.game_id}`, 'back', 'push')">
+        <ion-grid class="ion-padding-horizontal ion-padding-top" @click="router.push(`/game/${match.game_id}`)">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
               <ion-card-subtitle>{{ schedule.start }} - {{ schedule.stop }}</ion-card-subtitle>
@@ -74,6 +74,9 @@
                 </ion-col>
               </ion-row>
             </ion-grid>
+            <ion-button expand="block" color="medium" class="ion-margin-top ion-margin-horizontal" :router-link="`/game/${match.game_id}`">
+              Voir jeu
+            </ion-button>
           </ion-card-content>
         </ion-card>
         <ion-card v-if="showModeration">
