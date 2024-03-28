@@ -5,14 +5,14 @@
 - [ ] Les chef Pios devraient avoir les mêmes accès que les organisateurs. Genre voir les duels pour checker qui a pas enregistré de score
 - [x] empêcher les navigateurs de traduire l’app
 - [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
-- [ ] Lien vers section sur la TeamPage
+- [x] Lien vers section sur la TeamPage
+- [ ] Update Magnetar & try to replace some .stream() with .fetch() (the bug may be fixed)
 - [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
 - [ ] Renommer page « duel » en quelque chose comme « check scores »
 - [ ] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
 - [ ] Choisir qui voit le classement 
 - [ ] Editer les sections depuis l'app
 - [ ] Refresh page instead of quit page when update is available
-- [ ] Enable email enumeration (cf mail from Google)
 
 ## User feedback
 
@@ -50,26 +50,24 @@
 
 - Keep match times starting at 1 instead of 0 (even though [it might sound retarded](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2)). That's useful in some checks like in the `MatchesPage`. Same same for game numbers
 
-## Next release
+## Parking
 
+- [ ] Enable email enumeration protection (cf mail from Google) / add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr) 
+- [ ] Push notification (par ex pour rappeler d'enregistrer un score manquant)
 - [ ] Retirer matches des collection games & teams (utiliser des queries à la place). Vérifier tout de même si ce n'est pas utile pour la validation de la db à la fin de l'initialisation.
 - [ ] Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
-- [ ] Get rid of snake case in the DB
+- [ ] Get rid of snake case in the DB (e.g. matches collection)
 - [ ] Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore). Je verrais mieux ça au niveau des Pages, vu que ça touche à plusieurs services.
 - [ ] Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
   - [ ] Cloud functions qui aggregate le score moyen de chaque section
 - [ ] Modifier détails section depuis SectionsPage
 - [ ] Remove weights
-- [ ] Push notification (par ex pour rappeler d'enregistrer un score manquant)
 - [ ] ? Optimize index (game_id>time and time>game_id)
 - [ ] Intégrer la couleur d'équipe dans l'app et la DB
 - [ ] Faire la distribution + générer les roadmaps/badges dans l'app
   - Créer des utilisateurs	
   - Créer les équipes (cf distribution équipe ci dessous)
   - Créer des jeux
-- [ ] add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr)
-- [ ] Try to replace some .stream() with .fetch() (the bug may be fixed)
-- [ ] get rid of snake case in firestore (e.g. matches collection)
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 - [ ] Use phone number instead of email to log in
 

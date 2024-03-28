@@ -42,7 +42,7 @@
                 <ion-label>Moyenne de la section</ion-label><ion-note slot="end">{{ sectionMean }}</ion-note></ion-item
               >
             </ion-list>
-            <ion-button expand="block" color="medium" :router-link="`/section/${section?.id}`">
+            <ion-button expand="block" color="medium" :router-link="`/section/${section?.id}`" router-direction="back">
               Voir section
             </ion-button>
           </ion-card-content>
