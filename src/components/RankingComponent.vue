@@ -8,7 +8,7 @@
         <ion-item v-for="(item, index) in rankingList.values()" :key="index" :routerLink="`${link}/${item.id}`">
           <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ index + 1 }}</ion-badge>
           <ion-label v-if="type === 'section'">
-            {{ item.name }} <ion-text color="medium">({{ item.city }})</ion-text>
+            <b>{{ item.id }}</b> {{ item.name }} <ion-text color="medium">({{ item.city }})</ion-text>
           </ion-label>
           <ion-label v-if="type === 'team'">
             <b>{{ item.id }}</b> {{ item.sectionName }} <ion-text color="medium">({{ item.city }})</ion-text>

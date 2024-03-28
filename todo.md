@@ -3,8 +3,8 @@
 ## 2024
 
 - [ ] Les chef Pios devraient avoir les mêmes accès que les organisateurs. Genre voir les duels pour checker qui a pas enregistré de score
-- [ ] empêcher les navigateurs de traduire l’app
-- [ ] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros  (comme dans RankingPage)
+- [x] empêcher les navigateurs de traduire l’app
+- [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
 - [ ] Lien vers section sur la TeamPage
 - [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
 - [ ] Renommer page « duel » en quelque chose comme « check scores »
@@ -87,6 +87,7 @@
   - [ ] Les organisateurs scan le QR code des animateurs
   - [ ] Le QR code contient l'ID de l'animateur + un timestamp pour éviter les screenshots
 - [ ] Get rid of `?` and handle undefined data.
+- [ ] Essayer la connexion avec numéro de téléphone (0.1€/sms)
 
 ## 2023
 

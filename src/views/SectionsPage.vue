@@ -16,7 +16,10 @@
               </ion-col>
               <ion-col size="12" size-sm="6" v-if="selectedSectionType">
                 <ion-select v-if="sections && sections.size > 0" v-model="selectedSectionId" placeholder="Section" interface="popover">
-                  <ion-select-option color="dark" v-for="section in sections.values()" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
+                  <ion-select-option color="dark" v-for="section in sections.values()" :value="section.id" :key="section.id">
+                    {{ section.id }} - 
+                    {{ section.name }} ({{ section.city }})
+                  </ion-select-option>
                 </ion-select>
                 <ion-spinner v-else-if="isLoadingSections"></ion-spinner>
                 <div v-else>Pas de section configurée</div>
@@ -34,6 +37,7 @@
               </ion-card-header>
               <ion-card-content>
                 <ion-list v-if="selectedSection">
+                  <ion-item> <ion-label>Numéro</ion-label>{{ selectedSection.id }} </ion-item>
                   <ion-item> <ion-label>Nom</ion-label>{{ selectedSection.name }} </ion-item>
                   <ion-item> <ion-label>Ville</ion-label>{{ selectedSection.city }} </ion-item>
                   <ion-item> <ion-label>Unité</ion-label>{{ selectedSection.unit }} </ion-item>

@@ -42,11 +42,14 @@
                 <ion-label>Moyenne de la section</ion-label><ion-note slot="end">{{ sectionMean }}</ion-note></ion-item
               >
             </ion-list>
+            <ion-button expand="block" color="medium" :router-link="`/section/${section?.id}`">
+              Voir section
+            </ion-button>
           </ion-card-content>
         </ion-card>
         <ion-button v-if="showRegisterButton" :disabled="isRegistering" expand="block" color="primary" @click="registerPlayer" class="ion-margin">
-        <ion-spinner v-if="isRegistering"></ion-spinner>
-        <span v-else>C'est mon équipe </span>
+          <ion-spinner v-if="isRegistering"></ion-spinner>
+          <span v-else>C'est mon équipe </span>
         </ion-button>
         <ion-card>
           <ion-card-header>
