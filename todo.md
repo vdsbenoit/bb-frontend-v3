@@ -2,7 +2,7 @@
 
 ## 2024
 
-- [ ] Les chef Pios devraient avoir les mêmes accès que les organisateurs. Genre voir les duels pour checker qui a pas enregistré de score
+- [ ] Les chef Pios devraient avoir les mêmes accès que les organisateurs. Genre voir les duels pour checker qui n'a pas enregistré de scores
 - [x] empêcher les navigateurs de traduire l’app
 - [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
 - [x] Lien vers section sur la TeamPage
@@ -11,7 +11,6 @@
 - [x] Renommer page « duel » en quelque chose comme « check scores »
 - [x] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
 - [ ] Choisir qui voit le classement 
-- [ ] Editer les sections depuis l'app
 - [ ] Refresh page instead of quit page when update is available
 - [ ] Build new DB
   - [ ] Replace "match vs match" with game name in Check Scores page
@@ -60,7 +59,7 @@
 - [ ] Retirer matches des collection games & teams (utiliser des queries à la place). Vérifier tout de même si ce n'est pas utile pour la validation de la db à la fin de l'initialisation.
 - [ ] Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
 - [ ] Get rid of snake case in the DB (e.g. matches collection)
-- [ ] Mettre tous les checks au même endroit (par ex, c'est fait au niveau service pour setMorningLeaders pas pour setGameScore). Je verrais mieux ça au niveau des Pages, vu que ça touche à plusieurs services.
+- [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
 - [ ] Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
   - [ ] Cloud functions qui aggregate le score moyen de chaque section
 - [ ] Modifier détails section depuis SectionsPage
@@ -73,14 +72,14 @@
   - Créer les équipes (cf distribution équipe ci dessous)
   - Créer des jeux
   - Renommer jeux depuis l'app (attention: appliquer la modification à tous les matchs)
+  - Editer les sections depuis l'app
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
-- [ ] Use phone number instead of email to log in
+- [ ] Rewrite Profile page code
 
 ## Nice to have
 
 - [ ] Description de jeu
 - [ ] séparation visuelle pour midi dans l'horaire
-- [ ] Système de recherche de joueur
 - [ ] Fix bug uncaught promise après déconnexion
 - [ ] OSS License
 - [ ] Regular CI/CD pour check qu'un npm i fonctionne à travers le temps
@@ -91,6 +90,7 @@
   - [ ] Le QR code contient l'ID de l'animateur + un timestamp pour éviter les screenshots
 - [ ] Get rid of `?` and handle undefined data.
 - [ ] Essayer la connexion avec numéro de téléphone (0.1€/sms)
+- [ ] 
 
 ## 2023
 

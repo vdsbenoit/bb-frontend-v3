@@ -101,7 +101,7 @@
                   <ion-select v-if="isEditting.morningGame" v-model="target.morningGame" 
                   @ion-change="setMorningGame" 
                   cancel-text="Annuler" interface="action-sheet">
-                    <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id"> {{ isGameFullEmoji(game.morningLeaders) }}{{ game.id }} - {{ game.name }} </ion-select-option>
+                    <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">{{ game.id }}{{ isGameFull(game.morningLeaders) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" :readonly="true" inputmode="none" @click="goToGamePage(userProfile.morningGame)">
                     <span v-if="userProfile.morningGame">{{ userProfile.morningGame }}: {{ getGameName(userProfile.morningGame) }}</span>
@@ -116,7 +116,7 @@
                   <ion-select v-if="isEditting.afternoonGame" v-model="target.afternoonGame" 
                   @ion-change="setAfternoonGame" 
                   cancel-text="Annuler" interface="action-sheet">
-                    <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id" color="danger"> {{ isGameFullEmoji(game.afternoonLeaders) }}{{ game.id }} - {{ game.name }} </ion-select-option>
+                    <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">{{ game.id }}{{ isGameFull(game.afternoonLeaders) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" :readonly="true" inputmode="none" @click="goToGamePage(userProfile.afternoonGame)">
                     <span v-if="userProfile.afternoonGame">{{ userProfile.afternoonGame }}: {{ getGameName(userProfile.afternoonGame) }}</span>
@@ -551,8 +551,8 @@ const deleteAccount = async () => {
   };
   confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle);
 };
-const isGameFullEmoji = (leaders: string[]): string => {
-  return leaders.length >= getMaxGameLeaders() ? "❌ " : "";
+const isGameFull = (leaders: string[]): boolean => {
+  return (leaders.length >= getMaxGameLeaders());
 };
 </script>
 

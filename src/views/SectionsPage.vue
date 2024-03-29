@@ -67,7 +67,7 @@
                     </ion-item>
                   </ion-list>
                 </div>
-                <ion-button v-if="isAdmin" expand="block" color="primary" @click="computeMeanScore" class="ion-margin-horizontal">
+                <ion-button v-if="isAdmin" expand="block" color="primary" @click="computeMeanScore" class="ion-margin-horizontal ion-margin-top">
                   Recalculer le score moyen
                 </ion-button>
                 <!-- todo: add a spinner -->
@@ -133,7 +133,8 @@
         </ion-row>
       </ion-grid>
       <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center" >Sélectionne un type de section et une section <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+        <h2 v-if="!selectedSectionType" class="ion-text-center ion-align-items-center" >Sélectionne un type de section<ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
+        <h2 v-else class="ion-text-center ion-align-items-center" >Sélectionne une section <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
     </ion-content>
   </ion-page>
