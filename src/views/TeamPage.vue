@@ -82,7 +82,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, 
-IonIcon, IonGrid, useIonRouter, IonBadge, IonSpinner, IonButton } from "@ionic/vue";
+IonIcon, IonGrid, useIonRouter, IonSpinner, IonButton } from "@ionic/vue";
 import { closeOutline, closeSharp, trophyOutline, trophySharp, starOutline, star, reorderTwoOutline, reorderTwoSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";

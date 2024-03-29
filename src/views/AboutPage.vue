@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonIcon, IonLabel, IonList, IonItem } from "@ionic/vue";
-import { calendar, pin, informationCircleOutline, trophyOutline} from "ionicons/icons";
+import { pin, informationCircleOutline, trophyOutline} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { buildInfo } from "@/app/buildinfo";
 
