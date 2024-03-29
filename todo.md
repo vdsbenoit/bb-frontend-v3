@@ -9,7 +9,7 @@
 - [ ] Update Magnetar & try to replace some .stream() with .fetch() (the bug may be fixed)
 - [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
 - [x] Renommer page « duel » en quelque chose comme « check scores »
-- [ ] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
+- [x] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
 - [ ] Choisir qui voit le classement 
 - [ ] Editer les sections depuis l'app
 - [ ] Refresh page instead of quit page when update is available
@@ -67,6 +67,7 @@
 - [ ] Remove weights
 - [ ] ? Optimize index (game_id>time and time>game_id)
 - [ ] Intégrer la couleur d'équipe dans l'app et la DB
+- [ ] Fix Nprogress
 - [ ] Faire la distribution + générer les roadmaps/badges dans l'app
   - Créer des utilisateurs	
   - Créer les équipes (cf distribution équipe ci dessous)

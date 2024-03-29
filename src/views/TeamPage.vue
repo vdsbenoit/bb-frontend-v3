@@ -62,8 +62,7 @@
                   <span>{{ match.game_name }}</span>
                   <p>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} | 📍 Jeu n° {{ match.game_id }}</p>
                 </ion-label>
-                <ion-icon :ios="statusIcon(match).ios" :md="statusIcon(match).md" :color="statusIcon(match).ios == trophyOutline ? 'success' : 'danger'" v-if="statusIcon(match).md" slot="end"></ion-icon>
-                <ion-badge slot="end" class="ion-no-margin" color="warning" v-if="match.draw">Égalité</ion-badge>
+                <ion-icon :ios="statusIcon(match).ios" :md="statusIcon(match).md" :color="statusIcon(match).color" slot="end"></ion-icon>
               </ion-item>
             </ion-list>
             <div v-else-if="isLoading" class="ion-text-center">
@@ -84,7 +83,7 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, 
 IonIcon, IonGrid, useIonRouter, IonBadge, IonSpinner, IonButton } from "@ionic/vue";
-import { closeOutline, closeSharp, trophyOutline, trophySharp, starOutline, star } from "ionicons/icons";
+import { closeOutline, closeSharp, trophyOutline, trophySharp, starOutline, star, reorderTwoOutline, reorderTwoSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
@@ -169,9 +168,10 @@ watchEffect(async () => {
 // Methods
 
 const statusIcon = (match: any) => {
-  if (match.winner === teamId.value) return { ios: trophyOutline, md: trophySharp };
-  if (match.loser === teamId.value) return { ios: closeOutline, md: closeSharp };
-  return { md: undefined, ios: undefined };
+  if (match.draw) return { ios: reorderTwoOutline, md: reorderTwoSharp, color: "warning" };
+  if (match.winner === teamId.value) return { ios: trophyOutline, md: trophySharp, color: "success" };
+  if (match.loser === teamId.value) return { ios: closeOutline, md: closeSharp, color: "danger" };
+  return { md: undefined, ios: undefined, color: ""};
 };
 const registerPlayer = () => {
   if (team.value) user.updateProfile(
