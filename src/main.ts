@@ -39,6 +39,9 @@ const app = createApp(App)
 const store = useAuthStore();
 
 store.initializeAuthListener().then(() => {
+  // initializing the router after Pinia introduce this bug https://stackoverflow.com/questions/77456631/why-cant-i-see-pinia-in-vue-devtools
+  // however, this is necesseary otherwise the router rules do not work (they need some info from the pinia store)
+  //fixme
   app.use(router);
   router.isReady().then(() => {
     app.mount('#app');
