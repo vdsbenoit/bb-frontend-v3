@@ -2,15 +2,15 @@
 
 ## 2024
 
-- [ ] 
+- [ ] Update logo
 - [x] empêcher les navigateurs de traduire l’app
 - [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
 - [x] Lien vers section sur la TeamPage
 - [ ] Update Magnetar & try to replace some .stream() with .fetch() (the bug may be fixed)
 - [x] Renommer page « duel » en quelque chose comme « check scores »
 - [x] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
-- [ ] Choisir qui voit le classement 
-- [ ] Refresh page instead of quit page when update is available
+- [x] Donner acces au classement aux chefs
+- [x] Refresh page instead of quit page when update is available
 - [ ] Build new DB
   - [ ] Donner le rôle d'organisateur aux chefs pios lors de la config
   - [ ] Replace "match vs match" with game name in Check Scores page

@@ -22,12 +22,12 @@ if (process.env.NODE_ENV === 'production') {
     },
     updated () {
       confirmPopup(
-        `Elle ne sera appliquée qu'après avoir fermé complètement l'app. Veux-tu le faire maintenant ?<br><br>
+        `Elle ne sera appliquée qu'après avoir fermé redémarré l'app. Veux-tu le faire maintenant ?<br><br>
          Si ce popup apparait à chaque ouverture de l'app, ferme complètement ton navigateur web aussi.`, 
         () => { 
-          window.close();
+          window.location.reload();
           setTimeout(() => {
-            errorPopup("Ton navigateur ne veut visiblement pas laisser l'app se fermer. Fais le manuellement pour appliquer la mise à jour.");
+            errorPopup("Ton navigateur ne veut visiblement pas rafraischir l'app. Fais le manuellement pour appliquer la mise à jour.");
           }, 1000)
         },
         () => void 0,
