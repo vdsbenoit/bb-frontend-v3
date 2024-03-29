@@ -102,7 +102,7 @@ export const canSetScoreAnywhere = (): boolean | undefined => {
 export const isLeaderRegistrationOpen = () => {
   return appSettingsModule.data?.leaderRegistration;
 }
-export const isShowRankingToAll = (): boolean => {
+export const isRankingPublic = (): boolean => {
   if (appSettingsModule.data?.showRankingToAll) return appSettingsModule.data.showRankingToAll;
   return appSettingsDefaults.showRankingToAll;
 };

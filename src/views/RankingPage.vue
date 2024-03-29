@@ -1,10 +1,10 @@
 <template>
   <ion-page>
     <header-template pageTitle="Classement">
-      <ion-label v-if="isAdmin">
+      <ion-label v-if="canPrint">
         Printable
       </ion-label>
-      <ion-toggle v-if="isAdmin" @IonChange="togglePrintable" :checked="showPrintableScores"></ion-toggle>
+      <ion-toggle v-if="canPrint" @IonChange="togglePrintable" :checked="showPrintableScores"></ion-toggle>
       <ion-button @click="setLimit"><ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp"></ion-icon></ion-button>
     </header-template>
     <ion-content :fullscreen="true">
@@ -105,8 +105,8 @@ const nutonTopSections = computed(() => {
 const nutonTopTeams = computed(() => {
   return getTopTeams("Baladins & Nutons", maxItems.value);
 });
-const isAdmin = computed(() => {
-  return user.profile.role === ROLES.Administrateur
+const canPrint = computed(() => {
+  return user.profile.role === ROLES.Organisateur
 });
 
 // Watchers

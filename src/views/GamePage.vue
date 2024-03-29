@@ -78,11 +78,11 @@
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canEditGameSettings">
                   <ion-button v-if="isTogglingNoScores" expand="block" color="medium" > 
                     <ion-spinner></ion-spinner>
-                   </ion-button>
-                   <div v-else-if="game">
-                     <ion-button v-if="game.noScores" @click="toggleNoScores" expand="block" color="success" > Réactiver les scores </ion-button>
-                     <ion-button v-else @click="toggleNoScores" expand="block" color="danger" > Désactiver les scores </ion-button>
-                   </div>
+                  </ion-button>
+                  <div v-else-if="game">
+                    <ion-button v-if="game.noScores" @click="toggleNoScores" expand="block" color="success" > Réactiver les scores </ion-button>
+                    <ion-button v-else @click="toggleNoScores" expand="block" color="danger" > Désactiver les scores </ion-button>
+                  </div>
                 </ion-col>
               </ion-row>
             </ion-grid>

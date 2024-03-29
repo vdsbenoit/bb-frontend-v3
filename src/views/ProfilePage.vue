@@ -272,10 +272,10 @@ const isStaff = computed(() => {
   return userProfile.value.role >= ROLES.Organisateur;
 });
 const canSetRole = computed(() => {
-  return userStore.profile.role >= ROLES.Administrateur;
+  return userStore.profile.role >= ROLES.Organisateur;
 });
 const canResetOnboarding = computed(() => {
-  return userStore.profile.role >= ROLES.Administrateur;
+  return userStore.profile.role >= ROLES.Organisateur;
 });
 const canDeleteProfile = computed(() => {
   if (userStore.profile.role >= ROLES.Administrateur) return true;

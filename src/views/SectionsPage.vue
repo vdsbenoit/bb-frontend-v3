@@ -67,7 +67,7 @@
                     </ion-item>
                   </ion-list>
                 </div>
-                <ion-button v-if="isAdmin" expand="block" color="primary" @click="computeMeanScore" class="ion-margin-horizontal ion-margin-top">
+                <ion-button v-if="canComputeMeanScore" expand="block" color="primary" @click="computeMeanScore" class="ion-margin-horizontal ion-margin-top">
                   Recalculer le score moyen
                 </ion-button>
                 <!-- todo: add a spinner -->
@@ -150,7 +150,7 @@ import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { getSectionsBySectionType, getSection, Section, updateSectionMeanScore } from "@/services/sections";
 import { onMounted, watch, watchEffect } from "vue";
-import { getSectionTypes, isShowRankingToAll } from "@/services/settings";
+import { getSectionTypes, isRankingPublic } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
@@ -223,8 +223,8 @@ const sectionTypes = computed(() => {
   return getSectionTypes();
 });
 const showRanking = computed(() => {
-  if(isShowRankingToAll()) return true;
-  return user.profile.role >= ROLES.Administrateur;
+  if(isRankingPublic()) return true;
+  return user.profile.role >= ROLES.Organisateur;
 });
 const canSeeMembers = computed(() => {
   return user.profile.role >= ROLES.Organisateur;
@@ -238,7 +238,7 @@ const selectedSection = computed((): Section | undefined => {
 const sectionMembers = computed(() => {
   return shouldLoadMembers.value ? user.getSectionMembers(selectedSectionId.value) : new Map();
 });
-const isAdmin = computed(() => {
+const canComputeMeanScore = computed(() => {
   return user.profile.role >= ROLES.Administrateur;
 });
 

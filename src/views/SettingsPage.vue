@@ -38,7 +38,7 @@
             </ion-item>
             <ion-item>
               <ion-label class="ion-text-wrap">Rendre les classements publiques</ion-label>
-              <ion-toggle @IonChange="showRanking" :checked="isShowRankingToAll()"></ion-toggle>
+              <ion-toggle @IonChange="showRanking" :checked="isRankingPublic()"></ion-toggle>
             </ion-item>
             <ion-item>
               <ion-label>Inscriptions aux épreuves</ion-label>
@@ -66,7 +66,7 @@
 import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon, IonList, IonItem, IonLabel, IonButton, IonToggle, IonInput } from "@ionic/vue";
 import { chevronForwardOutline, chevronForwardSharp, checkmarkOutline, checkmarkSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { appSettingsDefaults, getMaxGameLeaders, isScoresFrozen, isShowRankingToAll, updateAppSettings, canSetScoreAnywhere, isLeaderRegistrationOpen, isShowGameAvailabilities } from "@/services/settings";
+import { appSettingsDefaults, getMaxGameLeaders, isScoresFrozen, isRankingPublic, updateAppSettings, canSetScoreAnywhere, isLeaderRegistrationOpen, isShowGameAvailabilities } from "@/services/settings";
 import { reactive, ref } from "vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 

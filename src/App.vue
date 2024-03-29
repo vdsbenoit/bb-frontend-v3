@@ -47,7 +47,7 @@ personAddOutline, personAddSharp, trophyOutline, trophySharp, checkmarkCircleOut
 import { computed, onMounted, ref, watch } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { useRouter, useRoute } from "vue-router";
-import { isShowRankingToAll } from "./services/settings";
+import { isRankingPublic } from "./services/settings";
 
 const router = useRouter();
 const route = useRoute();
@@ -114,8 +114,8 @@ const appPages = computed(() => {
   }];
   if (user.profile.role > ROLES.Newbie) pages = [...pages, sectionsPage, gamesPage];
   if (user.profile.role >= ROLES.Organisateur) pages = [...pages, matchesPage];
-  if (user.profile.role >= ROLES.Administrateur) pages = [...pages, rankingPage, settingsPage];
-  if (isShowRankingToAll() && user.profile.role < ROLES.Administrateur) pages = [...pages, rankingPage];
+  if (isRankingPublic() || user.profile.role >= ROLES.Organisateur) pages = [...pages, rankingPage];
+  if (user.profile.role >= ROLES.Administrateur) pages = [...pages, settingsPage];
   // bottom pages
   pages = [...pages, profilePage,  aboutPage];
   return pages;

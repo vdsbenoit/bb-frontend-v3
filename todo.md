@@ -2,19 +2,23 @@
 
 ## 2024
 
-- [ ] Les chef Pios devraient avoir les mêmes accès que les organisateurs. Genre voir les duels pour checker qui n'a pas enregistré de scores
+- [ ] 
 - [x] empêcher les navigateurs de traduire l’app
 - [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
 - [x] Lien vers section sur la TeamPage
 - [ ] Update Magnetar & try to replace some .stream() with .fetch() (the bug may be fixed)
-- [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
 - [x] Renommer page « duel » en quelque chose comme « check scores »
 - [x] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
 - [ ] Choisir qui voit le classement 
 - [ ] Refresh page instead of quit page when update is available
 - [ ] Build new DB
+  - [ ] Donner le rôle d'organisateur aux chefs pios lors de la config
   - [ ] Replace "match vs match" with game name in Check Scores page
 
+
+### Moins important
+
+- [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
 
 ## User feedback
 
@@ -60,6 +64,8 @@
 - [ ] Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
 - [ ] Get rid of snake case in the DB (e.g. matches collection)
 - [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
+  - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
+
 - [ ] Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
   - [ ] Cloud functions qui aggregate le score moyen de chaque section
 - [ ] Modifier détails section depuis SectionsPage
@@ -75,6 +81,7 @@
   - Editer les sections depuis l'app
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 - [ ] Rewrite Profile page code
+- [ ] Use VueFire instead of Magnetar
 
 ## Nice to have
 

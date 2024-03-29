@@ -1,5 +1,5 @@
 import { toastPopup } from './../services/popup';
-import { isShowRankingToAll } from './../services/settings';
+import { isRankingPublic } from './../services/settings';
 import { ROLES, getRoleByValue } from './../services/users';
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
@@ -49,6 +49,18 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Newbie }
   },
   {
+    name: 'myProfile',
+    path: '/profile',
+    component: () => import ('../views/ProfilePage.vue'),
+    meta: { minimumRole: ROLES.Newbie }
+  },
+  {
+    name: 'profile',
+    path: '/profile/:userId',
+    component: () => import ('../views/ProfilePage.vue'),
+    meta: { minimumRole: ROLES.Participant }
+  },
+  {
     name: 'teams',
     path: '/team/:teamId?',
     component: () => import ('../views/TeamPage.vue'),
@@ -71,12 +83,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/match/:matchId',
     component: () => import ('../views/MatchPage.vue'),
     meta: { minimumRole: ROLES.Participant }
-  },
-  {
-    name: 'matches',
-    path: '/matches',
-    component: () => import ('../views/MatchesPage.vue'),
-    meta: { minimumRole: ROLES.Organisateur }
   },
   {
     name: 'sections',
@@ -103,22 +109,23 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: ROLES.Animateur }
   },
   {
+    name: 'requests',
+    path: '/requests',
+    props: true,
+    component: () => import ('../views/RequestsPage.vue'),
+    meta: { minimumRole: ROLES.Chef }
+  },
+  {
+    name: 'matches',
+    path: '/matches',
+    component: () => import ('../views/MatchesPage.vue'),
+    meta: { minimumRole: ROLES.Organisateur }
+  },
+  {
     name: 'ranking',
     path: '/ranking',
     component: () => import ('../views/RankingPage.vue'),
-    meta: { minimumRole: ROLES.Administrateur }
-  },
-  {
-    name: 'myProfile',
-    path: '/profile',
-    component: () => import ('../views/ProfilePage.vue'),
-    meta: { minimumRole: ROLES.Newbie }
-  },
-  {
-    name: 'profile',
-    path: '/profile/:userId',
-    component: () => import ('../views/ProfilePage.vue'),
-    meta: { minimumRole: ROLES.Participant }
+    meta: { minimumRole: ROLES.Organisateur }
   },
   {
     name: 'settings',
@@ -132,13 +139,6 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
     component: () => import ('../views/UsersPage.vue'),
     meta: { minimumRole: ROLES.Administrateur }
-  },
-  {
-    name: 'requests',
-    path: '/requests',
-    props: true,
-    component: () => import ('../views/RequestsPage.vue'),
-    meta: { minimumRole: ROLES.Chef }
   },
   {
     name: 'about',
@@ -169,7 +169,7 @@ router.beforeEach(async (to, from, next) => {
       toastPopup("Tu es déjà connecté");
       return next('/home');
     }
-    if (to.name === "ranking" && isShowRankingToAll()) return next();
+    if (to.name === "ranking" && isRankingPublic()) return next();
     if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
     if (to.name === "onboarding"){
       if (user.profile.hasDoneOnboarding) {
@@ -182,7 +182,7 @@ router.beforeEach(async (to, from, next) => {
         console.log("User is newbie, redirecting to onboarding instead of ", to.name);
         return next('/onboarding');
       }
-      if (user.profile.role >= to.meta.minimumRole) return next();
+      if (user.profile.role >= +to.meta.minimumRole) return next();
       else {
         toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(user.profile.role)})`);
         return next('/home');
@@ -192,7 +192,7 @@ router.beforeEach(async (to, from, next) => {
   else {
     if (!to.meta.minimumRole) return next();
     if(to.meta.minimumRole === ROLES.Anonyme) return next();
-    if (to.name === "ranking" && isShowRankingToAll()) return next(); // this does not work because settings are loaded only when logged in
+    if (to.name === "ranking" && isRankingPublic()) return next(); // this does not work because settings are loaded only when logged in
     toastPopup("Tu dois être connecté pour accéder à cette page");
     return next('/guest');
   }
