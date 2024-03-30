@@ -17,9 +17,7 @@
           <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="">
             <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">{{ match.game_id }}</ion-badge>
             <ion-label>
-              <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[0] }}</ion-text>
-              <ion-text> vs </ion-text>
-              <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
+              {{ match.game_name }}
             </ion-label>
             <ion-icon v-if="isScoreRecorded(match)" :color="iconColor(match)" slot="end" :ios="checkmarkCircle" :md="checkmarkCircleSharp"></ion-icon>
             <ion-icon v-else color="danger" slot="end" :ios="closeCircle" :md="closeCircleSharp"></ion-icon>
@@ -40,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, IonSpinner, IonSelect, IonSelectOption, IonIcon } from "@ionic/vue";
+import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonSpinner, IonSelect, IonSelectOption, IonIcon } from "@ionic/vue";
 import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, closeCircle, closeCircleSharp} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { computed, ref } from "@vue/reactivity";

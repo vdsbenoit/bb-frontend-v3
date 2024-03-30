@@ -13,7 +13,7 @@
 - [x] Refresh page instead of quit page when update is available
 - [ ] Build new DB
   - [ ] Donner le rôle d'organisateur aux chefs pios lors de la config
-  - [ ] Replace "match vs match" with game name in Check Scores page
+  - [x] Replace "match vs match" with game name in Check Scores page
   - [ ] Fix `game_names.yml` (add 5th circuit)
   - [x] Generate badges
   - [x] Generate roadmaps
