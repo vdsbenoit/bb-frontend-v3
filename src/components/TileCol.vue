@@ -18,7 +18,7 @@ const router = useRouter();
 .tile {
   border-radius: 15px;
   /* background-color: var(--ion-color-primary); */
-  background-color: #FEE12B;
+  background-color: #ff2c2c;
   aspect-ratio: 1;
   display: flex;
   align-items: center;

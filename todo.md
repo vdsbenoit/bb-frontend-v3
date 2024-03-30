@@ -2,7 +2,7 @@
 
 ## 2024
 
-- [ ] Update logo & couleurs
+- [x] Update logo & couleurs
 - [x] empêcher les navigateurs de traduire l’app
 - [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
 - [x] Lien vers section sur la TeamPage
