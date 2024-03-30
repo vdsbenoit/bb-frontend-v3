@@ -192,7 +192,7 @@ const submitForm = async () => {
   if (selectedRole.value === ROLES.Animateur) {
     if (selectedLeaderSectionId.value){
       const leaderSectionName = getLeaderSection(selectedLeaderSectionId.value)?.name;
-      message = `Tu es choisi le role d'animateur. 
+      message = `Tu as choisi le role d'animateur. 
       Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
     } else return errorPopup('Choisis une section');
@@ -200,19 +200,19 @@ const submitForm = async () => {
   if (selectedRole.value === ROLES.Chef) {
     if (selectedLeaderSectionId.value){
       const leaderSectionName = getLeaderSection(selectedLeaderSectionId.value)?.name;
-      message = `Tu es choisi le role de chef. 
+      message = `Tu as choisi le role de chef. 
       Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
     } else return errorPopup('Choisis une section');
   }
   if (selectedRole.value === ROLES.Organisateur) {
     selectedLeaderSectionId.value = await getStaffSectionId();
-    message = `Tu es choisi le role d'organisateur de la Baden Battle. 
+    message = `Tu as choisi le role d'organisateur de la Baden Battle. 
     Cela signifie qu'un autre organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
   }
   if (selectedRole.value === ROLES.Administrateur) {
     selectedLeaderSectionId.value = await getStaffSectionId();
-    message = `Tu es choisi le role d'administrateur de l'application. 
+    message = `Tu as choisi le role d'administrateur de l'application. 
     Cela signifie qu'un autre administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
   }
   message += ` Veux-tu continuer ?`

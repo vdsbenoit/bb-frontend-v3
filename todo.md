@@ -2,7 +2,7 @@
 
 ## 2024
 
-- [ ] Update logo
+- [ ] Update logo & couleurs
 - [x] empêcher les navigateurs de traduire l’app
 - [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
 - [x] Lien vers section sur la TeamPage
@@ -14,6 +14,9 @@
 - [ ] Build new DB
   - [ ] Donner le rôle d'organisateur aux chefs pios lors de la config
   - [ ] Replace "match vs match" with game name in Check Scores page
+  - [ ] Fix `game_names.yml` (add 5th circuit)
+  - [x] Generate badges
+  - [x] Generate roadmaps
 
 
 ### Moins important
@@ -58,14 +61,13 @@
 
 ## Parking
 
-- [ ] Enable email enumeration protection (cf mail from Google) / add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr) 
+- [ ] Add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr) 
 - [ ] Push notification (par ex pour rappeler d'enregistrer un score manquant)
 - [ ] Retirer matches des collection games & teams (utiliser des queries à la place). Vérifier tout de même si ce n'est pas utile pour la validation de la db à la fin de l'initialisation.
 - [ ] Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
 - [ ] Get rid of snake case in the DB (e.g. matches collection)
 - [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
   - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
-
 - [ ] Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
   - [ ] Cloud functions qui aggregate le score moyen de chaque section
 - [ ] Modifier détails section depuis SectionsPage
@@ -76,6 +78,8 @@
 - [ ] Faire la distribution + générer les roadmaps/badges dans l'app
   - Créer des utilisateurs	
   - Créer les équipes (cf distribution équipe ci dessous)
+    - Séparer la création de chaque type de sections. Par ex, la création des équipes louveteaux ont leur propre paramètre MIN et MAX 
+    - Faire en sorte que l'on puisse refaire la distributions de équipes une fois que les pios ont déjà commencé à s'inscrire. En gros, ne pas toucher à la db de jeux, uniquement aux équipes. 
   - Créer des jeux
   - Renommer jeux depuis l'app (attention: appliquer la modification à tous les matchs)
   - Editer les sections depuis l'app

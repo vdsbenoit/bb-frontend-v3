@@ -21,7 +21,7 @@
               <ion-text> vs </ion-text>
               <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
             </ion-label>
-            <ion-icon v-if="isScoreRegistered(match)" :color="iconColor(match)" slot="end" :ios="checkmarkCircle" :md="checkmarkCircleSharp"></ion-icon>
+            <ion-icon v-if="isScoreRecorded(match)" :color="iconColor(match)" slot="end" :ios="checkmarkCircle" :md="checkmarkCircleSharp"></ion-icon>
             <ion-icon v-else color="danger" slot="end" :ios="closeCircle" :md="closeCircleSharp"></ion-icon>
           </ion-item>
         </div>
@@ -89,7 +89,7 @@ const iconColor = (match: Match) => {
   if (match.noScores) return "medium";
   return 'success'
 };
-const isScoreRegistered = (match: Match) => {
+const isScoreRecorded = (match: Match) => {
   return (match.winner || match.draw || match.noScores)
 }
 

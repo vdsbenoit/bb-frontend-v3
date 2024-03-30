@@ -19,7 +19,7 @@
 
           <!-- >= chef -->
           <tile-col v-if="nbPendingRequests" target="/requests">
-            {{ nbPendingRequests }} demande{{ nbPendingRequests > 1 ? "s" : "" }} d'accès
+            {{ nbPendingRequests }} demande{{ typeof nbPendingRequests == 'string' || nbPendingRequests > 1  ? "s" : "" }} d'accès
           </tile-col>
 
           <!-- chef -->
