@@ -12,7 +12,7 @@
                   <ion-select-option v-for="(sectionType, index) in sectionTypes" :value="sectionType" :key="index">{{ sectionType }}</ion-select-option>
                 </ion-select>
                 <ion-spinner v-else-if="isLoadingSectionTypes"></ion-spinner>
-                <div v-else>Pas de type de section configuré</div>
+                <div v-else  class="ion-text-center">Pas de type de section configuré</div>
               </ion-col>
               <ion-col size="12" size-sm="6" v-if="selectedSectionType">
                 <ion-select v-if="sections && sections.size > 0" v-model="selectedSectionId" placeholder="Section" interface="popover">
@@ -22,7 +22,7 @@
                   </ion-select-option>
                 </ion-select>
                 <ion-spinner v-else-if="isLoadingSections"></ion-spinner>
-                <div v-else>Pas de section configurée</div>
+                <div v-else class="ion-text-center">Pas de section configurée</div>
               </ion-col>
             </ion-row>
           </ion-grid>
