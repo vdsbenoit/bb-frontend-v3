@@ -13,6 +13,7 @@ function generateRandomId() {
 
 const remote = PluginFirestore.CreatePlugin({ db })
 const local = PluginVue3.CreatePlugin({ generateRandomId })
+const onValue = (process.env.NODE_ENV === "production") ? {} : { success: logger }
 
 export const magnetar = Magnetar({
   stores: { local, remote },
@@ -22,7 +23,7 @@ export const magnetar = Magnetar({
     write: ["local", "remote"],
     delete: ["local", "remote"],
   },
-  on: { success: logger }, // fixme: disable this on production builds
+  on: onValue,
 });
 
 export const stopMagnetar = async () => {
