@@ -3,6 +3,7 @@
 ## 2024
 
 - [x] Update logo & couleurs
+- [x] Update favicon
 - [x] empêcher les navigateurs de traduire l’app
 - [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
 - [x] Lien vers section sur la TeamPage
@@ -13,6 +14,7 @@
 - [x] Refresh page instead of quit page when update is available
 - [ ] Build new DB
   - [ ] Donner le rôle d'organisateur aux chefs pios lors de la config
+  - [ ] wipe auth user db firebase
   - [x] Replace "match vs match" with game name in Check Scores page
   - [ ] Fix `game_names.yml` (add 5th circuit)
   - [x] Generate badges
