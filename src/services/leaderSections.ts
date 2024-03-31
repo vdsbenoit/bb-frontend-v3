@@ -33,19 +33,19 @@ const leaderSectionsModule = magnetar.collection<LeaderSection>(LEADER_SECTIONS_
 
 // including the Staff BB
 export const getAllLeaderSections = () => {
-  leaderSectionsModule.stream().catch((error) => { // using stream because the fetch() method is bugged
-    console.error(`Error occurred while streaming the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
+  leaderSectionsModule.fetch().catch((error) => {
+    console.error(`Error occurred while fetching the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
   }); 
   return leaderSectionsModule.data;
 }
 export const getLeaderSections = () => {
-  leaderSectionsModule.where("name", "!=", STAFF_SECTION_NAME).stream().catch((error) => { // using stream because the fetch() method is bugged
-    console.error(`Error occurred while streaming the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
+  leaderSectionsModule.where("name", "!=", STAFF_SECTION_NAME).fetch().catch((error) => { 
+    console.error(`Error occurred while fetching the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
   }); 
   return leaderSectionsModule.data;
 }
-// This method opens a stream on the game to get live updates
-export const getLeaderSection = (id: number) => {
+// This method opens a stream on the leaderSections to get live updates
+export const streamLeaderSection = (id: number) => {
   if(!id) return undefined;
   const leaderSectionModule = leaderSectionsModule.doc(id.toString());
   leaderSectionModule.stream().catch((error) => {
@@ -72,10 +72,13 @@ export const hardcodeLeaderSections = () => {
     {name: STAFF_SECTION_NAME, city: "Soignies", id: 0, unit: ""},
     {name: "Pionniers Peter Pan", city: "Soignies", id: 0, unit: ""},
     {name: "Scouts Griffons", city: "Soignies", id: 0, unit: ""},
+    {name: "Scouts Phénix", city: "Soignies", id: 0, unit: ""},
     {name: "Guides Amazones", city: "Soignies", id: 0, unit: ""},
     {name: "Guides Chamans", city: "Soignies", id: 0, unit: ""},
-    {name: "Pionniers de Dour", city: "Dour", id: 0, unit: ""},
-    {name: "Pionniers de Casteau", city: "Casteau", id: 0, unit: ""},
+    {name: "Pionniers d'Ecaussinnes", city: "Ecaussinnes", id: 0, unit: ""},
+    {name: "Pionniers de Braine-le-Comte", city: "Braine-le-Comte", id: 0, unit: ""},
+    {name: "Scouts de Rebecq", city: "Rebecq", id: 0, unit: ""},
+    {name: "Guides de Rebecq", city: "Rebecq", id: 0, unit: ""},
   ]
   leaderSections.forEach(async (leaderSection) => {
     // generate unique numeric id

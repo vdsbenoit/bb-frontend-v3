@@ -166,11 +166,11 @@ import { useAuthStore, ROLES } from "@/services/users";
 import { errorPopup, loadingPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { forceFetchGame, Game, getGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader, setGameNoScores } from "@/services/games";
-import { getGameMatches, setMatchNoScores } from "@/services/matches";
+import { forceFetchGame, Game, streamGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader, setGameNoScores } from "@/services/games";
+import { streamGameMatches, setMatchNoScores } from "@/services/matches";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
 import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
-import { getLeaderSection, getLeaderSections } from "@/services/leaderSections";
+import { streamLeaderSection, getLeaderSections } from "@/services/leaderSections";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const user = useAuthStore();
@@ -215,7 +215,7 @@ onMounted(() => {
 // Computed
 
 const game = computed((): Game => {
-  return getGame(gameId.value) as Game;
+  return streamGame(gameId.value) as Game;
 });
 const isGame = computed(() => {
   if (game.value && game.value.id) {
@@ -228,13 +228,13 @@ const canRegister = computed(() => {
   return isLeaderRegistrationOpen() && (user.profile.role == ROLES.Animateur || user.profile.role == ROLES.Chef);
 });
 const matches = computed(() => {
-  return game.value?.id ? getGameMatches(game.value?.id) : new Map();
+  return game.value?.id ? streamGameMatches(game.value?.id) : new Map();
 });
 const leaderSections = computed(() => {
   if (!editMode.value) return new Map(); // don't load sections if not in edit mode
   if (user.profile.role === ROLES.Chef ) {
     const sections = new Map();
-    sections.set(user.profile.sectionId, getLeaderSection(user.profile.sectionId));
+    sections.set(user.profile.sectionId, streamLeaderSection(user.profile.sectionId));
     return sections;
   }
   if (user.profile.role > ROLES.Chef) return getLeaderSections()

@@ -148,7 +148,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { getSectionsBySectionType, getSection, Section, updateSectionMeanScore } from "@/services/sections";
+import { getSectionsBySectionType, streamSection, Section, updateSectionMeanScore } from "@/services/sections";
 import { onMounted, watch, watchEffect } from "vue";
 import { getSectionTypes, isRankingPublic } from "@/services/settings";
 import InfoCardComponent from "@/components/InfoCardComponent.vue";
@@ -233,7 +233,7 @@ const sections = computed((): Map<string, Section> => {
   return getSectionsBySectionType(selectedSectionType.value); 
 });
 const selectedSection = computed((): Section | undefined => {
-  return selectedSectionId.value ? getSection(selectedSectionId.value) : undefined;
+  return selectedSectionId.value ? streamSection(selectedSectionId.value) : undefined;
 });
 const sectionMembers = computed(() => {
   return shouldLoadMembers.value ? user.getSectionMembers(selectedSectionId.value) : new Map();

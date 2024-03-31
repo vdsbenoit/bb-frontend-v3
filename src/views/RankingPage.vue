@@ -71,8 +71,8 @@ import { settingsOutline, settingsSharp} from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RankingComponent from "@/components/RankingComponent.vue";
 import { computed, ref } from "@vue/reactivity";
-import { getTopSections } from "@/services/sections";
-import { getTopTeams } from "@/services/teams";
+import { streamTopSections } from "@/services/sections";
+import { streamTopTeams } from "@/services/teams";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { ROLES, useAuthStore } from "@/services/users";
 
@@ -88,22 +88,22 @@ const showPrintableScores = ref(false);
 // Computed
 
 const lutinTopSections = computed(() => {
-  return getTopSections("Lutins", maxItems.value);
+  return streamTopSections("Lutins", maxItems.value);
 });
 const lutinTopTeams = computed(() => {
-  return getTopTeams("Lutins", maxItems.value);
+  return streamTopTeams("Lutins", maxItems.value);
 });
 const loupTopSections = computed(() => {
-  return getTopSections("Louveteaux", maxItems.value);
+  return streamTopSections("Louveteaux", maxItems.value);
 });
 const loupTopTeams = computed(() => {
-  return getTopTeams("Louveteaux", maxItems.value);
+  return streamTopTeams("Louveteaux", maxItems.value);
 });
 const nutonTopSections = computed(() => {
-  return getTopSections("Baladins & Nutons", maxItems.value);
+  return streamTopSections("Baladins & Nutons", maxItems.value);
 });
 const nutonTopTeams = computed(() => {
-  return getTopTeams("Baladins & Nutons", maxItems.value);
+  return streamTopTeams("Baladins & Nutons", maxItems.value);
 });
 const canPrint = computed(() => {
   return user.profile.role === ROLES.Organisateur

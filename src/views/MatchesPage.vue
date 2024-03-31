@@ -43,7 +43,7 @@ import { arrowUpOutline, arrowUpSharp, checkmarkCircle, checkmarkCircleSharp, cl
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { computed, ref } from "@vue/reactivity";
 import { getSchedules } from "@/services/settings";
-import { getTimeMatches, Match } from "@/services/matches";
+import { streamTimeMatches, Match } from "@/services/matches";
 import { onMounted } from "vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
@@ -64,7 +64,7 @@ const schedules = computed(() => {
   return getSchedules();
 });
 const matches = computed((): Map<string, Match> | undefined => {
-  return getTimeMatches(selectedTime.value);
+  return streamTimeMatches(selectedTime.value);
 });
 const isFilled = computed(() => {
   if (matches.value && matches.value.size > 0) {

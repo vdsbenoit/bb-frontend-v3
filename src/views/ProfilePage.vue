@@ -180,10 +180,10 @@ import { computed, onBeforeMount, onMounted, reactive, ref, watch } from "vue";
 import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/popup";
 import { stopMagnetar } from "@/services/magnetar";
 import { getMaxGameLeaders, getSectionTypes } from "@/services/settings";
-import { getSectionsBySectionType, getSection, Section } from "@/services/sections";
+import { getSectionsBySectionType, streamSection, Section } from "@/services/sections";
 import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { getAllLeaderSections, getLeaderSection, LeaderSection } from "@/services/leaderSections";
+import { getAllLeaderSections, streamLeaderSection, LeaderSection } from "@/services/leaderSections";
 
 const userStore = useAuthStore();
 const router = useRouter();
@@ -303,13 +303,13 @@ const sectionsBySectionType = computed(() => {
   return target.sectionType ? getSectionsBySectionType(target.sectionType) : new Map();
 });
 const sectionTeams = computed((): string[] => {
-  const section = getSection(userProfile.value.sectionId);
+  const section = streamSection(userProfile.value.sectionId);
   return section?.teams ?? [];
 });
 const targetSection = computed((): Section | LeaderSection | undefined => {
   if (target.sectionId == -1) return undefined;
-  if (isPlayer.value) return getSection(target.sectionId);
-  if (isLeader.value || isStaff.value) return getLeaderSection(target.sectionId);
+  if (isPlayer.value) return streamSection(target.sectionId);
+  if (isLeader.value || isStaff.value) return streamLeaderSection(target.sectionId);
   return undefined;
 });
 

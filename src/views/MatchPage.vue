@@ -129,9 +129,9 @@ import { ROLES, useAuthStore } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
-import { getMatch, Match, resetMatchScore, setMatchDraw, setMatchScore } from "@/services/matches";
-import { addTeamDraw, addTeamWin, getTeam, removeTeamDraw, removeTeamWin, Team } from "@/services/teams";
-import { canSetGameScore, Game, getGame } from "@/services/games";
+import { streamMatch, Match, resetMatchScore, setMatchDraw, setMatchScore } from "@/services/matches";
+import { addTeamDraw, addTeamWin, streamTeam, removeTeamDraw, removeTeamWin, Team } from "@/services/teams";
+import { canSetGameScore, Game, streamGame } from "@/services/games";
 import { isScoresFrozen } from "@/services/settings";
 import { getSchedule } from "@/services/settings";
 import { choicePopup, errorPopup, toastPopup } from "@/services/popup";
@@ -165,10 +165,10 @@ onMounted(() => {
 // Computed
 
 const match = computed((): Match => {
-  return getMatch(matchId.value as string) as Match;
+  return streamMatch(matchId.value as string) as Match;
 });
 const game = computed((): Game | undefined => {
-  return match.value?.game_id ? (getGame(match.value?.game_id) as Game) : undefined;
+  return match.value?.game_id ? (streamGame(match.value?.game_id) as Game) : undefined;
 });
 const isMatch = computed(() => {
   if (match.value?.id) {
@@ -183,10 +183,10 @@ const pageTitle = computed(() => {
   return "Duel inconnu";
 });
 const firstPlayer = computed((): Team | undefined => {
-  return match.value?.player_ids[0] ? getTeam(match.value.player_ids[0]) : undefined;
+  return match.value?.player_ids[0] ? streamTeam(match.value.player_ids[0]) : undefined;
 });
 const secondPlayer = computed((): Team | undefined => {
-  return match.value?.player_ids[1] ? getTeam(match.value.player_ids[1]) : undefined;
+  return match.value?.player_ids[1] ? streamTeam(match.value.player_ids[1]) : undefined;
 });
 const schedule = computed(() => {
   return match.value?.time ? getSchedule(match.value?.time - 1) : { start: " ", stop: " " };

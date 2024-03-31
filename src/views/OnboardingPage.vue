@@ -76,8 +76,8 @@ import { computed, ref, watch } from "vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { confirmPopup, errorPopup, toastPopup } from "@/services/popup";
 import { getSectionTypes } from "@/services/settings";
-import { getSection, getSectionsBySectionType, Section } from "@/services/sections";
-import { getLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
+import { streamSection, getSectionsBySectionType, Section } from "@/services/sections";
+import { streamLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
 const router = useRouter();
@@ -151,7 +151,7 @@ const processForm = () => {
       name: name.value,
       role: ROLES.Participant,
       sectionId: selectedSectionId.value,
-      sectionName: getSection(selectedSectionId.value)?.name,
+      sectionName: streamSection(selectedSectionId.value)?.name,
       hasDoneOnboarding: true,
     };
   } else {
@@ -160,7 +160,7 @@ const processForm = () => {
       name: name.value,
       requestedRole: selectedRole.value,
       requestedSectionId: selectedLeaderSectionId.value,
-      requestedSectionName: getLeaderSection(selectedLeaderSectionId.value)?.name,
+      requestedSectionName: streamLeaderSection(selectedLeaderSectionId.value)?.name,
       hasDoneOnboarding: true,
     }
   }
@@ -191,7 +191,7 @@ const submitForm = async () => {
   let message="";
   if (selectedRole.value === ROLES.Animateur) {
     if (selectedLeaderSectionId.value){
-      const leaderSectionName = getLeaderSection(selectedLeaderSectionId.value)?.name;
+      const leaderSectionName = streamLeaderSection(selectedLeaderSectionId.value)?.name;
       message = `Tu as choisi le role d'animateur. 
       Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;
@@ -199,7 +199,7 @@ const submitForm = async () => {
   }
   if (selectedRole.value === ROLES.Chef) {
     if (selectedLeaderSectionId.value){
-      const leaderSectionName = getLeaderSection(selectedLeaderSectionId.value)?.name;
+      const leaderSectionName = streamLeaderSection(selectedLeaderSectionId.value)?.name;
       message = `Tu as choisi le role de chef. 
       Cela signifie qu'un des chefs de la section ${leaderSectionName} ou un organisateur de la Baden Battle devra
       <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`;

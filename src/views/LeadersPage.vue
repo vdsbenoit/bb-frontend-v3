@@ -99,7 +99,7 @@
 <script setup lang="ts">
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { getLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
+import { streamLeaderSection, getLeaderSections, getStaffSectionId, LeaderSection } from "@/services/leaderSections";
 import { ROLES, useAuthStore } from "@/services/users";
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonPage, IonRow, IonSelect, IonSelectOption, IonSpinner } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity";
@@ -149,7 +149,7 @@ const sections = computed((): Map<string, LeaderSection> => {
   return getLeaderSections();
 });
 const section = computed((): LeaderSection | undefined => {
-  return sectionId.value ? getLeaderSection(sectionId.value) : undefined;
+  return sectionId.value ? streamLeaderSection(sectionId.value) : undefined;
 });
 const allSectionMembers = computed(() => {
   if(!sectionId.value) return new Map();

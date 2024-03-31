@@ -89,10 +89,10 @@ import { useAuthStore, ROLES } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
 import { onBeforeMount, onMounted, watchEffect } from "vue";
-import { getTeam, Team } from "@/services/teams";
-import { getTeamMatches } from "@/services/matches";
+import { streamTeam, Team } from "@/services/teams";
+import { streamTeamMatches } from "@/services/matches";
 import { getSchedule, isRankingPublic } from "@/services/settings";
-import { getSection, Section } from "@/services/sections";
+import { streamSection, Section } from "@/services/sections";
 import { errorPopup, toastPopup } from "@/services/popup";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
@@ -121,10 +121,10 @@ onMounted(() => {
 // Computed
 
 const team = computed((): Team => {
-  return getTeam(teamId.value as string) as Team;
+  return streamTeam(teamId.value as string) as Team;
 });
 const section = computed((): Section | undefined => {
-  return team.value?.sectionId ? getSection(team.value.sectionId) : undefined;
+  return team.value?.sectionId ? streamSection(team.value.sectionId) : undefined;
 });
 const isTeam = computed(() => {
   if (team.value?.id) {
@@ -139,7 +139,7 @@ const pageTitle = computed(() => {
   return "Équipe inconnue";
 });
 const matches = computed(() => {
-  return team.value?.id ? getTeamMatches(team.value?.id) : new Map();
+  return team.value?.id ? streamTeamMatches(team.value?.id) : new Map();
 });
 const showRanking = computed(() => {
   if(isRankingPublic()) return true;

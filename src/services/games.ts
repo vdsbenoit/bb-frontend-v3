@@ -46,23 +46,23 @@ const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION_NAME, {
 /////////////
 
 export const getAllGames = () => {
-  console.log(`Streaming all games`); // using stream because the fetch() method is bugged
-  gamesModule.orderBy("id").stream().catch((error) => {
-    console.error(`Error occurred while streaming the ${GAMES_COLLECTION_NAME} collection`, error);
+  console.log(`Fetching all games`); 
+  gamesModule.orderBy("id").fetch().catch((error) => {
+    console.error(`Error occurred while fetching the ${GAMES_COLLECTION_NAME} collection`, error);
   });
   return gamesModule.data;
 };
 export const getCircuitGames = (circuit: string) => {
   if(!circuit) return undefined;
-  console.log(`Streaming games from circuit '${circuit}'`);
+  console.log(`Fetching games from circuit '${circuit}'`);
   const filteredGamesModule = gamesModule.where("circuit", "==", circuit).orderBy("id");
-  filteredGamesModule.stream().catch((error) => {
-    console.error(`Error occurred while streaming the ${GAMES_COLLECTION_NAME} collection`, error);
+  filteredGamesModule.fetch().catch((error) => {
+    console.error(`Error occurred while fetching the ${GAMES_COLLECTION_NAME} collection`, error);
   });
   return filteredGamesModule.data;
 };
 // This method opens a stream on the game to get live updates
-export const getGame = (id: number) => {
+export const streamGame = (id: number) => {
   if(!id) return undefined;
   const gameModule = gamesModule.doc(id.toString());
   gameModule.stream().catch((error) => {

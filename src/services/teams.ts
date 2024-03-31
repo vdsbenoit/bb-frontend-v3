@@ -47,8 +47,8 @@ const teamsModule = magnetar.collection<Team>(TEAMS_COLLECTION_NAME, {
 /// Getters //
 /////////////
 
-// This method opens a stream on the game to get live updates
-export const getTeam = (id: string) => {
+// This method opens a stream on the team to get live updates
+export const streamTeam = (id: string) => {
   if(!id) return undefined;
   const teamModule = teamsModule.doc(id);
   teamModule.stream().catch((error) => {
@@ -62,7 +62,7 @@ export const forceFetchTeam = async (id: string) => {
   await team.fetch({force: true});
   return team.data;
 }
-export const getTopTeams = (sectionType: string, limit: number) => {
+export const streamTopTeams = (sectionType: string, limit: number) => {
   console.log(`Fetching top teams from sectionType '${sectionType}'`);
   if (!sectionType) return undefined;
   const filteredTeamsModule = teamsModule.where("sectionType", "==", sectionType).orderBy("score", "desc").limit(limit);

@@ -52,11 +52,11 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION_NAME, {
 export const getSectionsBySectionType = (sectionType: string): Map<string, Section> => {
   if (!sectionType) return new Map();
   const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType).orderBy("id");
-  filteredSectionsModule.stream(); // using stream because the fetch() method is bugged
+  filteredSectionsModule.fetch(); 
   return filteredSectionsModule.data;
 }
-// This method opens a stream on the game to get live updates
-export const getSection = (id: number) => {
+// This method opens a stream on the section to get live updates
+export const streamSection = (id: number) => {
   if(!id) return undefined;
   const sectionModule = sectionsModule.doc(id.toString());
   sectionModule.stream().catch((error) => {
@@ -70,7 +70,7 @@ export const forceFetchSection = async (id: number) => {
   await section.fetch({force: true});
   return section.data;
 }
-export const getTopSections = (sectionType: string, limit: number) => {
+export const streamTopSections = (sectionType: string, limit: number) => {
   if (!sectionType) return undefined;
   const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType).orderBy("meanScore", "desc").limit(limit);
   filteredSectionsModule.stream();

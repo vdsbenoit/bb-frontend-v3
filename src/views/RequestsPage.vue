@@ -41,7 +41,7 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { useAuthStore, ROLES, Profile, getRoleByValue } from "@/services/users";
 import { computed, ref } from "@vue/reactivity";
 import { onMounted } from "vue";
-import { getLeaderSection } from "@/services/leaderSections";
+import { streamLeaderSection } from "@/services/leaderSections";
 import { choicePopup, textInputPopup } from "@/services/popup";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 
@@ -113,7 +113,7 @@ const handleRequest = (user: Profile) => {
   let message = `Il y a une erreur, ce rôle n'existe pas (${user.requestedRole})`;
   if (user.requestedRole === ROLES.Animateur || user.requestedRole === ROLES.Chef) {
     message = `Tu es sur le point d'ajouter ${userStore.getName(user.uid)} (${user.email})
-    comme <b>${getRoleByValue(user.requestedRole)}</b> de la section ${getLeaderSection(user.requestedSectionId)?.name}.`;
+    comme <b>${getRoleByValue(user.requestedRole)}</b> de la section ${streamLeaderSection(user.requestedSectionId)?.name}.`;
   }
   if (user.requestedRole >= ROLES.Organisateur){
     message = `Tu es sur le point d'ajouter ${userStore.getName(user.uid)} (${user.email})
