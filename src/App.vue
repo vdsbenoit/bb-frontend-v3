@@ -355,7 +355,7 @@ ion-label p {
 }
 .numberCircle span {
   text-align: center;
-  width: auto;
+  width: 35px;
   display: inline-block;
   margin: auto;
   color: #ffffff;
