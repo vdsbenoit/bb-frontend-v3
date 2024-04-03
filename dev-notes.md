@@ -11,8 +11,8 @@ Pour appliquer des css à toute l'app, le faire dans `App.vue`.
 
 ```bash
 ionic serve
-npm build
-npm deploy
+npm run patchBuild
+npm run deploy
 ```
 
 
