@@ -33,14 +33,14 @@ const leaderSectionsModule = magnetar.collection<LeaderSection>(LEADER_SECTIONS_
 
 // including the Staff BB
 export const getAllLeaderSections = () => {
-  leaderSectionsModule.fetch().catch((error) => {
-    console.error(`Error occurred while fetching the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
+  leaderSectionsModule.stream().catch((error) => { // using stream because the fetch() method is bugged
+    console.error(`Error occurred while streaming the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
   }); 
   return leaderSectionsModule.data;
 }
 export const getLeaderSections = () => {
-  leaderSectionsModule.where("name", "!=", STAFF_SECTION_NAME).fetch().catch((error) => { 
-    console.error(`Error occurred while fetching the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
+  leaderSectionsModule.where("name", "!=", STAFF_SECTION_NAME).stream().catch((error) => { // using stream because the fetch() method is bugged
+    console.error(`Error occurred while streaming the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
   }); 
   return leaderSectionsModule.data;
 }

@@ -52,7 +52,7 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION_NAME, {
 export const getSectionsBySectionType = (sectionType: string): Map<string, Section> => {
   if (!sectionType) return new Map();
   const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType).orderBy("id");
-  filteredSectionsModule.fetch(); 
+  filteredSectionsModule.stream(); // using stream because the fetch() method is bugged
   return filteredSectionsModule.data;
 }
 // This method opens a stream on the section to get live updates

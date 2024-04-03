@@ -300,7 +300,7 @@ export const useAuthStore = defineStore("authStore", {
     getSectionMembers(sectionId: number): Map<string, Profile>{
       console.log(`Fetching users from section '${sectionId}'`);
       const filteredUsersModule = usersModule.where("sectionId", "==", sectionId);
-      filteredUsersModule.fetch();
+      filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;
     },
     getSectionApplicants(limit: number, sectionId: number): Map<string, Profile>{
@@ -308,7 +308,7 @@ export const useAuthStore = defineStore("authStore", {
       const filteredUsersModule = usersModule
         .where("requestedSectionId", "==", sectionId)
         .limit(limit);
-      filteredUsersModule.fetch();
+      filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;
     },
     getApplicants(limit: number): Map<string, Profile>{
@@ -319,7 +319,7 @@ export const useAuthStore = defineStore("authStore", {
         .where("requestedRole", "<=", maxRole)
         .orderBy("requestedRole", "desc")
         .limit(limit);
-      filteredUsersModule.fetch(); 
+      filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;
     },
     getLatestUsers(limit: number): Map<string, Profile>{
@@ -329,7 +329,7 @@ export const useAuthStore = defineStore("authStore", {
         .orderBy("requestedRole", "desc")
         .orderBy("creationDate", "desc")
         .limit(limit);
-      filteredUsersModule.fetch();
+      filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;
     },
     getUsersWithoutSection(limit: number): Map<string, Profile>{
@@ -340,7 +340,7 @@ export const useAuthStore = defineStore("authStore", {
         .orderBy("requestedRole", "desc")
         .orderBy("creationDate", "desc")
         .limit(limit);
-      filteredUsersModule.fetch();
+      filteredUsersModule.stream(); // using stream because fetch is buggy
       return filteredUsersModule.data as Map<string, Profile>;
     }
   },
