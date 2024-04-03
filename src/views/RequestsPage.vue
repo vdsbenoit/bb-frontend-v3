@@ -11,7 +11,7 @@
       <div v-if="showUsers()">
         <ion-card v-for="[sectionId, users] in usersBySection" :key="sectionId">
           <ion-card-header>
-            <ion-card-title>{{ getLeaderSection(+sectionId)?.name }} ({{ getLeaderSection(+sectionId)?.city }})</ion-card-title>
+            <ion-card-title>{{ streamLeaderSection(+sectionId)?.name }} ({{ streamLeaderSection(+sectionId)?.city }})</ion-card-title>
           </ion-card-header>
           <ion-card-content class="ion-no-padding ion-padding-vertical">
             <ion-list lines="full">
