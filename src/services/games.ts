@@ -10,7 +10,7 @@ const user = useAuthStore();
 /////////////////////
 /// configuration //
 //////////////////
-export type Game = {
+type Game = {
   id: number;
   hash: string;
   name: string;
@@ -22,7 +22,7 @@ export type Game = {
   noScores: boolean;
 }
 
-export function gamesDefaults(payload: Partial<Game>): Game {
+function gamesDefaults(payload: Partial<Game>): Game {
   const defaults: Game = {
     id: -1,
     hash: "",
@@ -45,14 +45,14 @@ const gamesModule = magnetar.collection<Game>(GAMES_COLLECTION_NAME, {
 /// Getters //
 /////////////
 
-export const getAllGames = () => {
+const getAllGames = () => {
   console.log(`Streaming all games`); // using stream because the fetch() method is bugged
   gamesModule.orderBy("id").stream().catch((error) => {
     console.error(`Error occurred while streaming the ${GAMES_COLLECTION_NAME} collection`, error);
   });
   return gamesModule.data;
 };
-export const getCircuitGames = (circuit: string) => {
+const getCircuitGames = (circuit: string) => {
   if(!circuit) return undefined;
   console.log(`Streaming games from circuit '${circuit}'`);
   const filteredGamesModule = gamesModule.where("circuit", "==", circuit).orderBy("id");
@@ -62,7 +62,7 @@ export const getCircuitGames = (circuit: string) => {
   return filteredGamesModule.data;
 };
 // This method opens a stream on the game to get live updates
-export const streamGame = (id: number) => {
+const streamGame = (id: number) => {
   if(!id) return undefined;
   const gameModule = gamesModule.doc(id.toString());
   gameModule.stream().catch((error) => {
@@ -73,17 +73,17 @@ export const streamGame = (id: number) => {
 /**
  * Force fetch a game and return it
  */
-export const forceFetchGame = (id: number) => {
+const forceFetchGame = (id: number) => {
   if(!id) return undefined;
   return gamesModule.doc(id.toString()).fetch({force: true});
 }
-export const getGameName = (id: number) => {
+const getGameName = (id: number) => {
   if(!id) return undefined;
   const gameModule = gamesModule.doc(id.toString());
   gameModule.fetch()
   return gameModule.data?.name;
 };
-export const canSetGameScore = async (gameId: number) => {
+const canSetGameScore = async (gameId: number) => {
   // Check frozen score
   if (isScoresFrozen()) {
     console.log("Cannot set score, score registration is closed")
@@ -113,7 +113,7 @@ export const canSetGameScore = async (gameId: number) => {
 /// Setters //
 /////////////
 
-export const setName = (gameId: number, name: string) => {
+const setName = (gameId: number, name: string) => {
   console.log(`Changing the name of game ${gameId} to ${name}`);
   return gamesModule.doc(gameId.toString()).merge({ name: name });
 }
@@ -145,7 +145,7 @@ const addAfternoonLeaders = async (gameId: number, uid: string) => {
  * To set a leader, the user must have loaded the either the game lists or the game page.
  * Therefore, by design, it is not required to fetch the game data here.
  */
-export const setMorningLeader = async (gameId: number, uid = "") => {
+const setMorningLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
   if (uid !== user.uid && user.profile.role < ROLES.Chef) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`);
   const profile = await user.getLatestProfileData(uid);
@@ -176,7 +176,7 @@ export const setMorningLeader = async (gameId: number, uid = "") => {
   }
 };
 
-export const setAfternoonLeader = async (gameId: number, uid = "") => {
+const setAfternoonLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
   if (uid !== user.uid && user.profile.role < ROLES.Chef) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`);
   const profile = await user.getLatestProfileData(uid);
@@ -211,7 +211,7 @@ export const setAfternoonLeader = async (gameId: number, uid = "") => {
 /**
  * Remove Leader from both the game and his profile data
  */
-export const removeMorningLeader = async (gameId: number, uid = "") => {
+const removeMorningLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
 
   // remove from game
@@ -226,7 +226,7 @@ export const removeMorningLeader = async (gameId: number, uid = "") => {
     toastPopup(`Désinscription à l'épreuve ${gameId} effectuée`);
   });
 }
-export const removeAfternoonLeader = async (gameId: number, uid = "") => {
+const removeAfternoonLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
 
   // remove from game
@@ -242,7 +242,7 @@ export const removeAfternoonLeader = async (gameId: number, uid = "") => {
   });
 }
 
-export const setGameNoScores = async (gameId: number, noScores: boolean) => {
+const setGameNoScores = async (gameId: number, noScores: boolean) => {
   const gameModule = gamesModule.doc(gameId.toString());
   await gameModule.merge({ noScores });
   toastPopup(`Les scores de l'épreuve ${gameId} ont été ${noScores ? "désactivés" : "activés"}`);
@@ -250,7 +250,7 @@ export const setGameNoScores = async (gameId: number, noScores: boolean) => {
 
 
 // todo: remove this
-export const hardcodeGameNames = () => {
+const hardcodeGameNames = () => {
   const gameNames = [
     ""
   ]

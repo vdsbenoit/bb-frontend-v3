@@ -1,25 +1,5 @@
 # To do
 
-## 2024
-
-- [x] Update logo & couleurs
-- [x] Update favicon
-- [x] empêcher les navigateurs de traduire l’app
-- [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
-- [x] Lien vers section sur la TeamPage
-- [ ] Update Magnetar & try to replace some .stream() with .fetch() (the bug may be fixed)
-- [x] Renommer page « duel » en quelque chose comme « check scores »
-- [x] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
-- [x] Donner acces au classement aux chefs
-- [x] Refresh page instead of quit page when update is available
-- [ ] Build new DB
-  - [ ] Donner le rôle d'organisateur aux chefs pios lors de la config
-  - [ ] wipe auth user db firebase
-  - [x] Replace "match vs match" with game name in Check Scores page
-  - [ ] Fix `game_names.yml` (add 5th circuit)
-  - [x] Generate badges
-  - [x] Generate roadmaps
-
 
 ### Moins important
 
@@ -63,13 +43,21 @@
 
 ## Parking
 
+- [ ] Use VueFire instead of Magnetar
+- [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
+  - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
+- [ ] Use Firestore References between Game & Match instead of id. 
+  - [ ] Profile morningGame should be a Reference too
+  - [ ] Limit VueFire nesting to 1
+- [ ] Refactor morningGame & afternonGame into something generic
+- [ ] Rewrite loadLeaderInfo into something reactive
+- [ ] Remove `next()` from guards (see [this post](https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-third-argument-next))
+- [ ] Sanitize user inputs
 - [ ] Add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr) 
 - [ ] Push notification (par ex pour rappeler d'enregistrer un score manquant)
 - [ ] Retirer matches des collection games & teams (utiliser des queries à la place). Vérifier tout de même si ce n'est pas utile pour la validation de la db à la fin de l'initialisation.
 - [ ] Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
 - [ ] Get rid of snake case in the DB (e.g. matches collection)
-- [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
-  - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
 - [ ] Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
   - [ ] Cloud functions qui aggregate le score moyen de chaque section
 - [ ] Modifier détails section depuis SectionsPage
@@ -87,7 +75,6 @@
   - Editer les sections depuis l'app
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 - [ ] Rewrite Profile page code
-- [ ] Use VueFire instead of Magnetar
 
 ## Nice to have
 
@@ -103,7 +90,26 @@
   - [ ] Le QR code contient l'ID de l'animateur + un timestamp pour éviter les screenshots
 - [ ] Get rid of `?` and handle undefined data.
 - [ ] Essayer la connexion avec numéro de téléphone (0.1€/sms)
-- [ ] 
+
+## 2024
+
+- [x] Update logo & couleurs
+- [x] Update favicon
+- [x] empêcher les navigateurs de traduire l’app
+- [x] afficher les numéros de sections dans la liste des sections pour pouvoir les retrouver par numéros (comme dans RankingPage)
+- [x] Lien vers section sur la TeamPage
+- [ ] Update Magnetar & try to replace some .stream() with .fetch() (the bug may be fixed)
+- [x] Renommer page « duel » en quelque chose comme « check scores »
+- [x] Parfois les numéros d’équipe dans les cercles sont sur deux lignes (cf screenshot)
+- [x] Donner acces au classement aux chefs
+- [x] Refresh page instead of quit page when update is available
+- [ ] Build new DB
+  - [ ] Donner le rôle d'organisateur aux chefs pios lors de la config
+  - [ ] wipe auth user db firebase
+  - [x] Replace "match vs match" with game name in Check Scores page
+  - [ ] Fix `game_names.yml` (add 5th circuit)
+  - [x] Generate badges
+  - [x] Generate roadmaps
 
 ## 2023
 

@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router';
 import './registerServiceWorker';
 import { IonicVue } from '@ionic/vue';
+import { VueFire } from 'vuefire'
+import { app as firebaseApp } from './services/firebase'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -35,6 +37,11 @@ import Nprogress from 'nprogress';
 const app = createApp(App)
   .use(IonicVue)
   .use(createPinia());
+
+app.use(VueFire, {
+  firebaseApp,
+  modules: [],
+})
   
 const store = useAuthStore();
 

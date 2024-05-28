@@ -5,7 +5,7 @@
     </header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <div v-if="isGame || isLoading">
+      <div v-if="isGame || pending">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
@@ -141,7 +141,7 @@
               </ion-item>
             </ion-list>
             <div v-else>
-              <div v-if="isLoading" class="ion-text-center">
+              <div v-if="pending" class="ion-text-center">
                 <ion-spinner></ion-spinner>
               </div>
               <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
@@ -166,16 +166,12 @@ import { useAuthStore, ROLES } from "@/services/users";
 import { errorPopup, loadingPopup } from "@/services/popup";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRoute } from "vue-router";
-import { forceFetchGame, Game, streamGame, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader, setGameNoScores } from "@/services/games";
 import { streamGameMatches, setMatchNoScores } from "@/services/matches";
-import { onBeforeMount, onMounted, watchEffect } from "vue";
+import { onBeforeMount, watchEffect } from "vue";
 import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
 import { streamLeaderSection, getLeaderSections } from "@/services/leaderSections";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-
-const user = useAuthStore();
-const route = useRoute();
-const router = useIonRouter();
+import { removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setGameNoScores, setMorningLeader, useGame } from "@/composables/games";
 
 // reactive data
 
@@ -191,7 +187,6 @@ const leaders = reactive({
   morning: [] as leaderInfo[],
   afternoon: [] as leaderInfo[],
 });
-const isLoading = ref(true);
 const isLoadingMorningLeaders = ref(false);
 const isLoadingAfternoonLeaders = ref(false);
 const isRegistering = ref(false);
@@ -200,35 +195,29 @@ const selectedLeaderSection = ref(-1);
 const selectedLeaderId = ref("");
 const isTogglingNoScores = ref(false);
 
+// composables
+
+const user = useAuthStore();
+const route = useRoute();
+const router = useIonRouter();
+const { data: game, pending } = useGame(gameId);
+
 // lifecycle hooks
 
 onBeforeMount(() => {
   if (route.params.gameId) gameId.value = +route.params.gameId;
   if (!gameId.value) console.error("Game ID not set in the URL");
 });
-onMounted(() => {
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 5000);
-});
+
 
 // Computed
 
-const game = computed((): Game => {
-  return streamGame(gameId.value) as Game;
-});
-const isGame = computed(() => {
-  if (game.value && game.value.id) {
-    isLoading.value = false;
-    return true;
-  }
-  return false;
-});
+const isGame = computed(() => game.value && game.value.id)
 const canRegister = computed(() => {
   return isLeaderRegistrationOpen() && (user.profile.role == ROLES.Animateur || user.profile.role == ROLES.Chef);
 });
 const matches = computed(() => {
-  return game.value?.id ? streamGameMatches(game.value?.id) : new Map();
+  return streamGameMatches(gameId.value);
 });
 const leaderSections = computed(() => {
   if (!editMode.value) return new Map(); // don't load sections if not in edit mode
@@ -248,7 +237,7 @@ const isLoadingLeaders = computed(() => {
 });
 const pageTitle = computed(() => {
   if (isGame.value) return `Épreuve ${gameId.value}`;
-  if (isLoading.value) return "Chargement";
+  if (pending.value) return "Chargement";
   return "Épreuve inconnue";
 });
 const canEditLeaders = computed(() => {
@@ -261,12 +250,10 @@ const editIcon = computed(() => {
   return editMode.value ? { ios: closeOutline, md: closeSharp } : { ios: pencilOutline, md: pencilSharp };
 });
 const isMorningLeader = computed(() => {
-  if (!isGame.value) return false;
-  return game.value.morningLeaders.includes(user.profile.uid);
+  return game.value?.morningLeaders.includes(user.profile.uid) ?? false
 });
 const isAfternoonLeader = computed(() => {
-  if (!isGame.value) return false;
-  return game.value.afternoonLeaders.includes(user.profile.uid);
+  return game.value?.afternoonLeaders.includes(user.profile.uid) ?? false
 });
 
 // Watchers
@@ -274,7 +261,7 @@ const isAfternoonLeader = computed(() => {
 // async update morning leaders information
 watchEffect(async () => {
   if (!isGame.value) return; // do not run this watcher if game is not initialized
-  const newLeaderIds = game.value.morningLeaders;
+  const newLeaderIds = game.value?.morningLeaders ?? [];
   isLoadingMorningLeaders.value = true;
   const newLeaders = await loadLeaderInfo(newLeaderIds);
   leaders.morning = newLeaders;
@@ -284,7 +271,7 @@ watchEffect(async () => {
 // async update morning leaders information
 watchEffect(async () => {
   if (!isGame.value) return; // do not run this watcher if game is not initialized
-  const newLeaderIds = game.value.afternoonLeaders;
+  const newLeaderIds = game.value?.afternoonLeaders ?? [];
   isLoadingAfternoonLeaders.value = true;
   const newLeaders = await loadLeaderInfo(newLeaderIds);
   leaders.afternoon = newLeaders;
@@ -311,10 +298,10 @@ const register = async (timeSlot: string) => {
   try {
     switch (timeSlot) {
       case "morning":
-        await setMorningLeader(gameId.value);
+        await setMorningLeader(game);
         break;
       case "afternoon":
-        await setAfternoonLeader(gameId.value);
+        await setAfternoonLeader(game);
         break;
       default:
         new Error(`Invalid time slot ${timeSlot}`);
@@ -328,14 +315,14 @@ const register = async (timeSlot: string) => {
 };
 const registerMorningLeader = async () => {
   isRegistering.value = true;
-  await setMorningLeader(gameId.value, selectedLeaderId.value).catch((error:any) => {
+  await setMorningLeader(game, selectedLeaderId.value).catch((error:any) => {
     errorPopup(error.message); 
   }); 
   isRegistering.value = false;
 }
 const registerAfternoonLeader = async () => {
   isRegistering.value = true;
-  await setAfternoonLeader(gameId.value, selectedLeaderId.value).catch((error:any) => {
+  await setAfternoonLeader(game, selectedLeaderId.value).catch((error:any) => {
     errorPopup(error.message); 
   }); 
   isRegistering.value = false;
@@ -345,10 +332,9 @@ const unRegister = async () => {
   let morningPromise;
   let afternoonPromise;
   try {
-    if (game.value.morningLeaders.includes(user.uid)) morningPromise = removeMorningLeader(gameId.value);
-    if (game.value.afternoonLeaders.includes(user.uid)) afternoonPromise = removeAfternoonLeader(gameId.value);
+    if (game.value?.morningLeaders.includes(user.uid)) morningPromise = removeMorningLeader(gameId.value);
+    if (game.value?.afternoonLeaders.includes(user.uid)) afternoonPromise = removeAfternoonLeader(gameId.value);
     await Promise.all([morningPromise, afternoonPromise]);
-    forceFetchGame(gameId.value); // this is required, otherwise the leader arrays does not update
   } catch (error: any) {
     errorPopup(`Nous n'avons pas pu te désincrire : ${error.message}`);
   }
@@ -359,7 +345,6 @@ const removeLeader = async (uid: string, schedule: string) => {
   try {
     if (schedule == "morning") await removeMorningLeader(gameId.value, uid);
     if (schedule == "afternoon") await removeAfternoonLeader(gameId.value, uid);
-    forceFetchGame(gameId.value); // this is required, otherwise the leader arrays does not update
   } catch (error: any) {
     errorPopup(`Nous n'avons pas pu désinscrire l'utilisateur : ${error.message}`);
   }
@@ -378,10 +363,10 @@ const goToProfile = (uid: string) => {
 };
 const toggleNoScores = async () => {
   isTogglingNoScores.value = true;
-  const previousValue = game.value.noScores;
+  const previousValue = game.value?.noScores;
   const promises = [];
   promises.push(setGameNoScores(gameId.value, !previousValue));
-  game.value.matches.forEach(matchId => promises.push(setMatchNoScores(matchId, !previousValue)));
+  game.value?.matches.forEach(matchId => promises.push(setMatchNoScores(matchId, !previousValue)));
   await Promise.all(promises);
   isTogglingNoScores.value = false;
 };

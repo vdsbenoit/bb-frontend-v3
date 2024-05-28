@@ -104,11 +104,11 @@
                     <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">{{ game.id }}{{ isGameFull(game.morningLeaders) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" :readonly="true" inputmode="none" @click="goToGamePage(userProfile.morningGame)">
-                    <span v-if="userProfile.morningGame">{{ userProfile.morningGame }}: {{ getGameName(userProfile.morningGame) }}</span>
+                    <span v-if="userProfile.morningGame">{{ userProfile.morningGame }}: {{ morningGame?.name }}</span>
                   </ion-input>
                   <ion-icon v-if="isEditting.morningGame" slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('morningGame')"></ion-icon>
                   <ion-spinner v-else-if="isUpdating.morningGame" slot="end"></ion-spinner>
-                  <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames('morningGame')"></ion-icon>
+                  <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="toggleEdit('morningGame')"></ion-icon>
                 </ion-item>
                 <!-- afternoonGame -->
                 <ion-item lines="full">
@@ -119,11 +119,11 @@
                     <ion-select-option v-for="game in games.values()" :key="game.id" :value="game.id">{{ game.id }}{{ isGameFull(game.afternoonLeaders) ? " [COMPLET] " : " " }}{{ game.name }}</ion-select-option>
                   </ion-select>
                   <ion-input v-else type="text" :readonly="true" inputmode="none" @click="goToGamePage(userProfile.afternoonGame)">
-                    <span v-if="userProfile.afternoonGame">{{ userProfile.afternoonGame }}: {{ getGameName(userProfile.afternoonGame) }}</span>
+                    <span v-if="userProfile.afternoonGame">{{ userProfile.afternoonGame }}: {{ afternoonGame?.name }}</span>
                   </ion-input>
                   <ion-icon v-if="isEditting.afternoonGame" slot="end" :ios="closeOutline" :md="closeSharp" @click="toggleEdit('afternoonGame')"></ion-icon>
                   <ion-spinner v-else-if="isUpdating.afternoonGame" slot="end"></ion-spinner>
-                  <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="loadGames('afternoonGame')"></ion-icon>
+                  <ion-icon v-else-if="canEditGames" slot="end" :ios="pencilOutline" :md="pencilSharp" @click="toggleEdit('afternoonGame')"></ion-icon>
                 </ion-item>
               </div>
               <!-- Role -->
@@ -181,17 +181,17 @@ import { confirmPopup, errorPopup, loadingPopup, toastPopup } from "@/services/p
 import { stopMagnetar } from "@/services/magnetar";
 import { getMaxGameLeaders, getSectionTypes } from "@/services/settings";
 import { getSectionsBySectionType, streamSection, Section } from "@/services/sections";
-import { getAllGames, getGameName, setMorningLeader, setAfternoonLeader, removeAfternoonLeader, removeMorningLeader } from "@/services/games";
 import RefresherComponent from "@/components/RefresherComponent.vue";
 import { getAllLeaderSections, streamLeaderSection, LeaderSection } from "@/services/leaderSections";
+import { removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setMorningLeader, useGame, useGames } from "@/composables/games";
 
 const userStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
+const games = useGames();
 
 // reactive data
 const userId = ref(userStore.uid);
-const games = ref();
 const leaderSections = ref();
 const target = reactive({
   totem: "",
@@ -242,6 +242,8 @@ const userProfile = computed((): Profile => {
 const isProfile = computed(() => {
   return userProfile.value?.email ? true : false;
 });
+const morningGame = useGame(userProfile.value.morningGame)
+const afternoonGame = useGame(userProfile.value.afternoonGame)
 const isOwnProfile = computed(() => {
   if (!route.params.userId) return true;
   return route.params.userId === userStore.uid;
@@ -327,10 +329,6 @@ watch(
 const toggleEdit = (key: string) => {
   const editKey = key as keyof typeof isEditting;
   isEditting[editKey] = !isEditting[editKey];
-};
-const loadGames = (key: string) => {
-  games.value = getAllGames();
-  toggleEdit(key);
 };
 const loadLeaderSections = () => {
   leaderSections.value = getAllLeaderSections();
@@ -458,6 +456,9 @@ const setRole = async () => {
   target.role = -1;
   target.sectionId = -1;
 };
+
+const targetMorningGame = useGame(target.morningGame)
+const targetAfternoonGame = useGame(target.afternoonGame)
 const setMorningGame = async () => {
   if (!target.morningGame) {
     toastPopup("Erreur : aucun match n'a été sélectionné");
@@ -475,7 +476,7 @@ const setMorningGame = async () => {
       });
     }
     const promises = [];
-    promises.push(setMorningLeader(target.morningGame, userId.value).catch((error) => {
+    promises.push(setMorningLeader(targetMorningGame, userId.value).catch((error) => {
       errorPopup(`Le jeu du matin n'a pas pu être mis à jour : ${error.message}`);
     }));
     promises.push(userStore.updateProfile(userId.value, { morningGame: target.morningGame }).catch((error) => {
@@ -503,7 +504,7 @@ const setAfternoonGame = async () => {
       });
     }
     const promises = [];
-    promises.push(setAfternoonLeader(target.afternoonGame, userId.value).catch((error) => {
+    promises.push(setAfternoonLeader(targetAfternoonGame, userId.value).catch((error) => {
       errorPopup(`Le jeu de l'après-midi n'a pas pu être mis à jour : ${error.message}`);
     }));
     promises.push(userStore.updateProfile(userId.value, { afternoonGame: target.afternoonGame }).catch((error) => {
