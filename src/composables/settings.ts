@@ -2,7 +2,8 @@
 
 import { db } from "@/services/firebase";
 import { collection, doc, updateDoc } from "firebase/firestore";
-import { useDocument } from "vuefire";
+import { Ref } from "vue";
+import { VueFirestoreDocumentData, useDocument } from "vuefire";
 
 const APP_COLLECTION_NAME = "app"
 const SETTINGS_DOC_NAME = "settings"
@@ -23,17 +24,18 @@ export type AppSettings = {
   showRankingToAll: boolean;
   showGameAvailabilities: boolean;
 }
+export type RefAppSettings = Ref<VueFirestoreDocumentData<AppSettings> | undefined>
 
 type Schedule = {
   start: string;
   stop: string;
 }
-
 export type AppConfig = {
   sectionTypes: string[];
   circuits: any;
   schedule: Schedule[];
 }
+export type RefAppConfig = Ref<VueFirestoreDocumentData<AppConfig> | undefined>
 
 // Getters
 

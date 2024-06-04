@@ -85,6 +85,7 @@
 - [ ] Refactor leaderSections into staffGroups and sections into playerGroups
 - [ ] Refactor Moderators into Admins and Admin into SuperAdmin
 - [ ] Fix Nprogress
+- [ ] Update docs/
 
 ## Nice to have
 

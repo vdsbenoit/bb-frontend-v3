@@ -1,12 +1,12 @@
-import { db } from "@/services/firebase"
-import { Timestamp } from "@firebase/firestore"
-import { deleteUser } from "firebase/auth"
+import { db } from "@/services/firebase";
+import { Timestamp } from "@firebase/firestore";
+import { deleteUser } from "firebase/auth";
 // prettier-ignore
-import { DocumentReference, addDoc, collection, deleteDoc, doc, limit as fbLimit, orderBy, query, updateDoc, where } from 'firebase/firestore';
-import { MaybeRefOrGetter, Ref, computed, toValue } from "vue"
+import { DocumentReference, addDoc, collection, deleteDoc, doc, limit as fbLimit, getDoc, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { MaybeRefOrGetter, Ref, computed, toValue } from "vue";
 // prettier-ignore
 import { VueFirestoreDocumentData, useCollection, useCurrentUser, useDocument, useFirebaseAuth } from 'vuefire';
-import { DEFAULT_SECTION_ID } from "./sections"
+import { DEFAULT_SECTION_ID } from "./sections";
 
 // constants
 
@@ -43,7 +43,7 @@ export type UserProfile = {
   hasDoneOnboarding: boolean
 }
 
-type RefUserProfile = Ref<VueFirestoreDocumentData<UserProfile> | undefined>
+export type RefUserProfile = Ref<VueFirestoreDocumentData<UserProfile> | undefined>
 
 // getters
 
@@ -52,6 +52,18 @@ export const getRoleByValue = (roleNumber: number): string => {
     if (value === roleNumber) return key
   }
   throw Error(`Unknown role : ${roleNumber}`)
+}
+export function getUserName(rProfile: MaybeRefOrGetter<UserProfile>) {
+  const profile = toValue(rProfile)
+  if (!profile) return getRoleByValue(ROLES.Anonyme)
+  if (profile.name) return profile.name
+  return profile.email
+}
+export async function getUserProfile(id: string): Promise<UserProfile>{
+  if (id === DEFAULT_USER_ID) throw Error("User id is the default value")
+  const docSnap = await getDoc(doc(PROFILES_COLLECTION_REF, id.toString()))
+  if (docSnap.exists()) return docSnap.data() as UserProfile
+  else throw Error(`User profile not found for id ${id}`)
 }
 
 // composables
@@ -83,14 +95,6 @@ export function useCurrentUserProfile() {
     return currentUser.value.uid
   })
   return useUserProfile(uid)
-}
-
-export function useUserName(profile: RefUserProfile) {
-  return computed(() => {
-    if (!profile.value) return getRoleByValue(ROLES.Anonyme)
-    if (profile.value.name) return profile.value.name
-    return profile.value.email
-  })
 }
 
 export function useUsersFromSection(rSectionId: MaybeRefOrGetter<string>) {
@@ -157,7 +161,7 @@ export function useLatestUsers(rLimit: MaybeRefOrGetter<number>) {
 
 // Setters
 
-export async function createProfile(uid: string, email: string) {
+export async function createUserProfile(uid: string, email: string) {
   // prettier-ignore
   return addDoc(PROFILES_COLLECTION_REF, {
     uid, 
@@ -181,7 +185,7 @@ export async function removeAccount(uid: string) {
   ]).then(() => console.debug(`Removed user ${uid}`))
 }
 
-export async function updateProfile(uid: string, profileData: any) {
+export async function updateUserProfile(uid: string, profileData: any) {
   const dbRef = doc(db, PROFILES_COLLECTION_NAME, uid)
   return updateDoc(dbRef, profileData).then(() => console.debug(`User profile updated for ${uid}`))
 }
