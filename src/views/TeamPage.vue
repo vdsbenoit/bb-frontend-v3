@@ -81,58 +81,66 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonNote, IonRow, IonCol, IonListHeader, 
-IonIcon, IonGrid, useIonRouter, IonSpinner, IonButton } from "@ionic/vue";
-import { closeOutline, closeSharp, trophyOutline, trophySharp, starOutline, star, reorderTwoOutline, reorderTwoSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES } from "@/services/users";
-import { computed, ref } from "@vue/reactivity";
-import { useRoute } from "vue-router";
-import { onBeforeMount, onMounted, watchEffect } from "vue";
-import { streamTeam, Team } from "@/services/teams";
-import { streamTeamMatches } from "@/services/matches";
-import { getSchedule, isRankingPublic } from "@/services/settings";
-import { streamSection, Section } from "@/services/sections";
-import { errorPopup, toastPopup } from "@/services/popup";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import { DEFAULT_TEAM_ID, useTeam } from "@/composables/teams";
+import { streamTeamMatches } from "@/services/matches";
+import { errorPopup, toastPopup } from "@/services/popup";
+import { Section, streamSection } from "@/services/sections";
+import { getSchedule, isRankingPublic } from "@/services/settings";
+import { ROLES, useAuthStore } from "@/services/users";
+import {
+  IonButton,
+  IonCard, IonCardContent, IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonItem, IonLabel,
+  IonList,
+  IonListHeader,
+  IonNote,
+  IonPage,
+  IonRow,
+  IonSpinner,
+  useIonRouter
+} from "@ionic/vue";
+import { computed, ref } from "@vue/reactivity";
+import { useRouteParams } from "@vueuse/router";
+import { closeOutline, closeSharp, reorderTwoOutline, reorderTwoSharp, star, starOutline, trophyOutline, trophySharp } from "ionicons/icons";
+import { onMounted, watchEffect } from "vue";
+import { useRoute } from "vue-router";
+
+// reactive data
+
+const isRegistering = ref(false);
+
+// composables
 
 const user = useAuthStore();
 const route = useRoute();
 const router = useIonRouter();
-
-// reactive data
-
-const teamId = ref("");
-const isLoading = ref(true);
-const isRegistering = ref(false);
+const teamId = useRouteParams('teamId', DEFAULT_TEAM_ID)
+const { data: team, pending: isLoading, error: errorLoading } = useTeam(teamId);
 
 // lifecycle hooks
 
-onBeforeMount(() => {
-  if (route.params.teamId) teamId.value = route.params.teamId as string;
-  if (!teamId.value) console.error("Team ID not set in the URL");
-});
 onMounted(() => {
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 5000);
+if (teamId.value === DEFAULT_TEAM_ID) {
+    const msg = "Team ID missing from the url"
+    toastPopup(msg)
+    console.error(msg)
+  }
 });
 
 // Computed
 
-const team = computed((): Team => {
-  return streamTeam(teamId.value as string) as Team;
-});
 const section = computed((): Section | undefined => {
   return team.value?.sectionId ? streamSection(team.value.sectionId) : undefined;
 });
-const isTeam = computed(() => {
-  if (team.value?.id) {
-    isLoading.value = false;
-    return true;
-  }
-  return false;
-});
+const isTeam = computed(() => !errorLoading && team.value && team.value.id)
 const pageTitle = computed(() => {
   if (isTeam.value) return `Equipe ${team.value?.id}`;
   if (isLoading.value) return "Chargement";
@@ -182,7 +190,7 @@ const registerPlayer = () => {
       sectionType: team.value?.sectionType,
       }
     ).then(() => {
-    toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`);
+    toastPopup(`L'équipe ${team.value?.id} a été enregistrée comme ton équipe`);
   }).catch((e) => {
     errorPopup(`Une erreur s'est produite lors de la modification de ton profil`); 
     console.error(e);

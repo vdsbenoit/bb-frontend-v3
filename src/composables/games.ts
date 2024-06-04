@@ -11,7 +11,7 @@ import { VueFirestoreDocumentData, useCollection, useDocument } from "vuefire";
 const GAMES_COLLECTION_NAME = "games";
 const GAMES_COLLECTION_REF = collection(db, GAMES_COLLECTION_NAME);
 export const DEFAULT_GAME_ID = 0
-export const DEFAULT_CIRCUIT_ID = ""
+export const DEFAULT_CIRCUIT_VALUE = ""
 
 // Types
 
@@ -31,16 +31,13 @@ type RefGame = Ref<VueFirestoreDocumentData<Game> | undefined>
 
 // Getters
 
-export function isDefaultGameId(id: number){
-  return id === DEFAULT_GAME_ID
-}
 
 // Composables 
 
 export function useGame(rId: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
     const id = toValue(rId)
-    if (isDefaultGameId(id)) return null
+    if (id === DEFAULT_GAME_ID) return null
     console.debug(`Fetching game ${id}`)
     return doc(GAMES_COLLECTION_REF, id.toString())
   })
@@ -56,7 +53,7 @@ export function useGames() {
 export function useCircuitGames(rCircuit: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const circuit = toValue(rCircuit)
-    if (!circuit) return null
+    if (circuit === DEFAULT_CIRCUIT_VALUE) return null
     console.debug(`Fetching games from circuit ${circuit}`)
     return query(
       GAMES_COLLECTION_REF, 

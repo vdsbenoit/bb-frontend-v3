@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router';
 import './registerServiceWorker';
 import { IonicVue } from '@ionic/vue';
-import { VueFire } from 'vuefire'
+import { VueFire, VueFireAuth } from 'vuefire'
 import { app as firebaseApp } from './services/firebase'
 
 /* Core CSS required for Ionic components to work properly */
@@ -40,7 +40,7 @@ const app = createApp(App)
 
 app.use(VueFire, {
   firebaseApp,
-  modules: [],
+  modules: [VueFireAuth()],
 })
   
 const store = useAuthStore();

@@ -1,9 +1,17 @@
 # To do
 
 
-### Moins important
+## En cours 
 
-- [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
+- [ ] Use VueFire instead of Magnetar
+- [ ] Define isAdmin to the Team BB leaderSection
+- [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
+  - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
+- [ ] Remove totem from UserProfile type
+- [ ] use isAdmin to define Team bb team
+- [ ] Ensure users cannot exists without required UserProfile properties (redirect to onboarding if needed)
+- use useRouteParams from vueUse
+
 
 ## User feedback
 
@@ -32,6 +40,8 @@
   - [x] Compléter son profil
 - [x] Animateurs : liste des animateurs avec filtre par section
 - [x] Notifications : demande d'accès
+- [ ] Système de recherche par numéro d’une team. Dire où elle joue en ce moment
+
 
 ## Modification DB
 
@@ -43,9 +53,6 @@
 
 ## Parking
 
-- [ ] Use VueFire instead of Magnetar
-- [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
-  - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
 - [ ] Use Firestore References between Game & Match instead of id. 
   - [ ] Profile morningGame should be a Reference too
   - [ ] Limit VueFire nesting to 1
@@ -75,6 +82,9 @@
   - Editer les sections depuis l'app
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 - [ ] Rewrite Profile page code
+- [ ] Refactor leaderSections into staffGroups and sections into playerGroups
+- [ ] Refactor Moderators into Admins and Admin into SuperAdmin
+- [ ] Fix Nprogress
 
 ## Nice to have
 
@@ -89,7 +99,9 @@
   - [ ] Les organisateurs scan le QR code des animateurs
   - [ ] Le QR code contient l'ID de l'animateur + un timestamp pour éviter les screenshots
 - [ ] Get rid of `?` and handle undefined data.
+- [ ] Change gameId & sectionId type to string, for the sake of consistency
 - [ ] Essayer la connexion avec numéro de téléphone (0.1€/sms)
+- [ ] refactor matches to duels
 
 ## 2024
 

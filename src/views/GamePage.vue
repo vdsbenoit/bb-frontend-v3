@@ -5,7 +5,7 @@
     </header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
-      <div v-if="isGame || pending">
+      <div v-if="isGame || isLoading">
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
@@ -141,7 +141,7 @@
               </ion-item>
             </ion-list>
             <div v-else>
-              <div v-if="pending" class="ion-text-center">
+              <div v-if="isLoading" class="ion-text-center">
                 <ion-spinner></ion-spinner>
               </div>
               <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
@@ -158,25 +158,42 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCardSubtitle, IonList, IonItem, IonLabel, IonRow, IonCol, IonListHeader, IonBadge, 
-IonGrid, IonText, IonButton, useIonRouter, IonSpinner, IonIcon, IonSelect, IonSelectOption } from "@ionic/vue";
-import { closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { useAuthStore, ROLES } from "@/services/users";
-import { errorPopup, loadingPopup } from "@/services/popup";
-import { computed, reactive, ref } from "@vue/reactivity";
-import { useRoute } from "vue-router";
-import { streamGameMatches, setMatchNoScores } from "@/services/matches";
-import { onBeforeMount, watchEffect } from "vue";
-import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
-import { streamLeaderSection, getLeaderSections } from "@/services/leaderSections";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setGameNoScores, setMorningLeader, useGame } from "@/composables/games";
+import { DEFAULT_GAME_ID, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setGameNoScores, setMorningLeader, useGame } from "@/composables/games";
+import { getLeaderSections, streamLeaderSection } from "@/services/leaderSections";
+import { setMatchNoScores, streamGameMatches } from "@/services/matches";
+import { errorPopup, loadingPopup, toastPopup } from "@/services/popup";
+import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
+import { ROLES, useAuthStore } from "@/services/users";
+import {
+  IonBadge,
+  IonButton,
+  IonCard, IonCardContent, IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonItem, IonLabel,
+  IonList,
+  IonListHeader,
+  IonPage,
+  IonRow,
+  IonSelect, IonSelectOption,
+  IonSpinner,
+  IonText,
+  useIonRouter
+} from "@ionic/vue";
+import { computed, reactive, ref } from "@vue/reactivity";
+import { useRouteParams } from "@vueuse/router";
+import { closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
+import { onMounted, watchEffect } from "vue";
 
 // reactive data
 
 const editMode = ref(false);
-const gameId = ref(0);
 // store more information about the leaders than their IDs
 type leaderInfo = {
   uid: string;
@@ -198,21 +215,23 @@ const isTogglingNoScores = ref(false);
 // composables
 
 const user = useAuthStore();
-const route = useRoute();
 const router = useIonRouter();
-const { data: game, pending } = useGame(gameId);
+const gameId = useRouteParams('gameId', DEFAULT_GAME_ID, { transform: Number })
+const { data: game, pending: isLoading, error: errorLoading } = useGame(gameId);
 
 // lifecycle hooks
 
-onBeforeMount(() => {
-  if (route.params.gameId) gameId.value = +route.params.gameId;
-  if (!gameId.value) console.error("Game ID not set in the URL");
+onMounted(() => {
+if (gameId.value === DEFAULT_GAME_ID) {
+    const msg = "Game ID missing from the url"
+    toastPopup(msg)
+    console.error(msg)
+  }
 });
-
 
 // Computed
 
-const isGame = computed(() => game.value && game.value.id)
+const isGame = computed(() => !errorLoading && game.value && game.value.id)
 const canRegister = computed(() => {
   return isLeaderRegistrationOpen() && (user.profile.role == ROLES.Animateur || user.profile.role == ROLES.Chef);
 });
@@ -237,7 +256,7 @@ const isLoadingLeaders = computed(() => {
 });
 const pageTitle = computed(() => {
   if (isGame.value) return `Épreuve ${gameId.value}`;
-  if (pending.value) return "Chargement";
+  if (isLoading.value) return "Chargement";
   return "Épreuve inconnue";
 });
 const canEditLeaders = computed(() => {

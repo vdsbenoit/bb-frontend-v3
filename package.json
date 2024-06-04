@@ -21,6 +21,7 @@
     "@ionic/pwa-elements": "^3.2.2",
     "@ionic/vue": "^6.7.5",
     "@ionic/vue-router": "^6.7.5",
+    "@vueuse/router": "^10.10.0",
     "core-js": "^3.36.1",
     "firebase": "^10.12.2",
     "magnetar": "^0.16.18",
@@ -29,7 +30,7 @@
     "register-service-worker": "^1.7.2",
     "semver": "^7.6.0",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0",
+    "vue-router": "^4.3.2",
     "vuefire": "^3.1.23"
   },
   "devDependencies": {

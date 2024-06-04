@@ -70,14 +70,14 @@ import { computed, ref } from "@vue/reactivity";
 import { onMounted, watch } from "vue";
 import { getCircuits, getMaxGameLeaders, isShowGameAvailabilities } from "@/services/settings";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { DEFAULT_CIRCUIT_ID, Game, setGameName, useCircuitGames } from "@/composables/games";
+import { DEFAULT_CIRCUIT_VALUE, Game, setGameName, useCircuitGames } from "@/composables/games";
 
 const user = useAuthStore();
 const router = useIonRouter();
 
 // reactive data
 const editMode = ref(false);
-const selectedCircuit = ref(DEFAULT_CIRCUIT_ID);
+const selectedCircuit = ref(DEFAULT_CIRCUIT_VALUE);
 const editedGameId = ref(-1);
 const newGameName = ref("");
 const isUpdating = ref(false);
