@@ -55,6 +55,7 @@ export function useCircuitGames(rCircuit: MaybeRefOrGetter<string>) {
     const circuit = toValue(rCircuit)
     if (circuit === DEFAULT_CIRCUIT_VALUE) return null
     console.debug(`Fetching games from circuit ${circuit}`)
+    // prettier-ignore
     return query(
       GAMES_COLLECTION_REF, 
       where("circuit", "==", circuit),
@@ -106,7 +107,8 @@ const addAfternoonLeaders = async (gameId: number, uid: string) => {
 export const setMorningLeader = async (game: RefGame , uid = "") => {
   if (uid === "") uid = user.uid;
   if (uid !== user.uid && user.profile.role < ROLES.Chef) throw new Error(
-    `Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`
+    `Tu n'as pas le droit d'assigner des gens à un jeu. `+
+    `Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`
   );
   const profile = await user.getLatestProfileData(uid);
   if(!profile) throw new Error(`Nous n'avons pas réussi à retrouver le profil de l'utilisateur ${uid}`);
@@ -114,11 +116,18 @@ export const setMorningLeader = async (game: RefGame , uid = "") => {
   if (!game || !game.value) throw Error('Undefined game')
   const gameId = game.value.id
   if (game.value.morningLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} le matin`);
-  if (profile?.role < ROLES.Animateur) throw new Error(`Le rôle de ${user.getName(uid)} est ${getRoleByValue(profile.role)}. Le rôle minimum pour s'inscrire à une épreuve est ${getRoleByValue(4)}`);
+  if (profile?.role < ROLES.Animateur) throw new Error(
+    `Le rôle de ${user.getName(uid)} est ${getRoleByValue(profile.role)}. `+
+    `Le rôle minimum pour s'inscrire à une épreuve est ${getRoleByValue(4)}`
+  );
   const maxGameLeaders = await getMaxGameLeaders();
-  if ((game.value.morningLeaders.length as number) >= maxGameLeaders) throw new Error(`Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} au matin`);
+  if ((game.value.morningLeaders.length as number) >= maxGameLeaders) throw new Error(
+    `Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} au matin`
+  );
   if (profile.morningGame) {
-    const message = uid === user.uid ? `Tu es déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Veux-tu te désincrire ?` : `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Le/la désincrire ?`;
+    const message = (uid === user.uid) ? 
+    `Tu es déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Veux-tu te désincrire ?` : 
+    `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.morningGame} le matin. Le/la désincrire ?`
     confirmPopup(
       message,
       async () => {
@@ -134,18 +143,28 @@ export const setMorningLeader = async (game: RefGame , uid = "") => {
 
 export const setAfternoonLeader = async (game: RefGame, uid = "") => {
   if (uid === "") uid = user.uid;
-  if (uid !== user.uid && user.profile.role < ROLES.Chef) throw new Error(`Tu n'as pas le droit d'assigner des gens à un jeu. Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`);
+  if (uid !== user.uid && user.profile.role < ROLES.Chef) throw new Error(
+    `Tu n'as pas le droit d'assigner des gens à un jeu. ` +
+    `Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`
+  );
   const profile = await user.getLatestProfileData(uid);
   if(!profile) throw new Error(`Nous n'avons pas réussi à retrouver le profil de l'utilisateur ${uid}`);
   // Checks
   if (!game || !game.value) throw Error('Undefined game')
   const gameId = game.value.id
   if (game.value.afternoonLeaders.includes(uid)) throw Error(`Déjà inscrit.e à l'épreuve ${gameId} l'après-midi`);
-  if (profile.role < ROLES.Animateur) throw new Error(`Le rôle de ${user.getName(uid)} est ${getRoleByValue(profile.role)}. Le rôle minimum pour s'inscrire à une épreuve est ${getRoleByValue(4)}`);
+  if (profile.role < ROLES.Animateur) throw new Error(
+    `Le rôle de ${user.getName(uid)} est ${getRoleByValue(profile.role)}. `+
+    `Le rôle minimum pour s'inscrire à une épreuve est ${getRoleByValue(4)}`
+  )
   const maxGameLeaders = await getMaxGameLeaders();
-  if ((game.value.afternoonLeaders.length as number) >= maxGameLeaders) throw new Error(`Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} l'après-midi`);
+  if ((game.value.afternoonLeaders.length as number) >= maxGameLeaders) throw new Error(
+    `Le nombre maximum d'animateurs a été atteint pour l'épreuve ${gameId} l'après-midi`
+  );
   if (profile.afternoonGame) {
-    const message = uid === user.uid ? `Tu es déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Veux-tu te désincrire ?` : `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Le/la désincrire ?`;
+    const message = (uid === user.uid) ? 
+    `Tu es déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Veux-tu te désincrire ?` : 
+    `${user.getName(uid)} est déjà inscrit.e à l'épreuve ${profile.afternoonGame} l'après-midi. Le/la désincrire ?`;
     confirmPopup(
       message,
       async () => {
