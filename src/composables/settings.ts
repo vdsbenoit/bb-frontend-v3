@@ -1,38 +1,48 @@
 // Constants & db references
 
-const APP_COLLECTION_NAME = "app";
+import { db } from "@/services/firebase";
+import { collection, doc } from "firebase/firestore";
+import { useDocument } from "vuefire";
 
-const GAMES_COLLECTION_REF = collection(db, GAMES_COLLECTION_NAME);
-export const DEFAULT_GAME_ID = 0
-export const DEFAULT_CIRCUIT_VALUE = ""
+const APP_COLLECTION_NAME = "app"
+const SETTINGS_DOC_NAME = "settings"
+const CONFIG_DOC_NAME = "configuration"
+
+const APP_COLLECTION_REF = collection(db, APP_COLLECTION_NAME);
+const SETTINGS_DOC_REF = doc(APP_COLLECTION_REF, SETTINGS_DOC_NAME)
+const CONFIG_DOC_REF = doc(APP_COLLECTION_REF, CONFIG_DOC_NAME)
+
 
 // Types
 
-export type Game = {
-  id: number;
-  hash: string;
-  name: string;
-  circuit: string;
-  morningLeaders: string[];
-  afternoonLeaders: string[];
-  matches: string[];
-  weight: number;
-  noScores: boolean;
-};
+export type AppSettings = {
+  maxGameLeaders: number; // max allowed leaders per game
+  freezeScore: boolean;
+  everyoneCanSetScoreAnywhere: boolean;
+  leaderRegistration: boolean; // true when the leader can register to games
+  showRankingToAll: boolean;
+  showGameAvailabilities: boolean;
+}
 
-type RefGame = Ref<VueFirestoreDocumentData<Game> | undefined>
+type Schedule = {
+  start: string;
+  stop: string;
+}
+
+export type AppConfig = {
+  sectionTypes: string[];
+  circuits: any;
+  schedule: Schedule[];
+}
 
 // Getters
 
 
 // Composables 
 
-export function useGame(rId: MaybeRefOrGetter<number>) {
-  const dbRef = computed(() => {
-    const id = toValue(rId)
-    if (id === DEFAULT_GAME_ID) return null
-    console.debug(`Fetching game ${id}`)
-    return doc(GAMES_COLLECTION_REF, id.toString())
-  })
-  return useDocument<Game>(dbRef)
+export function useAppSettings() {
+  return useDocument<AppSettings>(SETTINGS_DOC_REF)
+}
+export function useAppConfig() {
+  return useDocument<AppConfig>(CONFIG_DOC_REF)
 }
