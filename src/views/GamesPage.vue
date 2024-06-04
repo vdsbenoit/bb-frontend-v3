@@ -14,7 +14,7 @@
         <div v-else>Pas de circuits configuré</div>
       </ion-item>
       <ion-list v-if="selectedCircuit" lines="full">
-        <div v-if="games && games.size > 0">
+        <div v-if="games && games.length > 0">
           <div v-for="game in games?.values()" :key="game.id">
             <div v-if="editMode">
               <div v-if="game.id === editedGameId && !isUpdating">
@@ -67,17 +67,17 @@ import HeaderTemplate from "@/components/HeaderTemplate.vue";
 import { ROLES, useAuthStore } from "@/services/users";
 import { toastPopup } from "@/services/popup";
 import { computed, ref } from "@vue/reactivity";
-import { Game, getCircuitGames, setName } from "@/services/games";
 import { onMounted, watch } from "vue";
 import { getCircuits, getMaxGameLeaders, isShowGameAvailabilities } from "@/services/settings";
 import RefresherComponent from "@/components/RefresherComponent.vue";
+import { DEFAULT_CIRCUIT_ID, Game, setGameName, useCircuitGames } from "@/composables/games";
 
 const user = useAuthStore();
 const router = useIonRouter();
 
 // reactive data
 const editMode = ref(false);
-const selectedCircuit = ref("");
+const selectedCircuit = ref(DEFAULT_CIRCUIT_ID);
 const editedGameId = ref(-1);
 const newGameName = ref("");
 const isUpdating = ref(false);
@@ -105,9 +105,7 @@ watch(selectedCircuit, () => {
 const circuits = computed(() => {
   return getCircuits();
 });
-const games = computed((): Map<string, Game> | undefined => {
-  return getCircuitGames(selectedCircuit.value);
-});
+const games = useCircuitGames(selectedCircuit)
 const pageTitle = computed(() => {
   if (editMode.value) return `Édition des épreuves`;
   return "Épreuves";
@@ -119,7 +117,7 @@ const editIcon = computed(() => {
   return (editMode.value) ? {ios: closeOutline, md: closeSharp} : {ios: pencilOutline, md: pencilSharp}
 });
 const gamesNotFound = () => {
-  return selectedCircuit.value && !isLoadingGames.value && (!games.value || games.value.size < 1);
+  return selectedCircuit.value && !isLoadingGames.value && (!games.value || games.value.length === 0);
 }
 const showGameAvailabilities = () => {
   return isShowGameAvailabilities();
@@ -148,7 +146,7 @@ const clearEdition = () => {
 }
 const updateGameName = async () => {
   isUpdating.value = true;
-  await setName(editedGameId.value, newGameName.value);
+  await setGameName(editedGameId.value, newGameName.value);
   toastPopup("Le nom du jeu a bien été mis à jour");
   isUpdating.value = false;
   clearEdition();

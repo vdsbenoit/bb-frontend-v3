@@ -11,6 +11,7 @@ import { VueFirestoreDocumentData, useCollection, useDocument } from "vuefire";
 const GAMES_COLLECTION_NAME = "games";
 const GAMES_COLLECTION_REF = collection(db, GAMES_COLLECTION_NAME);
 export const DEFAULT_GAME_ID = 0
+export const DEFAULT_CIRCUIT_ID = ""
 
 // Types
 
@@ -39,8 +40,8 @@ export function isDefaultGameId(id: number){
 export function useGame(rId: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
     const id = toValue(rId)
-    console.debug(`Fetching game ${id}`)
     if (isDefaultGameId(id)) return null
+    console.debug(`Fetching game ${id}`)
     return doc(GAMES_COLLECTION_REF, id.toString())
   })
   return useDocument<Game>(dbRef)
@@ -55,8 +56,8 @@ export function useGames() {
 export function useCircuitGames(rCircuit: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const circuit = toValue(rCircuit)
-    console.debug(`Fetching games from circuit ${circuit}`)
     if (!circuit) return null
+    console.debug(`Fetching games from circuit ${circuit}`)
     return query(
       GAMES_COLLECTION_REF, 
       where("circuit", "==", circuit),
@@ -70,7 +71,7 @@ export function useCircuitGames(rCircuit: MaybeRefOrGetter<string>) {
 
 const user = useAuthStore();
 
-export const setName = (gameId: number, name: string) => {
+export const setGameName = (gameId: number, name: string) => {
   console.debug(`Changing the name of game ${gameId} to ${name}`);
   const dbRef = doc(GAMES_COLLECTION_REF, gameId.toString())
   return updateDoc(dbRef, { name })

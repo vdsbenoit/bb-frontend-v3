@@ -1,5 +1,5 @@
 import { Ref } from "vue";
-import { Game } from "./games";
+import { Game } from "../composables/games";
 import { canSetScoreAnywhere, isScoresFrozen } from "./settings";
 import { ROLES, useAuthStore } from "./users";
 
