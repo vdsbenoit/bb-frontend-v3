@@ -3,9 +3,9 @@ import { Timestamp } from "@firebase/firestore"
 import { deleteUser } from "firebase/auth"
 // prettier-ignore
 import { DocumentReference, addDoc, collection, deleteDoc, doc, limit as fbLimit, orderBy, query, updateDoc, where } from 'firebase/firestore';
-import { MaybeRefOrGetter, computed, toValue } from "vue"
+import { MaybeRefOrGetter, Ref, computed, toValue } from "vue"
 // prettier-ignore
-import { useCollection, useCurrentUser, useDocument, useFirebaseAuth } from 'vuefire';
+import { VueFirestoreDocumentData, useCollection, useCurrentUser, useDocument, useFirebaseAuth } from 'vuefire';
 import { DEFAULT_SECTION_ID } from "./sections"
 
 // constants
@@ -42,6 +42,8 @@ export type UserProfile = {
   rejectionReason?: string
   hasDoneOnboarding: boolean
 }
+
+type RefUserProfile = Ref<VueFirestoreDocumentData<UserProfile> | undefined>
 
 // getters
 
@@ -81,6 +83,14 @@ export function useCurrentUserProfile() {
     return currentUser.value.uid
   })
   return useUserProfile(uid)
+}
+
+export function useUserName(profile: RefUserProfile) {
+  return computed(() => {
+    if (!profile.value) return getRoleByValue(ROLES.Anonyme)
+    if (profile.value.name) return profile.value.name
+    return profile.value.email
+  })
 }
 
 export function useUsersFromSection(rSectionId: MaybeRefOrGetter<string>) {
@@ -174,13 +184,4 @@ export async function removeAccount(uid: string) {
 export async function updateProfile(uid: string, profileData: any) {
   const dbRef = doc(db, PROFILES_COLLECTION_NAME, uid)
   return updateDoc(dbRef, profileData).then(() => console.debug(`User profile updated for ${uid}`))
-}
-
-export function useUserName(uid: MaybeRefOrGetter<string>) {
-  const profile = useUserProfile(uid)
-  return computed(() => {
-    if (!profile.value) return `User ${uid}`
-    if (profile.value.name) return profile.value.name
-    return profile.value.email
-  })
 }
