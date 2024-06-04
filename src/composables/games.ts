@@ -6,16 +6,15 @@ import { collection, doc, orderBy, query, updateDoc, where } from "firebase/fire
 import { MaybeRefOrGetter, Ref, computed, toValue } from "vue";
 import { VueFirestoreDocumentData, useCollection, useDocument } from "vuefire";
 
-// Constants & db reference
+// Constants & db references
 
 const GAMES_COLLECTION_NAME = "games";
-const gamesRef = collection(db, GAMES_COLLECTION_NAME);
+const GAMES_COLLECTION_REF = collection(db, GAMES_COLLECTION_NAME);
+export const DEFAULT_GAME_ID = 0
 
-const user = useAuthStore();
+// Types
 
-// Type
-
-type Game = {
+export type Game = {
   id: number;
   hash: string;
   name: string;
@@ -29,52 +28,70 @@ type Game = {
 
 type RefGame = Ref<VueFirestoreDocumentData<Game> | undefined>
 
+// Getters
+
+export function isDefaultGameId(id: number){
+  return id === DEFAULT_GAME_ID
+}
+
 // Composables 
 
+export function useGame(rId: MaybeRefOrGetter<number>) {
+  const dbRef = computed(() => {
+    const id = toValue(rId)
+    console.debug(`Fetching game ${id}`)
+    if (isDefaultGameId(id)) return null
+    return doc(GAMES_COLLECTION_REF, id.toString())
+  })
+  return useDocument<Game>(dbRef)
+}
+
 export function useGames() {
-  const q = query(gamesRef, orderBy("id"));
-  return useCollection<Game>(q);
+  console.debug(`Fetching all games`)
+  const dbRef = query(GAMES_COLLECTION_REF, orderBy("id"));
+  return useCollection<Game>(dbRef);
 }
 
-export function useCircuitGames(circuit: MaybeRefOrGetter<string>) {
-  const q = computed(() => query(
-      gamesRef, 
-      orderBy("id"), 
-      where("circuit", "==", toValue(circuit))
+export function useCircuitGames(rCircuit: MaybeRefOrGetter<string>) {
+  const dbRef = computed(() => {
+    const circuit = toValue(rCircuit)
+    console.debug(`Fetching games from circuit ${circuit}`)
+    if (!circuit) return null
+    return query(
+      GAMES_COLLECTION_REF, 
+      where("circuit", "==", circuit),
+      orderBy("id")
     )
-)
-  return useCollection<Game>(q);
-}
-
-export function useGame(id: MaybeRefOrGetter<number>) {
-  const docRef = computed(() => doc(gamesRef, toValue(id).toString()))
-  return useDocument<Game>(docRef)
+  })
+  return useCollection<Game>(dbRef);
 }
 
 // Setters
 
+const user = useAuthStore();
+
 export const setName = (gameId: number, name: string) => {
-  console.log(`Changing the name of game ${gameId} to ${name}`);
-  const docRef = doc(gamesRef, gameId.toString())
-  return updateDoc(docRef, { name })
+  console.debug(`Changing the name of game ${gameId} to ${name}`);
+  const dbRef = doc(GAMES_COLLECTION_REF, gameId.toString())
+  return updateDoc(dbRef, { name })
 } 
 
 /**
  * These methods actually update the DB, after the checks in setters below passed.
  */
 const addMorningLeaders = async (gameId: number, uid: string) => {
-  console.log(`Adding user ${uid} to game ${gameId}`);
+  console.debug(`Adding user ${uid} to game ${gameId}`);
   const gameMergePromise = addToDocArray(GAMES_COLLECTION_NAME, gameId.toString(), "morningLeaders", uid)
-  console.log(`Adding game ${gameId} to user ${uid}`);
+  console.debug(`Adding game ${gameId} to user ${uid}`);
   const userMergePromise = user.updateProfile(uid, { morningGame: gameId });
   return Promise.all([gameMergePromise, userMergePromise]).then(() => {
     toastPopup("Responsables du matin mis à jour");
   })
 };
 const addAfternoonLeaders = async (gameId: number, uid: string) => {
-  console.log(`Adding user ${uid} to game ${gameId}`);
+  console.debug(`Adding user ${uid} to game ${gameId}`);
   const gameMergePromise = addToDocArray(GAMES_COLLECTION_NAME, gameId.toString(), "afternoonLeaders", uid)
-  console.log(`Adding game ${gameId} to user ${uid}`);
+  console.debug(`Adding game ${gameId} to user ${uid}`);
   const userMergePromise = user.updateProfile(uid, { afternoonGame: gameId });
   return Promise.all([gameMergePromise, userMergePromise]).then(() => {
     toastPopup("Responsables de l'après-midi mis à jour");
@@ -152,11 +169,11 @@ export const removeMorningLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
 
   // remove from game
-  console.log(`Removing user ${uid} from game ${gameId} (morning)`);
+  console.debug(`Removing user ${uid} from game ${gameId} (morning)`);
   const gameMergePromise = removeFromDocArray(GAMES_COLLECTION_NAME, gameId.toString(), "morningLeaders", uid);
 
   // remove from user profile
-  console.log(`Removing game ${gameId} from user profile ${uid} (morning)`);
+  console.debug(`Removing game ${gameId} from user profile ${uid} (morning)`);
   const userMergePromise = user.updateProfile(uid, { morningGame: "" });
 
   return Promise.all([gameMergePromise, userMergePromise]).then(() => {
@@ -167,11 +184,11 @@ export const removeAfternoonLeader = async (gameId: number, uid = "") => {
   if (uid === "") uid = user.uid;
 
   // remove from game
-  console.log(`Removing user ${uid} from game ${gameId} (afternoon)`);
+  console.debug(`Removing user ${uid} from game ${gameId} (afternoon)`);
   const gameMergePromise = removeFromDocArray(GAMES_COLLECTION_NAME, gameId.toString(), "afternoonLeaders", uid);
 
   // remove from user profile
-  console.log(`Removing game ${gameId} from user profile ${uid} (afternoon)`);
+  console.debug(`Removing game ${gameId} from user profile ${uid} (afternoon)`);
   const userMergePromise = user.updateProfile(uid, { afternoonGame: "" });
 
   return Promise.all([gameMergePromise, userMergePromise]).then(() => {
@@ -180,8 +197,8 @@ export const removeAfternoonLeader = async (gameId: number, uid = "") => {
 }
 
 export const setGameNoScores = async (gameId: number, noScores: boolean) => {
-  const docRef = doc(gamesRef, gameId.toString())
-  return updateDoc(docRef, { noScores }).then(() => {
+  const dbRef = doc(GAMES_COLLECTION_REF, gameId.toString())
+  return updateDoc(dbRef, { noScores }).then(() => {
     toastPopup(`Les scores de l'épreuve ${gameId} ont été ${ noScores ? "désactivés" : "activés" }`);
   })
 };
