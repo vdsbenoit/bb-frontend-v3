@@ -10,7 +10,7 @@ const CONFIGURATION_DOCUMENT_KEY = "configuration";
 /// Settings //
 // App settings (from firestore, through magneta)
 
-export type AppSettings = {
+type AppSettings = {
   maxGameLeaders: number; // max allowed leaders per game
   freezeScore: boolean;
   everyoneCanSetScoreAnywhere: boolean;
@@ -19,7 +19,7 @@ export type AppSettings = {
   showGameAvailabilities: boolean;
 }
 
-export const appSettingsDefaults: AppSettings = {
+const appSettingsDefaults: AppSettings = {
   maxGameLeaders: 2,
   freezeScore: true,
   everyoneCanSetScoreAnywhere: false,
@@ -46,13 +46,13 @@ interface Schedule {
   stop: string;
 }
 
-export type AppConfiguration = {
+type AppConfiguration = {
   sectionTypes: string[];
   circuits: any;
   schedule: Schedule[];
 }
 
-export const appConfigurationDefaults: AppConfiguration = {
+const appConfigurationDefaults: AppConfiguration = {
   sectionTypes: [] as string[],
   circuits: {},
   schedule: [] as Schedule[],
@@ -70,15 +70,15 @@ const appConfigurationModule = magnetar.doc<AppConfiguration>(`${APP_COLLECTION_
 /// Streams //
 /////////////
 
-export const streamSettings = () => {
+const streamSettings = () => {
   appSettingsModule.stream().catch(error => {
     console.error(`App settings stream failed`, error);
   })
 }
-export const closeSettingsStream = () => {
+const closeSettingsStream = () => {
   appSettingsModule.closeStream();
 }
-export const fetchAppConfiguration = () => {
+const fetchAppConfiguration = () => {
   appConfigurationModule.fetch().catch(error => {
     console.error(`App configuration fetch failed`, error);
   })
@@ -90,44 +90,44 @@ export const fetchAppConfiguration = () => {
 
 // App settings
 
-export const isScoresFrozen = (): boolean | undefined => {
+const isScoresFrozen = (): boolean | undefined => {
   return appSettingsModule.data?.freezeScore;
 };
-export const getMaxGameLeaders = (): number => {
+const getMaxGameLeaders = (): number => {
   return appSettingsModule.data?.maxGameLeaders ?? appSettingsDefaults.maxGameLeaders;
 };
-export const canSetScoreAnywhere = (): boolean | undefined => {
+const canSetScoreAnywhere = (): boolean | undefined => {
   return appSettingsModule.data?.everyoneCanSetScoreAnywhere;
 };
-export const isLeaderRegistrationOpen = () => {
+const isLeaderRegistrationOpen = () => {
   return appSettingsModule.data?.leaderRegistration;
 }
-export const isRankingPublic = (): boolean => {
+const isRankingPublic = (): boolean => {
   if (appSettingsModule.data?.showRankingToAll) return appSettingsModule.data.showRankingToAll;
   return appSettingsDefaults.showRankingToAll;
 };
-export const isShowGameAvailabilities = (): boolean | undefined => {
+const isShowGameAvailabilities = (): boolean | undefined => {
   return appSettingsModule.data?.showGameAvailabilities;
 };
-export const getAppSettings = computed(() => {
+const getAppSettings = computed(() => {
   return appSettingsModule.data;
 });
 
 // App configuration
 
-export const getSchedule = (time: number): Schedule => {
+const getSchedule = (time: number): Schedule => {
   if (appConfigurationModule.data?.schedule) return appConfigurationModule.data.schedule[time];
   console.error("appSettingsModule not loaded, returning empty schedule");
   return {start: "", stop: ""} as Schedule;
 };
-export const getSchedules = (): Schedule[] => {
+const getSchedules = (): Schedule[] => {
   return appConfigurationModule.data?.schedule ?? [] as Schedule[];
 };
-export const getSectionTypes = (): string[] | undefined => {
+const getSectionTypes = (): string[] | undefined => {
   if (!appConfigurationModule.data) appConfigurationModule.fetch();
   return appConfigurationModule.data?.sectionTypes;
 };
-export const getCircuits = () => {
+const getCircuits = () => {
   if (!appConfigurationModule.data) appConfigurationModule.fetch();
   return appConfigurationModule.data?.circuits;
 };
@@ -137,16 +137,16 @@ export const getCircuits = () => {
 /// Setters //
 /////////////
 
-export const updateAppSettings = async (settingsData: any) => {
+const updateAppSettings = async (settingsData: any) => {
   await appSettingsModule.merge(settingsData);
   toastPopup("Les paramètres de l'app ont été mis à jour");
 } 
-export const setSchedule = async (schedule: Schedule[]) => {
+const setSchedule = async (schedule: Schedule[]) => {
   return appConfigurationModule.merge({ schedule });
 } 
 
 // fixme
-export const hardcodeSchedule = async () => {
+const hardcodeSchedule = async () => {
   const schedule = [
     {start: "10h09", stop: "10h24"},
     {start: "10h27", stop: "10h42"},

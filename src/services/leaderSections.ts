@@ -6,7 +6,7 @@ const STAFF_SECTION_NAME = "Team BB";
 /////////////////////
 /// configuration //
 //////////////////
-export type LeaderSection = {
+type LeaderSection = {
   id: number;
   name: string;
   city: string;
@@ -32,20 +32,20 @@ const leaderSectionsModule = magnetar.collection<LeaderSection>(LEADER_SECTIONS_
 /////////////
 
 // including the Staff BB
-export const getAllLeaderSections = () => {
+const getAllLeaderSections = () => {
   leaderSectionsModule.stream().catch((error) => { // using stream because the fetch() method is bugged
     console.error(`Error occurred while streaming the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
   }); 
   return leaderSectionsModule.data;
 }
-export const getLeaderSections = () => {
+const getLeaderSections = () => {
   leaderSectionsModule.where("name", "!=", STAFF_SECTION_NAME).stream().catch((error) => { // using stream because the fetch() method is bugged
     console.error(`Error occurred while streaming the ${LEADER_SECTIONS_COLLECTION_NAME} collection`, error);
   }); 
   return leaderSectionsModule.data;
 }
 // This method opens a stream on the leaderSections to get live updates
-export const streamLeaderSection = (id: number) => {
+const streamLeaderSection = (id: number) => {
   if(!id) return undefined;
   const leaderSectionModule = leaderSectionsModule.doc(id.toString());
   leaderSectionModule.stream().catch((error) => {
@@ -53,7 +53,7 @@ export const streamLeaderSection = (id: number) => {
   });
   return leaderSectionModule.data;
 }
-export const getStaffSectionId = async () => {
+const getStaffSectionId = async () => {
   const staffSection = leaderSectionsModule.where("name", "==", STAFF_SECTION_NAME);
   await staffSection.fetch().catch((error) => {
     console.error(`Staff section could not be fetched`, error);
@@ -67,7 +67,7 @@ export const getStaffSectionId = async () => {
 /////////////
 
 // fixme
-export const hardcodeLeaderSections = () => {
+const hardcodeLeaderSections = () => {
   const leaderSections = [
     {name: STAFF_SECTION_NAME, city: "Soignies", id: 0, unit: ""},
     {name: "Pionniers Peter Pan", city: "Soignies", id: 0, unit: ""},

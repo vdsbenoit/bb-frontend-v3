@@ -8,7 +8,7 @@ const user = useAuthStore();
 /// configuration //
 //////////////////
 
-export type Match = {
+type Match = {
   id: string;
   game_id: number;
   game_name: string;
@@ -52,7 +52,7 @@ const matchesModule = magnetar.collection<Match>(MATCHES_COLLECTION_NAME, {
 /////////////
 
 // This method opens a stream on the match to get live updates
-export const streamMatch = (id: string) => {
+const streamMatch = (id: string) => {
   if(!id) return undefined;
   const matchModule = matchesModule.doc(id);
   matchModule.stream().catch((error) => {
@@ -61,21 +61,21 @@ export const streamMatch = (id: string) => {
   return matchModule.data;
 };
 
-export const streamGameMatches = (gameId: number) => {
+const streamGameMatches = (gameId: number) => {
   if(!gameId) return undefined;
   const matches = matchesModule.where("game_id", "==", gameId).orderBy("time", "asc");
   matches.stream();
   return matches.data;
 };
 
-export const streamTeamMatches = (teamId: string) => {
+const streamTeamMatches = (teamId: string) => {
   if(!teamId) return undefined;
   const matches = matchesModule.where("player_ids", "array-contains", teamId).orderBy("time", "asc");
   matches.stream();
   return matches.data;
 };
 
-export const streamTimeMatches = (time: number) => {
+const streamTimeMatches = (time: number) => {
   if(time < 1) return undefined;
   const matches = matchesModule.where("time", "==", time).orderBy("game_id", "asc");
   matches.stream();
@@ -86,28 +86,28 @@ export const streamTimeMatches = (time: number) => {
 /// Setters //
 /////////////
 
-export const setMatchScore = async (matchId: string, winner: string, loser: string) => {
+const setMatchScore = async (matchId: string, winner: string, loser: string) => {
   const reporter = user.uid;
   const lastModified = new Date().toISOString()
   const match = matchesModule.doc(matchId);
   return match.merge({winner, loser, draw: false, reporter, lastModified});
 };
 
-export const setMatchDraw = async (matchId: string) => {
+const setMatchDraw = async (matchId: string) => {
   const reporter = user.uid;
   const lastModified = new Date().toISOString()
   const match = matchesModule.doc(matchId);
   return match.merge({winner: "", loser: "", draw: true, reporter, lastModified});
 };
 
-export const resetMatchScore = async (matchId: string) => {
+const resetMatchScore = async (matchId: string) => {
   const reporter = user.uid;
   const lastModified = new Date().toISOString()
   const match = matchesModule.doc(matchId);
   return match.merge({winner: "", loser: "", draw: false, reporter, lastModified});
 };
 
-export const setMatchNoScores = async (matchId: string, noScores: boolean) => {
+const setMatchNoScores = async (matchId: string, noScores: boolean) => {
   const match = matchesModule.doc(matchId);
   return match.merge({ noScores: noScores });
 }

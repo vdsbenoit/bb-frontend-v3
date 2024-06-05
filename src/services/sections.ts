@@ -6,7 +6,7 @@ const SECTIONS_COLLECTION_NAME = "sections";
 /////////////////////
 /// configuration //
 //////////////////
-export type Section = {
+type Section = {
   id: string;
   name: string;
   city: string;
@@ -49,14 +49,14 @@ const sectionsModule = magnetar.collection<Section>(SECTIONS_COLLECTION_NAME, {
 /// Getters //
 /////////////
 
-export const getSectionsBySectionType = (sectionType: string): Map<string, Section> => {
+const getSectionsBySectionType = (sectionType: string): Map<string, Section> => {
   if (!sectionType) return new Map();
   const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType).orderBy("id");
   filteredSectionsModule.stream(); // using stream because the fetch() method is bugged
   return filteredSectionsModule.data;
 }
 // This method opens a stream on the section to get live updates
-export const streamSection = (id: number) => {
+const streamSection = (id: number) => {
   if(!id) return undefined;
   const sectionModule = sectionsModule.doc(id.toString());
   sectionModule.stream().catch((error) => {
@@ -64,13 +64,13 @@ export const streamSection = (id: number) => {
   });
   return sectionModule.data;
 }
-export const forceFetchSection = async (id: number) => {
+const forceFetchSection = async (id: number) => {
   if(!id) return undefined;
   const section = sectionsModule.doc(id.toString());
   await section.fetch({force: true});
   return section.data;
 }
-export const streamTopSections = (sectionType: string, limit: number) => {
+const streamTopSections = (sectionType: string, limit: number) => {
   if (!sectionType) return undefined;
   const filteredSectionsModule = sectionsModule.where("sectionType", "==", sectionType).orderBy("meanScore", "desc").limit(limit);
   filteredSectionsModule.stream();
@@ -81,29 +81,29 @@ export const streamTopSections = (sectionType: string, limit: number) => {
 /// Setters //
 /////////////
 
-export const updateSectionMeanScore = async (sectionId: number) => {
+const updateSectionMeanScore = async (sectionId: number) => {
   const section = await forceFetchSection(sectionId);
   if (!section) throw new Error("Impossible de mettre à jour la moyenne de la section")
   const meanScore = + (section.score / section.nbTeams || 0).toFixed(2)
   return sectionsModule.doc(sectionId.toString()).merge({meanScore})
 }
 
-export const addSectionWin = async (sectionId: number) => {
+const addSectionWin = async (sectionId: number) => {
   console.log(`Adding 2 points to section ${sectionId}`);
   await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId.toString(), "score", 2);
   await updateSectionMeanScore(sectionId);
 }
-export const removeSectionWin = async (sectionId: number) => {
+const removeSectionWin = async (sectionId: number) => {
   console.log(`Removing 2 points to section ${sectionId}`);
   await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId.toString(), "score", -2);
   await updateSectionMeanScore(sectionId);
 }
-export const addSectionDraw = async (sectionId: number) => {
+const addSectionDraw = async (sectionId: number) => {
   console.log(`Adding 1 points to section ${sectionId}`);
   await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId.toString(), "score", 1);
   await updateSectionMeanScore(sectionId);
 }
-export const removeSectionDraw = async (sectionId: number) => {
+const removeSectionDraw = async (sectionId: number) => {
   console.log(`Removing 1 points to section ${sectionId}`);
   await incrementDocField(SECTIONS_COLLECTION_NAME, sectionId.toString(), "score", -1);
   await updateSectionMeanScore(sectionId);

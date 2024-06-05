@@ -18,7 +18,7 @@ const USER_PROFILES_COLLECTION_NAME = "users";
 /// Interfaces & co //
 /////////////////////
 
-export const ROLES = {
+const ROLES = {
   Anonyme:        0,
   Newbie:         1,
   Participant:    2,
@@ -28,7 +28,7 @@ export const ROLES = {
   Administrateur: 8,
 }
 
-export const getRoleByValue = (role: number): string => {
+const getRoleByValue = (role: number): string => {
   for (const [key, value] of Object.entries(ROLES)) {
     if (value === role)
       return key;
@@ -36,7 +36,7 @@ export const getRoleByValue = (role: number): string => {
   throw console.error(`Role inconnu: ${role}`);
 }
 
-export type Profile = {
+type Profile = {
   uid: string;
   creationDate: Timestamp;
   email: string;
@@ -61,7 +61,7 @@ const fireStoreNow = (): Timestamp => {
   return new Timestamp(Math.floor(Date.now() / 1000), 0)
 }
 
-export const profileDefaults: Profile = { 
+const profileDefaults: Profile = { 
   uid: "",
   creationDate: fireStoreNow(),
   email: "",
@@ -103,7 +103,7 @@ interface authStoreState {
   profileObject: any;
 }
 
-export const useAuthStore = defineStore("authStore", {
+const useAuthStore = defineStore("authStore", {
   state: (): authStoreState => ({
     user: null,
     profileObject: null,
