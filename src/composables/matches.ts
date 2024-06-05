@@ -1,37 +1,8 @@
-import { db } from "@/services/firebase"
-import { collection, doc, orderBy, query, updateDoc, where } from "firebase/firestore"
-import { MaybeRefOrGetter, Ref, computed, toValue } from "vue"
-import { VueFirestoreDocumentData, useCollection, useDocument } from "vuefire"
-import { useAuthStore } from "../services/users"
-import { DEFAULT_GAME_ID } from "./games"
-import { DEFAULT_TEAM_ID } from "./teams"
-
-// Constants
-
-const MATCHES_COLLECTION_NAME = "matches"
-const MATCHES_COLLECTION_REF = collection(db, MATCHES_COLLECTION_NAME)
-const DEFAULT_MATCH_ID = ""
-const DEFAULT_TIME_VALUE = 0
-
-// Types
-
-export type Match = {
-  id: string
-  game_id: number
-  game_name: string
-  time: number
-  player_ids: string[]
-  player_numbers: number[]
-  winner: string
-  loser: string
-  draw: boolean
-  reporter: string
-  lastModified: string
-  hasScore: boolean // todo: remove this in next release
-  noScores: boolean
-}
-
-type RefMatch = Ref<VueFirestoreDocumentData<Match> | undefined>
+import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_TIME_VALUE, MATCHES_COLLECTION_REF } from "@/constants"
+import { Match } from "@/types"
+import { doc, orderBy, query, updateDoc, where } from "firebase/firestore"
+import { MaybeRefOrGetter, computed, toValue } from "vue"
+import { useCollection, useDocument } from "vuefire"
 
 // Getters
 
@@ -47,9 +18,9 @@ export function useMatch(rId: MaybeRefOrGetter<string>) {
   return useDocument<Match>(dbRef)
 }
 
-export function useGameMatchs(rId: MaybeRefOrGetter<number>) {
+export function useGameMatches(rGameId: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
-    const id = toValue(rId)
+    const id = toValue(rGameId)
     if (id === DEFAULT_GAME_ID) return null
     console.debug(`Fetching matches from game ${id}`)
     // prettier-ignore
@@ -61,9 +32,9 @@ export function useGameMatchs(rId: MaybeRefOrGetter<number>) {
   })
   return useCollection<Match>(dbRef)
 }
-export function useTeamMatchs(rId: MaybeRefOrGetter<string>) {
+export function useTeamMatches(rTeamId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
-    const id = toValue(rId)
+    const id = toValue(rTeamId)
     if (id === DEFAULT_TEAM_ID) return null
     console.debug(`Fetching matches from team ${id}`)
     // prettier-ignore
@@ -75,7 +46,7 @@ export function useTeamMatchs(rId: MaybeRefOrGetter<string>) {
   })
   return useCollection<Match>(dbRef)
 }
-export function useTimeMatchs(rTime: MaybeRefOrGetter<number>) {
+export function useTimeMatches(rTime: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
     const time = toValue(rTime)
     if (time === DEFAULT_TIME_VALUE) return null
@@ -92,31 +63,26 @@ export function useTimeMatchs(rTime: MaybeRefOrGetter<number>) {
 
 // Setters
 
-const user = useAuthStore()
-
-export const setMatchScore = async (matchId: string, winner: string, loser: string) => {
-  const reporter = user.uid
+export const setMatchScore = async (matchId: string, winner: string, loser: string, reporterUid: string) => {
   const lastModified = new Date().toISOString()
   const dbRef = doc(MATCHES_COLLECTION_REF, matchId)
-  return updateDoc(dbRef, { winner, loser, draw: false, reporter, lastModified }).then(() =>
+  return updateDoc(dbRef, { winner, loser, draw: false, reporter: reporterUid, lastModified }).then(() =>
     console.debug(`You've just set ${winner} as a winner and ${loser} as loser of match ${matchId}`)
   )
 }
 
-export const setMatchDraw = async (matchId: string) => {
-  const reporter = user.uid
+export const setMatchDraw = async (matchId: string, reporterUid: string) => {
   const lastModified = new Date().toISOString()
   const dbRef = doc(MATCHES_COLLECTION_REF, matchId)
-  return updateDoc(dbRef, { winner: "", loser: "", draw: true, reporter, lastModified }).then(() =>
+  return updateDoc(dbRef, { winner: "", loser: "", draw: true, reporter: reporterUid, lastModified }).then(() =>
     console.debug(`A draw has been set on match ${matchId}`)
   )
 }
 
-export const resetMatchScore = async (matchId: string) => {
-  const reporter = user.uid
+export const resetMatchScore = async (matchId: string, reporterUid: string) => {
   const lastModified = new Date().toISOString()
   const dbRef = doc(MATCHES_COLLECTION_REF, matchId)
-  return updateDoc(dbRef, { winner: "", loser: "", draw: false, reporter, lastModified }).then(() =>
+  return updateDoc(dbRef, { winner: "", loser: "", draw: false, reporter: reporterUid, lastModified }).then(() =>
     console.debug(`Scores have been reset on match ${matchId}`)
   )
 }

@@ -1,35 +1,9 @@
-import { db, incrementDocField } from "@/services/firebase"
-import { collection, doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
-import { MaybeRefOrGetter, Ref, computed, toValue } from "vue"
-import { VueFirestoreDocumentData, useCollection, useDocument } from "vuefire"
-
-// Constants & db references
-
-const TEAMS_COLLECTION_NAME = "teams"
-const TEAMS_COLLECTION_REF = collection(db, TEAMS_COLLECTION_NAME)
-export const DEFAULT_TEAM_ID = ""
-export const DEFAULT_SECTION_TYPE_VALUE = ""
-
-// Types
-
-export type Team = {
-  id: string
-  hash: string
-  number: number
-  sectionType: string
-  sectionId: number
-  sectionName: string
-  city: string
-  scores: number[]
-  score: number
-  matches: string[]
-  nbPlayers: number
-  ignoreScore: boolean
-}
-
-type RefTeam = Ref<VueFirestoreDocumentData<Team> | undefined>
-
-// Getters
+import { DEFAULT_SECTION_TYPE_VALUE, DEFAULT_TEAM_ID, TEAMS_COLLECTION_NAME, TEAMS_COLLECTION_REF } from "@/constants"
+import { incrementDocField } from "@/services/firebase"
+import { Team } from "@/types"
+import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
+import { MaybeRefOrGetter, computed, toValue } from "vue"
+import { useCollection, useDocument } from "vuefire"
 
 // Composables
 

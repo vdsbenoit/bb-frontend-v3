@@ -1,25 +1,8 @@
-import { db } from "@/services/firebase"
-import { collection, doc, getDocs, orderBy, query, where } from "firebase/firestore"
-import { MaybeRefOrGetter, Ref, computed, toValue } from "vue"
-import { VueFirestoreDocumentData, useCollection, useDocument } from "vuefire"
-
-// Constants & db references
-
-const LEADER_SECTIONS_COLLECTION_NAME = "leadersections"
-const LEADER_SECTIONS_COLLECTION_REF = collection(db, LEADER_SECTIONS_COLLECTION_NAME)
-export const DEFAULT_LEADER_SECTION_ID = 0
-
-// Types
-
-export type LeaderSection = {
-  id: number
-  name: string
-  city: string
-  unit: string
-  isStaff: boolean
-}
-
-type RefLeaderSection = Ref<VueFirestoreDocumentData<LeaderSection> | undefined>
+import { DEFAULT_LEADER_SECTION_ID, LEADER_SECTIONS_COLLECTION_REF } from "@/constants"
+import { LeaderSection } from "@/types"
+import { doc, getDocs, orderBy, query, where } from "firebase/firestore"
+import { MaybeRefOrGetter, computed, toValue } from "vue"
+import { useCollection, useDocument } from "vuefire"
 
 // Getters
 

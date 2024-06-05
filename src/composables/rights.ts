@@ -1,15 +1,15 @@
-import { useCurrentUserProfile } from "@/composables/users"
-import { Ref, ref, watchEffect } from "vue"
-import { canSetScoreAnywhere, isScoresFrozen } from "../services/settings"
-import { ROLES } from "../services/users"
-import { Game } from "./games"
-import { useAppSettings } from "./settings"
+import { useCurrentUserProfile } from "@/composables/users";
+import { ROLES } from '@/constants';
+import { Ref, ref, watchEffect } from "vue";
+import { useAppSettings } from "./settings";
+import { Game } from "@/types";
 
 // composables
 
 export function useCanEditScore(game: Ref<Game>) {
   const canEditGameScore = ref(false)
   const currentUserProfile = useCurrentUserProfile()
+  const appSettings = useAppSettings()
 
   watchEffect(() => {
     if (!currentUserProfile.value) {
@@ -19,7 +19,7 @@ export function useCanEditScore(game: Ref<Game>) {
     }
 
     // Check frozen score
-    if (isScoresFrozen()) {
+    if (appSettings.value.isScoresFrozen) {
       console.debug("Cannot set score, score registration is frozen")
       canEditGameScore.value = false
       return
@@ -36,7 +36,7 @@ export function useCanEditScore(game: Ref<Game>) {
       return
     }
     // Check if global setting allow leaders to set any scores
-    if (canSetScoreAnywhere()) {
+    if (appSettings.value.canSetScoreAnywhere) {
       canEditGameScore.value = true
       return
     }

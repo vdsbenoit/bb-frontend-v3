@@ -1,39 +1,15 @@
-import { addToDocArray, db, removeFromDocArray } from "@/services/firebase"
+import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID, GAMES_COLLECTION_NAME, GAMES_COLLECTION_REF, ROLES } from "@/constants"
+import { addToDocArray, removeFromDocArray } from "@/services/firebase"
 import { confirmPopup, toastPopup } from "@/services/popup"
-import { getMaxGameLeaders } from "@/services/settings"
-import { ROLES, getRoleByValue, useAuthStore } from "@/services/users"
-import { collection, doc, getDoc, orderBy, query, updateDoc, where } from "firebase/firestore"
-import { MaybeRefOrGetter, Ref, computed, toValue } from "vue"
-import { VueFirestoreDocumentData, useCollection, useCurrentUser, useDocument } from "vuefire"
-import { RefUserProfile, getUserName, getUserProfile, updateUserProfile, useCurrentUserProfile } from "./users"
-import { RefAppSettings } from "./settings"
-
-// Constants & db references
-
-const GAMES_COLLECTION_NAME = "games"
-const GAMES_COLLECTION_REF = collection(db, GAMES_COLLECTION_NAME)
-export const DEFAULT_GAME_ID = 0
-export const DEFAULT_CIRCUIT_VALUE = ""
-
-// Types
-
-export type Game = {
-  id: number
-  hash: string
-  name: string
-  circuit: string
-  morningLeaders: string[]
-  afternoonLeaders: string[]
-  matches: string[]
-  weight: number
-  noScores: boolean
-}
-
-type RefGame = Ref<VueFirestoreDocumentData<Game> | undefined>
+import { Game, RefAppSettings, RefGame, RefUserProfile } from "@/types"
+import { doc, getDoc, orderBy, query, updateDoc, where } from "firebase/firestore"
+import { MaybeRefOrGetter, computed, toValue } from "vue"
+import { useCollection, useDocument } from "vuefire"
+import { getRoleByValue, getUserName, updateUserProfile } from "./users"
 
 // Getters
 
-async function getGame(id: number){
+export async function getGame(id: number){
   if (id === DEFAULT_GAME_ID) throw Error("Game id is the default value")
   const docSnap = await getDoc(doc(GAMES_COLLECTION_REF, id.toString()))
   if (docSnap.exists()) return docSnap.data()

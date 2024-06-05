@@ -4,13 +4,14 @@
 ## En cours 
 
 - [ ] Use VueFire instead of Magnetar
-- [ ] Define isAdmin to the Team BB leaderSection
+- [ ] Define isStaff to the Team BB leaderSection
+- [ ] use isStaff to define Team bb team
 - [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
   - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
 - [ ] Remove totem from UserProfile type
-- [ ] use isAdmin to define Team bb team
-- [ ] Ensure users cannot exists without required UserProfile properties (redirect to onboarding if needed)
-- use useRouteParams from vueUse
+- [ ] use useRouteParams from vueUse
+- [ ] Refactor morningGame & afternonGame into something generic : leaderTimings (similar to playerTimings)
+- [ ] Remove id from documents and custom types : use the built-in id from vuefire
 
 
 ## User feedback
@@ -30,6 +31,7 @@
 - [ ] Paramètres généraux de l'app
 
   - [ ] set schedule
+  - [ ] set leaderTimings
 - [ ] ignore_score
 
   - [ ] réduire nbTeams de la section (pour le score)
@@ -50,13 +52,13 @@
 ## Keep in mind
 
 - Keep match times starting at 1 instead of 0 (even though [it might sound retarded](https://preview.redd.it/iwnqgrrbls5z.png?auto=webp&s=746c0b97fbb5ba8effbe596ad9f2e5c38832bea2)). That's useful in some checks like in the `MatchesPage`. Same same for game numbers
+- [ ] Try to change the first index of the timings to 0. It's annoying with all the arrays
 
 ## Parking
 
 - [ ] Use Firestore References between Game & Match instead of id. 
   - [ ] Profile morningGame should be a Reference too
   - [ ] Limit VueFire nesting to 1
-- [ ] Refactor morningGame & afternonGame into something generic
 - [ ] Rewrite loadLeaderInfo into something reactive
 - [ ] Remove `next()` from guards (see [this post](https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-third-argument-next))
 - [ ] Sanitize user inputs
@@ -82,10 +84,13 @@
   - Editer les sections depuis l'app
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 - [ ] Rewrite Profile page code
-- [ ] Refactor leaderSections into staffGroups and sections into playerGroups
-- [ ] Refactor Moderators into Admins and Admin into SuperAdmin
+- [ ] Refactor leaderSections into attendantGroups and sections into playerGroups
+- [ ] Refactor roles (cf users.ts)
 - [ ] Fix Nprogress
 - [ ] Update docs/
+- [ ] Ensure users cannot exists without required UserProfile properties (redirect to onboarding if needed)
+- [ ] Invert isScoreFrozen into canSetScore -> better handling of undefined
+- [ ] Remove id from the backend classes (python)
 
 ## Nice to have
 
@@ -100,9 +105,10 @@
   - [ ] Les organisateurs scan le QR code des animateurs
   - [ ] Le QR code contient l'ID de l'animateur + un timestamp pour éviter les screenshots
 - [ ] Get rid of `?` and handle undefined data.
-- [ ] Change gameId & sectionId type to string, for the sake of consistency
+- [ ] Change gameId & sectionId & leaderSectionId type to string, for the sake of consistency
 - [ ] Essayer la connexion avec numéro de téléphone (0.1€/sms)
 - [ ] refactor matches to duels
+- [ ] S'assurer que la souris semble clickable sur tous les éléments clickables (css `cursor: pointer;`)
 
 ## 2024
 

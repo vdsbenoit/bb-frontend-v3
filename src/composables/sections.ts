@@ -1,43 +1,18 @@
-import { db, incrementDocField } from "@/services/firebase"
-import { collection, doc, limit as fbLimit, orderBy, query, updateDoc, where } from "firebase/firestore"
-import { MaybeRefOrGetter, Ref, computed, toValue } from "vue"
-import { VueFirestoreDocumentData, useCollection, useDocument } from "vuefire"
-
-// Constants
-
-const SECTIONS_COLLECTION_NAME = "sections"
-const SECTIONS_COLLECTION_REF = collection(db, SECTIONS_COLLECTION_NAME)
-export const DEFAULT_SECTION_ID = ""
-
-// Types
-
-export type Section = {
-  id: string
-  name: string
-  city: string
-  unit: string
-  sectionType: string
-  scores: number[]
-  score: number
-  teams: string[]
-  nbPlayers: number
-  nbLeaders: number
-  nbTeams: number
-  playersPerTeam: number
-  meanScore: number
-}
-type RefSection = Ref<VueFirestoreDocumentData<Section> | undefined>
-
-// Getters
+import { DEFAULT_SECTION_ID, SECTIONS_COLLECTION_NAME, SECTIONS_COLLECTION_REF } from "@/constants"
+import { incrementDocField } from "@/services/firebase"
+import { RefSection, Section } from "@/types"
+import { doc, limit as fbLimit, orderBy, query, updateDoc, where } from "firebase/firestore"
+import { MaybeRefOrGetter, computed, toValue } from "vue"
+import { useCollection, useDocument } from "vuefire"
 
 // Composables
 
-export function useSection(rId: MaybeRefOrGetter<string>) {
+export function useSection(rId: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
     const id = toValue(rId)
     console.debug(`Fetching section ${id}`)
     if (id === DEFAULT_SECTION_ID) return null
-    return doc(SECTIONS_COLLECTION_REF, id)
+    return doc(SECTIONS_COLLECTION_REF, id.toString())
   })
   return useDocument<Section>(dbRef)
 }
@@ -83,12 +58,13 @@ export function useTopSections(rSectionType: MaybeRefOrGetter<string>, rLimit: M
 /////////////
 
 // fixme: move this to cloud function
-export const updateSectionMeanScore = async (section: RefSection) => {
-  if (!section.value) throw "Cannot updated mean score : section is undefined"
-  const meanScore = +(section.value.score / section.value.nbTeams || 0).toFixed(2)
-  const dbRef = doc(SECTIONS_COLLECTION_REF, section.value.id.toString())
+export const updateSectionMeanScore = async (rSection: RefSection) => {
+  const section = toValue(rSection)
+  if (!section) throw "Cannot updated mean score : section is undefined"
+  const meanScore = +(section.score / section.nbTeams || 0).toFixed(2)
+  const dbRef = doc(SECTIONS_COLLECTION_REF, section.id.toString())
   return updateDoc(dbRef, { meanScore }).then(() =>
-    console.debug(`Updating the mean score of section ${section.value?.id} to ${meanScore}`)
+    console.debug(`Updating the mean score of section ${section.id} to ${meanScore}`)
   )
 }
 export const addSectionWin = async (section: RefSection) => {

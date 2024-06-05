@@ -1,49 +1,13 @@
 import { db } from "@/services/firebase";
 import { Timestamp } from "@firebase/firestore";
-import { deleteUser } from "firebase/auth";
+import { UserProfile, deleteUser } from "firebase/auth";
 // prettier-ignore
-import { DocumentReference, addDoc, collection, deleteDoc, doc, limit as fbLimit, getDoc, orderBy, query, updateDoc, where } from 'firebase/firestore';
-import { MaybeRefOrGetter, Ref, computed, toValue } from "vue";
+import { DEFAULT_SECTION_ID, DEFAULT_USER_ID, PROFILES_COLLECTION_NAME, PROFILES_COLLECTION_REF, ROLES } from "@/constants";
 // prettier-ignore
-import { VueFirestoreDocumentData, useCollection, useCurrentUser, useDocument, useFirebaseAuth } from 'vuefire';
-import { DEFAULT_SECTION_ID } from "./sections";
+import { DocumentReference, addDoc, deleteDoc, doc, limit as fbLimit, getDoc, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { MaybeRefOrGetter, computed, toValue } from "vue";
+import { useCollection, useCurrentUser, useDocument, useFirebaseAuth } from 'vuefire';
 
-// constants
-
-const PROFILES_COLLECTION_NAME = "users"
-const PROFILES_COLLECTION_REF = collection(db, PROFILES_COLLECTION_NAME)
-export const DEFAULT_USER_ID = ""
-// prettier-ignore
-export const ROLES = {
-  Anonyme:        0,
-  Newbie:         1,
-  Participant:    2,
-  Animateur:      4,
-  Chef:           5,
-  Organisateur:   6,
-  Administrateur: 8,
-}
-
-export type UserProfile = {
-  uid: string
-  creationDate: Timestamp
-  email: string
-  name: string
-  settings: any
-  team: string
-  morningGame?: number
-  afternoonGame?: number
-  role: number
-  sectionId?: number
-  sectionName?: string
-  requestedRole: number
-  requestedSectionId: number
-  requestedSectionName: string
-  rejectionReason?: string
-  hasDoneOnboarding: boolean
-}
-
-export type RefUserProfile = Ref<VueFirestoreDocumentData<UserProfile> | undefined>
 
 // getters
 
@@ -163,12 +127,15 @@ export function useLatestUsers(rLimit: MaybeRefOrGetter<number>) {
 
 export async function createUserProfile(uid: string, email: string) {
   // prettier-ignore
-  return addDoc(PROFILES_COLLECTION_REF, {
+  const newProfile: UserProfile = {
     uid, 
     email,
     role: ROLES.Newbie,
     creationDate: Timestamp.now(),
-  }).then((docRef: DocumentReference) => console.debug(`Created new user profile : ${docRef.id}`))
+    sectionId: DEFAULT_SECTION_ID,
+
+  }
+  return addDoc(PROFILES_COLLECTION_REF, newProfile).then((docRef: DocumentReference) => console.debug(`Created new user profile : ${docRef.id}`))
 }
 export async function removeAccount(uid: string) {
   const dbRef = doc(db, PROFILES_COLLECTION_NAME, uid)
