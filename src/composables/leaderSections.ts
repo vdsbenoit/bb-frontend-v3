@@ -7,7 +7,7 @@ import { VueFirestoreDocumentData, useCollection, useDocument } from "vuefire"
 
 const LEADER_SECTIONS_COLLECTION_NAME = "leadersections"
 const LEADER_SECTIONS_COLLECTION_REF = collection(db, LEADER_SECTIONS_COLLECTION_NAME)
-export const DEFAULT_LEADER_SECTION_ID = ""
+export const DEFAULT_LEADER_SECTION_ID = 0
 
 // Types
 
@@ -16,7 +16,7 @@ export type LeaderSection = {
   name: string
   city: string
   unit: string
-  isAdmin: boolean
+  isStaff: boolean
 }
 
 type RefLeaderSection = Ref<VueFirestoreDocumentData<LeaderSection> | undefined>
@@ -25,37 +25,37 @@ type RefLeaderSection = Ref<VueFirestoreDocumentData<LeaderSection> | undefined>
 
 export const getStaffSectionId = async () => {
   try {
-    const dbRef = query(LEADER_SECTIONS_COLLECTION_REF, where("isAdmin", "==", true))
+    const dbRef = query(LEADER_SECTIONS_COLLECTION_REF, where("isStaff", "==", true))
     const querySnapshot = await getDocs(dbRef)
-    if (querySnapshot.empty) throw Error("Admin group not found in DB")
-    if (querySnapshot.size > 1) throw Error("There is more than one admin group in the database")
+    if (querySnapshot.empty) throw Error("Staff group not found in DB")
+    if (querySnapshot.size > 1) throw Error("There is more than one staff group in the database")
     return querySnapshot.docs[0].id
   } catch (error) {
-    console.error(`Admin group document could not be fetched`, error)
+    console.error(`Staff group document could not be fetched`, error)
     return null
   }
 }
 
 // Composables
 
-export function useLeaderSection(rId: MaybeRefOrGetter<string>) {
+export function useLeaderSection(rLeaderSectionId: MaybeRefOrGetter<number>) {
   const dbRef = computed(() => {
-    const id = toValue(rId)
+    const id = toValue(rLeaderSectionId)
     if (id === DEFAULT_LEADER_SECTION_ID) return null
     console.debug(`Fetching leader section ${id}`)
-    return doc(LEADER_SECTIONS_COLLECTION_REF, id)
+    return doc(LEADER_SECTIONS_COLLECTION_REF, id.toString())
   })
   return useDocument<LeaderSection>(dbRef)
 }
 
-export function useLeaderSections(rIncludeAdmins: Ref<boolean>) {
+export function useLeaderSections(rIncludeStaff: MaybeRefOrGetter<boolean>) {
   const dbRef = computed(() => {
-    if (toValue(rIncludeAdmins)) {
+    if (toValue(rIncludeStaff)) {
       console.debug(`Fetching all leader sections`)
       return query(LEADER_SECTIONS_COLLECTION_REF, orderBy("name"))
     } else {
-      console.debug(`Fetching leader sections without the admin group`)
-      return query(LEADER_SECTIONS_COLLECTION_REF, where("isAdmin", "!=", true), orderBy("name"))
+      console.debug(`Fetching leader sections without the staff group`)
+      return query(LEADER_SECTIONS_COLLECTION_REF, where("isStaff", "!=", true), orderBy("name"))
     }
   })
   return useCollection<LeaderSection>(dbRef)
