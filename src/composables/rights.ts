@@ -62,6 +62,7 @@ export function useCanEditScore(game: Ref<Game>) {
   return canEditGameScore
 }
 
+// todo: check that these rules match with the setLeaders setters
 export function useCanRegister() {
   const result = ref(false)
   const reason = ref("")
@@ -74,12 +75,7 @@ export function useCanRegister() {
       result.value = false
       return
     }
-    if (currentUserProfile.value.role >= ROLES.Organisateur) {
-      reason.value = ""
-      result.value = true
-      return
-    }
-    if (currentUserProfile.value.role < ROLES.Animateur) {
+    if (currentUserProfile.value.role == ROLES.Animateur || currentUserProfile.value.role == ROLES.Chef) {
       reason.value = `User  ${currentUserProfile.value.uid} cannot register to a game. Insufficient role`
       result.value = false
       return
