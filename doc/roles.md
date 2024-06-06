@@ -10,7 +10,7 @@ La page accueil des anonymes est :
 
 ### Newbie (1)
 
-Les inscrits sont ceux qui vienne de se connecter mais n'ont pas encore sélectionné de rôle.
+Les inscrits sont ceux qui viennent de se connecter mais n'ont pas encore sélectionné de rôle.
 
 Les newbies peuvent:
 
@@ -18,7 +18,7 @@ Les newbies peuvent:
 
 La page d'accueil des newbies est soit :
 
-- Une invitation à compléter le profile
+- Une invitation à compléter le profil
   - Choisir son rôle
   - Choisir sa section (si animateur ou chef)
 - Un notification comme quoi leur rôle est en cours de validation 

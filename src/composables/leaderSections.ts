@@ -21,12 +21,12 @@ export const getStaffSectionId = async () => {
 
 // Composables
 
-export function useLeaderSection(rLeaderSectionId: MaybeRefOrGetter<number>) {
+export function useLeaderSection(rLeaderSectionId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const id = toValue(rLeaderSectionId)
     if (id === DEFAULT_LEADER_SECTION_ID) return null
     console.debug(`Fetching leader section ${id}`)
-    return doc(LEADER_SECTIONS_COLLECTION_REF, id.toString())
+    return doc(LEADER_SECTIONS_COLLECTION_REF, id)
   })
   return useDocument<LeaderSection>(dbRef)
 }

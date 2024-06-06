@@ -2,7 +2,6 @@ import { Ref } from "vue"
 import { VueFirestoreDocumentData} from "vuefire"
 
 export type Game = {
-  id: number
   hash: string
   name: string
   circuit: string

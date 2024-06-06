@@ -3,8 +3,8 @@ import { VueFirestoreDocumentData} from "vuefire"
 
 export type AppSettings = {
   maxGameLeaders: number; // max allowed leaders per game
-  freezeScore: boolean;
-  everyoneCanSetScoreAnywhere: boolean;
+  canSetScores: boolean;
+  canSetAnyScores: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
   showRankingToAll: boolean;
   showGameAvailabilities: boolean;

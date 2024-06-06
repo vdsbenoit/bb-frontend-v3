@@ -171,7 +171,7 @@ import { useLeaderSection, useLeaderSections } from "@/composables/leaderSection
 import { useGameMatches } from "@/composables/matches";
 import { useCanRegister } from "@/composables/rights";
 import { useAppConfig, useAppSettings } from "@/composables/settings";
-import { useCurrentUserProfile } from "@/composables/users";
+import { useCurrentUserProfile } from "@/composables/userProfile";
 import { getLeaderSections, streamLeaderSection } from "@/services/leaderSections";
 import { setMatchNoScores, streamGameMatches } from "@/services/matches";
 import { errorPopup, loadingPopup, toastPopup } from "@/services/popup";

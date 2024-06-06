@@ -7,12 +7,12 @@ import { useCollection, useDocument } from "vuefire"
 
 // Composables
 
-export function useSection(rId: MaybeRefOrGetter<number>) {
+export function useSection(rSectionId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
-    const id = toValue(rId)
+    const id = toValue(rSectionId)
     console.debug(`Fetching section ${id}`)
     if (id === DEFAULT_SECTION_ID) return null
-    return doc(SECTIONS_COLLECTION_REF, id.toString())
+    return doc(SECTIONS_COLLECTION_REF, id)
   })
   return useDocument<Section>(dbRef)
 }
@@ -58,36 +58,38 @@ export function useTopSections(rSectionType: MaybeRefOrGetter<string>, rLimit: M
 /////////////
 
 // fixme: move this to cloud function
-export const updateSectionMeanScore = async (rSection: RefSection) => {
-  const section = toValue(rSection)
-  if (!section) throw "Cannot updated mean score : section is undefined"
+export const updateSectionMeanScore = async (sectionId: string, section: Section) => {
   const meanScore = +(section.score / section.nbTeams || 0).toFixed(2)
-  const dbRef = doc(SECTIONS_COLLECTION_REF, section.id.toString())
+  const dbRef = doc(SECTIONS_COLLECTION_REF, sectionId)
   return updateDoc(dbRef, { meanScore }).then(() =>
-    console.debug(`Updating the mean score of section ${section.id} to ${meanScore}`)
+    console.debug(`Updating the mean score of section ${sectionId} to ${meanScore}`)
   )
 }
-export const addSectionWin = async (section: RefSection) => {
-  if (!section.value) throw Error("Cannot update score : section is undefined")
-  console.log(`Adding 2 points to section ${section.value.id}`)
-  await incrementDocField(SECTIONS_COLLECTION_NAME, section.value.id.toString(), "score", 2)
-  await updateSectionMeanScore(section)
+export const addSectionWin = async (rSection: RefSection) => {
+  const section = toValue(rSection)
+  if (!section) throw Error("Cannot update score : section is undefined")
+  console.log(`Adding 2 points to section ${section.id}`)
+  await incrementDocField(SECTIONS_COLLECTION_NAME, section.id, "score", 2)
+  await updateSectionMeanScore(section.id, section)
 }
-export const removeSectionWin = async (section: RefSection) => {
-  if (!section.value) throw Error("Cannot update score : section is undefined")
-  console.log(`Removing 2 points to section ${section.value.id}`)
-  await incrementDocField(SECTIONS_COLLECTION_NAME, section.value.id.toString(), "score", -2)
-  await updateSectionMeanScore(section)
+export const removeSectionWin = async (rSection: RefSection) => {
+  const section = toValue(rSection)
+  if (!section) throw Error("Cannot update score : section is undefined")
+  console.log(`Removing 2 points to section ${section.id}`)
+  await incrementDocField(SECTIONS_COLLECTION_NAME, section.id, "score", -2)
+  await updateSectionMeanScore(section.id, section)
 }
-export const addSectionDraw = async (section: RefSection) => {
-  if (!section.value) throw Error("Cannot update score : section is undefined")
-  console.log(`Adding 1 points to section ${section.value.id}`)
-  await incrementDocField(SECTIONS_COLLECTION_NAME, section.value.id.toString(), "score", 1)
-  await updateSectionMeanScore(section)
+export const addSectionDraw = async (rSection: RefSection) => {
+  const section = toValue(rSection)
+  if (!section) throw Error("Cannot update score : section is undefined")
+  console.log(`Adding 1 points to section ${section.id}`)
+  await incrementDocField(SECTIONS_COLLECTION_NAME, section.id, "score", 1)
+  await updateSectionMeanScore(section.id, section)
 }
-export const removeSectionDraw = async (section: RefSection) => {
-  if (!section.value) throw Error("Cannot update score : section is undefined")
-  console.log(`Removing 1 points to section ${section.value.id}`)
-  await incrementDocField(SECTIONS_COLLECTION_NAME, section.value.id.toString(), "score", -1)
-  await updateSectionMeanScore(section)
+export const removeSectionDraw = async (rSection: RefSection) => {
+  const section = toValue(rSection)
+  if (!section) throw Error("Cannot update score : section is undefined")
+  console.log(`Removing 1 points to section ${section.id}`)
+  await incrementDocField(SECTIONS_COLLECTION_NAME, section.id, "score", -1)
+  await updateSectionMeanScore(section.id, section)
 }

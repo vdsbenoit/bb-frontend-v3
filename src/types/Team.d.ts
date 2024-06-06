@@ -2,7 +2,6 @@ import { Ref } from "vue"
 import { VueFirestoreDocumentData} from "vuefire"
 
 export type Team = {
-  id: string
   hash: string
   number: number
   sectionType: string

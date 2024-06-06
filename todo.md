@@ -89,7 +89,7 @@
 - [ ] Fix Nprogress
 - [ ] Update docs/
 - [ ] Ensure users cannot exists without required UserProfile properties (redirect to onboarding if needed)
-- [ ] Invert isScoreFrozen into canSetScore -> better handling of undefined
+- [ ] Create AppSettings & AppConfig in the init process
 - [ ] Remove id from the backend classes (python)
 
 ## Nice to have

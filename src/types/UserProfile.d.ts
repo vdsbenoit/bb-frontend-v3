@@ -2,21 +2,20 @@ import { Ref } from "vue"
 import { VueFirestoreDocumentData} from "vuefire"
 
 export type UserProfile = {
-  uid: string
   creationDate: Timestamp
   email: string
   name: string
   team: string
-  morningGame?: number
-  afternoonGame?: number
   role: number
-  sectionId: number
-  sectionName: string
-  requestedRole: number
-  requestedSectionId: number
-  requestedSectionName: string
-  rejectionReason?: string
   hasDoneOnboarding: boolean
+  requestedRole?: number
+  requestedSectionId?: number
+  requestedSectionName?: string
+  rejectionReason?: string
+  sectionId: string
+  sectionName?: string
+  morningGame?: string
+  afternoonGame?: string
   settings?: any
 }
 

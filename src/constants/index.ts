@@ -26,19 +26,19 @@ export const TEAMS_COLLECTION_REF = collection(db, TEAMS_COLLECTION_NAME)
 
 // sections
 
-export const DEFAULT_SECTION_ID = 0
+export const DEFAULT_SECTION_ID = ""
 export const SECTIONS_COLLECTION_NAME = "sections"
 export const SECTIONS_COLLECTION_REF = collection(db, SECTIONS_COLLECTION_NAME)
 
 // leaderSections
 
-export const DEFAULT_LEADER_SECTION_ID = 0
+export const DEFAULT_LEADER_SECTION_ID = ""
 export const LEADER_SECTIONS_COLLECTION_NAME = "leadersections"
 export const LEADER_SECTIONS_COLLECTION_REF = collection(db, LEADER_SECTIONS_COLLECTION_NAME)
 
 // games
 
-export const DEFAULT_GAME_ID = 0
+export const DEFAULT_GAME_ID = ""
 export const DEFAULT_CIRCUIT_VALUE = ""
 export const GAMES_COLLECTION_NAME = "games"
 export const GAMES_COLLECTION_REF = collection(db, GAMES_COLLECTION_NAME)
@@ -46,7 +46,7 @@ export const GAMES_COLLECTION_REF = collection(db, GAMES_COLLECTION_NAME)
 // matches
 
 export const DEFAULT_MATCH_ID = ""
-export const DEFAULT_TIME_VALUE = 0
+export const DEFAULT_TIME_VALUE = -1
 export const MATCHES_COLLECTION_NAME = "matches"
 export const MATCHES_COLLECTION_REF = collection(db, MATCHES_COLLECTION_NAME)
 

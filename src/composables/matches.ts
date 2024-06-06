@@ -18,7 +18,7 @@ export function useMatch(rId: MaybeRefOrGetter<string>) {
   return useDocument<Match>(dbRef)
 }
 
-export function useGameMatches(rGameId: MaybeRefOrGetter<number>) {
+export function useGameMatches(rGameId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
     const id = toValue(rGameId)
     if (id === DEFAULT_GAME_ID) return null

@@ -1,10 +1,11 @@
 import { db } from "@/services/firebase";
 import { Timestamp } from "@firebase/firestore";
-import { UserProfile, deleteUser } from "firebase/auth";
+import { deleteUser } from "firebase/auth";
 // prettier-ignore
-import { DEFAULT_SECTION_ID, DEFAULT_USER_ID, PROFILES_COLLECTION_NAME, PROFILES_COLLECTION_REF, ROLES } from "@/constants";
+import { DEFAULT_SECTION_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, PROFILES_COLLECTION_NAME, PROFILES_COLLECTION_REF, ROLES } from "@/constants";
+import { UserProfile } from "@/types";
 // prettier-ignore
-import { DocumentReference, addDoc, deleteDoc, doc, limit as fbLimit, getDoc, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { deleteDoc, doc, limit as fbLimit, getDoc, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { MaybeRefOrGetter, computed, toValue } from "vue";
 import { useCollection, useCurrentUser, useDocument, useFirebaseAuth } from 'vuefire';
 
@@ -23,11 +24,11 @@ export function getUserName(rProfile: MaybeRefOrGetter<UserProfile>) {
   if (profile.name) return profile.name
   return profile.email
 }
-export async function getUserProfile(id: string): Promise<UserProfile>{
-  if (id === DEFAULT_USER_ID) throw Error("User id is the default value")
-  const docSnap = await getDoc(doc(PROFILES_COLLECTION_REF, id.toString()))
+export async function getUserProfile(uid: string): Promise<UserProfile>{
+  if (uid === DEFAULT_USER_ID) throw Error("User id is the default value")
+  const docSnap = await getDoc(doc(PROFILES_COLLECTION_REF, uid))
   if (docSnap.exists()) return docSnap.data() as UserProfile
-  else throw Error(`User profile not found for id ${id}`)
+  else throw Error(`User profile not found for id ${uid}`)
 }
 
 // composables
@@ -128,14 +129,16 @@ export function useLatestUsers(rLimit: MaybeRefOrGetter<number>) {
 export async function createUserProfile(uid: string, email: string) {
   // prettier-ignore
   const newProfile: UserProfile = {
-    uid, 
-    email,
-    role: ROLES.Newbie,
     creationDate: Timestamp.now(),
+    email,
+    name: "",
+    team: DEFAULT_TEAM_ID,
     sectionId: DEFAULT_SECTION_ID,
-
+    role: ROLES.Newbie,
+    hasDoneOnboarding: false
   }
-  return addDoc(PROFILES_COLLECTION_REF, newProfile).then((docRef: DocumentReference) => console.debug(`Created new user profile : ${docRef.id}`))
+  const docRef = doc(PROFILES_COLLECTION_REF, uid)
+  return setDoc(docRef, newProfile).then(() => console.debug(`Created new user profile : ${uid}`))
 }
 export async function removeAccount(uid: string) {
   const dbRef = doc(db, PROFILES_COLLECTION_NAME, uid)

@@ -1,17 +1,22 @@
-import { useCurrentUserProfile } from "@/composables/users";
+import { useCurrentUserProfile } from "@/composables/userProfile";
 import { ROLES } from '@/constants';
-import { Ref, ref, watchEffect } from "vue";
+import { RefGame } from "@/types";
+import { ref, watchEffect } from "vue";
 import { useAppSettings } from "./settings";
-import { Game } from "@/types";
 
 // composables
 
-export function useCanEditScore(game: Ref<Game>) {
+export function useCanEditScores(game: RefGame) {
   const canEditGameScore = ref(false)
   const currentUserProfile = useCurrentUserProfile()
   const appSettings = useAppSettings()
 
   watchEffect(() => {
+    if (! game.value) {
+      console.debug("Cannot set score, game variable is not set yet")
+      canEditGameScore.value = false
+      return
+    }
     if (!currentUserProfile.value) {
       console.debug("Cannot set score, user is not authenticated")
       canEditGameScore.value = false
@@ -19,14 +24,14 @@ export function useCanEditScore(game: Ref<Game>) {
     }
 
     // Check frozen score
-    if (appSettings.value.isScoresFrozen) {
-      console.debug("Cannot set score, score registration is frozen")
+    if (!appSettings.value?.canSetScores) {
+      console.debug("Cannot set score. Score registration is not enabled yet")
       canEditGameScore.value = false
       return
     }
     // Check if not leader
     if (currentUserProfile.value.role < ROLES.Animateur) {
-      console.debug(`User ${currentUserProfile.value.uid} cannot edit game ${game.value.id} score. Insufficient role`)
+      console.debug(`User ${currentUserProfile.value.id} cannot edit game ${game.value.id} score. Insufficient role`)
       canEditGameScore.value = false
       return
     }
@@ -36,26 +41,26 @@ export function useCanEditScore(game: Ref<Game>) {
       return
     }
     // Check if global setting allow leaders to set any scores
-    if (appSettings.value.canSetScoreAnywhere) {
+    if (appSettings.value.canSetAnyScores) {
       canEditGameScore.value = true
       return
     }
     // Check if leader assigned to the game
     if (
-      game.value.morningLeaders.includes(currentUserProfile.value.uid) &&
+      game.value.morningLeaders.includes(currentUserProfile.value.id) &&
       currentUserProfile.value.morningGame == game.value.id
     ) {
       canEditGameScore.value = true
       return
     }
     if (
-      game.value.afternoonLeaders.includes(currentUserProfile.value.uid) &&
+      game.value.afternoonLeaders.includes(currentUserProfile.value.id) &&
       currentUserProfile.value.afternoonGame == game.value.id
     ) {
       canEditGameScore.value = true
       return
     }
-    console.debug(`Cannot set score, user ${currentUserProfile.value.uid} is not registered at ${game.value.id}`)
+    console.debug(`Cannot set score, user ${currentUserProfile.value.id} is not registered at ${game.value.id}`)
     canEditGameScore.value = false
   })
 
@@ -76,7 +81,7 @@ export function useCanRegister() {
       return
     }
     if (currentUserProfile.value.role == ROLES.Animateur || currentUserProfile.value.role == ROLES.Chef) {
-      reason.value = `User  ${currentUserProfile.value.uid} cannot register to a game. Insufficient role`
+      reason.value = `User  ${currentUserProfile.value.id} cannot register to a game. Insufficient role`
       result.value = false
       return
     }
@@ -110,7 +115,7 @@ export function useCanRegisterSomeone() {
       return
     }
     if (currentUserProfile.value.role < ROLES.Chef) {
-      reason.value = `User  ${currentUserProfile.value.uid} cannot register someone to a game. Insufficient role`
+      reason.value = `User  ${currentUserProfile.value.id} cannot register someone to a game. Insufficient role`
       result.value = false
       return
     }
