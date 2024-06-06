@@ -1,4 +1,7 @@
 module.exports = {
+  configureWebpack: {
+    devtool: 'source-map'
+  },
   chainWebpack: (config) => {
     config.plugin('define').tap((definitions) => {
       Object.assign(definitions[0], {
