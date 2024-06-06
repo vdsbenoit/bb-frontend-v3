@@ -4,8 +4,6 @@ import { RefGame } from "@/types";
 import { ref, watchEffect } from "vue";
 import { useAppSettings } from "./settings";
 
-// composables
-
 export function useCanEditScores(game: RefGame) {
   const canEditGameScore = ref(false)
   const currentUserProfile = useCurrentUserProfile()

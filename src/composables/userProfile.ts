@@ -1,37 +1,9 @@
-import { db } from "@/services/firebase";
-import { Timestamp } from "@firebase/firestore";
-import { deleteUser } from "firebase/auth";
-// prettier-ignore
-import { DEFAULT_SECTION_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, PROFILES_COLLECTION_NAME, PROFILES_COLLECTION_REF, ROLES } from "@/constants";
-import { UserProfile } from "@/types";
-// prettier-ignore
-import { deleteDoc, doc, limit as fbLimit, getDoc, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
-import { MaybeRefOrGetter, computed, toValue } from "vue";
-import { useCollection, useCurrentUser, useDocument, useFirebaseAuth } from 'vuefire';
-
-
-// getters
-
-export const getRoleByValue = (roleNumber: number): string => {
-  for (const [key, value] of Object.entries(ROLES)) {
-    if (value === roleNumber) return key
-  }
-  throw Error(`Unknown role : ${roleNumber}`)
-}
-export function getUserName(rProfile: MaybeRefOrGetter<UserProfile>) {
-  const profile = toValue(rProfile)
-  if (!profile) return getRoleByValue(ROLES.Anonyme)
-  if (profile.name) return profile.name
-  return profile.email
-}
-export async function getUserProfile(uid: string): Promise<UserProfile>{
-  if (uid === DEFAULT_USER_ID) throw Error("User id is the default value")
-  const docSnap = await getDoc(doc(PROFILES_COLLECTION_REF, uid))
-  if (docSnap.exists()) return docSnap.data() as UserProfile
-  else throw Error(`User profile not found for id ${uid}`)
-}
-
-// composables
+import { DEFAULT_SECTION_ID, DEFAULT_USER_ID, PROFILES_COLLECTION_REF } from "@/constants"
+import { UserProfile } from "@/types"
+import { getRoleByValue } from "@/utils/userProfile"
+import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
+import { MaybeRefOrGetter, computed, toValue } from "vue"
+import { useCollection, useCurrentUser, useDocument } from "vuefire"
 
 export function useUserProfile(rUid: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {
@@ -122,40 +94,4 @@ export function useLatestUsers(rLimit: MaybeRefOrGetter<number>) {
     )
   })
   return useCollection<UserProfile>(dbRef)
-}
-
-// Setters
-
-export async function createUserProfile(uid: string, email: string) {
-  // prettier-ignore
-  const newProfile: UserProfile = {
-    creationDate: Timestamp.now(),
-    email,
-    name: "",
-    team: DEFAULT_TEAM_ID,
-    sectionId: DEFAULT_SECTION_ID,
-    role: ROLES.Newbie,
-    hasDoneOnboarding: false
-  }
-  const docRef = doc(PROFILES_COLLECTION_REF, uid)
-  return setDoc(docRef, newProfile).then(() => console.debug(`Created new user profile : ${uid}`))
-}
-export async function removeAccount(uid: string) {
-  const dbRef = doc(db, PROFILES_COLLECTION_NAME, uid)
-  const auth = useFirebaseAuth()
-  if (!auth) throw Error("removeAccount() can only run on client side")
-  const user = auth.currentUser
-  if (!user) throw Error("User not found in the auth db")
-  const deleteDocPromise = deleteDoc(dbRef)
-  const deleteUserPromise = deleteUser(user)
-  // prettier-ignore
-  return Promise.all([
-    deleteDocPromise,
-    deleteUserPromise
-  ]).then(() => console.debug(`Removed user ${uid}`))
-}
-
-export async function updateUserProfile(uid: string, profileData: any) {
-  const dbRef = doc(db, PROFILES_COLLECTION_NAME, uid)
-  return updateDoc(dbRef, profileData).then(() => console.debug(`User profile updated for ${uid}`))
 }
