@@ -16,4 +16,5 @@ export type Match = {
   noScores: boolean
 }
 
+export type VueFireMatch = Match & { readonly id: string }
 export type RefMatch = Ref<VueFirestoreDocumentData<Match> | undefined>

@@ -14,4 +14,5 @@ export type Game = {
   noScores: boolean
 }
 
+export type VueFireGame = Game & { readonly id: string }
 export type RefGame = Ref<VueFirestoreDocumentData<Game> | undefined>

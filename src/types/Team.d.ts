@@ -15,4 +15,5 @@ export type Team = {
   ignoreScore: boolean
 }
 
+export type VueFireTeam = Team & { readonly id: string }
 export type RefTeam = Ref<VueFirestoreDocumentData<Team> | undefined>

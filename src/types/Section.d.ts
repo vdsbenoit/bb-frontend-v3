@@ -15,4 +15,6 @@ export type Section = {
   playersPerTeam: number
   meanScore: number
 }
+
+export type VueFireSection = Section & { readonly id: string }
 export type RefSection = Ref<VueFirestoreDocumentData<Section> | undefined>

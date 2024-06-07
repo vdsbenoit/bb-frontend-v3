@@ -8,4 +8,5 @@ export type LeaderSection = {
   isStaff: boolean
 }
 
+export type VueFireLeaderSection = LeaderSection & { readonly id: string }
 export type RefLeaderSection = Ref<VueFirestoreDocumentData<LeaderSection> | undefined>
