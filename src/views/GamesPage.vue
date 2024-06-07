@@ -1,21 +1,28 @@
 <template>
   <ion-page>
     <header-template :pageTitle="pageTitle">
-      <ion-button v-if="canEditGames" @click="toggleEditMode"><ion-icon slot="icon-only" :ios="editIcon.ios" :md="editIcon.md"></ion-icon></ion-button>
+      <ion-button v-if="canEditGames" @click="toggleEditMode">
+        <ion-label v-if="isPlatform('ios')" color="primary">{{ editMode ? "done" : "edit" }}</ion-label>
+        <ion-icon v-else slot="icon-only" :icon="editMode ? closeSharp : pencilSharp"></ion-icon>
+      </ion-button>
     </header-template>
     <ion-content :fullscreen="true">
       <refresher-component></refresher-component>
       <ion-item color="primary">
         <ion-label class="ion-text-center">Sélectionne un circuit</ion-label>
-        <ion-select v-if="circuits" v-model="selectedCircuit" interface="popover">
+        <ion-spinner v-if="isLoadingAppConfig"></ion-spinner>
+        <ion-select v-else-if="circuits" v-model="selectedCircuit" interface="popover">
           <ion-select-option v-for="letter in Object.keys(circuits).sort()" :value="letter" :key="letter"> {{ letter }} ({{ circuits[letter] }})</ion-select-option>
         </ion-select>
-        <ion-spinner v-else-if="isLoadingCircuits"></ion-spinner>
-        <div v-else>Pas de circuits configuré</div>
+        <div v-else-if="errorLoadingConfig">Erreur</div>
+        <div v-else>Pas de circuit</div>
       </ion-item>
       <ion-list v-if="selectedCircuit" lines="full">
-        <div v-if="games && games.length > 0">
-          <div v-for="game in games?.values()" :key="game.id">
+        <div v-if="isLoadingGames" class="ion-text-center" style="background: transparent">
+          <ion-spinner></ion-spinner>
+        </div>
+        <div v-else-if="games && games.length > 0">
+          <div v-for="game in games" :key="game.id">
             <div v-if="editMode">
               <div v-if="game.id === editedGameId && !isUpdating">
                 <ion-item>
@@ -40,20 +47,20 @@
                 <ion-label>
                   <ion-text>{{ game.name }}</ion-text>
                 </ion-label>
-                <ion-badge v-if="showGameAvailabilities()" slot="end" class="ion-no-margin" :color="getStatus(game.morningLeaders).color">M{{ getStatus(game.morningLeaders).nbLeaders }}</ion-badge>
-                <ion-badge v-if="showGameAvailabilities()" slot="end" class="ion-no-margin ion-margin-start" :color="getStatus(game.afternoonLeaders).color">A{{ getStatus(game.afternoonLeaders).nbLeaders }}</ion-badge>
+                <div v-if="showGameAvailabilities">
+                  <div v-for="availability in getAvailabilities(game)" :key="availability.text">
+                    <ion-badge slot="end" class="ion-no-margin" :color="availability.color">{{ availability.text }}</ion-badge>
+                  </div>
+                </div>
               </ion-item>
             </div>
           </div>
-        </div>
-        <div v-else-if="isLoadingGames" class="ion-text-center" style="background: transparent">
-          <ion-spinner></ion-spinner>
         </div>
       </ion-list>
       <div v-else class="not-found">
         <h2 class="ion-text-center ion-align-items-center" >Sélectionne un circuit <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp"></ion-icon></h2>
       </div>
-      <div v-if="gamesNotFound()" class="not-found">
+      <div v-if="gamesNotFound" class="not-found">
         <h2 class="ion-text-center ion-align-items-center">Pas d'épreuves</h2>
       </div>
     </ion-content>
@@ -61,88 +68,88 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonBadge, IonText, useIonRouter, IonSpinner, IonSelect, IonSelectOption, IonButton, IonIcon, IonInput } from "@ionic/vue";
-import { checkmarkOutline, checkmarkSharp, pencilOutline, pencilSharp, closeOutline, closeSharp, arrowUpOutline, arrowUpSharp } from "ionicons/icons";
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
-import { ROLES, useAuthStore } from "@/services/users";
-import { toastPopup } from "@/services/popup";
-import { computed, ref } from "@vue/reactivity";
-import { onMounted, watch } from "vue";
-import { getCircuits, getMaxGameLeaders, isShowGameAvailabilities } from "@/services/settings";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { DEFAULT_CIRCUIT_VALUE, Game, setGameName, useCircuitGames } from "@/composables/games";
-
-const user = useAuthStore();
-const router = useIonRouter();
+import { useCircuitGames } from "@/composables/games";
+import { useCanEditGames } from "@/composables/rights";
+import { useAppConfig, useAppSettings } from "@/composables/settings";
+import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID } from "@/constants";
+import { toastPopup } from "@/services/popup";
+import { VueFireGame } from "@/types";
+import { setGameName } from "@/utils/game";
+import { IonBadge, IonButton, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText, isPlatform, useIonRouter } from "@ionic/vue";
+import { computed, ref } from "@vue/reactivity";
+import { arrowUpOutline, arrowUpSharp, checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
+import { watch } from "vue";
 
 // reactive data
 const editMode = ref(false);
 const selectedCircuit = ref(DEFAULT_CIRCUIT_VALUE);
-const editedGameId = ref(-1);
+const editedGameId = ref(DEFAULT_GAME_ID);
 const newGameName = ref("");
 const isUpdating = ref(false);
-const isLoadingCircuits = ref(true);
-const isLoadingGames = ref(false);
 
-// lifecycle hooks
-onMounted(() => {
-  setTimeout(() => {
-    isLoadingCircuits.value = false;
-  }, 5000);
-});
+// composables
 
-// Watchers
-watch(selectedCircuit, () => {
-  if (selectedCircuit.value) {
-    isLoadingGames.value = true;
-    setTimeout(() => {
-      isLoadingGames.value = false;
-    }, 5000);
-  }
-});
+const router = useIonRouter()
+const { data: games, pending: isLoadingGames, error: errorLoadingGames } = useCircuitGames(selectedCircuit)
+const { data: appConfig, pending: isLoadingAppConfig, error: errorLoadingConfig } = useAppConfig()
+const appSettings = useAppSettings()
+const canEditGames = useCanEditGames()
 
 // Computed
 const circuits = computed(() => {
-  return getCircuits();
+  if (!appConfig.value) return []
+  return appConfig.value.circuits
 });
-const games = useCircuitGames(selectedCircuit)
 const pageTitle = computed(() => {
   if (editMode.value) return `Édition des épreuves`;
   return "Épreuves";
 });
-const canEditGames = computed(() => {
-  return user.profile.role >= ROLES.Organisateur;
-});
 const editIcon = computed(() => {
-  return (editMode.value) ? {ios: closeOutline, md: closeSharp} : {ios: pencilOutline, md: pencilSharp}
+  return (editMode.value) ? closeSharp : pencilSharp
 });
-const gamesNotFound = () => {
+const gamesNotFound = computed(() => {
+  if (errorLoadingGames) return true
   return selectedCircuit.value && !isLoadingGames.value && (!games.value || games.value.length === 0);
-}
-const showGameAvailabilities = () => {
-  return isShowGameAvailabilities();
-}
+})
+const showGameAvailabilities = computed(() => {
+  return appSettings.value?.showGameAvailabilities
+})
+const attendantTimings = computed(() => {
+  if (!appConfig.value) return []
+  return appConfig.value.attendantTimings.filter(timing => timing.isGame)
+
+})
 
 // Methods
-const getStatus = (leaders: string[]) => {
-  const nbLeaders = leaders.length;
-  if (nbLeaders === 0) return { nbLeaders, color: "danger" };
-  if (nbLeaders < getMaxGameLeaders()) return { nbLeaders, color: "warning" };
-  return { nbLeaders, color: "success" };
-};
+
+const getAvailabilities = (game: VueFireGame) => {
+  const maxGameLeaders = appSettings.value?.maxGameLeaders ?? 2
+  const availabilities = []
+  for (const timing of attendantTimings.value){
+    const nbAttendants = game.attendants.filter(attendant => attendant.timingId === timing.id).length
+    const text = timing.name + ' ' + nbAttendants
+    let color = "success"
+    if (nbAttendants === 0) color = "danger"
+    if (nbAttendants < maxGameLeaders) color = "warning"
+    availabilities.push({ text, color })
+  }
+  return availabilities
+}
 const toggleEditMode = () => {
   editMode.value = !editMode.value;
 }
-const goToGamePage = (gameId: number) => {
+const goToGamePage = (gameId: string) => {
   if (!editMode.value) router.push(`/game/${gameId}`);
 }
-const editGame = (game: Game) => {
-  newGameName.value = game.name;
-  editedGameId.value = game.id;
+const editGame = (game: VueFireGame) => {
+  newGameName.value = game.name
+  editedGameId.value = game.id
 }
 const clearEdition = () => {
   newGameName.value = "";
-  editedGameId.value = -1;  
+  editedGameId.value = DEFAULT_GAME_ID;  
 }
 const updateGameName = async () => {
   isUpdating.value = true;

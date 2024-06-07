@@ -1,6 +1,5 @@
 import { APP_CONFIG_DOC_REF, APP_SETTINGS_DOC_REF } from "@/constants";
-import { AppSettings } from "@/types";
-import { AppConfig } from "vue";
+import { AppSettings, AppConfig } from "@/types";
 import { useDocument } from "vuefire";
 
 export function useAppSettings() {
