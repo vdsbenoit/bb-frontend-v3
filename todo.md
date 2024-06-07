@@ -3,15 +3,20 @@
 
 ## En cours 
 
-- [ ] Use VueFire instead of Magnetar
+- [x] Use VueFire instead of Magnetar
+  - [ ] Remove old services
+  - [ ] Completely remove Magnetar from project
+
 - [ ] Define isStaff to the Team BB leaderSection
 - [ ] use isStaff to define Team bb team
 - [ ] Mettre tous les checks de rôles au même endroit (dans un service dédidé). C'est parfois fait au niveau service (setMorningLeaders) et parfois pas (setGameScore). 
   - [ ] Essayer de centraliser tout ce qui est lié aux rôles (`App.vue` vs `router/index.ts`, plein de `showRanking` dans différents components)
-- [ ] Remove totem from UserProfile type
+- [x] Remove totem from UserProfile type
 - [ ] use useRouteParams from vueUse
 - [ ] Refactor morningGame & afternonGame into something generic : leaderTimings (similar to playerTimings)
-- [ ] Remove id from documents and custom types : use the built-in id from vuefire
+- [x] Remove id from documents and custom types : use the built-in id from vuefire
+- [ ] Rewrite loadLeaderInfo into something reactive
+- [ ] Refactor roles (cf userProfile.d.ts)
 
 
 ## User feedback
@@ -30,12 +35,21 @@
 
 - [ ] Paramètres généraux de l'app
 
-  - [ ] set schedule
+  - [ ] set playerTiming
+  - [ ] set attendantTiming -> cannot be modified without reseting the app 
   - [ ] set leaderTimings
-- [ ] ignore_score
+  - [ ] ignore_score
 
-  - [ ] réduire nbTeams de la section (pour le score)
-  - [ ] afficher l'équipe d'une certaine manière aux animateurs
+    - [ ] réduire nbTeams de la section (pour le score)
+    - [ ] afficher l'équipe d'une certaine manière aux animateurs
+- [ ] Faire la distribution + générer les roadmaps/badges dans l'app
+  - Créer des utilisateurs	
+  - Créer les équipes (cf distribution équipe ci dessous)
+    - Séparer la création de chaque type de sections. Par ex, la création des équipes louveteaux ont leur propre paramètre MIN et MAX 
+    - Faire en sorte que l'on puisse refaire la distributions de équipes une fois que les pios ont déjà commencé à s'inscrire. En gros, ne pas toucher à la db de jeux, uniquement aux équipes. 
+  - Créer des jeux
+  - Renommer jeux depuis l'app (attention: appliquer la modification à tous les matchs)
+  - Editer les sections depuis l'app
 - [ ] Tableau de gestion équipes (voir app précédente)
 - [x] Inscription : 
   - [x] choisir sa section et son rôle
@@ -56,41 +70,32 @@
 
 ## Parking
 
-- [ ] Use Firestore References between Game & Match instead of id. 
-  - [ ] Profile morningGame should be a Reference too
-  - [ ] Limit VueFire nesting to 1
-- [ ] Rewrite loadLeaderInfo into something reactive
+- [ ] `Matches` field dans les collections `games` & `teams`
+  - [ ] Vérifier si ce field n'est pas utile pour la validation de la db à la fin de l'initialisation.
+  - [ ] Soit les retirer et utiliser des queries à la place
+  - [ ] Soit utiliser des Firestore References
+    - [ ] Dans ce cas, limiter e VueFire nesting à 1
+
 - [ ] Remove `next()` from guards (see [this post](https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-third-argument-next))
 - [ ] Sanitize user inputs
 - [ ] Add [recaptcha](https://firebase.google.com/docs/app-check/web/recaptcha-provider?authuser=1&hl=fr) 
 - [ ] Push notification (par ex pour rappeler d'enregistrer un score manquant)
-- [ ] Retirer matches des collection games & teams (utiliser des queries à la place). Vérifier tout de même si ce n'est pas utile pour la validation de la db à la fin de l'initialisation.
 - [ ] Faire des méthodes genre "getLeaderInfo" dans des cloud functions pour n'exposer qu'une partie des données.
-- [ ] Get rid of snake case in the DB (e.g. matches collection)
+- [x] Get rid of snake case in the DB (e.g. matches collection)
 - [ ] Trouver un moyen efficace de calculer le classement en temps réel et l'afficher dans les équipes & sections
   - [ ] Cloud functions qui aggregate le score moyen de chaque section
 - [ ] Modifier détails section depuis SectionsPage
-- [ ] Remove weights
+- [x] Remove weights
 - [ ] ? Optimize index (game_id>time and time>game_id)
 - [ ] Intégrer la couleur d'équipe dans l'app et la DB
 - [ ] Fix Nprogress
-- [ ] Faire la distribution + générer les roadmaps/badges dans l'app
-  - Créer des utilisateurs	
-  - Créer les équipes (cf distribution équipe ci dessous)
-    - Séparer la création de chaque type de sections. Par ex, la création des équipes louveteaux ont leur propre paramètre MIN et MAX 
-    - Faire en sorte que l'on puisse refaire la distributions de équipes une fois que les pios ont déjà commencé à s'inscrire. En gros, ne pas toucher à la db de jeux, uniquement aux équipes. 
-  - Créer des jeux
-  - Renommer jeux depuis l'app (attention: appliquer la modification à tous les matchs)
-  - Editer les sections depuis l'app
 - [ ] Change `isNewUser` with a check if profile exists. Because, as is, the app bugs when we wipe the users collection in firestore
 - [ ] Rewrite Profile page code
 - [ ] Refactor leaderSections into attendantGroups and sections into playerGroups
-- [ ] Refactor roles (cf users.ts)
-- [ ] Fix Nprogress
 - [ ] Update docs/
 - [ ] Ensure users cannot exists without required UserProfile properties (redirect to onboarding if needed)
 - [ ] Create AppSettings & AppConfig in the init process
-- [ ] Remove id from the backend classes (python)
+- [x] Remove id from the backend classes (python)
 
 ## Nice to have
 

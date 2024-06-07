@@ -1,14 +1,16 @@
 import { Ref } from "vue"
-import { VueFirestoreDocumentData} from "vuefire"
+import { VueFirestoreDocumentData } from "vuefire"
+import { DocumentReference } from "firebase/firestore"
 
 export type Game = {
   hash: string
   name: string
   circuit: string
-  morningLeaders: string[]
-  afternoonLeaders: string[]
+  attendants: {
+    user: DocumentReference
+    timingId: string
+  }[]
   matches: string[]
-  weight: number
   noScores: boolean
 }
 

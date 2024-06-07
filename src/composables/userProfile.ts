@@ -1,4 +1,4 @@
-import { DEFAULT_SECTION_ID, DEFAULT_USER_ID, PROFILES_COLLECTION_REF } from "@/constants"
+import { DEFAULT_SECTION_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_REF } from "@/constants"
 import { UserProfile } from "@/types"
 import { getRoleByValue } from "@/utils/userProfile"
 import { doc, limit as fbLimit, orderBy, query, where } from "firebase/firestore"
@@ -13,7 +13,7 @@ export function useUserProfile(rUid: MaybeRefOrGetter<string>) {
       return null
     }
     console.debug(`Fetching user profile ${uid}`)
-    return doc(PROFILES_COLLECTION_REF, uid)
+    return doc(USER_PROFILES_COLLECTION_REF, uid)
   })
   return useDocument<UserProfile>(dbRef)
 }
@@ -41,7 +41,7 @@ export function useUsersFromSection(rSectionId: MaybeRefOrGetter<string>) {
     console.debug(`Fetching users from section ${sectionId}`)
     // prettier-ignore
     return query(
-      PROFILES_COLLECTION_REF, 
+      USER_PROFILES_COLLECTION_REF, 
       where("sectionId", "==", sectionId)
     )
   })
@@ -56,7 +56,7 @@ export function useApplicantsToSection(rSectionId: MaybeRefOrGetter<string>, rLi
     console.debug(`Fetching users who requested to be member of section ${sectionId}`)
     // prettier-ignore
     return query(
-      PROFILES_COLLECTION_REF, 
+      USER_PROFILES_COLLECTION_REF, 
       where("requestedSectionId", "==", sectionId),
       fbLimit(limit)
     )
@@ -73,7 +73,7 @@ export function useAllApplicants(rLimit: MaybeRefOrGetter<number>) {
     console.debug(`Fetching all pending applicants for a ${getRoleByValue(maxRole)}`)
     // prettier-ignore
     return query(
-      PROFILES_COLLECTION_REF, 
+      USER_PROFILES_COLLECTION_REF, 
       where("requestedRole", "<=", maxRole),
       orderBy("requestedRole", "desc"),
       fbLimit(limit)
@@ -88,7 +88,7 @@ export function useLatestUsers(rLimit: MaybeRefOrGetter<number>) {
     console.debug(`Fetching latest registered users`)
     // prettier-ignore
     return query(
-      PROFILES_COLLECTION_REF, 
+      USER_PROFILES_COLLECTION_REF, 
       orderBy("creationDate", "desc"),
       fbLimit(limit)
     )

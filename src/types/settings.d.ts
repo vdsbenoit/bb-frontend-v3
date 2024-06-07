@@ -16,6 +16,7 @@ type Timing = {
   stop: string;
   name: string;
   isGame: boolean;
+  id: string;
 }
 export type AppConfig = {
   sectionTypes: string[];

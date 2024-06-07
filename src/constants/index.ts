@@ -4,8 +4,9 @@ import { collection, doc } from "firebase/firestore"
 // users
 
 export const DEFAULT_USER_ID = ""
-export const PROFILES_COLLECTION_NAME = "users"
-export const PROFILES_COLLECTION_REF = collection(db, PROFILES_COLLECTION_NAME)
+export const USER_PROFILES_COLLECTION_NAME = "users"
+export const USER_PROFILES_COLLECTION_REF = collection(db, USER_PROFILES_COLLECTION_NAME)
+export const USER_PROFILES_GAMES_KEY = "games"
 // prettier-ignore
 export const ROLES = {
   Anonyme:        0,  // Anynymous
@@ -61,4 +62,5 @@ export const APP_SETTINGS_DOC_REF = doc(APP_COLLECTION_REF, APP_SETTINGS_DOC_NAM
 export const APP_CONFIG_DOC_NAME = "configuration"
 export const APP_CONFIG_DOC_REF = doc(APP_COLLECTION_REF, APP_CONFIG_DOC_NAME)
 
-
+export const PLAYER_TIMINGS_KEY = "playerTimings"
+export const ATTENDANT_TIMINGS_KEY = "attendantTimings"

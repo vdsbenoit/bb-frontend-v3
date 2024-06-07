@@ -1,11 +1,11 @@
+import { DocumentReference } from "firebase/firestore"
 import { Ref } from "vue"
-import { VueFirestoreDocumentData} from "vuefire"
+import { VueFirestoreDocumentData } from "vuefire"
 
 export type UserProfile = {
   creationDate: Timestamp
   email: string
   name: string
-  team: string
   role: number
   hasDoneOnboarding: boolean
   requestedRole?: number
@@ -14,8 +14,11 @@ export type UserProfile = {
   rejectionReason?: string
   sectionId: string
   sectionName?: string
-  morningGame?: string
-  afternoonGame?: string
+  team?: string
+  games?: {
+    game: DocumentReference
+    timingId: sting
+  }[]
   settings?: any
 }
 

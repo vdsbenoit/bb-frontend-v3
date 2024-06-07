@@ -2,7 +2,7 @@ import { firebaseConfig } from './firebaseConfig';
 import { initializeApp } from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
-import { arrayRemove, arrayUnion, doc, getFirestore, increment, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, getFirestore, increment, updateDoc, writeBatch } from "firebase/firestore";
 import {
   getAuth,
   signOut,
@@ -14,8 +14,17 @@ import {
 } from "firebase/auth";
 
 export const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 const auth = getAuth(app);
+
+
+/**
+ * A helper function that generates a random Firestore ID
+ * This function is used when you execute `insert` without specifying an ID
+ */
+export function generateRandomId() {
+  return doc(collection(db, "random")).id;
+}
 
 /**
  *
@@ -95,5 +104,16 @@ export const incrementDocField = async (collection: string, docId: string, key: 
   const docRef = doc(db, collection, docId);
   return updateDoc(docRef, { [key]: increment(value) });
 }
+export const updateFieldInCollection = async (collectionName: string, fieldKey: string, replacementValue: any) => {
+  const collectionRef = collection(db, collectionName);
+  const snapshot = await getDocs(collectionRef);
 
-export { db };
+  const batch = writeBatch(db);
+
+  snapshot.forEach((document) => {
+    const docRef = doc(db, collectionName, document.id);
+    batch.update(docRef, { [fieldKey]: replacementValue });
+  });
+
+  return await batch.commit()
+}

@@ -1,15 +1,7 @@
-import {  collection, doc } from "firebase/firestore";
 import { Magnetar, PluginFirestore, PluginVue3, logger } from "magnetar";
-import { db } from './firebase'
+import { db, generateRandomId } from './firebase';
 
 
-/**
- * A helper function that generates a random Firestore ID
- * This function is used when you execute `insert` without specifying an ID
- */
-function generateRandomId() {
-  return doc(collection(db, "random")).id;
-}
 
 const remote = PluginFirestore.CreatePlugin({ db })
 const local = PluginVue3.CreatePlugin({ generateRandomId })

@@ -1,12 +1,12 @@
-import { db } from "@/services/firebase"
-import { Timestamp } from "@firebase/firestore"
-import { deleteUser } from "firebase/auth"
+import { db } from "@/services/firebase";
+import { Timestamp } from "@firebase/firestore";
+import { deleteUser } from "firebase/auth";
 // prettier-ignore
-import { DEFAULT_SECTION_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID, PROFILES_COLLECTION_NAME, PROFILES_COLLECTION_REF, ROLES } from "@/constants";
-import { UserProfile } from "@/types"
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
-import { MaybeRefOrGetter, toValue } from "vue"
-import { useFirebaseAuth } from "vuefire"
+import { DEFAULT_SECTION_ID, DEFAULT_USER_ID, ROLES, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_COLLECTION_REF } from "@/constants";
+import { UserProfile } from "@/types";
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { MaybeRefOrGetter, toValue } from "vue";
+import { useFirebaseAuth } from "vuefire";
 
 // getters
 
@@ -24,7 +24,7 @@ export function getUserName(rProfile: MaybeRefOrGetter<UserProfile>) {
 }
 export async function getUserProfile(uid: string): Promise<UserProfile> {
   if (uid === DEFAULT_USER_ID) throw Error("User id is the default value")
-  const docSnap = await getDoc(doc(PROFILES_COLLECTION_REF, uid))
+  const docSnap = await getDoc(doc(USER_PROFILES_COLLECTION_REF, uid))
   if (docSnap.exists()) return docSnap.data() as UserProfile
   else throw Error(`User profile not found for id ${uid}`)
 }
@@ -36,22 +36,21 @@ export async function createUserProfile(uid: string, email: string) {
     creationDate: Timestamp.now(),
     email,
     name: "",
-    team: DEFAULT_TEAM_ID,
     sectionId: DEFAULT_SECTION_ID,
     role: ROLES.Newbie,
     hasDoneOnboarding: false
   }
-  const docRef = doc(PROFILES_COLLECTION_REF, uid)
+  const docRef = doc(USER_PROFILES_COLLECTION_REF, uid)
   return setDoc(docRef, newProfile).then(() => console.debug(`Created new user profile : ${uid}`))
 }
 
 export async function updateUserProfile(uid: string, profileData: any) {
-  const dbRef = doc(db, PROFILES_COLLECTION_NAME, uid)
+  const dbRef = doc(db, USER_PROFILES_COLLECTION_NAME, uid)
   return updateDoc(dbRef, profileData).then(() => console.debug(`User profile updated for ${uid}`))
 }
 
 export async function removeAccount(uid: string) {
-  const dbRef = doc(db, PROFILES_COLLECTION_NAME, uid)
+  const dbRef = doc(db, USER_PROFILES_COLLECTION_NAME, uid)
   const auth = useFirebaseAuth()
   if (!auth) throw Error("removeAccount() can only run on client side")
   const user = auth.currentUser
