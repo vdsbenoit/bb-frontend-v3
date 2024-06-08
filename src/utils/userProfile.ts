@@ -22,11 +22,11 @@ export function getUserName(rProfile: MaybeRefOrGetter<UserProfile>) {
   if (profile.name) return profile.name
   return profile.email
 }
-export async function getUserProfile(uid: string): Promise<UserProfile> {
+export async function getUserProfile(uid: string): Promise<UserProfile | undefined> {
   if (uid === DEFAULT_USER_ID) throw Error("User id is the default value")
   const docSnap = await getDoc(doc(USER_PROFILES_COLLECTION_REF, uid))
   if (docSnap.exists()) return docSnap.data() as UserProfile
-  else throw Error(`User profile not found for id ${uid}`)
+  return undefined
 }
 
 // Setters

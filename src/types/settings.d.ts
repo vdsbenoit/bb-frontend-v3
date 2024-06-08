@@ -6,7 +6,7 @@ export type AppSettings = {
   canSetScores: boolean;
   canSetAnyScores: boolean;
   leaderRegistration: boolean; // true when the leader can register to games
-  showRankingToAll: boolean;
+  isRankingPublic: boolean;
   showGameAvailabilities: boolean;
 }
 export type RefAppSettings = Ref<VueFirestoreDocumentData<AppSettings> | undefined>

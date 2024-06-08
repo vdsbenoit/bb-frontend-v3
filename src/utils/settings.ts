@@ -2,7 +2,15 @@
 import { APP_COLLECTION_NAME, APP_CONFIG_DOC_NAME, APP_CONFIG_DOC_REF, APP_SETTINGS_DOC_REF, ATTENDANT_TIMINGS_KEY, GAMES_COLLECTION_NAME, PLAYER_TIMINGS_KEY, USER_PROFILES_COLLECTION_NAME, USER_PROFILES_GAMES_KEY } from "@/constants";
 import { addToDocArray, generateRandomId, removeFromDocArray, updateFieldInCollection } from "@/services/firebase";
 import { Timing } from "@/types";
-import { updateDoc } from "firebase/firestore";
+import { getDoc, updateDoc } from "firebase/firestore";
+
+// Getters
+
+export async function isRankingPublic(): Promise<boolean> {
+  const docSnap = await getDoc(APP_SETTINGS_DOC_REF)
+  if (docSnap.exists()) return docSnap.data().isRankingPublic
+  return false
+}
 
 // Setters
 

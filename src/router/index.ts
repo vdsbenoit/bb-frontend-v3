@@ -1,13 +1,14 @@
-import { toastPopup } from './../services/popup';
-import { isRankingPublic } from './../services/settings';
-import { ROLES, getRoleByValue } from './../services/users';
-import { createRouter, createWebHistory } from '@ionic/vue-router';
-import { RouteRecordRaw } from 'vue-router';
-import { useAuthStore } from "@/services/users";
-import HomePageVue from '../views/HomePage.vue';
-import GuestHomePageVue from '../views/GuestHomePage.vue';
-import Nprogress from 'nprogress';
+import { ROLES } from '@/constants';
+import { isRankingPublic } from '@/utils/settings';
+import { getRoleByValue, getUserProfile } from '@/utils/userProfile';
 import OnboardingPage from '@/views/OnboardingPage.vue';
+import { createRouter, createWebHistory } from '@ionic/vue-router';
+import Nprogress from 'nprogress';
+import { RouteRecordRaw } from 'vue-router';
+import { getCurrentUser } from 'vuefire';
+import GuestHomePageVue from '../views/GuestHomePage.vue';
+import HomePageVue from '../views/HomePage.vue';
+import { toastPopup } from './../services/popup';
 
 const routes: Array<RouteRecordRaw> = [
   { 
@@ -157,45 +158,50 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // If this isn't an initial page load.
-  if (to.name) {
-    // Start the route progress bar.
-    Nprogress.start()
+  // If this isn't an initial page load, start the route progress bar.
+  if (to.name) Nprogress.start()
+  if (!to.meta.minimumRole) return true
+  if (to.meta.minimumRole === ROLES.Anonyme) return true
+  const currentUser = await getCurrentUser()
+  if(!currentUser) {
+    if (to.name === "ranking" && await isRankingPublic()) return true
+    toastPopup("Tu dois être connecté pour accéder à cette page");
+    return {
+      path: '/guest',
+      query: {
+        // we keep the current path in the query so we can
+        // redirect to it after login with `router.push(route.query.redirect || '/')`
+        redirect: to.fullPath
+      },
+    }
   }
-  const user = useAuthStore();
-  if (user.isLoggedIn) {
-    if (to.name === "guest") return next('/home');
-    if (to.name === "login"){
-      toastPopup("Tu es déjà connecté");
+  if (to.name === "guest") return '/home'
+  if (to.name === "login"){
+    toastPopup("Tu es déjà connecté");
+    return '/home'
+  }
+  if (to.name === "ranking" && await isRankingPublic()) return true
+  const userProfile = await getUserProfile(currentUser.uid)
+  if (!userProfile) {
+    toastPopup("Nous n'avons pas retrouvé ton profile dans la base de données")
+    console.error("Could not find user profile in the db")
+    return false
+  }
+  if (to.name === "onboarding"){
+    if (userProfile.hasDoneOnboarding) {
+      toastPopup("Tu as déjà fait l'onboarding");
       return next('/home');
     }
-    if (to.name === "ranking" && isRankingPublic()) return next();
-    if (user.profile.role === -1) await user.forceFetchCurrentUserProfile();
-    if (to.name === "onboarding"){
-      if (user.profile.hasDoneOnboarding) {
-        toastPopup("Tu as déjà fait l'onboarding");
-        return next('/home');
-      }
-    }
-    if (to.meta.minimumRole){
-      if (!user.profile.hasDoneOnboarding && to.name !== "onboarding" && to.name !== "myProfile") {
-        console.log("User is newbie, redirecting to onboarding instead of ", to.name);
-        return next('/onboarding');
-      }
-      if (user.profile.role >= +to.meta.minimumRole) return next();
-      else {
-        toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(user.profile.role)})`);
-        return next('/home');
-      }
-    } else return next();
   }
+  if (!userProfile.hasDoneOnboarding && to.name !== "onboarding" && to.name !== "myProfile") {
+    console.log("User is newbie, redirecting to onboarding instead of ", to.name);
+    return '/onboarding'
+  }
+  if (userProfile.role >= +to.meta.minimumRole) return true
   else {
-    if (!to.meta.minimumRole) return next();
-    if(to.meta.minimumRole === ROLES.Anonyme) return next();
-    if (to.name === "ranking" && isRankingPublic()) return next(); // this does not work because settings are loaded only when logged in
-    toastPopup("Tu dois être connecté pour accéder à cette page");
-    return next('/guest');
-  }
+    toastPopup(`Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} avec ton role (${getRoleByValue(userProfile.role)})`);
+    return false
+  }  
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

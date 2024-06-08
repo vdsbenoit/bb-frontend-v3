@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router';
 import './registerServiceWorker';
 import { IonicVue } from '@ionic/vue';
-import { VueFire, VueFireAuth } from 'vuefire'
+import { VueFire, VueFireAuth, globalFirestoreOptions } from 'vuefire'
 import { app as firebaseApp } from './services/firebase'
 
 /* Core CSS required for Ionic components to work properly */
@@ -28,34 +28,23 @@ import './theme/variables.css';
 // Above the createApp() line
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 
-import { createPinia } from "pinia";
-import { useAuthStore } from "./services/users";
-
 import Nprogress from 'nprogress';
 
 
 const app = createApp(App)
   .use(IonicVue)
-  .use(createPinia());
-
-app.use(VueFire, {
+  .use(VueFire, {
   firebaseApp,
   modules: [VueFireAuth()],
 })
-  
-const store = useAuthStore();
+globalFirestoreOptions.maxRefDepth = 1
 
-store.initializeAuthListener().then(() => {
-  // initializing the router after Pinia introduce this bug https://stackoverflow.com/questions/77456631/why-cant-i-see-pinia-in-vue-devtools
-  // however, this is necesseary otherwise the router rules do not work (they need some info from the pinia store)
-  //fixme
-  app.use(router);
-  router.isReady().then(() => {
-    app.mount('#app');
-  });
-});
+app.use(router)
+router.isReady().then(() => {
+  app.mount('#app')
+})
 
 // Call the element loader after the platform has been bootstrapped
 defineCustomElements(window);
 
-Nprogress.configure({ parent: '#app' });
+Nprogress.configure({ parent: '#app' })
