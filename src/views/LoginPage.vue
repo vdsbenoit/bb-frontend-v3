@@ -93,12 +93,12 @@ const sendEmail = async () => {
 
 const showPrivacyNotice = () => {
   const privacyNotice = `
-  Pour le bon fonctionnement de l'application, des données liées à utilisateur sont enregistrées telles que son nom, 
-  son totem, le nom de sa section, la ville de sa section et son adresse email.<br/><br/>
+  Pour le bon fonctionnement de l'application, des données liées à l'utilisateur sont enregistrées telles que son nom, 
+  le nom de sa section, la ville de sa section et son adresse email.<br/><br/>
   Ces données sont partagées à l'application par l'utilisateur de manière volontaire. 
   A tout moment, l'utilisateur peut supprimer son profil ainsi que toutes les données qui y sont liées. 
   Les données des utilisateurs sont effacées chaque année.<br/><br/>
-  Les utilisateurs ne peuvent voir que le totem, le nom et la section des autres utilisateurs. 
+  Les utilisateurs ne peuvent voir que le nom et la section des autres utilisateurs. 
   Seuls les organisateurs & administrateurs de l'application peuvent voir les profils des autres utilisateurs.<br/><br/>
   La base de donnée est localisée en Europe, sur le serveur europe-west3 appartenant à Google et situé à Francfort. 
   Cette application a été développée dans un but non-commercial. Aucune donnée n'est revendue à des tiers.<br/><br/>
