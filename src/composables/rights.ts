@@ -1,7 +1,7 @@
 import { useCurrentUserProfile } from "@/composables/userProfile";
 import { ROLES } from '@/constants';
 import { RefGame } from "@/types";
-import { computed, ref, watchEffect } from "vue";
+import { computed } from "vue";
 import { useAppSettings } from "./settings";
 
 export function useCanEditScores(rGame: RefGame) {
@@ -62,24 +62,18 @@ export function useCanRegister() {
 
   return computed(() => {
     if (!currentUserProfile.value) {
-      return {
-        result : false,
-        reason : "User cannot register to a game. User is not authenticated"
-      }
+      console.debug("User cannot register to a game. User is not authenticated")
+      return false
     }
     if (currentUserProfile.value.role == ROLES.Animateur || currentUserProfile.value.role == ROLES.Chef) {
-      return {
-        result: false,
-        reason: `User  ${currentUserProfile.value.id} cannot register to a game. Insufficient role`
-      }
+      console.debug(`User  ${currentUserProfile.value.id} cannot register to a game. Insufficient role`)
+      return false
     }
     if (!appSettings.value?.leaderRegistration) {
-      return {
-        result: false,
-        reason: `Leader registration is currently closed`
-      }
+      console.debug(`Leader registration is currently closed`)
+      return false
     }
-    return { result: true, reason: "" }
+    return true
   })
 }
 
@@ -89,31 +83,24 @@ export function useCanRegisterSomeone() {
 
   return computed(() => {
     if (!currentUserProfile.value) {
-      return {
-        result: false,
-        reason: "The user cannot register someone to a game. The user is not authenticated"
-      }
+      console.debug("The user cannot register someone to a game. The user is not authenticated")
+      return false
     }
     if (currentUserProfile.value.role >= ROLES.Organisateur) {
-      return { result: true, reason: "" }
+      return true
     }
     if (currentUserProfile.value.role < ROLES.Chef) {
-      return {
-        result: false,
-        reason: `User  ${currentUserProfile.value.id} cannot register someone to a game. Insufficient role`
-      }
+      console.debug(`User ${currentUserProfile.value.id} cannot register someone to a game. Insufficient role`)
+      return false
     }
     if (!appSettings.value?.leaderRegistration) {
-      return {
-        result: false,
-        reason: `Leader registration is currently closed`
-      }
+      console.debug(`Leader registration is currently closed`)
+      return false
     }
-    return { result: true, reason: "" }
+    return true
   })
 
 }
-
 export function useCanEditGames(){
   const currentUserProfile = useCurrentUserProfile()
   return computed(() => {
