@@ -29,7 +29,5 @@ export const resetMatchScore = async (matchId: string, reporterUid: string) => {
 
 export const setMatchNoScores = async (matchId: string, noScores: boolean) => {
   const dbRef = doc(MATCHES_COLLECTION_REF, matchId)
-  return updateDoc(dbRef, { noScores }).then(() =>
-    console.debug(`Scores have been ${noScores ? "disabled" : "enabled"} on match ${matchId}`)
-  )
+  return updateDoc(dbRef, { noScores })
 }

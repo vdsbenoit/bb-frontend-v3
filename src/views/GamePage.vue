@@ -11,7 +11,7 @@
         <ion-text color="error">{{ errorLoadingGame.message }}</ion-text>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
-      <div v-else-if="!isGame" class="not-found">
+      <div v-else-if="!game" class="not-found">
         <strong class="capitalize">Nous n'avons pas trouvé cette épreuve...</strong>
         <p>Retour à <a @click="router.back()">la page précédente</a></p>
       </div>
@@ -19,15 +19,13 @@
         <ion-grid class="ion-padding-horizontal ion-padding-top">
           <ion-row class="ion-align-items-center">
             <ion-col class="ion-padding-start">
-              <ion-card-subtitle>Circuit {{ game?.circuit }}</ion-card-subtitle>
-              <h1 v-if="game?.name" class="ion-no-margin" style="font-weight: bold">{{ game.name }}</h1>
-              <ion-spinner v-else></ion-spinner>
+              <ion-card-subtitle>Circuit {{ game.circuit }}</ion-card-subtitle>
+              <h1 class="ion-no-margin" style="font-weight: bold">{{ game.name }}</h1>
             </ion-col>
             <ion-col class="numberCircle ion-padding-end">
-              <span v-if="gameId">
+              <span>
                 {{ gameId }}
               </span>
-              <ion-spinner v-else></ion-spinner>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -36,69 +34,45 @@
             <ion-card-title>Responsables</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list lines="none" class="ion-no-margin ion-no-padding">
-              <ion-text color="primary"><h2>Matin</h2></ion-text>
-              <ion-spinner v-if="isLoadingMorningLeaders" class="ion-margin-start"></ion-spinner>
-              <span class="ion-padding-start" v-else-if="leaders.morning.length < 1">Pas encore de responsable inscrit</span>
-              <ion-item v-else v-for="leader in leaders.morning" :key="leader.uid" @click="goToProfile(leader.uid)">
-                <ion-label class="ion-text-wrap">
-                  <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
-                  <ion-text color="medium" v-if="leader.section">&nbsp;({{ leader.section }})</ion-text>
+            <ion-list v-for="timing in timings" :key="timing.id" lines="none" class="ion-no-margin ion-no-padding">
+              <ion-text color="primary"><h2>{{ timing.name }}</h2></ion-text>
+              <span v-if="game.attendants[timing.id].length < 1" class="ion-padding-start">Pas encore de responsable inscrit</span>
+              <ion-item v-else v-for="attendant in game.attendants[timing.id]" :key="attendant.id">
+                <ion-label class="ion-text-wrap" @click="goToProfile(attendant.id)">
+                  <ion-text style="font-weight: bold">{{ attendant.name }}</ion-text>
+                  <ion-text color="medium">&nbsp;({{ attendant.sectionName ?? "" }})</ion-text>
                 </ion-label>
-                <ion-icon v-if="editMode" :ios="closeOutline" :md="closeSharp" @click="removeLeader(leader.uid, 'morning')"></ion-icon>
+                <ion-icon v-if="edit.isOn" :ios="closeOutline" :md="closeSharp" @click="removeAttendant(gameId, attendant.id, timing)"></ion-icon>
               </ion-item>
             </ion-list>
-            <ion-list lines="none" class="ion-no-margin ion-no-padding">
-              <ion-text color="primary"><h2>Après-midi</h2></ion-text>
-              <ion-spinner v-if="isLoadingAfternoonLeaders" class="ion-margin-start"></ion-spinner>
-              <span class="ion-padding-start" v-else-if="leaders.afternoon.length < 1">Pas encore de responsable inscrit</span>
-              <ion-item v-else v-for="leader in leaders.afternoon" :key="leader.uid" @click="goToProfile(leader.uid)">
-                <ion-label class="ion-text-wrap">
-                  <ion-text style="font-weight: bold">{{ leader.name }}</ion-text>
-                  <ion-text color="medium" v-if="leader.section">&nbsp;({{ leader.section }})</ion-text>
-                </ion-label>
-                <ion-icon v-if="editMode" :ios="closeOutline" :md="closeSharp" @click="removeLeader(leader.uid, 'afternoon')"></ion-icon>
-              </ion-item>
-            </ion-list>
-
             <ion-grid class="ion-margin-top">
               <ion-row>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister && !isMorningLeader">
-                  <ion-button @click="register('morning')" expand="block" color="primary" :disabled="isRegistering">
-                    <ion-spinner v-if="isRegistering"></ion-spinner>
-                    <span v-else>Je m'inscris au matin</span>
-                    </ion-button>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister">
+                  <MyActionSheetButton expand="block" color="primary" action-sheet-header="M'inscrire" 
+                  :buttons="timings.map(timing => ({ text: timing.name, data: timing}))" :callback="register" :payload="{ targetUser: currentUser}">
+                    M'inscrire
+                  </MyActionSheetButton>
                 </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister && !isAfternoonLeader">
-                  <ion-button @click="register('afternoon')" expand="block" color="primary" :disabled="isRegistering">
-                    <ion-spinner v-if="isRegistering"></ion-spinner>
-                    <span v-else>Je m'inscris l'après-midi</span>
-                    </ion-button>
-                </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister && (isMorningLeader || isAfternoonLeader)">
-                  <ion-button @click="unRegister" expand="block" color="danger" :disabled="isUnregistering">
-                    <ion-spinner v-if="isUnregistering"></ion-spinner>
-                    <span v-else>Se désinscrire</span>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister && isUserRegisteredHere">
+                  <ion-button @click="unregister" expand="block" color="danger" action-sheet-header="Se désinscrire">
+                    Se désinscrire
                   </ion-button>
                 </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canEditLeaders">
-                  <ion-button v-if="editMode" @click="toggleLeadersEditMode" expand="block" color="medium" > Arrêter la modification </ion-button>
-                  <ion-button v-else @click="toggleLeadersEditMode" expand="block" color="tertiary" > Modifier les animateurs </ion-button>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canRegister.section || canRegister.anyone">
+                  <ion-button @click="toggleEditMode" expand="block" :color="edit.isOn ? 'medium' :  'tertiary'" >
+                    {{ edit.isOn ? "Arrêter la modification" : "Modifier les animateurs" }}
+                  </ion-button>
                 </ion-col>
                 <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="canEditGameSettings">
-                  <ion-button v-if="isTogglingNoScores" expand="block" color="medium" > 
-                    <ion-spinner></ion-spinner>
-                  </ion-button>
-                  <div v-else-if="game">
-                    <ion-button v-if="game.noScores" @click="toggleNoScores" expand="block" color="success" > Réactiver les scores </ion-button>
-                    <ion-button v-else @click="toggleNoScores" expand="block" color="danger" > Désactiver les scores </ion-button>
-                  </div>
+                  <ion-button v-if="isTogglingNoScores" expand="block" color="medium" ><ion-spinner></ion-spinner></ion-button>
+                  <ion-button v-else-if="game.noScores" @click="toggleNoScores" expand="block" color="success" > Réactiver les scores </ion-button>
+                  <ion-button v-else @click="toggleNoScores" expand="block" color="danger" > Désactiver les scores </ion-button>
                 </ion-col>
               </ion-row>
             </ion-grid>
           </ion-card-content>
         </ion-card>
-         <ion-card v-if="editMode">
+         <ion-card v-if="edit.isOn">
           <ion-card-header>
             <ion-card-title>Enregistrer un animateur</ion-card-title>
           </ion-card-header>
@@ -106,29 +80,24 @@
             <ion-grid class="">
               <ion-row>
                 <ion-col size="12" size-sm="6">
-                  <ion-select v-model="selectedLeaderSection" interface="popover" placeholder="Choisir section">
-                    <ion-select-option v-for="section in leaderSections" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
+                  <ion-spinner v-if="isLoadingAttendantSections"></ion-spinner>
+                  <ion-select v-else v-model="edit.selectedSectionId" placeholder="Choisir section" interface="alert">
+                    <ion-select-option v-for="section in attendantSections" :value="section.id" :key="section.id"> {{ section.name }} ({{ section.city }}) </ion-select-option>
                   </ion-select>
                 </ion-col>
-                <ion-col size="12" size-sm="6" v-if="selectedLeaderSection">
-                    <ion-spinner v-if="isLoadingLeaders"></ion-spinner>
-                    <ion-select v-else v-model="selectedLeaderId" placeholder="Choisir animateur" interface="popover">
-                      <ion-select-option color="dark" v-for="leader in sectionLeaders?.values()" :value="leader.uid" :key="leader.uid"> {{ currentUser.getName(leader.uid) }} </ion-select-option>
+                <ion-col size="12" size-sm="6" v-if="edit.selectedSectionId != DEFAULT_LEADER_SECTION_ID">
+                    <ion-spinner v-if="isLoadingAttendants"></ion-spinner>
+                    <ion-select v-else v-model="edit.selectedAttendant" placeholder="Choisir animateur" interface="alert">
+                      <ion-select-option color="dark" v-for="attendant in sectionAttendants" :value="attendant" :key="attendant.id"> {{ getUserName(attendant) }} </ion-select-option>
                     </ion-select>
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="selectedLeaderId">
-                  <ion-button @click="registerMorningLeader" expand="block" color="primary" :disabled="isRegistering">
-                    <ion-spinner v-if="isRegistering"></ion-spinner>
-                    <span v-else>Ajouter {{ currentUser.getName(selectedLeaderId) }} au matin </span>
-                  </ion-button>
-                </ion-col>
-                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="selectedLeaderId">
-                  <ion-button @click="registerAfternoonLeader" expand="block" color="primary" :disabled="isRegistering">                   
-                    <ion-spinner v-if="isRegistering"></ion-spinner>
-                    <span v-else>Ajouter {{ currentUser.getName(selectedLeaderId) }} l'après-midi </span>
-                   </ion-button>
+                <ion-col size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal" v-if="edit.selectedAttendant">
+                  <MyActionSheetButton expand="block" color="primary" action-sheet-header="Inscrire" 
+                  :buttons="timings.map(timing => ({ text: timing.name, data: timing}))" :callback="register" :payload="{ targetUser: edit.selectedAttendant }">
+                    Inscrire {{ getUserName(edit.selectedAttendant) }}
+                  </MyActionSheetButton>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -139,10 +108,13 @@
             <ion-card-title>Programme</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list v-if="matches && matches.size > 0">
-              <ion-item v-for="match in matches.values()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
+            <div v-if="isLoadingMatches" class="ion-text-center">
+                <ion-spinner></ion-spinner>
+              </div>
+            <ion-list v-else-if="matches && matches.length > 0">
+              <ion-item v-for="[i, match] in matches.entries()" :key="match.id" :routerLink="`/match/${match.id}`" class="item-no-padding">
                 <ion-label>
-                  <ion-text>⌚ {{ getSchedule(match.time - 1).start }} - {{ getSchedule(match.time - 1).stop }} : </ion-text>
+                  <ion-text>⌚ {{ timings[i].start }} - {{ timings[i].stop }} : </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[0] }}</ion-text>
                   <ion-text> vs </ion-text>
                   <ion-text color="primary" style="font-weight: bold">{{ match.player_ids[1] }}</ion-text>
@@ -150,12 +122,7 @@
                 <ion-badge slot="end" class="ion-no-margin" :color="match.draw ? 'warning' : 'success'" v-if="getWinner(match)">{{ getWinner(match) }}</ion-badge>
               </ion-item>
             </ion-list>
-            <div v-else>
-              <div v-if="isLoadingMatches" class="ion-text-center">
-                <ion-spinner></ion-spinner>
-              </div>
-              <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
-            </div>
+            <ion-list-header v-else><h2>Aucun duel trouvé</h2></ion-list-header>
           </ion-card-content>
         </ion-card>
       </div>
@@ -165,18 +132,20 @@
 
 <script setup lang="ts">
 import HeaderTemplate from "@/components/HeaderTemplate.vue";
+import MyActionSheetButton from "@/components/MyActionSheetButton.vue";
 import RefresherComponent from "@/components/RefresherComponent.vue";
-import { DEFAULT_GAME_ID, removeAfternoonLeader, removeMorningLeader, setAfternoonLeader, setGameNoScores, setMorningLeader, useGame } from "@/composables/games";
-import { useLeaderSection, useLeaderSections } from "@/composables/leaderSections";
+import { useGame } from "@/composables/games";
 import { useGameMatches } from "@/composables/matches";
-import { useCanRegister } from "@/composables/rights";
+import { useCanEditGames, useCanRegister } from "@/composables/rights";
 import { useAppConfig, useAppSettings } from "@/composables/settings";
-import { useCurrentUserProfile } from "@/composables/userProfile";
-import { getLeaderSections, streamLeaderSection } from "@/services/leaderSections";
-import { setMatchNoScores, streamGameMatches } from "@/services/matches";
-import { errorPopup, loadingPopup, toastPopup } from "@/services/popup";
-import { getSchedule, isLeaderRegistrationOpen } from "@/services/settings";
-import { ROLES } from "@/services/users";
+import { useCurrentUserProfile, useUsersFromSection } from "@/composables/userProfile";
+import { DEFAULT_GAME_ID, DEFAULT_LEADER_SECTION_ID, LEADER_SECTIONS_COLLECTION_REF, ROLES } from "@/constants";
+import { confirmPopup, toastPopup } from "@/services/popup";
+import { LeaderSection, Timing, VueFireUserProfile } from "@/types";
+import { addAttendant, removeAttendant, setGameNoScores } from "@/utils/game";
+import { setMatchNoScores } from "@/utils/match";
+import { canBeRegistered } from "@/utils/rights";
+import { getRoleByValue, getUserName } from "@/utils/userProfile";
 import {
   IonBadge,
   IonButton,
@@ -199,40 +168,47 @@ import {
 } from "@ionic/vue";
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useRouteParams } from "@vueuse/router";
-import { closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
-import { onMounted, watchEffect } from "vue";
+import { documentId, orderBy, query, where } from "firebase/firestore";
+import { closeOutline, closeSharp } from "ionicons/icons";
+import { onMounted, toValue } from "vue";
+import { useCollection } from "vuefire";
 
 // reactive data
 
-const editMode = ref(false);
-// store more information about the leaders than their IDs
-type leaderInfo = {
-  uid: string;
-  name: string | undefined;
-  section: string | undefined;
-};
-const leaders = reactive({
-  morning: [] as leaderInfo[],
-  afternoon: [] as leaderInfo[],
-});
-const isLoadingMorningLeaders = ref(false);
-const isLoadingAfternoonLeaders = ref(false);
-const isRegistering = ref(false);
-const isUnregistering = ref(false);
-const selectedLeaderSection = ref(-1);
-const selectedLeaderId = ref("");
 const isTogglingNoScores = ref(false);
+const edit = reactive({
+  isOn: false,
+  selectedSectionId: DEFAULT_LEADER_SECTION_ID,
+  selectedAttendant: undefined
+})
 
 // composables
 
 const router = useIonRouter();
-const gameId = useRouteParams('gameId', DEFAULT_GAME_ID, { transform: Number })
-const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(gameId);
+const gameId = useRouteParams('gameId', DEFAULT_GAME_ID)
 const currentUser = useCurrentUserProfile()
 const appSettings = useAppSettings()
 const appConfig = useAppConfig()
-const matches = useGameMatches(gameId)
-const { result: canRegister, reason: cannotRegisterReason } = useCanRegister()
+const { data: game, pending: isLoadingGame, error: errorLoadingGame } = useGame(gameId);
+const { data: matches, pending: isLoadingMatches, error: errorLoadingMatches } = useGameMatches(gameId)
+const canRegister = useCanRegister()
+const canEditGameSettings = useCanEditGames()
+const { data: attendantSections, pending: isLoadingAttendantSections } = useCollection<LeaderSection>(computed(() => {
+  console.debug(`Fetching leader sections`)
+  const queryParams = []
+  // don't load sections if not in edit mode
+  if (!edit.isOn || !currentUser.value) return null
+  // filter to current user section only
+  if (currentUser.value.role === ROLES.Chef ) {
+    console.debug(`Filtering to section ${currentUser.value.sectionId}`)
+    queryParams.push(where(documentId(), "==", currentUser.value.sectionId))
+  }
+  console.debug(`Excluding the staff group`)
+  queryParams.push(where("isStaff", "!=", true))
+  queryParams.push(orderBy("name"))
+  return query(LEADER_SECTIONS_COLLECTION_REF, ...queryParams)
+}))
+const { data: sectionAttendants, pending: isLoadingAttendants } = useUsersFromSection(edit.selectedSectionId)
 
 // lifecycle hooks
 
@@ -246,161 +222,143 @@ if (gameId.value === DEFAULT_GAME_ID) {
 
 // Computed
 
-const isGame = computed(() => !errorLoadingGame && game.value && game.value.id)
-const timings = computed(() => {
-  return appConfig.value?.playerTimings ?? []
+const timings = computed(() => (appConfig.value?.playerTimings ?? []))
+const isUserRegisteredHere = computed(() => {
+  if (!currentUser.value) return false
+  if (!currentUser.value.games) return false
+  return Object.values(currentUser.value.games).map(game => game.id).includes(gameId.value)
 })
-const leaderSections = computed(() => {
-  if (!editMode.value || !currentUser.value) return []; // don't load sections if not in edit mode
-  if (currentUser.value.role === ROLES.Chef ) return [ useLeaderSection(currentUser.value.sectionId) ]
-  if (currentUser.value.role > ROLES.Chef) return useLeaderSections(false)
-});
-const sectionLeaders = computed(() => {
-  return selectedLeaderSection.value ? currentUser.getSectionMembers(selectedLeaderSection.value) : undefined;
-});
-const isLoadingLeaders = computed(() => {
-  if (selectedLeaderSection.value && !sectionLeaders.value) return true;
-  return false;
-});
 const pageTitle = computed(() => {
-  if (isGame.value) return `Épreuve ${gameId.value}`;
-  if (isLoadingGame.value) return "Chargement";
-  return "Épreuve inconnue";
-});
-const canEditLeaders = computed(() => {
-  return currentUser.value.role >= ROLES.Chef;
-});
-const canEditGameSettings = computed(() => {
-  return currentUser.value.role >= ROLES.Administrateur;
-});
-const editIcon = computed(() => {
-  return editMode.value ? { ios: closeOutline, md: closeSharp } : { ios: pencilOutline, md: pencilSharp };
-});
-const isMorningLeader = computed(() => {
-  return game.value?.morningLeaders.includes(currentUser.value.uid) ?? false
-});
-const isAfternoonLeader = computed(() => {
-  return game.value?.afternoonLeaders.includes(currentUser.value.uid) ?? false
-});
-
-// Watchers
-
-// async update morning leaders information
-watchEffect(async () => {
-  if (!isGame.value) return; // do not run this watcher if game is not initialized
-  const newLeaderIds = game.value?.morningLeaders ?? [];
-  isLoadingMorningLeaders.value = true;
-  const newLeaders = await loadLeaderInfo(newLeaderIds);
-  leaders.morning = newLeaders;
-  isLoadingMorningLeaders.value = false;
-  console.log("Morning leaders info updated", newLeaders);
-});
-// async update morning leaders information
-watchEffect(async () => {
-  if (!isGame.value) return; // do not run this watcher if game is not initialized
-  const newLeaderIds = game.value?.afternoonLeaders ?? [];
-  isLoadingAfternoonLeaders.value = true;
-  const newLeaders = await loadLeaderInfo(newLeaderIds);
-  leaders.afternoon = newLeaders;
-  isLoadingAfternoonLeaders.value = false;
-  console.log("Afternoon leaders info updated", newLeaders);
-});
+  if (game.value) return `Épreuve ${gameId.value}`
+  if (isLoadingGame.value) return "Chargement"
+  return "Épreuve inconnue"
+})
 
 // Methods
 
-const loadLeaderInfo = async (newLeaderIds: string[]) => {
-  const leaderInfo = [] as leaderInfo[];
-  await Promise.all(
-    newLeaderIds.map(async (leaderId) => {
-      await currentUser.asyncFetchProfile(leaderId);
-      const section = currentUser.getProfile(leaderId).sectionName;
-      const name = currentUser.getName(leaderId);
-      leaderInfo.push({ uid: leaderId, name, section });
-    })
-  );
-  return leaderInfo;
-};
-const register = async (timeSlot: string) => {
-  isRegistering.value = true;
+/**
+ * This function is passed as a callback func of the action sheet button
+ * @param result Action sheet result. The selection the action sheet is stored in result.data
+ * @param payload Payload passed to the action sheet 
+ */
+const register = async (result: any, payload: any) => {
+  const _timing = result.data as Timing
+  const _targetUser = toValue(payload.targetUser) as VueFireUserProfile
+  const _currentUser = toValue(currentUser)
+  const _game = toValue(game)
+
+  // arguments checks
+  if (!_game) throw Error("Undefined game")
+  if (!_currentUser) throw Error("User is not connected")
+  if (!_targetUser) throw Error("Undefined target user")
+  if (!appSettings.value) throw Error("Undefined appSettings")
+  if (!appConfig.value) throw Error("Undefined appConfig")
+
+  const maxGameLeaders = appSettings.value.maxGameLeaders
+  const isCurrentUser = _targetUser.id === _currentUser.id
+  const currentAttendants = _game.attendants[_timing.id].map(attendant => attendant.id)
+
   try {
-    switch (timeSlot) {
-      case "morning":
-        await setMorningLeader(game);
-        break;
-      case "afternoon":
-        await setAfternoonLeader(game);
-        break;
-      default:
-        new Error(`Invalid time slot ${timeSlot}`);
-        break;
+    // applicability checks
+    if (
+      !isCurrentUser &&
+      !canRegister.section
+    ) throw new Error(`
+      Tu n'as pas le droit d'inscrire quelqu'un d'autre à une épreuve. 
+      Le rôle minimum pour inscrire quelqu'un est ${getRoleByValue(ROLES.Chef)}
+    `)
+    if (
+      _targetUser.sectionId != _currentUser.sectionId &&
+      !canRegister.anyone
+    ) throw new Error(`
+      L'utilisateur ${getUserName(_targetUser)} ne fait pas partie de ta section. 
+      Seuls les organisateurs peuvent assigner n'importe qui à une épreuve
+    `)
+    if (!canBeRegistered(_targetUser)) throw new Error(`
+      Le rôle de ${getUserName(_targetUser)} est ${getRoleByValue(_targetUser.role)}. 
+      Seuls les ${getRoleByValue(ROLES.Animateur)} et les ${getRoleByValue(ROLES.Chef)} peuvent être inscrit à une épreuve
+    `)
+    if (currentAttendants.includes(_targetUser.id)) throw Error(
+      isCurrentUser
+        ? `Tu es déjà inscrit.e à l'épreuve ${_game.id} au timing ${_timing.name}`
+        : `${getUserName(_targetUser)} est déjà inscrit.e au timing ${_timing.name} de l'épreuve ${_game.id}`
+    )
+    if (currentAttendants.length >= maxGameLeaders) throw new Error(`
+      Le nombre maximum d'animateurs a été atteint au timing ${_timing.name} de l'épreuve ${_game.id}
+    `)
+    // if target user is busy at target timing
+    if (_targetUser.games && _timing.id in _targetUser.games && _targetUser.games[_timing.id].id != DEFAULT_GAME_ID) {
+      const currentGameId = _targetUser.games[_timing.id].id
+      const message =
+        isCurrentUser
+          ? `Tu es déjà inscrit.e à l'épreuve ${currentGameId} au timing ${_timing.name}. Veux-tu te désincrire ?`
+          : `${getUserName(_targetUser)} est déjà inscrit.e à l'épreuve ${currentGameId} au timing ${_timing.name}. Le/la désincrire ?`
+      confirmPopup(
+        message,
+        async () => {
+          await removeAttendant(currentGameId, _targetUser.id, _timing).then(() => {
+            toastPopup(`Désinscription à l'épreuve ${currentGameId} effectuée`)
+          })
+          await addAttendant(_game.id, _targetUser.id, _timing).then(() => {
+            toastPopup("Responsables mis à jour")
+          })
+        },
+        () => toastPopup("Enregistrement annulé")
+      )
+    } else {
+      await addAttendant(_game.id, _targetUser.id, _timing).then(() => {
+        toastPopup("Responsables mis à jour")
+      })
     }
-  } catch (error: any) {
-    errorPopup(error.message);
-    console.error(error);
+  } catch(e: any){
+    toastPopup(e.message)
+    console.error(e)
   }
-  isRegistering.value = false;
-};
-const registerMorningLeader = async () => {
-  isRegistering.value = true;
-  if (!currentUser.value)
-  // prettier-ignore
-  if (currentUser.value?.uid !== selectedLeaderId.value && currentUser.value?.role < ROLES.Chef) throw new Error(
-    `Tu n'as pas le droit d'assigner des gens à un jeu. `+
-    `Le rôle minimum pour inscrire quelqu'un à une épreuve est ${getRoleByValue(5)}`
-  )
-  await setMorningLeader(game, selectedLeaderId.value).catch((error:any) => {
-    errorPopup(error.message); 
-  }); 
-  isRegistering.value = false;
 }
-const registerAfternoonLeader = async () => {
-  isRegistering.value = true;
-  await setAfternoonLeader(game, selectedLeaderId.value).catch((error:any) => {
-    errorPopup(error.message); 
-  }); 
-  isRegistering.value = false;
+
+/**
+ * This function is passed as a callback func of the action sheet button
+ * @param result Action sheet result. The selection the action sheet is stored in result.data
+ * @param payload Payload passed to the action sheet 
+ */
+const unregister = async (result: any, payload: any) => {
+  const _timing = result.data as Timing
+  const _targetUser = toValue(payload.targetUser) as VueFireUserProfile
+  const _game = toValue(game)
+
+  // arguments checks
+  if (!_game) throw Error("Undefined game")
+  if (!_targetUser) throw Error("Undefined target user")
+
+  await removeAttendant(_game.id, _targetUser.id, _timing).then(() => {
+    toastPopup(`Désinscription à l'épreuve ${_game.id} effectuée`)
+  })
 }
-const unRegister = async () => {
-  isUnregistering.value = true;
-  let morningPromise;
-  let afternoonPromise;
-  try {
-    if (game.value?.morningLeaders.includes(currentUser.uid)) morningPromise = removeMorningLeader(gameId.value);
-    if (game.value?.afternoonLeaders.includes(currentUser.uid)) afternoonPromise = removeAfternoonLeader(gameId.value);
-    await Promise.all([morningPromise, afternoonPromise]);
-  } catch (error: any) {
-    errorPopup(`Nous n'avons pas pu te désincrire : ${error.message}`);
-  }
-  isUnregistering.value = false;
-};
-const removeLeader = async (uid: string, schedule: string) => {
-  const loading = await loadingPopup();
-  try {
-    if (schedule == "morning") await removeMorningLeader(gameId.value, uid);
-    if (schedule == "afternoon") await removeAfternoonLeader(gameId.value, uid);
-  } catch (error: any) {
-    errorPopup(`Nous n'avons pas pu désinscrire l'utilisateur : ${error.message}`);
-  }
-  loading.dismiss();
-};
-const getWinner = (match: any) => {
-  if (match.winner) return match.winner;
-  if (match.draw === true) return "Égalité";
-  return "";
-};
-const toggleLeadersEditMode = () => {
-  editMode.value = !editMode.value;
-};
+
+const toggleEditMode = () => {
+  edit.isOn = !edit.isOn
+}
+
 const goToProfile = (uid: string) => {
-  if (!editMode) router.push(`/profile/${uid}`);
-};
+  if (!edit.isOn) router.push(`/profile/${uid}`);
+}
+
 const toggleNoScores = async () => {
+  if (!game.value) {
+    toastPopup("Game is undefined")
+    console.error("Cannot toggle no scores, game is undefined", game)
+    return
+  }
   isTogglingNoScores.value = true;
-  const previousValue = game.value?.noScores;
+  const newValue = !!game.value.noScores
   const promises = [];
-  promises.push(setGameNoScores(gameId.value, !previousValue));
-  game.value?.matches.forEach(matchId => promises.push(setMatchNoScores(matchId, !previousValue)));
-  await Promise.all(promises);
+  promises.push(setGameNoScores(gameId.value, newValue).then(() => {
+    toastPopup(`Les scores de l'épreuve ${gameId} ont été ${newValue ? "activés" : "désactivés"}`)
+  }))
+  game.value.matches.forEach(matchId => promises.push(setMatchNoScores(matchId, newValue)))
+  await Promise.all(promises).then(() =>
+    console.debug(`Les scores des matchs de l'épreuve ${gameId} ont été ${newValue ? "activés" : "désactivés"}`)
+  )
   isTogglingNoScores.value = false;
 };
 </script>

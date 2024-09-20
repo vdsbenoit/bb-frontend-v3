@@ -33,7 +33,7 @@ export const SECTIONS_COLLECTION_REF = collection(db, SECTIONS_COLLECTION_NAME)
 
 // leaderSections
 
-export const DEFAULT_LEADER_SECTION_ID = ""
+export const DEFAULT_LEADER_SECTION_ID = DEFAULT_SECTION_ID
 export const LEADER_SECTIONS_COLLECTION_NAME = "leadersections"
 export const LEADER_SECTIONS_COLLECTION_REF = collection(db, LEADER_SECTIONS_COLLECTION_NAME)
 

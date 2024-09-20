@@ -80,7 +80,6 @@ import { setGameName } from "@/utils/game";
 import { IonBadge, IonButton, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonSelect, IonSelectOption, IonSpinner, IonText, isPlatform, useIonRouter } from "@ionic/vue";
 import { computed, ref } from "@vue/reactivity";
 import { arrowUpOutline, arrowUpSharp, checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from "ionicons/icons";
-import { watch } from "vue";
 
 // reactive data
 const editMode = ref(false);
@@ -103,11 +102,8 @@ const circuits = computed(() => {
   return appConfig.value.circuits
 });
 const pageTitle = computed(() => {
-  if (editMode.value) return `Édition des épreuves`;
+  if (editMode.value) return `Modification des épreuves`;
   return "Épreuves";
-});
-const editIcon = computed(() => {
-  return (editMode.value) ? closeSharp : pencilSharp
 });
 const gamesNotFound = computed(() => {
   if (errorLoadingGames) return true
