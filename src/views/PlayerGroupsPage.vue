@@ -133,7 +133,7 @@
                   <ion-spinner />
                 </div>
                 <div v-else-if="selectedGroup">
-                  <ion-list v-if="selectedGroup.teams.length > 0">
+                  <ion-list v-if="selectedGroup.teams && selectedGroup.teams.length > 0">
                     <ion-item
                       v-for="teamId in selectedGroup.teams"
                       :key="teamId"
