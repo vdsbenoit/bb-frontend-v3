@@ -1,9 +1,4 @@
 {
-  "github.copilot.chat.codeGeneration.instructions": [
-    {
-      "text": "This is a SPA PWA project. Use Vue 3 Composition API with TypeScript for the templating and the scripting. You can use VueUse utilities too. Use Ionic 6 for the UI."
-    }
-  ],
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
