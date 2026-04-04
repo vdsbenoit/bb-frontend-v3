@@ -469,7 +469,7 @@ const selectableRoles = computed(() => {
     Object.entries(USER_ROLES).filter(
       ([, value]) => (
         ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value)
-        && value <= (userProfile.value?.role ?? DEFAULT_USER_ROLE_VALUE)
+        && value <= (currentUserProfile.value?.role ?? DEFAULT_USER_ROLE_VALUE)
       ),
     ),
   )
