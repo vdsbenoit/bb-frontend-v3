@@ -13,6 +13,7 @@
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "deploy:login": "firebase login --reauth",
     "deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
