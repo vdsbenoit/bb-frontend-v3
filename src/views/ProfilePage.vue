@@ -387,7 +387,7 @@ import {
   USER_ROLES,
 } from '@/constants'
 import { addAttendant, removeAttendant } from '@/utils/game'
-import { confirmPopup, errorPopup, loadingPopup, toastPopup } from '@/utils/popup'
+import { confirmPopup, errorPopup, infoPopup, loadingPopup, toastPopup } from '@/utils/popup'
 import { getRoleByValue, removeFirebaseAccount, signOut, updateUserProfile } from '@/utils/userProfile'
 import {
   IonButton,
@@ -740,6 +740,7 @@ async function setRole() {
       groupId: DEFAULT_GROUP_ID,
       groupName: '',
     })
+    infoPopup('Tu dois à présent re-configurer la section de l\'utilisateur', 'Attention')
   } catch (error: any) {
     errorPopup(error.message, `Le rôle n'a pas pu être mis à jour`)
     resetFormData()
