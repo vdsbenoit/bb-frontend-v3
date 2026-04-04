@@ -31,6 +31,7 @@ export const GROUP_ROLES = {
   Erreur: -1, // Error
   Player: 2, // Player
   Attendant: 4, // Attendant
+  AttendantAndStaff: 5, // Attendant and Staff
   Staff: 6, // Staff
 }
 export const DEFAULT_GROUP_ROLE_VALUE = GROUP_ROLES.Erreur

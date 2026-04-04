@@ -36,12 +36,12 @@ export function useAttendantGroups(
     // To be used to return only the current user group
     if (toValue(rShowAllAttendantGroups)) {
       if (staffGroups === 'exclude') {
-        console.debug(`Excluding staff group in the query`)
+        console.debug(`Excluding staff groups in the query`)
         queryParams.push(where('role', '<', GROUP_ROLES.Staff))
       }
       if (staffGroups === 'only') {
-        console.debug(`Returning only staff group in the query`)
-        queryParams.push(where('role', '>=', GROUP_ROLES.Staff))
+        console.debug(`Returning only staff groups in the query`)
+        queryParams.push(where('role', '>=', GROUP_ROLES.AttendantAndStaff))
       } else {
         queryParams.push(where('role', '>=', GROUP_ROLES.Attendant))
       }
