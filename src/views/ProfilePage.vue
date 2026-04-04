@@ -412,13 +412,6 @@ import { checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutli
 import { computed, reactive, ref, watch, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 
-// Strip Erreur, Anonyme & Newbie from ROLES
-const selectableRoles = Object.fromEntries(
-  Object.entries(USER_ROLES).filter(
-    ([, value]) => ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value),
-  ),
-)
-
 // reactive form data
 const formData = reactive({
   name: {
@@ -470,6 +463,17 @@ const userId = computed(() => {
   return queryUserId.value === DEFAULT_USER_ID ? currentUserProfile.value.id : queryUserId.value
 })
 const userProfile = useUserProfile(userId)
+
+const selectableRoles = computed(() => {
+  return Object.fromEntries(
+    Object.entries(USER_ROLES).filter(
+      ([, value]) => (
+        ![USER_ROLES.Erreur, USER_ROLES.Anonyme, USER_ROLES.Newbie].includes(value)
+        && value <= (userProfile.value?.role ?? DEFAULT_USER_ROLE_VALUE)
+      ),
+    ),
+  )
+})
 
 // Checks & rights
 const isProfile = computed(() => {
