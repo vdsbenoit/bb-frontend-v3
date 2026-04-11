@@ -228,11 +228,11 @@ watch([errorLoadingAttendants, errorLoadingGroups, errorLoadingGroup], (errors) 
 
 const groupMembers = computed(() => {
   if (!attendants.value) return []
-  return attendants.value.filter(user => user.role <= USER_ROLES.Animateur)
+  return attendants.value.filter(user => user.role <= USER_ROLES.Animateur || user.role === USER_ROLES.Organisateur)
 })
 const groupLeaders = computed(() => {
   if (!attendants.value) return []
-  return attendants.value.filter(user => user.role >= USER_ROLES.Chef)
+  return attendants.value.filter(user => user.role === USER_ROLES.Chef || user.role === USER_ROLES.Administrateur)
 })
 
 const nbApplicants = computed((): string => {
