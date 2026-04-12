@@ -218,9 +218,26 @@ async function updateGameName() {
   --inner-padding-end: 0px;
 }
 ion-select {
-  margin-left: auto;
-  margin-right: auto;
+  display: block;
+  width: min(100%, 320px);
+  margin-inline: auto;
   text-align: center;
   --placeholder-opacity: 1;
+}
+
+ion-select::part(wrapper),
+ion-select::part(inner),
+ion-select::part(container) {
+  justify-content: center;
+}
+
+ion-select::part(placeholder) {
+  text-align: center;
+  width: 100%;
+}
+
+ion-select::part(icon) {
+  position: absolute;
+  right: 0;
 }
 </style>

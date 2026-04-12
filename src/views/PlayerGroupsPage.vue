@@ -339,12 +339,29 @@ async function computeMeanScore() {
 
 <style scoped>
 ion-select {
-  width: 100%;
+  display: block;
+  width: min(100%, 320px);
+  margin-inline: auto;
   text-align: center;
-  justify-content: center;
   color: var(--ion-color-dark);
   --placeholder-color: var(--ion-color-dark);
   /* Set full opacity on the placeholder */
   --placeholder-opacity: 1;
+}
+
+ion-select::part(wrapper),
+ion-select::part(inner),
+ion-select::part(container) {
+  justify-content: center;
+}
+
+ion-select::part(placeholder) {
+  text-align: center;
+  width: 100%;
+}
+
+ion-select::part(icon) {
+  position: absolute;
+  right: 0;
 }
 </style>
