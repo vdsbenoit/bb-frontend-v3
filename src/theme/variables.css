@@ -63,8 +63,8 @@
   --ion-color-dark-shade: #292929;
   --ion-color-dark-tint: #444444;
 
-  --ion-item-background: var(--ion-color-step-50, #f2f2f2);
-  --ion-card-background: var(--ion-color-step-50, #f2f2f2);
+  --ion-item-background: var(--ion-background-color-step-50, #f2f2f2);
+  --ion-card-background: var(--ion-background-color-step-50, #f2f2f2);
   --ion-background-color: var(--ion-color-light, #ffffff);
 }
 

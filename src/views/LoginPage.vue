@@ -22,10 +22,8 @@
               required
               autocapitalize="off"
               :clear-input="true"
+              helper-text="Utilise une addresse a laquelle tu as acces depuis ton telephone"
             />
-            <ion-note slot="helper">
-              Utilise une addresse à laquelle tu as accès depuis ton téléphone
-            </ion-note>
           </ion-item>
           <ion-item lines="none">
             <ion-checkbox slot="start" v-model="dgprChecked" class="ion-no-margin ion-margin-end" />
@@ -54,7 +52,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonNote,
   IonPage,
   IonSpinner,
   IonText,

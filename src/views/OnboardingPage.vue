@@ -28,11 +28,10 @@
                 type="text"
                 autocorrect="off"
                 required
+                :class="{ 'ion-invalid ion-touched': nameError }"
+                :error-text="nameError ? 'Mentionne ton totem ou ton nom' : undefined"
                 @ion-change="handleNameChange"
               />
-              <ion-note v-if="nameError" slot="error">
-                Mentionne ton totem ou ton nom
-              </ion-note>
             </ion-item>
             <ion-item>
               <ion-label position="floating" color="primary"> Quel sera ton role durant la Baden Battle ? </ion-label>
@@ -103,7 +102,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonNote,
   IonPage,
   IonSelect,
   IonSelectOption,
