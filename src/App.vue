@@ -422,6 +422,9 @@ ion-label p {
 .md .score-choice-popup .alert-button {
   font-size: 18px;
 }
+.preline-popup .alert-message {
+  white-space: pre-line;
+}
 ion-card-title {
   font-size: 24px;
 }

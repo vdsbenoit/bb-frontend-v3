@@ -30,10 +30,7 @@ export async function processSignInLink(href: string) {
           break
       }
     }
-    const message = `On dirait que tu n'as pas ouvert le lien depuis le même navigateur que là où tu as essayé de te connecter.<br/><br/>
-    Il devrait y avoir une bouton dans pour ouvrir le lien dans ton navigateur habituel plutôt que ton app d'email. <br/><br/>
-    Si pas, appuye longuement sur le lien de connexion fourni dans le mail, copie l'adresse du lien, puis de clique 
-    sur "J'ai copié le lien de l'email" dans l'app.`
+    const message = `On dirait que tu n'as pas ouvert le lien depuis le même navigateur que là où tu as essayé de te connecter.\n\nIl devrait y avoir une bouton dans pour ouvrir le lien dans ton navigateur habituel plutôt que ton app d'email.\n\nSi pas, appuye longuement sur le lien de connexion fourni dans le mail, copie l'adresse du lien, puis de clique sur "J'ai copié le lien de l'email" dans l'app.`
     await choicePopup('', ['J\'essaie de me connecter ici', 'Ok, j\'essaie ça'], choiceHandler, 'choice-popup', message)
   }
   if (!email) {
@@ -60,8 +57,7 @@ export async function processSignInLink(href: string) {
   } catch (e: any) {
     await loading.dismiss()
     if (e.code === 'auth/invalid-action-code') {
-      throw new Error(`Le lien que tu viens d'utiliser n'est plus valide. <br/><br/>
-        Clique sur le lien du dernier email que tu as reçu ou réessaie la procédure d'inscription depuis le début.`)
+      throw new Error(`Le lien que tu viens d'utiliser n'est plus valide.\n\nClique sur le lien du dernier email que tu as reçu ou réessaie la procédure d'inscription depuis le début.`)
     } else {
       console.error(e)
       throw new Error('Une erreur est survenue durant la connexion')

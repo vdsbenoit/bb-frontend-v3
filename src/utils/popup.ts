@@ -4,6 +4,7 @@ export async function errorPopup(text: string, title = 'Erreur') {
   const alert = await alertController.create({
     header: title,
     message: text,
+    cssClass: 'preline-popup',
     buttons: ['OK'],
   })
 
@@ -15,6 +16,7 @@ export async function infoPopup(text: string, title?: string) {
   const alert = await alertController.create({
     header: title,
     message: text,
+    cssClass: 'preline-popup',
     buttons: ['OK'],
   })
 
@@ -26,6 +28,7 @@ export async function confirmPopup(text: string, confirmHandler: any, declineHan
   const alert = await alertController.create({
     header: title,
     message: text,
+    cssClass: 'preline-popup',
     buttons: [
       {
         text: 'Non',
@@ -71,7 +74,7 @@ export async function choicePopup(title: string, options: string[], handler: any
   const alert = await alertController.create({
     header: title,
     message,
-    cssClass,
+    cssClass: `preline-popup ${cssClass}`,
     buttons,
   })
   await alert.present()
@@ -102,7 +105,7 @@ export async function textInputPopup(message: string, handler: any, title = '', 
   const alert = await alertController.create({
     header: title,
     message,
-    cssClass,
+    cssClass: `preline-popup ${cssClass}`,
     inputs: [
       {
         name: 'text',

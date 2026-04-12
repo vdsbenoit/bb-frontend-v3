@@ -153,26 +153,19 @@ async function submitForm() {
   }
   switch (selectedRole.value) {
     case USER_ROLES.Participant:
-      message = `Tu as choisi le role de participant.<br /><br />
-      Cela signifie que tu participeras à la Baden Battle avec la section ${groupData.name}.`
+      message = `Tu as choisi le role de participant.\n\nCela signifie que tu participeras à la Baden Battle avec la section ${groupData.name}.`
       break
     case USER_ROLES.Animateur:
-      message = `Tu as choisi le role d'animateur.<br /><br />
-      Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
-      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
+      message = `Tu as choisi le role d'animateur.\n\nCela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra valider ta demande avant que tu ne puisses utiliser l'app.`
       break
     case USER_ROLES.Chef:
-      message = `Tu as choisi le role de chef.<br /><br />
-      Cela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra
-      <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
+      message = `Tu as choisi le role de chef.\n\nCela signifie qu'un•e des chefs de la section ${groupData.name} ou un•e organisateur/organisatrice de la Baden Battle devra valider ta demande avant que tu ne puisses utiliser l'app.`
       break
     case USER_ROLES.Organisateur:
-      message = `Tu as choisi le role d'organisateur de la Baden Battle.<br /><br />
-      Cela signifie qu'une autre personne avec le rôle d'organisateur de la Baden Battle devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
+      message = `Tu as choisi le role d'organisateur de la Baden Battle.\n\nCela signifie qu'une autre personne avec le rôle d'organisateur de la Baden Battle devra valider ta demande avant que tu ne puisses utiliser l'app.`
       break
     case USER_ROLES.Administrateur:
-      message = `Tu as choisi le role d'administrateur de l'application.<br /><br />
-      Cela signifie qu'une autre personne avec le rôle d'administrateur devra <b>valider ta demande</b> avant que tu ne puisses utiliser l'app.`
+      message = `Tu as choisi le role d'administrateur de l'application.\n\nCela signifie qu'une autre personne avec le rôle d'administrateur devra valider ta demande avant que tu ne puisses utiliser l'app.`
       break
   }
   const handler = () => processForm(groupData)
