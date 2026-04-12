@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from '@ionic/vue-router'
 import { getCurrentUser } from 'vuefire'
 import { USER_ROLES } from '@/constants'
 import { isRankingPublic } from '@/utils/app'
-import { getRoleByValue, getUserProfile } from '@/utils/userProfile'
+import { createUserProfile, getRoleByValue, getUserProfile } from '@/utils/userProfile'
 import OnboardingPage from '@/views/OnboardingPage.vue'
 import { toastPopup } from '../utils/popup'
 import HomePageVue from '../views/HomePage.vue'
@@ -178,11 +178,19 @@ router.beforeEach(async (to) => {
     const _isRankingPublic = await isRankingPublic()
     if (_isRankingPublic) return true
   }
-  const userProfile = await getUserProfile(currentUser.uid) // fixme : limit the number of calls to the db
+  let userProfile = await getUserProfile(currentUser.uid) // fixme : limit the number of calls to the db
   if (!userProfile) {
-    toastPopup('Nous n\'avons pas retrouvé ton profil dans la base de données')
-    console.error('Could not find user profile in the db')
-    return false
+    console.warn(`Could not find user profile in db for uid ${currentUser.uid}, trying to initialize one`)
+    try {
+      await createUserProfile(currentUser.uid, currentUser.email ?? '')
+      userProfile = await getUserProfile(currentUser.uid)
+    } catch (error) {
+      console.error('Failed to create missing user profile:', error)
+    }
+  }
+  if (!userProfile) {
+    toastPopup('Nous n\'avons pas pu initialiser ton profil. Reconnecte-toi pour reessayer.')
+    return '/login'
   }
   if (to.name === 'onboarding') {
     if (userProfile.hasDoneOnboarding) {
