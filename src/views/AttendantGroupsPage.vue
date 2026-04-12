@@ -1,165 +1,3 @@
-<template>
-  <ion-page>
-    <header-component page-title="Animateurs" />
-    <ion-content :fullscreen="true" class="ion-padding">
-      <refresher-component />
-      <ion-card>
-        <ion-card-content class="ion-no-padding">
-          <ion-grid class="">
-            <ion-row>
-              <ion-col size="12" size-sm="6">
-                <ion-select v-if="groups" v-model="selectedGroupId" placeholder="Section" interface="popover">
-                  <ion-select-option v-for="group in groups" :key="group.id" color="dark" :value="group.id">
-                    {{ group.name }} ({{ group.city }})
-                  </ion-select-option>
-                </ion-select>
-                <ion-spinner v-else-if="isLoadingGroups" />
-                <div v-else-if="errorLoadingGroups">
-                  Erreur au chargement des sections
-                </div>
-                <div v-else>
-                  Pas de section configurée
-                </div>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-card-content>
-      </ion-card>
-      <ion-grid v-if="selectedGroupId" class="ion-no-padding">
-        <ion-row>
-          <ion-col size="12" size-sm="6">
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>
-                  <span>Détails </span>
-                  <ion-badge v-if="selectedGroup && selectedGroup.role >= GROUP_ROLES.Staff" color="danger">
-                    Staff
-                  </ion-badge>
-                </ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <ion-list v-if="selectedGroup">
-                  <ion-item> <ion-label>Nom</ion-label>{{ selectedGroup.name }} </ion-item>
-                  <ion-item> <ion-label>Ville</ion-label>{{ selectedGroup.city }} </ion-item>
-                  <ion-item> <ion-label>Unité</ion-label>{{ selectedGroup.unit }} </ion-item>
-                </ion-list>
-                <div v-else-if="isLoadingGroup" class="ion-text-center ion-align-items-center">
-                  <ion-spinner />
-                </div>
-                <div v-else-if="errorLoadingGroup" class="not-found">
-                  <strong class="capitalize">Erreur</strong>
-                  <ion-text color="error">
-                    Impossible de charger les sections
-                  </ion-text>
-                </div>
-                <ion-list-header v-else>
-                  <h2>Aucune section trouvée</h2>
-                </ion-list-header>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col size="12" size-sm="6">
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>Membres</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <ion-item v-if="nbApplicants !== '0'" router-link="/applicants" router-direction="forward">
-                  <ion-label>Membres en attente de validation</ion-label>
-                  <ion-badge slot="end" color="warning">
-                    {{ nbApplicants }}
-                  </ion-badge>
-                </ion-item>
-                <div v-if="isLoadingAttendants" class="ion-text-center ion-align-items-center">
-                  <ion-spinner />
-                </div>
-                <div v-else-if="errorLoadingAttendants" class="not-found">
-                  <strong class="capitalize">Erreur</strong>
-                  <ion-text color="error">
-                    Impossible de charger les animateurs
-                  </ion-text>
-                </div>
-                <ion-list v-else-if="groupMembers && groupMembers.length > 0">
-                  <ion-item
-                    v-for="user in groupMembers"
-                    :key="user.id"
-                    :router-link="`/profile/${user.id}`"
-                    router-direction="forward"
-                    button
-                  >
-                    <ion-label>{{ getUserName(user) }}</ion-label>
-                    <div v-if="user.role <= USER_ROLES.Chef">
-                      <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">
-                        Pas inscrit
-                      </ion-badge>
-                      <ion-badge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
-                        {{ countGames(user) }}
-                      </ion-badge>
-                    </div>
-                  </ion-item>
-                </ion-list>
-                <ion-list-header v-else>
-                  <h2>Aucun membre trouvé</h2>
-                </ion-list-header>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col size="12" size-sm="6">
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title v-if="selectedGroup && selectedGroup.role >= GROUP_ROLES.Staff">
-                  Administrateur
-                </ion-card-title>
-                <ion-card-title v-else>
-                  Chefs
-                </ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <div v-if="isLoadingAttendants" class="ion-text-center ion-align-items-center">
-                  <ion-spinner />
-                </div>
-                <div v-else-if="errorLoadingAttendants" class="not-found">
-                  <strong class="capitalize">Erreur</strong>
-                  <ion-text color="error">
-                    Impossible de charger les animateurs
-                  </ion-text>
-                </div>
-                <ion-list v-else-if="groupLeaders && groupLeaders.length > 0">
-                  <ion-item
-                    v-for="user in groupLeaders"
-                    :key="user.id"
-                    :router-link="`/profile/${user.id}`"
-                    router-direction="forward"
-                    button
-                  >
-                    <ion-label>{{ getUserName(user) }}</ion-label>
-                    <div v-if="user.role <= USER_ROLES.Chef">
-                      <ion-badge v-if="countGames(user) === 0" slot="end" color="danger">
-                        Pas inscrit
-                      </ion-badge>
-                      <ion-badge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
-                        {{ countGames(user) }}
-                      </ion-badge>
-                    </div>
-                  </ion-item>
-                </ion-list>
-                <ion-list-header v-else>
-                  <h2>Aucun chef trouvé</h2>
-                </ion-list-header>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      <div v-else class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">
-          Sélectionne une catégorie et une section <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp" />
-        </h2>
-      </div>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import type { UserProfile } from '@/types'
 import {
@@ -249,6 +87,168 @@ function countGames(user: UserProfile) {
   return Object.keys(user.games).length
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent page-title="Animateurs" />
+    <IonContent :fullscreen="true" class="ion-padding">
+      <RefresherComponent />
+      <IonCard>
+        <IonCardContent class="ion-no-padding">
+          <IonGrid class="">
+            <IonRow>
+              <IonCol size="12" size-sm="6">
+                <IonSelect v-if="groups" v-model="selectedGroupId" placeholder="Section" interface="popover">
+                  <IonSelectOption v-for="group in groups" :key="group.id" color="dark" :value="group.id">
+                    {{ group.name }} ({{ group.city }})
+                  </IonSelectOption>
+                </IonSelect>
+                <IonSpinner v-else-if="isLoadingGroups" />
+                <div v-else-if="errorLoadingGroups">
+                  Erreur au chargement des sections
+                </div>
+                <div v-else>
+                  Pas de section configurée
+                </div>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+        </IonCardContent>
+      </IonCard>
+      <IonGrid v-if="selectedGroupId" class="ion-no-padding">
+        <IonRow>
+          <IonCol size="12" size-sm="6">
+            <IonCard>
+              <IonCardHeader>
+                <IonCardTitle>
+                  <span>Détails </span>
+                  <IonBadge v-if="selectedGroup && selectedGroup.role >= GROUP_ROLES.Staff" color="danger">
+                    Staff
+                  </IonBadge>
+                </IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <IonList v-if="selectedGroup">
+                  <IonItem> <IonLabel>Nom</IonLabel>{{ selectedGroup.name }} </IonItem>
+                  <IonItem> <IonLabel>Ville</IonLabel>{{ selectedGroup.city }} </IonItem>
+                  <IonItem> <IonLabel>Unité</IonLabel>{{ selectedGroup.unit }} </IonItem>
+                </IonList>
+                <div v-else-if="isLoadingGroup" class="ion-text-center ion-align-items-center">
+                  <IonSpinner />
+                </div>
+                <div v-else-if="errorLoadingGroup" class="not-found">
+                  <strong class="capitalize">Erreur</strong>
+                  <IonText color="error">
+                    Impossible de charger les sections
+                  </IonText>
+                </div>
+                <IonListHeader v-else>
+                  <h2>Aucune section trouvée</h2>
+                </IonListHeader>
+              </IonCardContent>
+            </IonCard>
+          </IonCol>
+          <IonCol size="12" size-sm="6">
+            <IonCard>
+              <IonCardHeader>
+                <IonCardTitle>Membres</IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <IonItem v-if="nbApplicants !== '0'" router-link="/applicants" router-direction="forward">
+                  <IonLabel>Membres en attente de validation</IonLabel>
+                  <IonBadge slot="end" color="warning">
+                    {{ nbApplicants }}
+                  </IonBadge>
+                </IonItem>
+                <div v-if="isLoadingAttendants" class="ion-text-center ion-align-items-center">
+                  <IonSpinner />
+                </div>
+                <div v-else-if="errorLoadingAttendants" class="not-found">
+                  <strong class="capitalize">Erreur</strong>
+                  <IonText color="error">
+                    Impossible de charger les animateurs
+                  </IonText>
+                </div>
+                <IonList v-else-if="groupMembers && groupMembers.length > 0">
+                  <IonItem
+                    v-for="user in groupMembers"
+                    :key="user.id"
+                    :router-link="`/profile/${user.id}`"
+                    router-direction="forward"
+                    button
+                  >
+                    <IonLabel>{{ getUserName(user) }}</IonLabel>
+                    <div v-if="user.role <= USER_ROLES.Chef">
+                      <IonBadge v-if="countGames(user) === 0" slot="end" color="danger">
+                        Pas inscrit
+                      </IonBadge>
+                      <IonBadge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
+                        {{ countGames(user) }}
+                      </IonBadge>
+                    </div>
+                  </IonItem>
+                </IonList>
+                <IonListHeader v-else>
+                  <h2>Aucun membre trouvé</h2>
+                </IonListHeader>
+              </IonCardContent>
+            </IonCard>
+          </IonCol>
+          <IonCol size="12" size-sm="6">
+            <IonCard>
+              <IonCardHeader>
+                <IonCardTitle v-if="selectedGroup && selectedGroup.role >= GROUP_ROLES.Staff">
+                  Administrateur
+                </IonCardTitle>
+                <IonCardTitle v-else>
+                  Chefs
+                </IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <div v-if="isLoadingAttendants" class="ion-text-center ion-align-items-center">
+                  <IonSpinner />
+                </div>
+                <div v-else-if="errorLoadingAttendants" class="not-found">
+                  <strong class="capitalize">Erreur</strong>
+                  <IonText color="error">
+                    Impossible de charger les animateurs
+                  </IonText>
+                </div>
+                <IonList v-else-if="groupLeaders && groupLeaders.length > 0">
+                  <IonItem
+                    v-for="user in groupLeaders"
+                    :key="user.id"
+                    :router-link="`/profile/${user.id}`"
+                    router-direction="forward"
+                    button
+                  >
+                    <IonLabel>{{ getUserName(user) }}</IonLabel>
+                    <div v-if="user.role <= USER_ROLES.Chef">
+                      <IonBadge v-if="countGames(user) === 0" slot="end" color="danger">
+                        Pas inscrit
+                      </IonBadge>
+                      <IonBadge v-else slot="end" :color="countGames(user) < maxGames ? 'warning' : 'success'">
+                        {{ countGames(user) }}
+                      </IonBadge>
+                    </div>
+                  </IonItem>
+                </IonList>
+                <IonListHeader v-else>
+                  <h2>Aucun chef trouvé</h2>
+                </IonListHeader>
+              </IonCardContent>
+            </IonCard>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
+      <div v-else class="not-found">
+        <h2 class="ion-text-center ion-align-items-center">
+          Sélectionne une catégorie et une section <IonIcon :ios="arrowUpOutline" :md="arrowUpSharp" />
+        </h2>
+      </div>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 ion-select {

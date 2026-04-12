@@ -1,45 +1,3 @@
-<template>
-  <ion-app>
-    <ion-split-pane content-id="main-content">
-      <ion-menu content-id="main-content" type="overlay" side="start" :swipe-gesture="false">
-        <ion-content style="height: 100%">
-          <ion-list id="menu-list">
-            <ion-list-header>Baden Battle</ion-list-header>
-            <ion-note class="ion-text-uppercase">
-              score app
-            </ion-note>
-
-            <ion-menu-toggle v-for="(p, i) in appPages" :key="i" :auto-hide="false">
-              <ion-item
-                router-direction="root"
-                :router-link="p.url"
-                lines="none"
-                :detail="false"
-                class="hydrated"
-                :class="{ selected: isSelected(p.url) }"
-              >
-                <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon" :color="p.color ?? 'medium'" />
-                <ion-label>{{ p.title }}</ion-label>
-              </ion-item>
-            </ion-menu-toggle>
-          </ion-list>
-        </ion-content>
-        <ion-menu-toggle :auto-hide="false">
-          <ion-footer collapse="fade" class="ion-padding" @click="router.replace('/profile')">
-            <div v-if="userProfile">
-              <ion-text>Connecté en tant que {{ name }}</ion-text>
-            </div>
-            <div v-else>
-              <ion-text>Pas authentifié</ion-text>
-            </div>
-          </ion-footer>
-        </ion-menu-toggle>
-      </ion-menu>
-      <ion-router-outlet id="main-content" />
-    </ion-split-pane>
-  </ion-app>
-</template>
-
 <script setup lang="ts">
 import {
   IonApp,
@@ -251,6 +209,48 @@ const appPages = computed(() => {
   return pages
 })
 </script>
+
+<template>
+  <IonApp>
+    <IonSplitPane content-id="main-content">
+      <IonMenu content-id="main-content" type="overlay" side="start" :swipe-gesture="false">
+        <IonContent style="height: 100%">
+          <IonList id="menu-list">
+            <IonListHeader>Baden Battle</IonListHeader>
+            <IonNote class="ion-text-uppercase">
+              score app
+            </IonNote>
+
+            <IonMenuToggle v-for="(p, i) in appPages" :key="i" :auto-hide="false">
+              <IonItem
+                router-direction="root"
+                :router-link="p.url"
+                lines="none"
+                :detail="false"
+                class="hydrated"
+                :class="{ selected: isSelected(p.url) }"
+              >
+                <IonIcon slot="start" :ios="p.iosIcon" :md="p.mdIcon" :color="p.color ?? 'medium'" />
+                <IonLabel>{{ p.title }}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+          </IonList>
+        </IonContent>
+        <IonMenuToggle :auto-hide="false">
+          <IonFooter collapse="fade" class="ion-padding" @click="router.replace('/profile')">
+            <div v-if="userProfile">
+              <IonText>Connecté en tant que {{ name }}</IonText>
+            </div>
+            <div v-else>
+              <IonText>Pas authentifié</IonText>
+            </div>
+          </IonFooter>
+        </IonMenuToggle>
+      </IonMenu>
+      <IonRouterOutlet id="main-content" />
+    </IonSplitPane>
+  </IonApp>
+</template>
 
 <style>
 ion-menu ion-content {

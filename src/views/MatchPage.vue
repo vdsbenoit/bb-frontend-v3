@@ -1,202 +1,3 @@
-<template>
-  <ion-page>
-    <header-component :page-title="pageTitle" />
-    <ion-content :fullscreen="true">
-      <refresher-component />
-      <div v-if="errorLoadingMatch" class="not-found">
-        <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">
-          Impossible de charger les informations du match
-        </ion-text>
-        <p>Retour à <a @click="router.back()">la page précédente</a></p>
-      </div>
-      <div v-else-if="!match" class="not-found">
-        <strong class="capitalize">Nous n'avons pas trouvé ce duel...</strong>
-        <p>Retour à <a @click="router.back()">la page précédente</a></p>
-      </div>
-      <div v-else>
-        <ion-grid class="ion-padding-horizontal ion-padding-top" @click="router.push(`/game/${match.gameId}`)">
-          <ion-row class="ion-align-items-center">
-            <ion-col class="ion-padding-start">
-              <div class="ion-align-items-center ion-justify-content-start" style="display: flex">
-                <ion-card-subtitle class="ion-no-margin">
-                  {{ schedule.start }} - {{ schedule.stop }}
-                </ion-card-subtitle>
-                <ion-button
-                  fill="clear"
-                  class="ion-no-padding ion-no-margin ion-margin-start"
-                  size="small"
-                  :router-link="`/game/${match.gameId}`"
-                  router-direction="root"
-                >
-                  Voir le jeu
-                </ion-button>
-              </div>
-              <ion-spinner v-if="isLoadingGame" />
-              <h1 v-else-if="errorLoadingGame" class="ion-no-margin">
-                <i>Erreur</i>
-              </h1>
-              <h1 v-else-if="game" class="ion-no-margin" style="font-weight: bold">
-                {{ game.name ?? 'Epreuve sans nom' }}
-              </h1>
-            </ion-col>
-            <ion-col class="numberCircle ion-padding-end">
-              <ion-spinner v-if="isLoadingGame" />
-              <span v-else>{{ game ? game.id : '?' }}</span>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-
-        <ion-card>
-          <ion-card-content class="ion-no-padding ion-padding-vertical">
-            <ion-grid class="score-grid">
-              <ion-row class="ion-align-items-center ion-text-center">
-                <!-- First player -->
-                <ion-col v-if="isLoadingMatch || isLoadingFirstPlayer" size="5" class="ion-no-padding">
-                  <ion-spinner />
-                </ion-col>
-                <ion-col
-                  v-else-if="firstPlayer"
-                  size="5"
-                  class="ion-no-padding ion-pointer"
-                  @click="router.push(`/team/${firstPlayer.id}`)"
-                >
-                  <ion-text color="primary">
-                    <h1>{{ firstPlayer.id }}</h1>
-                  </ion-text>
-                  <ion-text color="dark">
-                    <p>{{ firstPlayer.groupName }}</p>
-                  </ion-text>
-                  <ion-text color="medium">
-                    <p>{{ firstPlayer.groupCity }}</p>
-                  </ion-text>
-                </ion-col>
-                <ion-col size="1">
-                  <ion-text> vs </ion-text>
-                </ion-col>
-                <!-- Second player -->
-                <ion-col v-if="isLoadingMatch || isLoadingSecondPlayer" size="5" class="ion-no-padding">
-                  <ion-spinner />
-                </ion-col>
-                <ion-col
-                  v-else-if="secondPlayer"
-                  size="5"
-                  class="ion-no-padding ion-pointer"
-                  @click="router.push(`/team/${secondPlayer.id}`)"
-                >
-                  <ion-text color="primary">
-                    <h1>{{ secondPlayer.id }}</h1>
-                  </ion-text>
-                  <ion-text color="dark">
-                    <p>{{ secondPlayer.groupName }}</p>
-                  </ion-text>
-                  <ion-text color="medium">
-                    <p>{{ secondPlayer.groupCity }}</p>
-                  </ion-text>
-                </ion-col>
-              </ion-row>
-              <!-- Score icons -->
-              <ion-row v-if="match.draw" class="ion-align-items-center ion-text-center">
-                <ion-col size="11">
-                  <div class="score-div draw">
-                    <span class="draw ion-text-uppercase">égalité</span>
-                  </div>
-                </ion-col>
-              </ion-row>
-              <ion-row v-if="match.winnerTeamId && firstPlayer && secondPlayer">
-                <ion-col size="5">
-                  <div class="score-div" :class="scoreColor(firstPlayer.id)">
-                    <ion-icon
-                      class="score-icon"
-                      :ios="scoreIcon(firstPlayer.id).ios"
-                      :md="scoreIcon(firstPlayer.id).md"
-                    />
-                  </div>
-                </ion-col>
-                <ion-col size="1" />
-                <ion-col size="5">
-                  <div class="score-div" :class="scoreColor(secondPlayer.id)">
-                    <ion-icon
-                      class="score-icon"
-                      :ios="scoreIcon(secondPlayer.id).ios"
-                      :md="scoreIcon(secondPlayer.id).md"
-                    />
-                  </div>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card-content>
-        </ion-card>
-        <ion-card v-if="useCanSeeModeration">
-          <ion-card-header>
-            <ion-card-title>Modération</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-list v-if="reporterId" lines="none" class="no-pointer">
-              <ion-item class="ion-no-padding" style="--padding-start: 8px">
-                <ion-label>
-                  <ion-text>Modififé par : </ion-text>
-                  <ion-spinner v-if="isLoadingReporter" />
-                  <ion-text v-else-if="reporter" class="ion-text-wrap">
-                    {{ reporter.name }} ({{ reporter.groupName }})
-                  </ion-text>
-                  <ion-text v-else color="error"> Impossible de charger le profil </ion-text>
-                </ion-label>
-              </ion-item>
-              <ion-item class="ion-no-padding" style="--padding-start: 8px">
-                <ion-label> Modifié à : {{ formatedDate }} </ion-label>
-              </ion-item>
-            </ion-list>
-            <ion-list-header v-else>
-              <h2>Le score n'a pas encore été enregistré</h2>
-            </ion-list-header>
-          </ion-card-content>
-        </ion-card>
-        <div v-if="canEditScores" class="ion-margin-top" style="max-width: 600px; margin: 0 auto">
-          <ion-button
-            v-if="match.noScores"
-            class="ion-margin-horizontal ion-margin-top"
-            color="medium"
-            expand="block"
-            disabled
-          >
-            Pas de score pour ce jeu
-          </ion-button>
-          <ion-button
-            v-else
-            class="ion-margin-horizontal ion-margin-top"
-            expand="block"
-            :disabled="isSettingScore"
-            @click="setScore"
-          >
-            <ion-spinner v-if="isSettingScore" />
-            <span v-else-if="match.winnerTeamId || match.draw">Modifier le score</span>
-            <span v-else>Enregister le score</span>
-          </ion-button>
-          <ion-button
-            v-if="isResettingScore"
-            color="danger"
-            class="ion-margin-horizontal ion-margin-top"
-            expand="block"
-            disabled
-          >
-            <ion-spinner />
-          </ion-button>
-          <ion-button
-            v-else-if="match.winnerTeamId || match.draw"
-            color="danger"
-            class="ion-margin-horizontal ion-margin-top"
-            expand="block"
-            @click="resetScore"
-          >
-            Effacer le score
-          </ion-button>
-        </div>
-      </div>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import type { FirestoreError } from 'firebase/firestore'
 import {
@@ -532,6 +333,205 @@ watch(errorLoadingReporter, (error: FirestoreError | undefined) => {
   }
 })
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent :page-title="pageTitle" />
+    <IonContent :fullscreen="true">
+      <RefresherComponent />
+      <div v-if="errorLoadingMatch" class="not-found">
+        <strong class="capitalize">Erreur</strong>
+        <IonText color="error">
+          Impossible de charger les informations du match
+        </IonText>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else-if="!match" class="not-found">
+        <strong class="capitalize">Nous n'avons pas trouvé ce duel...</strong>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else>
+        <IonGrid class="ion-padding-horizontal ion-padding-top" @click="router.push(`/game/${match.gameId}`)">
+          <IonRow class="ion-align-items-center">
+            <IonCol class="ion-padding-start">
+              <div class="ion-align-items-center ion-justify-content-start" style="display: flex">
+                <IonCardSubtitle class="ion-no-margin">
+                  {{ schedule.start }} - {{ schedule.stop }}
+                </IonCardSubtitle>
+                <IonButton
+                  fill="clear"
+                  class="ion-no-padding ion-no-margin ion-margin-start"
+                  size="small"
+                  :router-link="`/game/${match.gameId}`"
+                  router-direction="root"
+                >
+                  Voir le jeu
+                </IonButton>
+              </div>
+              <IonSpinner v-if="isLoadingGame" />
+              <h1 v-else-if="errorLoadingGame" class="ion-no-margin">
+                <i>Erreur</i>
+              </h1>
+              <h1 v-else-if="game" class="ion-no-margin" style="font-weight: bold">
+                {{ game.name ?? 'Epreuve sans nom' }}
+              </h1>
+            </IonCol>
+            <IonCol class="numberCircle ion-padding-end">
+              <IonSpinner v-if="isLoadingGame" />
+              <span v-else>{{ game ? game.id : '?' }}</span>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+
+        <IonCard>
+          <IonCardContent class="ion-no-padding ion-padding-vertical">
+            <IonGrid class="score-grid">
+              <IonRow class="ion-align-items-center ion-text-center">
+                <!-- First player -->
+                <IonCol v-if="isLoadingMatch || isLoadingFirstPlayer" size="5" class="ion-no-padding">
+                  <IonSpinner />
+                </IonCol>
+                <IonCol
+                  v-else-if="firstPlayer"
+                  size="5"
+                  class="ion-no-padding ion-pointer"
+                  @click="router.push(`/team/${firstPlayer.id}`)"
+                >
+                  <IonText color="primary">
+                    <h1>{{ firstPlayer.id }}</h1>
+                  </IonText>
+                  <IonText color="dark">
+                    <p>{{ firstPlayer.groupName }}</p>
+                  </IonText>
+                  <IonText color="medium">
+                    <p>{{ firstPlayer.groupCity }}</p>
+                  </IonText>
+                </IonCol>
+                <IonCol size="1">
+                  <IonText> vs </IonText>
+                </IonCol>
+                <!-- Second player -->
+                <IonCol v-if="isLoadingMatch || isLoadingSecondPlayer" size="5" class="ion-no-padding">
+                  <IonSpinner />
+                </IonCol>
+                <IonCol
+                  v-else-if="secondPlayer"
+                  size="5"
+                  class="ion-no-padding ion-pointer"
+                  @click="router.push(`/team/${secondPlayer.id}`)"
+                >
+                  <IonText color="primary">
+                    <h1>{{ secondPlayer.id }}</h1>
+                  </IonText>
+                  <IonText color="dark">
+                    <p>{{ secondPlayer.groupName }}</p>
+                  </IonText>
+                  <IonText color="medium">
+                    <p>{{ secondPlayer.groupCity }}</p>
+                  </IonText>
+                </IonCol>
+              </IonRow>
+              <!-- Score icons -->
+              <IonRow v-if="match.draw" class="ion-align-items-center ion-text-center">
+                <IonCol size="11">
+                  <div class="score-div draw">
+                    <span class="draw ion-text-uppercase">égalité</span>
+                  </div>
+                </IonCol>
+              </IonRow>
+              <IonRow v-if="match.winnerTeamId && firstPlayer && secondPlayer">
+                <IonCol size="5">
+                  <div class="score-div" :class="scoreColor(firstPlayer.id)">
+                    <IonIcon
+                      class="score-icon"
+                      :ios="scoreIcon(firstPlayer.id).ios"
+                      :md="scoreIcon(firstPlayer.id).md"
+                    />
+                  </div>
+                </IonCol>
+                <IonCol size="1" />
+                <IonCol size="5">
+                  <div class="score-div" :class="scoreColor(secondPlayer.id)">
+                    <IonIcon
+                      class="score-icon"
+                      :ios="scoreIcon(secondPlayer.id).ios"
+                      :md="scoreIcon(secondPlayer.id).md"
+                    />
+                  </div>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </IonCardContent>
+        </IonCard>
+        <IonCard v-if="useCanSeeModeration">
+          <IonCardHeader>
+            <IonCardTitle>Modération</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <IonList v-if="reporterId" lines="none" class="no-pointer">
+              <IonItem class="ion-no-padding" style="--padding-start: 8px">
+                <IonLabel>
+                  <IonText>Modififé par : </IonText>
+                  <IonSpinner v-if="isLoadingReporter" />
+                  <IonText v-else-if="reporter" class="ion-text-wrap">
+                    {{ reporter.name }} ({{ reporter.groupName }})
+                  </IonText>
+                  <IonText v-else color="error"> Impossible de charger le profil </IonText>
+                </IonLabel>
+              </IonItem>
+              <IonItem class="ion-no-padding" style="--padding-start: 8px">
+                <IonLabel> Modifié à : {{ formatedDate }} </IonLabel>
+              </IonItem>
+            </IonList>
+            <IonListHeader v-else>
+              <h2>Le score n'a pas encore été enregistré</h2>
+            </IonListHeader>
+          </IonCardContent>
+        </IonCard>
+        <div v-if="canEditScores" class="ion-margin-top" style="max-width: 600px; margin: 0 auto">
+          <IonButton
+            v-if="match.noScores"
+            class="ion-margin-horizontal ion-margin-top"
+            color="medium"
+            expand="block"
+            disabled
+          >
+            Pas de score pour ce jeu
+          </IonButton>
+          <IonButton
+            v-else
+            class="ion-margin-horizontal ion-margin-top"
+            expand="block"
+            :disabled="isSettingScore"
+            @click="setScore"
+          >
+            <IonSpinner v-if="isSettingScore" />
+            <span v-else-if="match.winnerTeamId || match.draw">Modifier le score</span>
+            <span v-else>Enregister le score</span>
+          </IonButton>
+          <IonButton
+            v-if="isResettingScore"
+            color="danger"
+            class="ion-margin-horizontal ion-margin-top"
+            expand="block"
+            disabled
+          >
+            <IonSpinner />
+          </IonButton>
+          <IonButton
+            v-else-if="match.winnerTeamId || match.draw"
+            color="danger"
+            class="ion-margin-horizontal ion-margin-top"
+            expand="block"
+            @click="resetScore"
+          >
+            Effacer le score
+          </IonButton>
+        </div>
+      </div>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 .score-grid {

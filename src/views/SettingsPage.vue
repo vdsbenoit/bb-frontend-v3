@@ -1,101 +1,3 @@
-<template>
-  <ion-page>
-    <header-component page-title="Paramètres" />
-    <ion-content :fullscreen="true" class="ion-padding">
-      <refresher-component />
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Utilisateurs</ion-card-title>
-        </ion-card-header>
-        <ion-card-content class="ion-no-padding">
-          <ion-list>
-            <ion-item router-link="/new-users" router-direction="forward" button>
-              <ion-label>Nouveaux utilisateurs</ion-label>
-            </ion-item>
-            <ion-item router-link="/login-users" router-direction="forward" button class="ion-text-wrap" lines="none">
-              <ion-label>Utilisateurs récemment connectés</ion-label>
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Paramètres généraux</ion-card-title>
-        </ion-card-header>
-        <ion-card-content class="ion-no-padding">
-          <div v-if="isLoadingAppSettings" class="ion-text-center" style="background: transparent">
-            <ion-spinner />
-          </div>
-          <div v-else-if="errorLoadingAppSettings" class="not-found">
-            <strong class="capitalize">Erreur</strong>
-            <ion-text color="error">
-              Impossible de charger les paramètres
-            </ion-text>
-            <p>Retour à <a @click="router.back()">la page précédente</a></p>
-          </div>
-          <div v-else-if="!appSettings" class="not-found">
-            <strong class="capitalize">Erreur</strong>
-            <ion-text color="error">
-              The app settings document is empty
-            </ion-text>
-            <p>Retour à <a @click="router.back()">la page précédente</a></p>
-          </div>
-          <ion-list v-else>
-            <ion-item v-if="formData.maxGameAttendants.isEditting">
-              <!-- todo add keyup event handler -->
-              <ion-input
-                slot="start"
-                v-model="formData.maxGameAttendants.value"
-                name="maxGameAttendants"
-                type="number"
-                autocorrect="off"
-                label="Max animateurs par épreuve"
-              />
-              <ion-button slot="end" color="success" @click="setMaxAttendants">
-                <ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp" />
-              </ion-button>
-            </ion-item>
-            <ion-item v-else @click="formData.maxGameAttendants.isEditting = true">
-              <ion-input
-                slot="end"
-                name="maxGameAttendants"
-                type="number"
-                :readonly="true"
-                inputmode="none"
-                label="Max animateurs par épreuve"
-                :value="appSettings.maxGameAttendants"
-              />
-            </ion-item>
-            <ion-item>
-              <ion-label>Geler les scores</ion-label>
-              <ion-toggle :checked="!appSettings.canSetScores" @ion-change="freezeScores" />
-            </ion-item>
-            <ion-item>
-              <ion-label class="ion-text-wrap"> Rendre les classements publiques </ion-label>
-              <ion-toggle :checked="appSettings.isRankingPublic" @ion-change="showRanking" />
-            </ion-item>
-            <ion-item>
-              <ion-label class="ion-text-wrap"> Inscriptions aux épreuves </ion-label>
-              <ion-toggle :checked="appSettings.isAttendantRegistrationOpen" @ion-change="setAttendantRegistration" />
-            </ion-item>
-            <ion-item>
-              <ion-label class="ion-text-wrap"> Afficher la disponibilités des épreuves </ion-label>
-              <ion-toggle :checked="appSettings.isGameAvailabilitiesDisplayed" @ion-change="setGameAvailabilites" />
-            </ion-item>
-            <ion-item lines="none">
-              <ion-label class="ion-text-wrap">
-                <h2>Autoriser l'enregistrement de scores partout</h2>
-                <p>Ne pas tenir compte des inscriptions aux épreuves</p>
-              </ion-label>
-              <ion-toggle :checked="appSettings.canSetAnyScores" @ion-change="setCanSetAnyScores" />
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import {
   IonButton,
@@ -190,6 +92,104 @@ async function setCanSetAnyScores(event: any) {
   await loading.dismiss()
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent page-title="Paramètres" />
+    <IonContent :fullscreen="true" class="ion-padding">
+      <RefresherComponent />
+      <IonCard>
+        <IonCardHeader>
+          <IonCardTitle>Utilisateurs</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent class="ion-no-padding">
+          <IonList>
+            <IonItem router-link="/new-users" router-direction="forward" button>
+              <IonLabel>Nouveaux utilisateurs</IonLabel>
+            </IonItem>
+            <IonItem router-link="/login-users" router-direction="forward" button class="ion-text-wrap" lines="none">
+              <IonLabel>Utilisateurs récemment connectés</IonLabel>
+            </IonItem>
+          </IonList>
+        </IonCardContent>
+      </IonCard>
+      <IonCard>
+        <IonCardHeader>
+          <IonCardTitle>Paramètres généraux</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent class="ion-no-padding">
+          <div v-if="isLoadingAppSettings" class="ion-text-center" style="background: transparent">
+            <IonSpinner />
+          </div>
+          <div v-else-if="errorLoadingAppSettings" class="not-found">
+            <strong class="capitalize">Erreur</strong>
+            <IonText color="error">
+              Impossible de charger les paramètres
+            </IonText>
+            <p>Retour à <a @click="router.back()">la page précédente</a></p>
+          </div>
+          <div v-else-if="!appSettings" class="not-found">
+            <strong class="capitalize">Erreur</strong>
+            <IonText color="error">
+              The app settings document is empty
+            </IonText>
+            <p>Retour à <a @click="router.back()">la page précédente</a></p>
+          </div>
+          <IonList v-else>
+            <IonItem v-if="formData.maxGameAttendants.isEditting">
+              <!-- todo add keyup event handler -->
+              <IonInput
+                slot="start"
+                v-model="formData.maxGameAttendants.value"
+                name="maxGameAttendants"
+                type="number"
+                autocorrect="off"
+                label="Max animateurs par épreuve"
+              />
+              <IonButton slot="end" color="success" @click="setMaxAttendants">
+                <IonIcon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp" />
+              </IonButton>
+            </IonItem>
+            <IonItem v-else @click="formData.maxGameAttendants.isEditting = true">
+              <IonInput
+                slot="end"
+                name="maxGameAttendants"
+                type="number"
+                :readonly="true"
+                inputmode="none"
+                label="Max animateurs par épreuve"
+                :value="appSettings.maxGameAttendants"
+              />
+            </IonItem>
+            <IonItem>
+              <IonLabel>Geler les scores</IonLabel>
+              <IonToggle :checked="!appSettings.canSetScores" @ion-change="freezeScores" />
+            </IonItem>
+            <IonItem>
+              <IonLabel class="ion-text-wrap"> Rendre les classements publiques </IonLabel>
+              <IonToggle :checked="appSettings.isRankingPublic" @ion-change="showRanking" />
+            </IonItem>
+            <IonItem>
+              <IonLabel class="ion-text-wrap"> Inscriptions aux épreuves </IonLabel>
+              <IonToggle :checked="appSettings.isAttendantRegistrationOpen" @ion-change="setAttendantRegistration" />
+            </IonItem>
+            <IonItem>
+              <IonLabel class="ion-text-wrap"> Afficher la disponibilités des épreuves </IonLabel>
+              <IonToggle :checked="appSettings.isGameAvailabilitiesDisplayed" @ion-change="setGameAvailabilites" />
+            </IonItem>
+            <IonItem lines="none">
+              <IonLabel class="ion-text-wrap">
+                <h2>Autoriser l'enregistrement de scores partout</h2>
+                <p>Ne pas tenir compte des inscriptions aux épreuves</p>
+              </IonLabel>
+              <IonToggle :checked="appSettings.canSetAnyScores" @ion-change="setCanSetAnyScores" />
+            </IonItem>
+          </IonList>
+        </IonCardContent>
+      </IonCard>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 .fixedLabel {

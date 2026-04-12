@@ -1,105 +1,3 @@
-<template>
-  <ion-page>
-    <header-component :page-title="pageTitle">
-      <ion-button v-if="canEditGames" @click="toggleEditMode">
-        <ion-label v-if="isPlatform('ios')" color="primary">
-          {{ editMode ? 'done' : 'edit' }}
-        </ion-label>
-        <ion-icon v-else slot="icon-only" :icon="editMode ? closeSharp : pencilSharp" />
-      </ion-button>
-    </header-component>
-    <ion-content :fullscreen="true">
-      <refresher-component />
-      <ion-item color="primary">
-        <ion-spinner v-if="isLoadingAppConfig" />
-        <ion-select
-          v-else-if="circuits"
-          v-model="selectedCircuit"
-          interface="popover"
-          placeholder="Sélectionne un circuit"
-        >
-          <ion-select-option v-for="letter in Object.keys(circuits).sort()" :key="letter" :value="letter">
-            {{ letter }} - {{ getGroupCategoryName(letter) }}
-          </ion-select-option>
-        </ion-select>
-        <div v-else-if="errorLoadingConfig">
-          Erreur
-        </div>
-        <div v-else>
-          Pas de circuit
-        </div>
-      </ion-item>
-      <div v-if="!selectedCircuit" class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">
-          Sélectionne un circuit <ion-icon :ios="arrowUpOutline" :md="arrowUpSharp" />
-        </h2>
-      </div>
-      <div v-else>
-        <div v-if="isLoadingGames" class="ion-text-center" style="background: transparent">
-          <ion-spinner />
-        </div>
-        <div v-else-if="errorLoadingGames" class="not-found">
-          <strong class="capitalize">Erreur</strong>
-          <ion-text color="error">
-            Impossible de charger les jeux
-          </ion-text>
-        </div>
-        <ion-list v-else-if="games && games.length > 0" lines="full">
-          <div v-for="game in games" :key="game.id">
-            <div v-if="editMode">
-              <div v-if="game.id === editedGameId && !isUpdating">
-                <ion-item>
-                  <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">
-                    {{ game.id }}
-                  </ion-badge>
-                  <ion-input
-                    v-model="newGameName"
-                    type="text"
-                    label="Nom de l'épreuve"
-                    @keyup.enter="updateGameName()"
-                  />
-                  <ion-button color="success" @click="updateGameName()">
-                    <ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp" />
-                  </ion-button>
-                  <ion-button color="danger" @click="clearEdition()">
-                    <ion-icon slot="icon-only" :ios="closeOutline" :md="closeSharp" />
-                  </ion-button>
-                </ion-item>
-              </div>
-              <div v-else>
-                <ion-item>
-                  <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">
-                    {{ game.id }}
-                  </ion-badge>
-                  <ion-input type="text" :readonly="true" label="Nom de l'épreuve" :value="game.name" />
-                  <ion-spinner v-if="isUpdating && game.id === editedGameId" slot="end" />
-                  <ion-icon v-else slot="end" :ios="pencilOutline" :md="pencilSharp" @click="editGame(game)" />
-                </ion-item>
-              </div>
-            </div>
-            <div v-else>
-              <ion-item @click="goToGamePage(game.id)">
-                <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">
-                  {{ game.id }}
-                </ion-badge>
-                <ion-label>
-                  <ion-text>{{ game.name }}</ion-text>
-                </ion-label>
-                <game-availabilities v-if="showGameAvailabilities" :game="game" />
-              </ion-item>
-            </div>
-          </div>
-        </ion-list>
-        <div v-else class="not-found">
-          <h2 class="ion-text-center ion-align-items-center">
-            Pas d'épreuves
-          </h2>
-        </div>
-      </div>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import type { VueFireGame } from '@/types'
 import {
@@ -209,6 +107,108 @@ async function updateGameName() {
   clearEdition()
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent :page-title="pageTitle">
+      <IonButton v-if="canEditGames" @click="toggleEditMode">
+        <IonLabel v-if="isPlatform('ios')" color="primary">
+          {{ editMode ? 'done' : 'edit' }}
+        </IonLabel>
+        <IonIcon v-else slot="icon-only" :icon="editMode ? closeSharp : pencilSharp" />
+      </IonButton>
+    </HeaderComponent>
+    <IonContent :fullscreen="true">
+      <RefresherComponent />
+      <IonItem color="primary">
+        <IonSpinner v-if="isLoadingAppConfig" />
+        <IonSelect
+          v-else-if="circuits"
+          v-model="selectedCircuit"
+          interface="popover"
+          placeholder="Sélectionne un circuit"
+        >
+          <IonSelectOption v-for="letter in Object.keys(circuits).sort()" :key="letter" :value="letter">
+            {{ letter }} - {{ getGroupCategoryName(letter) }}
+          </IonSelectOption>
+        </IonSelect>
+        <div v-else-if="errorLoadingConfig">
+          Erreur
+        </div>
+        <div v-else>
+          Pas de circuit
+        </div>
+      </IonItem>
+      <div v-if="!selectedCircuit" class="not-found">
+        <h2 class="ion-text-center ion-align-items-center">
+          Sélectionne un circuit <IonIcon :ios="arrowUpOutline" :md="arrowUpSharp" />
+        </h2>
+      </div>
+      <div v-else>
+        <div v-if="isLoadingGames" class="ion-text-center" style="background: transparent">
+          <IonSpinner />
+        </div>
+        <div v-else-if="errorLoadingGames" class="not-found">
+          <strong class="capitalize">Erreur</strong>
+          <IonText color="error">
+            Impossible de charger les jeux
+          </IonText>
+        </div>
+        <IonList v-else-if="games && games.length > 0" lines="full">
+          <div v-for="game in games" :key="game.id">
+            <div v-if="editMode">
+              <div v-if="game.id === editedGameId && !isUpdating">
+                <IonItem>
+                  <IonBadge slot="start" class="ion-no-margin ion-margin-end" color="medium">
+                    {{ game.id }}
+                  </IonBadge>
+                  <IonInput
+                    v-model="newGameName"
+                    type="text"
+                    label="Nom de l'épreuve"
+                    @keyup.enter="updateGameName()"
+                  />
+                  <IonButton color="success" @click="updateGameName()">
+                    <IonIcon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp" />
+                  </IonButton>
+                  <IonButton color="danger" @click="clearEdition()">
+                    <IonIcon slot="icon-only" :ios="closeOutline" :md="closeSharp" />
+                  </IonButton>
+                </IonItem>
+              </div>
+              <div v-else>
+                <IonItem>
+                  <IonBadge slot="start" class="ion-no-margin ion-margin-end" color="medium">
+                    {{ game.id }}
+                  </IonBadge>
+                  <IonInput type="text" :readonly="true" label="Nom de l'épreuve" :value="game.name" />
+                  <IonSpinner v-if="isUpdating && game.id === editedGameId" slot="end" />
+                  <IonIcon v-else slot="end" :ios="pencilOutline" :md="pencilSharp" @click="editGame(game)" />
+                </IonItem>
+              </div>
+            </div>
+            <div v-else>
+              <IonItem @click="goToGamePage(game.id)">
+                <IonBadge slot="start" class="ion-no-margin ion-margin-end" color="medium">
+                  {{ game.id }}
+                </IonBadge>
+                <IonLabel>
+                  <IonText>{{ game.name }}</IonText>
+                </IonLabel>
+                <GameAvailabilities v-if="showGameAvailabilities" :game="game" />
+              </IonItem>
+            </div>
+          </div>
+        </IonList>
+        <div v-else class="not-found">
+          <h2 class="ion-text-center ion-align-items-center">
+            Pas d'épreuves
+          </h2>
+        </div>
+      </div>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 .item-no-padding {

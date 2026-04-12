@@ -1,12 +1,3 @@
-<template>
-  <ion-col size="6" size-sm="4" size-lg="2" @click="router.replace(props.target)">
-    <div class="tile ion-activatable ripple-parent">
-      <span class="ion-padding"><slot /></span>
-      <ion-ripple-effect class="ripple" />
-    </div>
-  </ion-col>
-</template>
-
 <script setup lang="ts">
 import { IonCol, IonRippleEffect } from '@ionic/vue'
 import { defineProps } from 'vue'
@@ -15,6 +6,15 @@ import { useRouter } from 'vue-router'
 const props = defineProps(['target'])
 const router = useRouter()
 </script>
+
+<template>
+  <IonCol size="6" size-sm="4" size-lg="2" @click="router.replace(props.target)">
+    <div class="tile ion-activatable ripple-parent">
+      <span class="ion-padding"><slot /></span>
+      <IonRippleEffect class="ripple" />
+    </div>
+  </IonCol>
+</template>
 
 <style scoped>
 .tile {

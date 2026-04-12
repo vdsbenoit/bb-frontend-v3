@@ -1,12 +1,3 @@
-<template>
-  <ion-button :disabled="isProcessing" @click="presentActionSheet">
-    <ion-spinner v-if="isProcessing" />
-    <div v-else>
-      <slot />
-    </div>
-  </ion-button>
-</template>
-
 <script setup lang="ts">
 import { actionSheetController, IonButton, IonSpinner } from '@ionic/vue'
 import { ref } from 'vue'
@@ -65,5 +56,14 @@ async function presentActionSheet() {
   }
 }
 </script>
+
+<template>
+  <IonButton :disabled="isProcessing" @click="presentActionSheet">
+    <IonSpinner v-if="isProcessing" />
+    <div v-else>
+      <slot />
+    </div>
+  </IonButton>
+</template>
 
 <style></style>

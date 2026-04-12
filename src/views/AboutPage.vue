@@ -1,22 +1,31 @@
+<script setup lang="ts">
+import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage } from '@ionic/vue'
+import { informationCircleOutline, pin, trophyOutline } from 'ionicons/icons'
+import { buildInfo } from '@/app/buildinfo'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+
+const buildDate = new Date(buildInfo.buildDate).toLocaleString('fr-BE')
+</script>
+
 <template>
-  <ion-page>
-    <header-component page-title="A propos" />
-    <ion-content :fullscreen="true" class="ion-padding background-image">
+  <IonPage>
+    <HeaderComponent page-title="A propos" />
+    <IonContent :fullscreen="true" class="ion-padding background-image">
       <div class="about-info">
-        <ion-list lines="none" class="ion-padding-vertical" style="border-radius: 5px">
-          <ion-item>
-            <ion-icon slot="start" :icon="pin" />
-            <ion-label style="white-space: pre-wrap">
+        <IonList lines="none" class="ion-padding-vertical" style="border-radius: 5px">
+          <IonItem>
+            <IonIcon slot="start" :icon="pin" />
+            <IonLabel style="white-space: pre-wrap">
               Collège St Vincent<br>
               Chaussée de Braine, 22<br>
               7060 Soignies
-            </ion-label>
-          </ion-item>
+            </IonLabel>
+          </IonItem>
 
-          <ion-item>
-            <ion-icon slot="start" :icon="trophyOutline" />
-            <ion-label>Scores</ion-label>
-          </ion-item>
+          <IonItem>
+            <IonIcon slot="start" :icon="trophyOutline" />
+            <IonLabel>Scores</IonLabel>
+          </IonItem>
 
           <p class="ion-padding-start ion-padding-end">
             Chaque section est divisée en plusieurs équipes d'entre 5 et 10 joueurs. Les équipes s'affrontent à travers
@@ -27,10 +36,10 @@
             remportent des prix.
           </p>
 
-          <ion-item>
-            <ion-icon slot="start" :icon="informationCircleOutline" />
-            <ion-label>À propos de la Baden Battle</ion-label>
-          </ion-item>
+          <IonItem>
+            <IonIcon slot="start" :icon="informationCircleOutline" />
+            <IonLabel>À propos de la Baden Battle</IonLabel>
+          </IonItem>
 
           <p class="ion-padding-start ion-padding-end">
             Il sʼagit dʼun grand rassemblement scout, guide et patro à destination des baladins, nutons, étincelles,
@@ -48,20 +57,11 @@
           <div class="version-info">
             <span>{{ buildInfo.buildVersion }} - {{ buildDate }}</span>
           </div>
-        </ion-list>
+        </IonList>
       </div>
-    </ion-content>
-  </ion-page>
+    </IonContent>
+  </IonPage>
 </template>
-
-<script setup lang="ts">
-import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage } from '@ionic/vue'
-import { informationCircleOutline, pin, trophyOutline } from 'ionicons/icons'
-import { buildInfo } from '@/app/buildinfo'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-
-const buildDate = new Date(buildInfo.buildDate).toLocaleString('fr-BE')
-</script>
 
 <style scoped>
 .background-image {

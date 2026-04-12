@@ -1,49 +1,3 @@
-<template>
-  <ion-page>
-    <header-component page-title="Connexion" />
-    <ion-content :fullscreen="true" class="ion-padding">
-      <refresher-component />
-      <div class="homepage-logo">
-        <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle">
-      </div>
-      <ion-text v-if="redirect" class="ion-text-center">
-        <p>Connecte-toi pour accéder à ce contenu</p>
-      </ion-text>
-      <form @submit.prevent="sendEmail">
-        <ion-list id="login-form">
-          <ion-item lines="full">
-            <ion-input
-              v-model="email"
-              name="email"
-              type="email"
-              inputmode="email"
-              autocomplete="email"
-              required
-              autocapitalize="off"
-              :clear-input="true"
-              label="Entre ton email ici"
-              label-placement="floating"
-              helper-text="Utilise une addresse a laquelle tu as acces depuis ton telephone"
-            />
-          </ion-item>
-          <ion-item lines="none">
-            <ion-checkbox slot="start" v-model="dgprChecked" class="ion-no-margin ion-margin-end" />
-            <ion-label class=""> J'accepte les <a @click="showPrivacyNotice">conditions d'utilisation</a> </ion-label>
-          </ion-item>
-          <ion-button expand="block" :color="sendButtonColor" @click="sendEmail">
-            <ion-spinner v-if="isSendingEmail" />
-            <span v-else>{{ sendButtonText }}</span>
-          </ion-button>
-          <ion-button expand="block" color="tertiary" @click="signInWithClipboard">
-            <ion-spinner v-if="isValidating" />
-            <span v-else>J'ai copié le lien de l'email</span>
-          </ion-button>
-        </ion-list>
-      </form>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import {
   IonButton,
@@ -196,6 +150,52 @@ function showPrivacyNotice() {
   void infoPopup(privacyNotice, 'Vie privée & utilisation des données')
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent page-title="Connexion" />
+    <IonContent :fullscreen="true" class="ion-padding">
+      <RefresherComponent />
+      <div class="homepage-logo">
+        <img src="@/assets/img/logo-bb.png" alt="Logo Baden Battle">
+      </div>
+      <IonText v-if="redirect" class="ion-text-center">
+        <p>Connecte-toi pour accéder à ce contenu</p>
+      </IonText>
+      <form @submit.prevent="sendEmail">
+        <IonList id="login-form">
+          <IonItem lines="full">
+            <IonInput
+              v-model="email"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              required
+              autocapitalize="off"
+              :clear-input="true"
+              label="Entre ton email ici"
+              label-placement="floating"
+              helper-text="Utilise une addresse a laquelle tu as acces depuis ton telephone"
+            />
+          </IonItem>
+          <IonItem lines="none">
+            <IonCheckbox slot="start" v-model="dgprChecked" class="ion-no-margin ion-margin-end" />
+            <IonLabel class=""> J'accepte les <a @click="showPrivacyNotice">conditions d'utilisation</a> </IonLabel>
+          </IonItem>
+          <IonButton expand="block" :color="sendButtonColor" @click="sendEmail">
+            <IonSpinner v-if="isSendingEmail" />
+            <span v-else>{{ sendButtonText }}</span>
+          </IonButton>
+          <IonButton expand="block" color="tertiary" @click="signInWithClipboard">
+            <IonSpinner v-if="isValidating" />
+            <span v-else>J'ai copié le lien de l'email</span>
+          </IonButton>
+        </IonList>
+      </form>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 ion-button {

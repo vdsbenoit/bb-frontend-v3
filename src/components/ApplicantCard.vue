@@ -1,35 +1,3 @@
-<template>
-  <ion-card v-if="isLoadingApplicants || errorLoadingApplicants || applicants.length > 0">
-    <ion-card-header>
-      <ion-card-title>{{ attendantGroupName }} ({{ attendantGroupCity }})</ion-card-title>
-    </ion-card-header>
-    <ion-card-content class="ion-no-padding ion-padding-vertical">
-      <div v-if="isLoadingApplicants" class="not-found" style="background: transparent">
-        <ion-spinner />
-      </div>
-      <div v-else-if="errorLoadingApplicants" class="not-found">
-        <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">
-          Impossible de charger les candidats
-        </ion-text>
-      </div>
-      <ion-list lines="full">
-        <ion-item v-for="applicant in applicants" :key="applicant.id" @click="handleRequest(applicant)">
-          <ion-label>
-            <ion-text style="font-weight: bold">
-              {{ applicant.name }}
-            </ion-text>
-            <ion-text>&nbsp;{{ applicant.email }}</ion-text>
-          </ion-label>
-          <ion-badge slot="end" :color="badgeColor(applicant)">
-            {{ getRoleByValue(applicant.requestedRole ?? -1) }}
-          </ion-badge>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-</template>
-
 <script lang="ts" setup>
 import type { VueFireUserProfile } from '@/types'
 import {
@@ -175,5 +143,37 @@ function handleRequest(applicant: VueFireUserProfile) {
   void void choicePopup('Continuer?', choices, choicePopupHandler, '', message)
 }
 </script>
+
+<template>
+  <IonCard v-if="isLoadingApplicants || errorLoadingApplicants || applicants.length > 0">
+    <IonCardHeader>
+      <IonCardTitle>{{ attendantGroupName }} ({{ attendantGroupCity }})</IonCardTitle>
+    </IonCardHeader>
+    <IonCardContent class="ion-no-padding ion-padding-vertical">
+      <div v-if="isLoadingApplicants" class="not-found" style="background: transparent">
+        <IonSpinner />
+      </div>
+      <div v-else-if="errorLoadingApplicants" class="not-found">
+        <strong class="capitalize">Erreur</strong>
+        <IonText color="error">
+          Impossible de charger les candidats
+        </IonText>
+      </div>
+      <IonList lines="full">
+        <IonItem v-for="applicant in applicants" :key="applicant.id" @click="handleRequest(applicant)">
+          <IonLabel>
+            <IonText style="font-weight: bold">
+              {{ applicant.name }}
+            </IonText>
+            <IonText>&nbsp;{{ applicant.email }}</IonText>
+          </IonLabel>
+          <IonBadge slot="end" :color="badgeColor(applicant)">
+            {{ getRoleByValue(applicant.requestedRole ?? -1) }}
+          </IonBadge>
+        </IonItem>
+      </IonList>
+    </IonCardContent>
+  </IonCard>
+</template>
 
 <style scoped></style>

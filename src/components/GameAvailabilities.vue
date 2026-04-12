@@ -1,17 +1,3 @@
-<template>
-  <div>
-    <ion-badge
-      v-for="(availability, i) in availabilities"
-      :key="i"
-      slot="end"
-      class="ion-no-margin ion-margin-start"
-      :color="availability.color"
-    >
-      {{ availability.nbAttendants }}
-    </ion-badge>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import type { Game } from '@/types'
 import { IonBadge } from '@ionic/vue'
@@ -49,5 +35,19 @@ const availabilities = computed(() => {
   return data
 })
 </script>
+
+<template>
+  <div>
+    <IonBadge
+      v-for="(availability, i) in availabilities"
+      :key="i"
+      slot="end"
+      class="ion-no-margin ion-margin-start"
+      :color="availability.color"
+    >
+      {{ availability.nbAttendants }}
+    </IonBadge>
+  </div>
+</template>
 
 <style scoped></style>

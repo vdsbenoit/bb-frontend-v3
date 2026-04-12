@@ -1,67 +1,3 @@
-<template>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Section</ion-card-title>
-    </ion-card-header>
-    <ion-card-content v-if="!printableScores" class="ion-no-padding ion-padding-vertical">
-      <div v-if="isLoading" class="ion-text-center ion-align-items-center">
-        <ion-spinner />
-      </div>
-      <div v-else-if="errorLoading" class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">
-          Erreur lors du chargement
-        </h2>
-      </div>
-      <transition-group v-else-if="groups.length > 0" name="fade-slide" tag="ion-list">
-        <ion-item
-          v-for="(group, index) in groups"
-          :key="group.id"
-          :router-link="`/player-group/${group.id}`"
-          router-direction="forward"
-        >
-          <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">
-            {{ index + 1 }}
-          </ion-badge>
-          <ion-label class="ion-text-wrap">
-            <b>{{ group.id }}</b> {{ group.name }} <ion-text color="medium"> ({{ group.city }}) </ion-text>
-          </ion-label>
-          <ion-badge slot="end" class="ion-no-margin" color="primary">
-            {{ group.meanScore }}
-          </ion-badge>
-        </ion-item>
-      </transition-group>
-      <div v-else>
-        <h2 class="ion-text-center ion-align-items-center">
-          Pas de classement
-        </h2>
-      </div>
-    </ion-card-content>
-    <ion-card-content v-else>
-      <div>
-        <br><br>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Section</th>
-              <th>Ville</th>
-              <th>Moyenne</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(group, index) in groups" :key="index">
-              <td>{{ index + 1 }}</td>
-              <td>{{ group.name }}</td>
-              <td>{{ group.city }}</td>
-              <td>{{ group.meanScore }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </ion-card-content>
-  </ion-card>
-</template>
-
 <script setup lang="ts">
 import {
   IonBadge,
@@ -93,6 +29,70 @@ watch(errorLoading, (error) => {
   }
 })
 </script>
+
+<template>
+  <IonCard>
+    <IonCardHeader>
+      <IonCardTitle>Section</IonCardTitle>
+    </IonCardHeader>
+    <IonCardContent v-if="!printableScores" class="ion-no-padding ion-padding-vertical">
+      <div v-if="isLoading" class="ion-text-center ion-align-items-center">
+        <IonSpinner />
+      </div>
+      <div v-else-if="errorLoading" class="not-found">
+        <h2 class="ion-text-center ion-align-items-center">
+          Erreur lors du chargement
+        </h2>
+      </div>
+      <transition-group v-else-if="groups.length > 0" name="fade-slide" tag="ion-list">
+        <IonItem
+          v-for="(group, index) in groups"
+          :key="group.id"
+          :router-link="`/player-group/${group.id}`"
+          router-direction="forward"
+        >
+          <IonBadge slot="start" class="ion-no-margin ion-margin-end" color="medium">
+            {{ index + 1 }}
+          </IonBadge>
+          <IonLabel class="ion-text-wrap">
+            <b>{{ group.id }}</b> {{ group.name }} <IonText color="medium"> ({{ group.city }}) </IonText>
+          </IonLabel>
+          <IonBadge slot="end" class="ion-no-margin" color="primary">
+            {{ group.meanScore }}
+          </IonBadge>
+        </IonItem>
+      </transition-group>
+      <div v-else>
+        <h2 class="ion-text-center ion-align-items-center">
+          Pas de classement
+        </h2>
+      </div>
+    </IonCardContent>
+    <IonCardContent v-else>
+      <div>
+        <br><br>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Section</th>
+              <th>Ville</th>
+              <th>Moyenne</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(group, index) in groups" :key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ group.name }}</td>
+              <td>{{ group.city }}</td>
+              <td>{{ group.meanScore }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </IonCardContent>
+  </IonCard>
+</template>
 
 <style scoped>
 .fade-slide-move,

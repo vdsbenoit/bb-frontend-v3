@@ -1,166 +1,3 @@
-<template>
-  <ion-page>
-    <header-component :page-title="pageTitle">
-      <ion-button v-if="isCurrentUserTeam" @click="unRegisterPlayer">
-        <ion-icon slot="icon-only" :icon="star" />
-      </ion-button>
-      <ion-button v-if="showRegisterButton" @click="registerPlayer">
-        <ion-icon slot="icon-only" :icon="starOutline" />
-      </ion-button>
-    </header-component>
-    <ion-content :fullscreen="true">
-      <refresher-component />
-      <div v-if="isLoadingTeam" class="ion-text-center">
-        <ion-spinner />
-      </div>
-      <div v-else-if="errorLoadingTeam" class="not-found">
-        <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">
-          Impossible de charger l'équipe
-        </ion-text>
-        <p>Retour à <a @click="router.back()">la page précédente</a></p>
-      </div>
-      <div v-else-if="!team" class="not-found">
-        <strong class="capitalize">Nous n'avons pas trouvé cette équipe...</strong>
-        <p>Retour à <a @click="router.back()">la page précédente</a></p>
-      </div>
-      <div v-else>
-        <ion-grid class="ion-padding-horizontal ion-padding-top">
-          <ion-row class="ion-align-items-center">
-            <ion-col class="ion-padding-start">
-              <div class="ion-align-items-center ion-justify-content-start" style="display: flex">
-                <ion-card-subtitle v-if="team.groupCity" class="ion-no-margin">
-                  {{ team.groupCity }}
-                </ion-card-subtitle>
-                <ion-button
-                  fill="clear"
-                  class="ion-no-padding ion-no-margin ion-margin-start"
-                  size="small"
-                  :router-link="`/player-group/${team.groupId}`"
-                  router-direction="root"
-                >
-                  Voir la section
-                </ion-button>
-              </div>
-              <h1 v-if="team.groupName" class="ion-no-margin" style="font-weight: bold">
-                {{ team.groupName }}
-              </h1>
-              <ion-spinner v-else />
-            </ion-col>
-            <ion-col class="numberCircle ion-padding-end">
-              <span>
-                {{ teamId }}
-              </span>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-
-        <ion-card v-if="showRanking">
-          <ion-card-header>
-            <ion-card-title>Score</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-list class="no-pointer">
-              <ion-item class="ion-no-padding">
-                <ion-label>Score de l'équipe</ion-label><ion-note slot="end">
-                  {{ team.score }}
-                </ion-note>
-              </ion-item>
-              <ion-item class="ion-no-padding">
-                <ion-label>Score de la section</ion-label>
-                <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">
-                  error
-                </ion-badge>
-                <ion-note v-else slot="end">
-                  <ion-spinner v-if="isLoadingPlayerGroup" />
-                  <span v-else>{{ playerGroup?.score }}</span>
-                </ion-note>
-              </ion-item>
-              <ion-item class="ion-no-padding" lines="none">
-                <ion-label>Moyenne de la section</ion-label>
-                <ion-badge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">
-                  error
-                </ion-badge>
-                <ion-note v-else slot="end">
-                  <ion-spinner v-if="isLoadingPlayerGroup" />
-                  <span v-else>{{ playerGroupMeanScore }}</span>
-                </ion-note>
-              </ion-item>
-            </ion-list>
-          </ion-card-content>
-        </ion-card>
-        <ion-button
-          v-if="showRegisterButton"
-          :disabled="isRegistering"
-          expand="block"
-          color="primary"
-          class="ion-margin"
-          @click="registerPlayer"
-        >
-          <ion-spinner v-if="isRegistering" />
-          <span v-else>C'est mon équipe </span>
-        </ion-button>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Programme</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div v-if="isLoadingMatches" class="ion-text-center">
-              <ion-spinner />
-            </div>
-            <ion-list-header v-else-if="errorLoadingMatches">
-              <strong class="capitalize">Erreur</strong>
-              <ion-text color="error">
-                Impossible de charger les duels
-              </ion-text>
-            </ion-list-header>
-            <ion-list-header v-else-if="matches && matches.length === 0">
-              <h2>Aucun duel trouvé</h2>
-            </ion-list-header>
-            <ion-list v-else>
-              <div v-for="[i, timeSlot] in playerSchedule.entries()" :key="i">
-                <ion-item v-if="Object.keys(breaks).includes(i.toString())" class="ion-no-padding">
-                  <ion-avatar slot="start" class="ion-margin-end">
-                    <ion-icon :icon="pauseSharp" />
-                  </ion-avatar>
-                  <ion-label>
-                    <span>{{ breaks[i] }}</span>
-                    <p>
-                      <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
-                    </p>
-                  </ion-label>
-                </ion-item>
-                <ion-item
-                  v-else
-                  :router-link="`/match/${getMatch(i)?.id}`"
-                  router-direction="forward"
-                  class="ion-no-padding"
-                >
-                  <ion-avatar slot="start" class="ion-margin-end">
-                    {{ getMatch(i)?.gameId }}
-                  </ion-avatar>
-                  <ion-label>
-                    <span class="ion-text-wrap">{{ getMatch(i)?.gameName }}</span>
-                    <p>
-                      <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
-                    </p>
-                  </ion-label>
-                  <ion-icon
-                    slot="end"
-                    :ios="getMatchStatusIcon(i).ios"
-                    :md="getMatchStatusIcon(i).md"
-                    :color="getMatchStatusIcon(i).color"
-                  />
-                </ion-item>
-              </div>
-            </ion-list>
-          </ion-card-content>
-        </ion-card>
-      </div>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import {
   IonAvatar,
@@ -345,6 +182,169 @@ async function unRegisterPlayer() {
   }
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent :page-title="pageTitle">
+      <IonButton v-if="isCurrentUserTeam" @click="unRegisterPlayer">
+        <IonIcon slot="icon-only" :icon="star" />
+      </IonButton>
+      <IonButton v-if="showRegisterButton" @click="registerPlayer">
+        <IonIcon slot="icon-only" :icon="starOutline" />
+      </IonButton>
+    </HeaderComponent>
+    <IonContent :fullscreen="true">
+      <RefresherComponent />
+      <div v-if="isLoadingTeam" class="ion-text-center">
+        <IonSpinner />
+      </div>
+      <div v-else-if="errorLoadingTeam" class="not-found">
+        <strong class="capitalize">Erreur</strong>
+        <IonText color="error">
+          Impossible de charger l'équipe
+        </IonText>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else-if="!team" class="not-found">
+        <strong class="capitalize">Nous n'avons pas trouvé cette équipe...</strong>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else>
+        <IonGrid class="ion-padding-horizontal ion-padding-top">
+          <IonRow class="ion-align-items-center">
+            <IonCol class="ion-padding-start">
+              <div class="ion-align-items-center ion-justify-content-start" style="display: flex">
+                <IonCardSubtitle v-if="team.groupCity" class="ion-no-margin">
+                  {{ team.groupCity }}
+                </IonCardSubtitle>
+                <IonButton
+                  fill="clear"
+                  class="ion-no-padding ion-no-margin ion-margin-start"
+                  size="small"
+                  :router-link="`/player-group/${team.groupId}`"
+                  router-direction="root"
+                >
+                  Voir la section
+                </IonButton>
+              </div>
+              <h1 v-if="team.groupName" class="ion-no-margin" style="font-weight: bold">
+                {{ team.groupName }}
+              </h1>
+              <IonSpinner v-else />
+            </IonCol>
+            <IonCol class="numberCircle ion-padding-end">
+              <span>
+                {{ teamId }}
+              </span>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+
+        <IonCard v-if="showRanking">
+          <IonCardHeader>
+            <IonCardTitle>Score</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <IonList class="no-pointer">
+              <IonItem class="ion-no-padding">
+                <IonLabel>Score de l'équipe</IonLabel><IonNote slot="end">
+                  {{ team.score }}
+                </IonNote>
+              </IonItem>
+              <IonItem class="ion-no-padding">
+                <IonLabel>Score de la section</IonLabel>
+                <IonBadge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">
+                  error
+                </IonBadge>
+                <IonNote v-else slot="end">
+                  <IonSpinner v-if="isLoadingPlayerGroup" />
+                  <span v-else>{{ playerGroup?.score }}</span>
+                </IonNote>
+              </IonItem>
+              <IonItem class="ion-no-padding" lines="none">
+                <IonLabel>Moyenne de la section</IonLabel>
+                <IonBadge v-if="errorLoadingPlayerGroup" slot="end" class="ion-no-margin" color="danger">
+                  error
+                </IonBadge>
+                <IonNote v-else slot="end">
+                  <IonSpinner v-if="isLoadingPlayerGroup" />
+                  <span v-else>{{ playerGroupMeanScore }}</span>
+                </IonNote>
+              </IonItem>
+            </IonList>
+          </IonCardContent>
+        </IonCard>
+        <IonButton
+          v-if="showRegisterButton"
+          :disabled="isRegistering"
+          expand="block"
+          color="primary"
+          class="ion-margin"
+          @click="registerPlayer"
+        >
+          <IonSpinner v-if="isRegistering" />
+          <span v-else>C'est mon équipe </span>
+        </IonButton>
+        <IonCard>
+          <IonCardHeader>
+            <IonCardTitle>Programme</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <div v-if="isLoadingMatches" class="ion-text-center">
+              <IonSpinner />
+            </div>
+            <IonListHeader v-else-if="errorLoadingMatches">
+              <strong class="capitalize">Erreur</strong>
+              <IonText color="error">
+                Impossible de charger les duels
+              </IonText>
+            </IonListHeader>
+            <IonListHeader v-else-if="matches && matches.length === 0">
+              <h2>Aucun duel trouvé</h2>
+            </IonListHeader>
+            <IonList v-else>
+              <div v-for="[i, timeSlot] in playerSchedule.entries()" :key="i">
+                <IonItem v-if="Object.keys(breaks).includes(i.toString())" class="ion-no-padding">
+                  <IonAvatar slot="start" class="ion-margin-end">
+                    <IonIcon :icon="pauseSharp" />
+                  </IonAvatar>
+                  <IonLabel>
+                    <span>{{ breaks[i] }}</span>
+                    <p>
+                      <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
+                    </p>
+                  </IonLabel>
+                </IonItem>
+                <IonItem
+                  v-else
+                  :router-link="`/match/${getMatch(i)?.id}`"
+                  router-direction="forward"
+                  class="ion-no-padding"
+                >
+                  <IonAvatar slot="start" class="ion-margin-end">
+                    {{ getMatch(i)?.gameId }}
+                  </IonAvatar>
+                  <IonLabel>
+                    <span class="ion-text-wrap">{{ getMatch(i)?.gameName }}</span>
+                    <p>
+                      <span class="time-slot">{{ timeSlot.start }} - {{ timeSlot.stop }}</span>
+                    </p>
+                  </IonLabel>
+                  <IonIcon
+                    slot="end"
+                    :ios="getMatchStatusIcon(i).ios"
+                    :md="getMatchStatusIcon(i).md"
+                    :color="getMatchStatusIcon(i).color"
+                  />
+                </IonItem>
+              </div>
+            </IonList>
+          </IonCardContent>
+        </IonCard>
+      </div>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 ion-avatar {

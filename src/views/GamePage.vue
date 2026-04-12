@@ -1,269 +1,3 @@
-<template>
-  <ion-page>
-    <header-component :page-title="pageTitle" />
-    <ion-content :fullscreen="true">
-      <refresher-component />
-      <div v-if="isLoadingGame" class="ion-text-center">
-        <ion-spinner />
-      </div>
-      <div v-else-if="errorLoadingGame" class="not-found">
-        <strong class="capitalize">Erreur</strong>
-        <ion-text color="error">
-          Impossible de charger le jeu
-        </ion-text>
-        <p>Retour à <a @click="router.back()">la page précédente</a></p>
-      </div>
-      <div v-else-if="!game" class="not-found">
-        <strong class="capitalize">Nous n'avons pas trouvé cette épreuve...</strong>
-        <p>Retour à <a @click="router.back()">la page précédente</a></p>
-      </div>
-      <div v-else>
-        <ion-grid class="ion-padding-horizontal ion-padding-top">
-          <ion-row class="ion-align-items-center">
-            <ion-col class="ion-padding-start">
-              <ion-card-subtitle>Circuit {{ game.circuit }}</ion-card-subtitle>
-              <h1 class="ion-no-margin" style="font-weight: bold">
-                {{ game.name }}
-              </h1>
-            </ion-col>
-            <ion-col class="numberCircle ion-padding-end">
-              <span>
-                {{ gameId }}
-              </span>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Responsables</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-list
-              v-for="timeSlot in attendantSchedule"
-              :key="timeSlot.id"
-              lines="none"
-              class="ion-no-margin ion-no-padding"
-            >
-              <ion-text color="primary">
-                <h2>{{ timeSlot.name }}</h2>
-              </ion-text>
-              <span
-                v-if="!game.attendants[timeSlot.id] || game.attendants[timeSlot.id].length < 1"
-                class="ion-padding-start"
-              >Pas encore de responsable inscrit</span>
-              <ion-item v-for="attendant in game.attendants[timeSlot.id]" v-else :key="attendant.id">
-                <ion-label class="ion-text-wrap" @click="goToProfile(attendant.id)">
-                  <ion-text style="font-weight: bold">
-                    {{ attendant.name }}
-                  </ion-text>
-                  <ion-text color="medium"> &nbsp;({{ attendant.groupName ?? '' }}) </ion-text>
-                </ion-label>
-                <ion-icon
-                  v-if="edit.isOn"
-                  :ios="closeOutline"
-                  :md="closeSharp"
-                  @click="removeAttendant(gameId, attendant.id, timeSlot.id)"
-                />
-              </ion-item>
-            </ion-list>
-            <ion-grid class="ion-margin-top">
-              <ion-row>
-                <ion-col v-if="canRegister.itself" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                  <my-action-sheet-button
-                    expand="block"
-                    color="primary"
-                    action-sheet-header="Quand ?"
-                    :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot }))"
-                    :callback="register"
-                    :payload="{ targetUser: currentUser }"
-                  >
-                    M'inscrire
-                  </my-action-sheet-button>
-                </ion-col>
-                <ion-col
-                  v-if="canRegister.itself && isUserRegisteredHere"
-                  size="12"
-                  size-sm="6"
-                  class="ion-no-padding ion-padding-horizontal"
-                >
-                  <ion-button expand="block" color="danger" @click="unregister">
-                    Se désinscrire
-                  </ion-button>
-                </ion-col>
-                <ion-col
-                  v-if="canRegister.group || canRegister.anyone"
-                  size="12"
-                  size-sm="6"
-                  class="ion-no-padding ion-padding-horizontal"
-                >
-                  <ion-button expand="block" :color="edit.isOn ? 'medium' : 'tertiary'" @click="toggleEditMode">
-                    {{ edit.isOn ? 'Arrêter la modification' : 'Modifier les animateurs' }}
-                  </ion-button>
-                </ion-col>
-                <ion-col v-if="canEditGameSettings" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-                  <ion-button v-if="isTogglingNoScores" expand="block" color="medium">
-                    <ion-spinner />
-                  </ion-button>
-                  <ion-button v-else-if="game.noScores" expand="block" color="success" @click="toggleNoScores">
-                    Réactiver les scores
-                  </ion-button>
-                  <ion-button v-else expand="block" color="danger" @click="toggleNoScores">
-                    Désactiver les scores
-                  </ion-button>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card-content>
-        </ion-card>
-        <ion-card v-if="edit.isOn">
-          <ion-card-header>
-            <ion-card-title>Enregistrer un animateur</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-grid class="">
-              <ion-row>
-                <ion-col size="12" size-sm="6">
-                  <ion-spinner v-if="isLoadingAttendantGroups" />
-                  <div v-if="errorLoadingAttendantGroups" class="ion-text-center">
-                    <strong class="capitalize ion-text-center">Erreur</strong>
-                    <ion-text color="error">
-                      Impossible de charger les groupes d'animateurs
-                    </ion-text>
-                  </div>
-                  <ion-select
-                    v-else-if="attendantGroups && attendantGroups.length > 0"
-                    v-model="edit.selectedAttendantGroupId"
-                    placeholder="Choisir section"
-                    interface="action-sheet"
-                  >
-                    <ion-select-option v-for="group in attendantGroups" :key="group.id" :value="group.id">
-                      {{ group.name }} ({{ group.city }})
-                    </ion-select-option>
-                  </ion-select>
-                  <div v-else class="ion-text-center ion-padding-top">
-                    Aucune section trouvée
-                  </div>
-                </ion-col>
-                <ion-col v-if="edit.selectedAttendantGroupId !== DEFAULT_GROUP_ID" size="12" size-sm="6">
-                  <ion-spinner v-if="isLoadingAttendants" />
-                  <div v-if="errorLoadingAttendants" class="ion-text-center">
-                    <strong class="capitalize ion-text-center">Erreur</strong>
-                    <ion-text color="error">
-                      Impossible de charger les animateurs
-                    </ion-text>
-                  </div>
-                  <ion-select
-                    v-else-if="attendants && attendants.length > 0"
-                    v-model="edit.selectedAttendantId"
-                    placeholder="Choisir animateur"
-                    interface="action-sheet"
-                  >
-                    <ion-select-option
-                      v-for="attendant in attendants"
-                      :key="attendant.id"
-                      color="dark"
-                      :value="attendant"
-                    >
-                      {{ getUserName(attendant) }}
-                    </ion-select-option>
-                  </ion-select>
-                  <p v-else class="ion-text-center ion-padding-top">
-                    Aucun animateur trouvé
-                  </p>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col
-                  v-if="edit.selectedAttendantId"
-                  size="12"
-                  size-sm="6"
-                  class="ion-no-padding ion-padding-horizontal"
-                >
-                  <my-action-sheet-button
-                    expand="block"
-                    color="primary"
-                    action-sheet-header="Quand ?"
-                    :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot }))"
-                    :callback="register"
-                    :payload="{ targetUser: edit.selectedAttendantId }"
-                  >
-                    Inscrire {{ getUserName(edit.selectedAttendantId) }}
-                  </my-action-sheet-button>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card-content>
-        </ion-card>
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Programme</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div v-if="isLoadingMatches" class="ion-text-center">
-              <ion-spinner />
-            </div>
-            <div v-else-if="errorLoadingMatches" class="ion-text-center">
-              <strong class="capitalize">Erreur</strong>
-              <ion-text color="error">
-                Impossible de charger les duels
-              </ion-text>
-            </div>
-            <ion-list-header v-else-if="matches && matches.length === 0">
-              <h2>Aucun duel trouvé</h2>
-            </ion-list-header>
-            <ion-list v-else>
-              <div v-for="[i, timeSlot] in playerSchedule.entries()" :key="i">
-                <ion-item
-                  v-if="Object.keys(breaks).includes(i.toString())"
-                  :class="{ 'item-no-padding': isPlatform('ios') }"
-                >
-                  <ion-label class="ion-text-wrap">
-                    <ion-icon
-                      :ios="pauseCircleOutline"
-                      :md="pauseCircleSharp"
-                      style="vertical-align: middle"
-                      class="schedule-icon ion-margin-end"
-                    />
-                    <ion-text class="time-slot ion-margin-end"> {{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
-                    <ion-text color="primary" class="team-id pause">
-                      {{ breaks[i] }}
-                    </ion-text>
-                  </ion-label>
-                </ion-item>
-                <ion-item
-                  v-else
-                  :router-link="`/match/${getMatch(i)?.id}`"
-                  router-direction="forward"
-                  :class="{ 'item-no-padding': isPlatform('ios') }"
-                >
-                  <ion-label class="ion-text-wrap">
-                    <ion-icon
-                      :ios="peopleOutline"
-                      :md="peopleSharp"
-                      style="vertical-align: middle"
-                      class="schedule-icon ion-margin-end"
-                    />
-                    <ion-text class="time-slot ion-margin-end"> {{ timeSlot.start }} - {{ timeSlot.stop }} </ion-text>
-                    <ion-text class="team-id" :class="[getTeamIdClass(i, 0)]">
-                      {{ getMatch(i)?.playerTeamIds[0] }}
-                    </ion-text>
-                    <ion-text class="separator">
-                      {{ getMatch(i)?.draw ? ' = ' : ' vs ' }}
-                    </ion-text>
-                    <ion-text class="team-id" :class="[getTeamIdClass(i, 1)]">
-                      {{ getMatch(i)?.playerTeamIds[1] }}
-                    </ion-text>
-                  </ion-label>
-                </ion-item>
-              </div>
-            </ion-list>
-          </ion-card-content>
-        </ion-card>
-      </div>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import type { AttendantTimeSlot, VueFireUserProfile } from '@/types'
 import {
@@ -554,6 +288,272 @@ async function toggleNoScores() {
   isTogglingNoScores.value = false
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent :page-title="pageTitle" />
+    <IonContent :fullscreen="true">
+      <RefresherComponent />
+      <div v-if="isLoadingGame" class="ion-text-center">
+        <IonSpinner />
+      </div>
+      <div v-else-if="errorLoadingGame" class="not-found">
+        <strong class="capitalize">Erreur</strong>
+        <IonText color="error">
+          Impossible de charger le jeu
+        </IonText>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else-if="!game" class="not-found">
+        <strong class="capitalize">Nous n'avons pas trouvé cette épreuve...</strong>
+        <p>Retour à <a @click="router.back()">la page précédente</a></p>
+      </div>
+      <div v-else>
+        <IonGrid class="ion-padding-horizontal ion-padding-top">
+          <IonRow class="ion-align-items-center">
+            <IonCol class="ion-padding-start">
+              <IonCardSubtitle>Circuit {{ game.circuit }}</IonCardSubtitle>
+              <h1 class="ion-no-margin" style="font-weight: bold">
+                {{ game.name }}
+              </h1>
+            </IonCol>
+            <IonCol class="numberCircle ion-padding-end">
+              <span>
+                {{ gameId }}
+              </span>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+        <IonCard>
+          <IonCardHeader>
+            <IonCardTitle>Responsables</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <IonList
+              v-for="timeSlot in attendantSchedule"
+              :key="timeSlot.id"
+              lines="none"
+              class="ion-no-margin ion-no-padding"
+            >
+              <IonText color="primary">
+                <h2>{{ timeSlot.name }}</h2>
+              </IonText>
+              <span
+                v-if="!game.attendants[timeSlot.id] || game.attendants[timeSlot.id].length < 1"
+                class="ion-padding-start"
+              >Pas encore de responsable inscrit</span>
+              <IonItem v-for="attendant in game.attendants[timeSlot.id]" v-else :key="attendant.id">
+                <IonLabel class="ion-text-wrap" @click="goToProfile(attendant.id)">
+                  <IonText style="font-weight: bold">
+                    {{ attendant.name }}
+                  </IonText>
+                  <IonText color="medium"> &nbsp;({{ attendant.groupName ?? '' }}) </IonText>
+                </IonLabel>
+                <IonIcon
+                  v-if="edit.isOn"
+                  :ios="closeOutline"
+                  :md="closeSharp"
+                  @click="removeAttendant(gameId, attendant.id, timeSlot.id)"
+                />
+              </IonItem>
+            </IonList>
+            <IonGrid class="ion-margin-top">
+              <IonRow>
+                <IonCol v-if="canRegister.itself" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+                  <MyActionSheetButton
+                    expand="block"
+                    color="primary"
+                    action-sheet-header="Quand ?"
+                    :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot }))"
+                    :callback="register"
+                    :payload="{ targetUser: currentUser }"
+                  >
+                    M'inscrire
+                  </MyActionSheetButton>
+                </IonCol>
+                <IonCol
+                  v-if="canRegister.itself && isUserRegisteredHere"
+                  size="12"
+                  size-sm="6"
+                  class="ion-no-padding ion-padding-horizontal"
+                >
+                  <IonButton expand="block" color="danger" @click="unregister">
+                    Se désinscrire
+                  </IonButton>
+                </IonCol>
+                <IonCol
+                  v-if="canRegister.group || canRegister.anyone"
+                  size="12"
+                  size-sm="6"
+                  class="ion-no-padding ion-padding-horizontal"
+                >
+                  <IonButton expand="block" :color="edit.isOn ? 'medium' : 'tertiary'" @click="toggleEditMode">
+                    {{ edit.isOn ? 'Arrêter la modification' : 'Modifier les animateurs' }}
+                  </IonButton>
+                </IonCol>
+                <IonCol v-if="canEditGameSettings" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+                  <IonButton v-if="isTogglingNoScores" expand="block" color="medium">
+                    <IonSpinner />
+                  </IonButton>
+                  <IonButton v-else-if="game.noScores" expand="block" color="success" @click="toggleNoScores">
+                    Réactiver les scores
+                  </IonButton>
+                  <IonButton v-else expand="block" color="danger" @click="toggleNoScores">
+                    Désactiver les scores
+                  </IonButton>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </IonCardContent>
+        </IonCard>
+        <IonCard v-if="edit.isOn">
+          <IonCardHeader>
+            <IonCardTitle>Enregistrer un animateur</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <IonGrid class="">
+              <IonRow>
+                <IonCol size="12" size-sm="6">
+                  <IonSpinner v-if="isLoadingAttendantGroups" />
+                  <div v-if="errorLoadingAttendantGroups" class="ion-text-center">
+                    <strong class="capitalize ion-text-center">Erreur</strong>
+                    <IonText color="error">
+                      Impossible de charger les groupes d'animateurs
+                    </IonText>
+                  </div>
+                  <IonSelect
+                    v-else-if="attendantGroups && attendantGroups.length > 0"
+                    v-model="edit.selectedAttendantGroupId"
+                    placeholder="Choisir section"
+                    interface="action-sheet"
+                  >
+                    <IonSelectOption v-for="group in attendantGroups" :key="group.id" :value="group.id">
+                      {{ group.name }} ({{ group.city }})
+                    </IonSelectOption>
+                  </IonSelect>
+                  <div v-else class="ion-text-center ion-padding-top">
+                    Aucune section trouvée
+                  </div>
+                </IonCol>
+                <IonCol v-if="edit.selectedAttendantGroupId !== DEFAULT_GROUP_ID" size="12" size-sm="6">
+                  <IonSpinner v-if="isLoadingAttendants" />
+                  <div v-if="errorLoadingAttendants" class="ion-text-center">
+                    <strong class="capitalize ion-text-center">Erreur</strong>
+                    <IonText color="error">
+                      Impossible de charger les animateurs
+                    </IonText>
+                  </div>
+                  <IonSelect
+                    v-else-if="attendants && attendants.length > 0"
+                    v-model="edit.selectedAttendantId"
+                    placeholder="Choisir animateur"
+                    interface="action-sheet"
+                  >
+                    <IonSelectOption
+                      v-for="attendant in attendants"
+                      :key="attendant.id"
+                      color="dark"
+                      :value="attendant"
+                    >
+                      {{ getUserName(attendant) }}
+                    </IonSelectOption>
+                  </IonSelect>
+                  <p v-else class="ion-text-center ion-padding-top">
+                    Aucun animateur trouvé
+                  </p>
+                </IonCol>
+              </IonRow>
+              <IonRow>
+                <IonCol
+                  v-if="edit.selectedAttendantId"
+                  size="12"
+                  size-sm="6"
+                  class="ion-no-padding ion-padding-horizontal"
+                >
+                  <MyActionSheetButton
+                    expand="block"
+                    color="primary"
+                    action-sheet-header="Quand ?"
+                    :buttons="attendantSchedule.map(timeSlot => ({ text: timeSlot.name, data: timeSlot }))"
+                    :callback="register"
+                    :payload="{ targetUser: edit.selectedAttendantId }"
+                  >
+                    Inscrire {{ getUserName(edit.selectedAttendantId) }}
+                  </MyActionSheetButton>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </IonCardContent>
+        </IonCard>
+        <IonCard>
+          <IonCardHeader>
+            <IonCardTitle>Programme</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <div v-if="isLoadingMatches" class="ion-text-center">
+              <IonSpinner />
+            </div>
+            <div v-else-if="errorLoadingMatches" class="ion-text-center">
+              <strong class="capitalize">Erreur</strong>
+              <IonText color="error">
+                Impossible de charger les duels
+              </IonText>
+            </div>
+            <IonListHeader v-else-if="matches && matches.length === 0">
+              <h2>Aucun duel trouvé</h2>
+            </IonListHeader>
+            <IonList v-else>
+              <div v-for="[i, timeSlot] in playerSchedule.entries()" :key="i">
+                <IonItem
+                  v-if="Object.keys(breaks).includes(i.toString())"
+                  :class="{ 'item-no-padding': isPlatform('ios') }"
+                >
+                  <IonLabel class="ion-text-wrap">
+                    <IonIcon
+                      :ios="pauseCircleOutline"
+                      :md="pauseCircleSharp"
+                      style="vertical-align: middle"
+                      class="schedule-icon ion-margin-end"
+                    />
+                    <IonText class="time-slot ion-margin-end"> {{ timeSlot.start }} - {{ timeSlot.stop }} </IonText>
+                    <IonText color="primary" class="team-id pause">
+                      {{ breaks[i] }}
+                    </IonText>
+                  </IonLabel>
+                </IonItem>
+                <IonItem
+                  v-else
+                  :router-link="`/match/${getMatch(i)?.id}`"
+                  router-direction="forward"
+                  :class="{ 'item-no-padding': isPlatform('ios') }"
+                >
+                  <IonLabel class="ion-text-wrap">
+                    <IonIcon
+                      :ios="peopleOutline"
+                      :md="peopleSharp"
+                      style="vertical-align: middle"
+                      class="schedule-icon ion-margin-end"
+                    />
+                    <IonText class="time-slot ion-margin-end"> {{ timeSlot.start }} - {{ timeSlot.stop }} </IonText>
+                    <IonText class="team-id" :class="[getTeamIdClass(i, 0)]">
+                      {{ getMatch(i)?.playerTeamIds[0] }}
+                    </IonText>
+                    <IonText class="separator">
+                      {{ getMatch(i)?.draw ? ' = ' : ' vs ' }}
+                    </IonText>
+                    <IonText class="team-id" :class="[getTeamIdClass(i, 1)]">
+                      {{ getMatch(i)?.playerTeamIds[1] }}
+                    </IonText>
+                  </IonLabel>
+                </IonItem>
+              </div>
+            </IonList>
+          </IonCardContent>
+        </IonCard>
+      </div>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 .item-no-padding {

@@ -1,388 +1,3 @@
-<template>
-  <ion-page>
-    <header-component :page-title="pageTitle" />
-    <ion-content :fullscreen="true" class="ion-padding">
-      <refresher-component />
-      <div v-if="!isProfile" class="not-found ion-padding">
-        <strong class="capitalize">Nous n'avons pas trouvé ce profil...</strong>
-        <p>Retour à <a @click="router.go(-1)">la page précédente</a></p>
-      </div>
-      <ion-card v-else class="ion-no-margin ion-margin-bottom ion-padding-bottom">
-        <ion-list>
-          <!-- Name (edit mode) -->
-          <ion-item v-if="formData.name.isEditing" lines="full">
-            <ion-input
-              v-model="formData.name.value"
-              name="name"
-              type="text"
-              label="Nom"
-              label-placement="stacked"
-              @keydown.enter="setName"
-            />
-            <ion-icon slot="end" :ios="checkmarkOutline" :md="checkmarkSharp" @click="setName" />
-            <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="resetFormData()" />
-          </ion-item>
-          <!-- Name (read mode) -->
-          <ion-item v-else lines="full">
-            <ion-input
-              name="name"
-              type="text"
-              :readonly="true"
-              inputmode="none"
-              label="Nom"
-              label-placement="stacked"
-              :value="formData.name.value"
-            />
-            <ion-spinner v-if="formData.name.isUpdating" />
-            <ion-icon
-              v-else-if="canEditProfile"
-              slot="end"
-              :ios="pencilOutline"
-              :md="pencilSharp"
-              @click="formData.name.isEditing = true"
-            />
-          </ion-item>
-          <!-- Role (edit mode) -->
-          <ion-item v-if="formData.role.isEditing" lines="full">
-            <ion-select
-              v-model="formData.role.value"
-              cancel-text="Annuler"
-              interface="action-sheet"
-              label="Role"
-              label-placement="stacked"
-              @ion-change="setRole"
-              @ion-cancel="resetFormData()"
-            >
-              <ion-select-option v-for="(value, role) in selectableRoles" :key="value" :value="value">
-                {{ role }}
-              </ion-select-option>
-            </ion-select>
-            <ion-icon
-              slot="end"
-              :ios="closeOutline"
-              :md="closeSharp"
-              @click="resetFormData()"
-            />
-          </ion-item>
-          <!-- Role (read mode) -->
-          <ion-item v-else lines="full">
-            <ion-input
-              type="text"
-              :readonly="true"
-              inputmode="none"
-              label="Role"
-              label-placement="stacked"
-              :value="getRoleByValue(formData.role.value)"
-            />
-            <ion-spinner v-if="formData.role.isUpdating" />
-            <ion-icon
-              v-else-if="canEditRole"
-              slot="end"
-              :ios="pencilOutline"
-              :md="pencilSharp"
-              @click="formData.role.isEditing = true"
-            />
-          </ion-item>
-          <!-- PLAYER FIELDS -->
-          <div v-if="isPlayer">
-            <!-- Player Group Category (edit mode) -->
-            <ion-item v-if="formData.playerGroup.isEditing" lines="full">
-              <ion-input
-                v-if="!appConfig"
-                type="text"
-                readonly
-                value="Error: cannot load group categories (i.e. appConfig)"
-              />
-              <ion-select
-                v-else
-                v-model="formData.playerGroup.categoryId"
-                cancel-text="Annuler"
-                interface="action-sheet"
-                label="Catégorie de section"
-                label-placement="stacked"
-                @ion-change="onCategoryChange()"
-                @ion-cancel="resetFormData()"
-              >
-                <ion-select-option
-                  v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories"
-                  :key="groupCategoryId"
-                  :value="groupCategoryId"
-                >
-                  {{ groupCategory.name }}
-                </ion-select-option>
-              </ion-select>
-              <ion-icon
-                slot="end"
-                :ios="closeOutline"
-                :md="closeSharp"
-                @click="resetFormData()"
-              />
-            </ion-item>
-            <!-- Player Group Category (read mode) -->
-            <ion-item v-else lines="full">
-              <p v-if="!appConfig" class="field-error">
-                Error: cannot load group categories (i.e. appConfig)
-              </p>
-              <ion-input
-                v-else-if="appConfig"
-                type="text"
-                readonly
-                label="Catégorie de section"
-                label-placement="stacked"
-                :value="appConfig.groupCategories[formData.playerGroup.categoryId]?.name"
-              />
-              <ion-spinner v-else />
-              <ion-spinner v-if="formData.playerGroup.isUpdating" />
-              <ion-icon
-                v-else-if="canEditProfile"
-                slot="end"
-                :ios="pencilOutline"
-                :md="pencilSharp"
-                @click="formData.playerGroup.isEditing = true"
-              />
-            </ion-item>
-            <!-- Player Group (edit mode) -->
-            <ion-item v-if="formData.playerGroup.isEditing" lines="full">
-              <p v-if="formData.playerGroup.categoryId === DEFAULT_GROUP_CATEGORY_ID" class="field-error">
-                Selectionne d'abord un type de section
-              </p>
-              <ion-select
-                v-else-if="playerGroups.length > 0"
-                v-model="formData.playerGroup.id"
-                cancel-text="Annuler"
-                interface="action-sheet"
-                label="Section"
-                label-placement="stacked"
-                @ion-dismiss="setPlayerGroup"
-                @ion-cancel="resetFormData()"
-              >
-                <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">
-                  {{ playerGroup.name }}
-                </ion-select-option>
-              </ion-select>
-              <p v-else class="field-error">
-                Pas de section pour ce type de section
-              </p>
-              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="resetFormData()" />
-            </ion-item>
-            <!-- Player Group (read mode) -->
-            <ion-item v-else lines="full">
-              <ion-input
-                name="playerGroup"
-                type="text"
-                :readonly="true"
-                inputmode="none"
-                label="Section"
-                label-placement="stacked"
-                :value="formData.playerGroup.name"
-                @click="goToPlayerGroupPage(formData.playerGroup.id)"
-              />
-              <ion-spinner v-if="formData.playerGroup.isUpdating" />
-              <ion-icon
-                v-else-if="canEditProfile"
-                slot="end"
-                :ios="pencilOutline"
-                :md="pencilSharp"
-                @click="formData.playerGroup.isEditing = true"
-              />
-            </ion-item>
-            <!-- Team (edit mode) -->
-            <ion-item v-if="formData.team.isEditing" lines="full">
-              <ion-select
-                v-if="selectedPlayerGroup && selectedPlayerGroup.teams.length > 0"
-                v-model="formData.team.value"
-                cancel-text="Annuler"
-                interface="action-sheet"
-                label="Équipe"
-                label-placement="stacked"
-                @ion-change="setTeam"
-                @ion-cancel="resetFormData()"
-              >
-                <ion-select-option v-for="team in selectedPlayerGroup.teams" :key="team" :value="team">
-                  {{ team }}
-                </ion-select-option>
-              </ion-select>
-              <p v-else class="field-error">
-                Pas de team pour cette section
-              </p>
-              <ion-icon
-                slot="end"
-                :ios="closeOutline"
-                :md="closeSharp"
-                @click="resetFormData()"
-              />
-            </ion-item>
-            <!-- Team (read mode) -->
-            <ion-item v-else lines="full">
-              <ion-input
-                type="text"
-                :readonly="true"
-                inputmode="none"
-                label="Équipe"
-                label-placement="stacked"
-                :value="formData.team.value"
-                @click="goToTeamPage(formData.team.value)"
-              />
-              <ion-spinner v-if="formData.team.isUpdating" />
-              <ion-icon
-                v-else-if="canEditProfile"
-                slot="end"
-                :ios="pencilOutline"
-                :md="pencilSharp"
-                @click="formData.team.isEditing = true"
-              />
-            </ion-item>
-          </div>
-          <div v-if="isAttendant || isStaff">
-            <!-- Attendant Group (edit mode) -->
-            <ion-item v-if="formData.attendantGroup.isEditing" lines="full">
-              <ion-select
-                v-if="attendantGroups.length > 0"
-                v-model="formData.attendantGroup.id"
-                cancel-text="Annuler"
-                interface="action-sheet"
-                label="Section"
-                label-placement="stacked"
-                @ion-change="setAttendantGroup"
-                @ion-cancel="resetFormData()"
-              >
-                <ion-select-option
-                  v-for="attenantGroup in attendantGroups"
-                  :key="attenantGroup.id"
-                  :value="attenantGroup.id"
-                >
-                  {{ attenantGroup.name }}
-                </ion-select-option>
-              </ion-select>
-              <p v-else class="field-error">
-                Pas de section
-              </p>
-              <ion-icon
-                slot="end"
-                :ios="closeOutline"
-                :md="closeSharp"
-                @click="resetFormData()"
-              />
-            </ion-item>
-            <!-- Attendant Group (read mode) -->
-            <ion-item v-else lines="full">
-              <ion-input
-                name="attendantGroup"
-                type="text"
-                :readonly="true"
-                inputmode="none"
-                label="Section"
-                label-placement="stacked"
-                :value="formData.attendantGroup.name"
-                @click="goToAttendantGroupPage(formData.attendantGroup.id)"
-              />
-              <ion-spinner v-if="formData.attendantGroup.isUpdating" />
-              <ion-icon
-                v-else-if="canEditAttendantGroup"
-                slot="end"
-                :ios="pencilOutline"
-                :md="pencilSharp"
-                @click="editAttendantGroup"
-              />
-            </ion-item>
-          </div>
-          <div v-if="isAttendant">
-            <div v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
-              <!-- Attendant Game (edit mode) -->
-              <ion-item v-if="formData.attendantGames.isEditing" lines="full">
-                <ion-select
-                  v-model="formData.attendantGames.ids[timeSlot.id]"
-                  cancel-text="Annuler"
-                  interface="action-sheet"
-                  :label="`Épreuve ${timeSlot.name}`"
-                  label-placement="stacked"
-                  @ion-change="setGame(timeSlot.id)"
-                  @ion-cancel="resetFormData()"
-                >
-                  <ion-select-option v-for="game in games" :key="game.id" :value="game.id">
-                    {{ game.id }}{{ isTimeSlotFull(game, timeSlot.id) ? ' [COMPLET] ' : ' ' }}{{ game.name }}
-                  </ion-select-option>
-                </ion-select>
-                <ion-icon
-                  slot="end"
-                  :ios="closeOutline"
-                  :md="closeSharp"
-                  @click="resetFormData()"
-                />
-              </ion-item>
-              <!-- Attendant Game (read mode) -->
-              <ion-item v-else lines="full">
-                <ion-input
-                  v-if="timeSlot.id in formData.attendantGames.names"
-                  type="text"
-                  :readonly="true"
-                  inputmode="none"
-                  :label="`Épreuve ${timeSlot.name}`"
-                  label-placement="stacked"
-                  :value="`${formData.attendantGames.ids[timeSlot.id]} ${formData.attendantGames.names[timeSlot.id]}`"
-                  @click="goToGamePage(formData.attendantGames.ids[timeSlot.id])"
-                />
-                <ion-input
-                  v-else
-                  type="text"
-                  :readonly="true"
-                  inputmode="none"
-                  :label="`Épreuve ${timeSlot.name}`"
-                  label-placement="stacked"
-                  value="Pas d'épreuve sélectionnée"
-                />
-                <ion-spinner v-if="formData.attendantGames.isUpdating" />
-                <ion-icon
-                  v-else-if="canEditGames"
-                  slot="end"
-                  :ios="pencilOutline"
-                  :md="pencilSharp"
-                  @click="editGames()"
-                />
-              </ion-item>
-            </div>
-          </div>
-
-          <!-- email -->
-          <ion-item v-if="canSeeEmail" lines="full">
-            <ion-input
-              v-if="userProfile"
-              type="text"
-              :readonly="true"
-              inputmode="none"
-              label="Adresse email"
-              label-placement="stacked"
-              :value="userProfile.email"
-            />
-            <p v-else class="field-error">
-              Erreur: impossible de charger l'adresse email
-            </p>
-          </ion-item>
-        </ion-list>
-        <ion-grid class="ion-no-padding ion-margin-top">
-          <ion-row>
-            <ion-col v-if="isOwnProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-              <ion-button expand="block" class="" color="warning" @click="logOut">
-                Se déconnecter
-              </ion-button>
-            </ion-col>
-            <ion-col v-if="canDeleteProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-              <ion-button expand="block" class="" color="danger" @click="removeAccount">
-                Supprimer le compte
-              </ion-button>
-            </ion-col>
-            <ion-col v-if="canResetOnboarding" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
-              <ion-button expand="block" class="" color="medium" @click="resetOnboarding">
-                Reset onboarding
-              </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-card>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import type { VueFireGame } from '@/types'
 import {
@@ -974,6 +589,391 @@ async function removeAccount() {
   void confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle)
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent :page-title="pageTitle" />
+    <IonContent :fullscreen="true" class="ion-padding">
+      <RefresherComponent />
+      <div v-if="!isProfile" class="not-found ion-padding">
+        <strong class="capitalize">Nous n'avons pas trouvé ce profil...</strong>
+        <p>Retour à <a @click="router.go(-1)">la page précédente</a></p>
+      </div>
+      <IonCard v-else class="ion-no-margin ion-margin-bottom ion-padding-bottom">
+        <IonList>
+          <!-- Name (edit mode) -->
+          <IonItem v-if="formData.name.isEditing" lines="full">
+            <IonInput
+              v-model="formData.name.value"
+              name="name"
+              type="text"
+              label="Nom"
+              label-placement="stacked"
+              @keydown.enter="setName"
+            />
+            <IonIcon slot="end" :ios="checkmarkOutline" :md="checkmarkSharp" @click="setName" />
+            <IonIcon slot="end" :ios="closeOutline" :md="closeSharp" @click="resetFormData()" />
+          </IonItem>
+          <!-- Name (read mode) -->
+          <IonItem v-else lines="full">
+            <IonInput
+              name="name"
+              type="text"
+              :readonly="true"
+              inputmode="none"
+              label="Nom"
+              label-placement="stacked"
+              :value="formData.name.value"
+            />
+            <IonSpinner v-if="formData.name.isUpdating" />
+            <IonIcon
+              v-else-if="canEditProfile"
+              slot="end"
+              :ios="pencilOutline"
+              :md="pencilSharp"
+              @click="formData.name.isEditing = true"
+            />
+          </IonItem>
+          <!-- Role (edit mode) -->
+          <IonItem v-if="formData.role.isEditing" lines="full">
+            <IonSelect
+              v-model="formData.role.value"
+              cancel-text="Annuler"
+              interface="action-sheet"
+              label="Role"
+              label-placement="stacked"
+              @ion-change="setRole"
+              @ion-cancel="resetFormData()"
+            >
+              <IonSelectOption v-for="(value, role) in selectableRoles" :key="value" :value="value">
+                {{ role }}
+              </IonSelectOption>
+            </IonSelect>
+            <IonIcon
+              slot="end"
+              :ios="closeOutline"
+              :md="closeSharp"
+              @click="resetFormData()"
+            />
+          </IonItem>
+          <!-- Role (read mode) -->
+          <IonItem v-else lines="full">
+            <IonInput
+              type="text"
+              :readonly="true"
+              inputmode="none"
+              label="Role"
+              label-placement="stacked"
+              :value="getRoleByValue(formData.role.value)"
+            />
+            <IonSpinner v-if="formData.role.isUpdating" />
+            <IonIcon
+              v-else-if="canEditRole"
+              slot="end"
+              :ios="pencilOutline"
+              :md="pencilSharp"
+              @click="formData.role.isEditing = true"
+            />
+          </IonItem>
+          <!-- PLAYER FIELDS -->
+          <div v-if="isPlayer">
+            <!-- Player Group Category (edit mode) -->
+            <IonItem v-if="formData.playerGroup.isEditing" lines="full">
+              <IonInput
+                v-if="!appConfig"
+                type="text"
+                readonly
+                value="Error: cannot load group categories (i.e. appConfig)"
+              />
+              <IonSelect
+                v-else
+                v-model="formData.playerGroup.categoryId"
+                cancel-text="Annuler"
+                interface="action-sheet"
+                label="Catégorie de section"
+                label-placement="stacked"
+                @ion-change="onCategoryChange()"
+                @ion-cancel="resetFormData()"
+              >
+                <IonSelectOption
+                  v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories"
+                  :key="groupCategoryId"
+                  :value="groupCategoryId"
+                >
+                  {{ groupCategory.name }}
+                </IonSelectOption>
+              </IonSelect>
+              <IonIcon
+                slot="end"
+                :ios="closeOutline"
+                :md="closeSharp"
+                @click="resetFormData()"
+              />
+            </IonItem>
+            <!-- Player Group Category (read mode) -->
+            <IonItem v-else lines="full">
+              <p v-if="!appConfig" class="field-error">
+                Error: cannot load group categories (i.e. appConfig)
+              </p>
+              <IonInput
+                v-else-if="appConfig"
+                type="text"
+                readonly
+                label="Catégorie de section"
+                label-placement="stacked"
+                :value="appConfig.groupCategories[formData.playerGroup.categoryId]?.name"
+              />
+              <IonSpinner v-else />
+              <IonSpinner v-if="formData.playerGroup.isUpdating" />
+              <IonIcon
+                v-else-if="canEditProfile"
+                slot="end"
+                :ios="pencilOutline"
+                :md="pencilSharp"
+                @click="formData.playerGroup.isEditing = true"
+              />
+            </IonItem>
+            <!-- Player Group (edit mode) -->
+            <IonItem v-if="formData.playerGroup.isEditing" lines="full">
+              <p v-if="formData.playerGroup.categoryId === DEFAULT_GROUP_CATEGORY_ID" class="field-error">
+                Selectionne d'abord un type de section
+              </p>
+              <IonSelect
+                v-else-if="playerGroups.length > 0"
+                v-model="formData.playerGroup.id"
+                cancel-text="Annuler"
+                interface="action-sheet"
+                label="Section"
+                label-placement="stacked"
+                @ion-dismiss="setPlayerGroup"
+                @ion-cancel="resetFormData()"
+              >
+                <IonSelectOption v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">
+                  {{ playerGroup.name }}
+                </IonSelectOption>
+              </IonSelect>
+              <p v-else class="field-error">
+                Pas de section pour ce type de section
+              </p>
+              <IonIcon slot="end" :ios="closeOutline" :md="closeSharp" @click="resetFormData()" />
+            </IonItem>
+            <!-- Player Group (read mode) -->
+            <IonItem v-else lines="full">
+              <IonInput
+                name="playerGroup"
+                type="text"
+                :readonly="true"
+                inputmode="none"
+                label="Section"
+                label-placement="stacked"
+                :value="formData.playerGroup.name"
+                @click="goToPlayerGroupPage(formData.playerGroup.id)"
+              />
+              <IonSpinner v-if="formData.playerGroup.isUpdating" />
+              <IonIcon
+                v-else-if="canEditProfile"
+                slot="end"
+                :ios="pencilOutline"
+                :md="pencilSharp"
+                @click="formData.playerGroup.isEditing = true"
+              />
+            </IonItem>
+            <!-- Team (edit mode) -->
+            <IonItem v-if="formData.team.isEditing" lines="full">
+              <IonSelect
+                v-if="selectedPlayerGroup && selectedPlayerGroup.teams.length > 0"
+                v-model="formData.team.value"
+                cancel-text="Annuler"
+                interface="action-sheet"
+                label="Équipe"
+                label-placement="stacked"
+                @ion-change="setTeam"
+                @ion-cancel="resetFormData()"
+              >
+                <IonSelectOption v-for="team in selectedPlayerGroup.teams" :key="team" :value="team">
+                  {{ team }}
+                </IonSelectOption>
+              </IonSelect>
+              <p v-else class="field-error">
+                Pas de team pour cette section
+              </p>
+              <IonIcon
+                slot="end"
+                :ios="closeOutline"
+                :md="closeSharp"
+                @click="resetFormData()"
+              />
+            </IonItem>
+            <!-- Team (read mode) -->
+            <IonItem v-else lines="full">
+              <IonInput
+                type="text"
+                :readonly="true"
+                inputmode="none"
+                label="Équipe"
+                label-placement="stacked"
+                :value="formData.team.value"
+                @click="goToTeamPage(formData.team.value)"
+              />
+              <IonSpinner v-if="formData.team.isUpdating" />
+              <IonIcon
+                v-else-if="canEditProfile"
+                slot="end"
+                :ios="pencilOutline"
+                :md="pencilSharp"
+                @click="formData.team.isEditing = true"
+              />
+            </IonItem>
+          </div>
+          <div v-if="isAttendant || isStaff">
+            <!-- Attendant Group (edit mode) -->
+            <IonItem v-if="formData.attendantGroup.isEditing" lines="full">
+              <IonSelect
+                v-if="attendantGroups.length > 0"
+                v-model="formData.attendantGroup.id"
+                cancel-text="Annuler"
+                interface="action-sheet"
+                label="Section"
+                label-placement="stacked"
+                @ion-change="setAttendantGroup"
+                @ion-cancel="resetFormData()"
+              >
+                <IonSelectOption
+                  v-for="attenantGroup in attendantGroups"
+                  :key="attenantGroup.id"
+                  :value="attenantGroup.id"
+                >
+                  {{ attenantGroup.name }}
+                </IonSelectOption>
+              </IonSelect>
+              <p v-else class="field-error">
+                Pas de section
+              </p>
+              <IonIcon
+                slot="end"
+                :ios="closeOutline"
+                :md="closeSharp"
+                @click="resetFormData()"
+              />
+            </IonItem>
+            <!-- Attendant Group (read mode) -->
+            <IonItem v-else lines="full">
+              <IonInput
+                name="attendantGroup"
+                type="text"
+                :readonly="true"
+                inputmode="none"
+                label="Section"
+                label-placement="stacked"
+                :value="formData.attendantGroup.name"
+                @click="goToAttendantGroupPage(formData.attendantGroup.id)"
+              />
+              <IonSpinner v-if="formData.attendantGroup.isUpdating" />
+              <IonIcon
+                v-else-if="canEditAttendantGroup"
+                slot="end"
+                :ios="pencilOutline"
+                :md="pencilSharp"
+                @click="editAttendantGroup"
+              />
+            </IonItem>
+          </div>
+          <div v-if="isAttendant">
+            <div v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
+              <!-- Attendant Game (edit mode) -->
+              <IonItem v-if="formData.attendantGames.isEditing" lines="full">
+                <IonSelect
+                  v-model="formData.attendantGames.ids[timeSlot.id]"
+                  cancel-text="Annuler"
+                  interface="action-sheet"
+                  :label="`Épreuve ${timeSlot.name}`"
+                  label-placement="stacked"
+                  @ion-change="setGame(timeSlot.id)"
+                  @ion-cancel="resetFormData()"
+                >
+                  <IonSelectOption v-for="game in games" :key="game.id" :value="game.id">
+                    {{ game.id }}{{ isTimeSlotFull(game, timeSlot.id) ? ' [COMPLET] ' : ' ' }}{{ game.name }}
+                  </IonSelectOption>
+                </IonSelect>
+                <IonIcon
+                  slot="end"
+                  :ios="closeOutline"
+                  :md="closeSharp"
+                  @click="resetFormData()"
+                />
+              </IonItem>
+              <!-- Attendant Game (read mode) -->
+              <IonItem v-else lines="full">
+                <IonInput
+                  v-if="timeSlot.id in formData.attendantGames.names"
+                  type="text"
+                  :readonly="true"
+                  inputmode="none"
+                  :label="`Épreuve ${timeSlot.name}`"
+                  label-placement="stacked"
+                  :value="`${formData.attendantGames.ids[timeSlot.id]} ${formData.attendantGames.names[timeSlot.id]}`"
+                  @click="goToGamePage(formData.attendantGames.ids[timeSlot.id])"
+                />
+                <IonInput
+                  v-else
+                  type="text"
+                  :readonly="true"
+                  inputmode="none"
+                  :label="`Épreuve ${timeSlot.name}`"
+                  label-placement="stacked"
+                  value="Pas d'épreuve sélectionnée"
+                />
+                <IonSpinner v-if="formData.attendantGames.isUpdating" />
+                <IonIcon
+                  v-else-if="canEditGames"
+                  slot="end"
+                  :ios="pencilOutline"
+                  :md="pencilSharp"
+                  @click="editGames()"
+                />
+              </IonItem>
+            </div>
+          </div>
+
+          <!-- email -->
+          <IonItem v-if="canSeeEmail" lines="full">
+            <IonInput
+              v-if="userProfile"
+              type="text"
+              :readonly="true"
+              inputmode="none"
+              label="Adresse email"
+              label-placement="stacked"
+              :value="userProfile.email"
+            />
+            <p v-else class="field-error">
+              Erreur: impossible de charger l'adresse email
+            </p>
+          </IonItem>
+        </IonList>
+        <IonGrid class="ion-no-padding ion-margin-top">
+          <IonRow>
+            <IonCol v-if="isOwnProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+              <IonButton expand="block" class="" color="warning" @click="logOut">
+                Se déconnecter
+              </IonButton>
+            </IonCol>
+            <IonCol v-if="canDeleteProfile" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+              <IonButton expand="block" class="" color="danger" @click="removeAccount">
+                Supprimer le compte
+              </IonButton>
+            </IonCol>
+            <IonCol v-if="canResetOnboarding" size="12" size-sm="6" class="ion-no-padding ion-padding-horizontal">
+              <IonButton expand="block" class="" color="medium" @click="resetOnboarding">
+                Reset onboarding
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonCard>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 ion-select {

@@ -1,44 +1,3 @@
-<template>
-  <ion-page>
-    <header-component page-title="Classement">
-      <ion-toggle v-if="canPrint" :checked="showPrintableScores" @ion-change="togglePrintable" />
-      <ion-button @click="setLimit">
-        <ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp" />
-      </ion-button>
-    </header-component>
-    <ion-content :fullscreen="true">
-      <refresher-component />
-      <div v-if="appConfig">
-        <ion-card v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories" :key="groupCategoryId">
-          <ion-card-header>
-            <ion-card-title>{{ groupCategory.name }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content class="ion-no-padding">
-            <ion-grid class="ion-no-padding">
-              <ion-row>
-                <ion-col size="12" size-sm="6">
-                  <ranking-player-group
-                    :group-category-id="String(groupCategoryId)"
-                    :limit="limit"
-                    :printable-scores="showPrintableScores"
-                  />
-                </ion-col>
-                <ion-col size="12" size-sm="6">
-                  <ranking-player-team
-                    :group-category-id="String(groupCategoryId)"
-                    :limit="limit"
-                    :printable-scores="showPrintableScores"
-                  />
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-card-content>
-        </ion-card>
-      </div>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import type { AlertInput } from '@ionic/vue'
 import {
@@ -109,6 +68,47 @@ function togglePrintable() {
   showPrintableScores.value = !showPrintableScores.value
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent page-title="Classement">
+      <IonToggle v-if="canPrint" :checked="showPrintableScores" @ion-change="togglePrintable" />
+      <IonButton @click="setLimit">
+        <IonIcon slot="icon-only" :ios="settingsOutline" :md="settingsSharp" />
+      </IonButton>
+    </HeaderComponent>
+    <IonContent :fullscreen="true">
+      <RefresherComponent />
+      <div v-if="appConfig">
+        <IonCard v-for="(groupCategory, groupCategoryId) in appConfig.groupCategories" :key="groupCategoryId">
+          <IonCardHeader>
+            <IonCardTitle>{{ groupCategory.name }}</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent class="ion-no-padding">
+            <IonGrid class="ion-no-padding">
+              <IonRow>
+                <IonCol size="12" size-sm="6">
+                  <RankingPlayerGroup
+                    :group-category-id="String(groupCategoryId)"
+                    :limit="limit"
+                    :printable-scores="showPrintableScores"
+                  />
+                </IonCol>
+                <IonCol size="12" size-sm="6">
+                  <RankingPlayerTeam
+                    :group-category-id="String(groupCategoryId)"
+                    :limit="limit"
+                    :printable-scores="showPrintableScores"
+                  />
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </IonCardContent>
+        </IonCard>
+      </div>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped>
 ion-select {

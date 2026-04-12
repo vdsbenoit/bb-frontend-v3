@@ -29,20 +29,6 @@ export default antfu(
       '@typescript-eslint/no-explicit-any': 'off', // from Ionic template
       'style/quote-props': ['error', 'consistent-as-needed', { keywords: true }],
       'style/brace-style': ['error', '1tbs', { allowSingleLine: true }],
-      'vue/block-order': [
-        'error',
-        {
-          order: ['template', 'script', 'style'],
-        },
-      ],
-      'vue/component-name-in-template-casing': [
-        'error',
-        'kebab-case',
-        {
-          registeredComponentsOnly: true,
-          ignores: [],
-        },
-      ],
       'max-len': [
         'warn',
         {

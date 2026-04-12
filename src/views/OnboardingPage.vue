@@ -1,118 +1,3 @@
-<template>
-  <ion-page>
-    <header-component page-title="Onboarding" />
-    <ion-content :fullscreen="true" class="ion-padding">
-      <refresher-component />
-      <ion-card>
-        <ion-card-header v-if="currentUser && currentUser.rejectionReason">
-          <ion-card-title>Outch !</ion-card-title>
-          <p style="color: var(--ion-color-dark)">
-            Ta demande d'accès a été refusée.
-            <br><br>
-            {{ currentUser.rejectionReason }}
-            <br><br>
-            Tu peux réessayer ci-dessous.
-          </p>
-        </ion-card-header>
-        <ion-card-header v-else>
-          <ion-card-title>Bienvenue !</ion-card-title>
-          <p>Avant d'aller plus loin, faisons connaissance.</p>
-        </ion-card-header>
-        <form @submit.prevent="submitForm" @keydown.enter="submitForm">
-          <ion-list class="ion-no-padding">
-            <ion-item>
-              <ion-input
-                v-model="name"
-                name="name"
-                type="text"
-                autocorrect="off"
-                required
-                label="Totem / Nom"
-                label-placement="floating"
-                :class="{ 'ion-invalid ion-touched': nameError }"
-                :error-text="nameError ? 'Mentionne ton totem ou ton nom' : undefined"
-                @ion-change="handleNameChange"
-              />
-            </ion-item>
-            <ion-item>
-              <ion-select
-                v-model="selectedRole"
-                required
-                interface="popover"
-                label="Quel sera ton role durant la Baden Battle ?"
-                label-placement="floating"
-                @ion-change="handleRoleChange"
-              >
-                <ion-select-option v-for="(value, roleName) in selectableRoles" :key="value" :value="value">
-                  {{ roleName }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-
-            <ion-item v-if="isParticipant">
-              <ion-select
-                v-model="selectedgroupCategoryId"
-                interface="popover"
-                required
-                label="Type de section"
-                label-placement="floating"
-              >
-                <ion-select-option v-for="(groupCategory, id) in appConfig?.groupCategories" :key="id" :value="id">
-                  {{ groupCategory.name }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-            <ion-item v-if="isParticipant && selectedgroupCategoryId">
-              <ion-spinner v-if="isLoadingPlayerGroups" />
-              <div v-else-if="errorLoadingGroups">
-                Erreur
-              </div>
-              <ion-select
-                v-else
-                v-model="selectedGroupId"
-                interface="popover"
-                required
-                label="Section"
-                label-placement="floating"
-              >
-                <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">
-                  {{ playerGroup.name }} ({{ playerGroup.city }})
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-
-            <ion-item v-if="isAttendant">
-              <ion-spinner v-if="isLoadingAttendantGroups" />
-              <div v-else-if="errorLoadingAttendantGroups">
-                Erreur
-              </div>
-              <ion-select
-                v-else
-                v-model="selectedGroupId"
-                interface="popover"
-                required
-                label="Section"
-                label-placement="floating"
-              >
-                <ion-select-option
-                  v-for="attendantgroup in attendantGroups"
-                  :key="attendantgroup.id"
-                  :value="attendantgroup.id"
-                >
-                  {{ attendantgroup.name }} ({{ attendantgroup.city }})
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-          </ion-list>
-          <ion-button type="submit" expand="block" class="ion-margin" :disabled="!canSubmit">
-            Continuer
-          </ion-button>
-        </form>
-      </ion-card>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import type { UserProfile } from '@/types'
 import type { Group } from '@/types/Group'
@@ -294,5 +179,120 @@ async function submitForm() {
   return confirmPopup(message, handler, null, 'Continuer ?')
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent page-title="Onboarding" />
+    <IonContent :fullscreen="true" class="ion-padding">
+      <RefresherComponent />
+      <IonCard>
+        <IonCardHeader v-if="currentUser && currentUser.rejectionReason">
+          <IonCardTitle>Outch !</IonCardTitle>
+          <p style="color: var(--ion-color-dark)">
+            Ta demande d'accès a été refusée.
+            <br><br>
+            {{ currentUser.rejectionReason }}
+            <br><br>
+            Tu peux réessayer ci-dessous.
+          </p>
+        </IonCardHeader>
+        <IonCardHeader v-else>
+          <IonCardTitle>Bienvenue !</IonCardTitle>
+          <p>Avant d'aller plus loin, faisons connaissance.</p>
+        </IonCardHeader>
+        <form @submit.prevent="submitForm" @keydown.enter="submitForm">
+          <IonList class="ion-no-padding">
+            <IonItem>
+              <IonInput
+                v-model="name"
+                name="name"
+                type="text"
+                autocorrect="off"
+                required
+                label="Totem / Nom"
+                label-placement="floating"
+                :class="{ 'ion-invalid ion-touched': nameError }"
+                :error-text="nameError ? 'Mentionne ton totem ou ton nom' : undefined"
+                @ion-change="handleNameChange"
+              />
+            </IonItem>
+            <IonItem>
+              <IonSelect
+                v-model="selectedRole"
+                required
+                interface="popover"
+                label="Quel sera ton role durant la Baden Battle ?"
+                label-placement="floating"
+                @ion-change="handleRoleChange"
+              >
+                <IonSelectOption v-for="(value, roleName) in selectableRoles" :key="value" :value="value">
+                  {{ roleName }}
+                </IonSelectOption>
+              </IonSelect>
+            </IonItem>
+
+            <IonItem v-if="isParticipant">
+              <IonSelect
+                v-model="selectedgroupCategoryId"
+                interface="popover"
+                required
+                label="Type de section"
+                label-placement="floating"
+              >
+                <IonSelectOption v-for="(groupCategory, id) in appConfig?.groupCategories" :key="id" :value="id">
+                  {{ groupCategory.name }}
+                </IonSelectOption>
+              </IonSelect>
+            </IonItem>
+            <IonItem v-if="isParticipant && selectedgroupCategoryId">
+              <IonSpinner v-if="isLoadingPlayerGroups" />
+              <div v-else-if="errorLoadingGroups">
+                Erreur
+              </div>
+              <IonSelect
+                v-else
+                v-model="selectedGroupId"
+                interface="popover"
+                required
+                label="Section"
+                label-placement="floating"
+              >
+                <IonSelectOption v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">
+                  {{ playerGroup.name }} ({{ playerGroup.city }})
+                </IonSelectOption>
+              </IonSelect>
+            </IonItem>
+
+            <IonItem v-if="isAttendant">
+              <IonSpinner v-if="isLoadingAttendantGroups" />
+              <div v-else-if="errorLoadingAttendantGroups">
+                Erreur
+              </div>
+              <IonSelect
+                v-else
+                v-model="selectedGroupId"
+                interface="popover"
+                required
+                label="Section"
+                label-placement="floating"
+              >
+                <IonSelectOption
+                  v-for="attendantgroup in attendantGroups"
+                  :key="attendantgroup.id"
+                  :value="attendantgroup.id"
+                >
+                  {{ attendantgroup.name }} ({{ attendantgroup.city }})
+                </IonSelectOption>
+              </IonSelect>
+            </IonItem>
+          </IonList>
+          <IonButton type="submit" expand="block" class="ion-margin" :disabled="!canSubmit">
+            Continuer
+          </IonButton>
+        </form>
+      </IonCard>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped></style>

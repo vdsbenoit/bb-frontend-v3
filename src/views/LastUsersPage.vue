@@ -1,36 +1,3 @@
-<template>
-  <ion-page>
-    <header-component :page-title="pageTitle">
-      <ion-button @click="setLimit">
-        <ion-icon slot="icon-only" :ios="settingsOutline" :md="settingsSharp" />
-      </ion-button>
-    </header-component>
-    <ion-content :fullscreen="true">
-      <refresher-component />
-      <div v-if="isLoadingUsers" class="ion-text-center" style="background: transparent">
-        <ion-spinner />
-      </div>
-      <div v-if="!latestUsers || latestUsers.length < 1" class="not-found">
-        <h2 class="ion-text-center ion-align-items-center">
-          Pas d'utilisateurs
-        </h2>
-      </div>
-      <ion-list v-else>
-        <div v-for="user in latestUsers" :key="user.id">
-          <div>
-            <ion-item>
-              <ion-label :router-link="`/profile/${user.id}`" router-direction="forward">
-                <ion-text>{{ getUserName(user) }} ({{ getRoleByValue(user.role) }}) </ion-text>
-                <p>{{ parseDate(user.creationDate) }}</p>
-              </ion-label>
-            </ion-item>
-          </div>
-        </div>
-      </ion-list>
-    </ion-content>
-  </ion-page>
-</template>
-
 <script setup lang="ts">
 import type { AlertInput } from '@ionic/vue'
 import type { FirestoreError } from 'firebase/firestore'
@@ -116,5 +83,38 @@ async function setLimit() {
   await alert.present()
 }
 </script>
+
+<template>
+  <IonPage>
+    <HeaderComponent :page-title="pageTitle">
+      <IonButton @click="setLimit">
+        <IonIcon slot="icon-only" :ios="settingsOutline" :md="settingsSharp" />
+      </IonButton>
+    </HeaderComponent>
+    <IonContent :fullscreen="true">
+      <RefresherComponent />
+      <div v-if="isLoadingUsers" class="ion-text-center" style="background: transparent">
+        <IonSpinner />
+      </div>
+      <div v-if="!latestUsers || latestUsers.length < 1" class="not-found">
+        <h2 class="ion-text-center ion-align-items-center">
+          Pas d'utilisateurs
+        </h2>
+      </div>
+      <IonList v-else>
+        <div v-for="user in latestUsers" :key="user.id">
+          <div>
+            <IonItem>
+              <IonLabel :router-link="`/profile/${user.id}`" router-direction="forward">
+                <IonText>{{ getUserName(user) }} ({{ getRoleByValue(user.role) }}) </IonText>
+                <p>{{ parseDate(user.creationDate) }}</p>
+              </IonLabel>
+            </IonItem>
+          </div>
+        </div>
+      </IonList>
+    </IonContent>
+  </IonPage>
+</template>
 
 <style scoped></style>
