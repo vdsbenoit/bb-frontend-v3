@@ -111,6 +111,18 @@ const routes: Array<RouteRecordRaw> = [
     meta: { minimumRole: USER_ROLES.Administrateur },
   },
   {
+    name: 'reset-app',
+    path: '/reset-app',
+    component: () => import('../views/ResetAppPage.vue'),
+    meta: { minimumRole: USER_ROLES.Administrateur },
+  },
+  {
+    name: 'configuration-flow',
+    path: '/configuration',
+    component: () => import('../views/Configuration/ConfigurationFlowPage.vue'),
+    meta: { minimumRole: USER_ROLES.Administrateur },
+  },
+  {
     name: 'new-users',
     path: '/new-users',
     props: { order: 'new' },
