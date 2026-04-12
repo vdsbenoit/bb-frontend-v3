@@ -21,21 +21,28 @@
         <form @submit.prevent="submitForm" @keydown.enter="submitForm">
           <ion-list class="ion-no-padding">
             <ion-item>
-              <ion-label position="floating" color="primary"> Totem / Nom </ion-label>
               <ion-input
                 v-model="name"
                 name="name"
                 type="text"
                 autocorrect="off"
                 required
+                label="Totem / Nom"
+                label-placement="floating"
                 :class="{ 'ion-invalid ion-touched': nameError }"
                 :error-text="nameError ? 'Mentionne ton totem ou ton nom' : undefined"
                 @ion-change="handleNameChange"
               />
             </ion-item>
             <ion-item>
-              <ion-label position="floating" color="primary"> Quel sera ton role durant la Baden Battle ? </ion-label>
-              <ion-select v-model="selectedRole" required interface="popover" @ion-change="handleRoleChange">
+              <ion-select
+                v-model="selectedRole"
+                required
+                interface="popover"
+                label="Quel sera ton role durant la Baden Battle ?"
+                label-placement="floating"
+                @ion-change="handleRoleChange"
+              >
                 <ion-select-option v-for="(value, roleName) in selectableRoles" :key="value" :value="value">
                   {{ roleName }}
                 </ion-select-option>
@@ -43,20 +50,31 @@
             </ion-item>
 
             <ion-item v-if="isParticipant">
-              <ion-label position="floating" color="primary"> Type de section </ion-label>
-              <ion-select v-model="selectedgroupCategoryId" interface="popover" required>
+              <ion-select
+                v-model="selectedgroupCategoryId"
+                interface="popover"
+                required
+                label="Type de section"
+                label-placement="floating"
+              >
                 <ion-select-option v-for="(groupCategory, id) in appConfig?.groupCategories" :key="id" :value="id">
                   {{ groupCategory.name }}
                 </ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item v-if="isParticipant && selectedgroupCategoryId">
-              <ion-label position="floating" color="primary"> Section </ion-label>
               <ion-spinner v-if="isLoadingPlayerGroups" />
               <div v-else-if="errorLoadingGroups">
                 Erreur
               </div>
-              <ion-select v-else v-model="selectedGroupId" interface="popover" required>
+              <ion-select
+                v-else
+                v-model="selectedGroupId"
+                interface="popover"
+                required
+                label="Section"
+                label-placement="floating"
+              >
                 <ion-select-option v-for="playerGroup in playerGroups" :key="playerGroup.id" :value="playerGroup.id">
                   {{ playerGroup.name }} ({{ playerGroup.city }})
                 </ion-select-option>
@@ -64,12 +82,18 @@
             </ion-item>
 
             <ion-item v-if="isAttendant">
-              <ion-label position="floating" color="primary"> Section </ion-label>
               <ion-spinner v-if="isLoadingAttendantGroups" />
               <div v-else-if="errorLoadingAttendantGroups">
                 Erreur
               </div>
-              <ion-select v-else v-model="selectedGroupId" interface="popover" required>
+              <ion-select
+                v-else
+                v-model="selectedGroupId"
+                interface="popover"
+                required
+                label="Section"
+                label-placement="floating"
+              >
                 <ion-select-option
                   v-for="attendantgroup in attendantGroups"
                   :key="attendantgroup.id"
@@ -100,7 +124,6 @@ import {
   IonContent,
   IonInput,
   IonItem,
-  IonLabel,
   IonList,
   IonPage,
   IonSelect,

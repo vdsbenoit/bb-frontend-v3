@@ -49,16 +49,22 @@
                 name="maxGameAttendants"
                 type="number"
                 autocorrect="off"
+                label="Max animateurs par épreuve"
               />
               <ion-button slot="end" color="success" @click="setMaxAttendants">
                 <ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp" />
               </ion-button>
             </ion-item>
             <ion-item v-else @click="formData.maxGameAttendants.isEditting = true">
-              <ion-label slot="start" class="ion-text-wrap fixedLabel"> Max animateurs par épreuve </ion-label>
-              <ion-input slot="end" name="maxGameAttendants" type="number" :readonly="true" inputmode="none">
-                {{ appSettings.maxGameAttendants }}
-              </ion-input>
+              <ion-input
+                slot="end"
+                name="maxGameAttendants"
+                type="number"
+                :readonly="true"
+                inputmode="none"
+                label="Max animateurs par épreuve"
+                :value="appSettings.maxGameAttendants"
+              />
             </ion-item>
             <ion-item>
               <ion-label>Geler les scores</ion-label>

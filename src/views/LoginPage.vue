@@ -12,7 +12,6 @@
       <form @submit.prevent="sendEmail">
         <ion-list id="login-form">
           <ion-item lines="full">
-            <ion-label position="floating" color="primary"> Entre ton email ici </ion-label>
             <ion-input
               v-model="email"
               name="email"
@@ -22,6 +21,8 @@
               required
               autocapitalize="off"
               :clear-input="true"
+              label="Entre ton email ici"
+              label-placement="floating"
               helper-text="Utilise une addresse a laquelle tu as acces depuis ton telephone"
             />
           </ion-item>

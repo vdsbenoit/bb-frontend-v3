@@ -11,25 +11,28 @@
         <ion-list>
           <!-- Name (edit mode) -->
           <ion-item v-if="formData.name.isEditing" lines="full">
-            <ion-label position="stacked" color="primary"> Nom </ion-label>
-            <ion-input v-model="formData.name.value" name="name" type="text" @keydown.enter="setName" />
-            <ion-icon slot="end" :ios="checkmarkOutline" :md="checkmarkSharp" @click="setName" />
-            <ion-icon
-              slot="end"
-              :ios="closeOutline"
-              :md="closeSharp"
-              @click="
-
-                resetFormData()
-              "
+            <ion-input
+              v-model="formData.name.value"
+              name="name"
+              type="text"
+              label="Nom"
+              label-placement="stacked"
+              @keydown.enter="setName"
             />
+            <ion-icon slot="end" :ios="checkmarkOutline" :md="checkmarkSharp" @click="setName" />
+            <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="resetFormData()" />
           </ion-item>
           <!-- Name (read mode) -->
           <ion-item v-else lines="full">
-            <ion-label position="stacked" color="primary"> Nom </ion-label>
-            <ion-input name="name" type="text" :readonly="true" inputmode="none">
-              {{ formData.name.value }}
-            </ion-input>
+            <ion-input
+              name="name"
+              type="text"
+              :readonly="true"
+              inputmode="none"
+              label="Nom"
+              label-placement="stacked"
+              :value="formData.name.value"
+            />
             <ion-spinner v-if="formData.name.isUpdating" />
             <ion-icon
               v-else-if="canEditProfile"
@@ -41,11 +44,12 @@
           </ion-item>
           <!-- Role (edit mode) -->
           <ion-item v-if="formData.role.isEditing" lines="full">
-            <ion-label position="stacked" color="primary"> Role </ion-label>
             <ion-select
               v-model="formData.role.value"
               cancel-text="Annuler"
               interface="action-sheet"
+              label="Role"
+              label-placement="stacked"
               @ion-change="setRole"
               @ion-cancel="resetFormData()"
             >
@@ -62,10 +66,14 @@
           </ion-item>
           <!-- Role (read mode) -->
           <ion-item v-else lines="full">
-            <ion-label position="stacked" color="primary"> Role </ion-label>
-            <ion-input type="text" :readonly="true" inputmode="none">
-              {{ getRoleByValue(formData.role.value) }}
-            </ion-input>
+            <ion-input
+              type="text"
+              :readonly="true"
+              inputmode="none"
+              label="Role"
+              label-placement="stacked"
+              :value="getRoleByValue(formData.role.value)"
+            />
             <ion-spinner v-if="formData.role.isUpdating" />
             <ion-icon
               v-else-if="canEditRole"
@@ -79,15 +87,19 @@
           <div v-if="isPlayer">
             <!-- Player Group Category (edit mode) -->
             <ion-item v-if="formData.playerGroup.isEditing" lines="full">
-              <ion-label position="stacked" color="primary"> Catégorie de section </ion-label>
-              <ion-input v-if="!appConfig" type="text" readonly>
-                Error: cannot load group categories (i.e. appConfig)
-              </ion-input>
+              <ion-input
+                v-if="!appConfig"
+                type="text"
+                readonly
+                value="Error: cannot load group categories (i.e. appConfig)"
+              />
               <ion-select
                 v-else
                 v-model="formData.playerGroup.categoryId"
                 cancel-text="Annuler"
                 interface="action-sheet"
+                label="Catégorie de section"
+                label-placement="stacked"
                 @ion-change="onCategoryChange()"
                 @ion-cancel="resetFormData()"
               >
@@ -108,13 +120,17 @@
             </ion-item>
             <!-- Player Group Category (read mode) -->
             <ion-item v-else lines="full">
-              <ion-label position="stacked" color="primary"> Catégorie de section </ion-label>
               <p v-if="!appConfig" class="field-error">
                 Error: cannot load group categories (i.e. appConfig)
               </p>
-              <ion-input v-else-if="appConfig" type="text" readonly>
-                {{ appConfig.groupCategories[formData.playerGroup.categoryId]?.name }}
-              </ion-input>
+              <ion-input
+                v-else-if="appConfig"
+                type="text"
+                readonly
+                label="Catégorie de section"
+                label-placement="stacked"
+                :value="appConfig.groupCategories[formData.playerGroup.categoryId]?.name"
+              />
               <ion-spinner v-else />
               <ion-spinner v-if="formData.playerGroup.isUpdating" />
               <ion-icon
@@ -127,7 +143,6 @@
             </ion-item>
             <!-- Player Group (edit mode) -->
             <ion-item v-if="formData.playerGroup.isEditing" lines="full">
-              <ion-label position="stacked" color="primary"> Section </ion-label>
               <p v-if="formData.playerGroup.categoryId === DEFAULT_GROUP_CATEGORY_ID" class="field-error">
                 Selectionne d'abord un type de section
               </p>
@@ -136,6 +151,8 @@
                 v-model="formData.playerGroup.id"
                 cancel-text="Annuler"
                 interface="action-sheet"
+                label="Section"
+                label-placement="stacked"
                 @ion-dismiss="setPlayerGroup"
                 @ion-cancel="resetFormData()"
               >
@@ -146,27 +163,20 @@
               <p v-else class="field-error">
                 Pas de section pour ce type de section
               </p>
-              <ion-icon
-                slot="end"
-                :ios="closeOutline"
-                :md="closeSharp"
-                ata()@click="resetFormData()"
-              />
+              <ion-icon slot="end" :ios="closeOutline" :md="closeSharp" @click="resetFormData()" />
             </ion-item>
             <!-- Player Group (read mode) -->
             <ion-item v-else lines="full">
-              <ion-label position="stacked" color="primary" @click="goToPlayerGroupPage(formData.playerGroup.id)">
-                Section
-              </ion-label>
               <ion-input
                 name="playerGroup"
                 type="text"
                 :readonly="true"
                 inputmode="none"
+                label="Section"
+                label-placement="stacked"
+                :value="formData.playerGroup.name"
                 @click="goToPlayerGroupPage(formData.playerGroup.id)"
-              >
-                {{ formData.playerGroup.name }}
-              </ion-input>
+              />
               <ion-spinner v-if="formData.playerGroup.isUpdating" />
               <ion-icon
                 v-else-if="canEditProfile"
@@ -178,12 +188,13 @@
             </ion-item>
             <!-- Team (edit mode) -->
             <ion-item v-if="formData.team.isEditing" lines="full">
-              <ion-label position="stacked" color="primary"> Équipe </ion-label>
               <ion-select
                 v-if="selectedPlayerGroup && selectedPlayerGroup.teams.length > 0"
                 v-model="formData.team.value"
                 cancel-text="Annuler"
                 interface="action-sheet"
+                label="Équipe"
+                label-placement="stacked"
                 @ion-change="setTeam"
                 @ion-cancel="resetFormData()"
               >
@@ -203,12 +214,15 @@
             </ion-item>
             <!-- Team (read mode) -->
             <ion-item v-else lines="full">
-              <ion-label position="stacked" color="primary" @click="goToTeamPage(formData.team.value)">
-                Équipe
-              </ion-label>
-              <ion-input type="text" :readonly="true" inputmode="none" @click="goToTeamPage(formData.team.value)">
-                {{ formData.team.value }}
-              </ion-input>
+              <ion-input
+                type="text"
+                :readonly="true"
+                inputmode="none"
+                label="Équipe"
+                label-placement="stacked"
+                :value="formData.team.value"
+                @click="goToTeamPage(formData.team.value)"
+              />
               <ion-spinner v-if="formData.team.isUpdating" />
               <ion-icon
                 v-else-if="canEditProfile"
@@ -222,12 +236,13 @@
           <div v-if="isAttendant || isStaff">
             <!-- Attendant Group (edit mode) -->
             <ion-item v-if="formData.attendantGroup.isEditing" lines="full">
-              <ion-label position="stacked" color="primary"> Section </ion-label>
               <ion-select
                 v-if="attendantGroups.length > 0"
                 v-model="formData.attendantGroup.id"
                 cancel-text="Annuler"
                 interface="action-sheet"
+                label="Section"
+                label-placement="stacked"
                 @ion-change="setAttendantGroup"
                 @ion-cancel="resetFormData()"
               >
@@ -251,18 +266,16 @@
             </ion-item>
             <!-- Attendant Group (read mode) -->
             <ion-item v-else lines="full">
-              <ion-label position="stacked" color="primary" @click="goToAttendantGroupPage(formData.attendantGroup.id)">
-                Section
-              </ion-label>
               <ion-input
                 name="attendantGroup"
                 type="text"
                 :readonly="true"
                 inputmode="none"
+                label="Section"
+                label-placement="stacked"
+                :value="formData.attendantGroup.name"
                 @click="goToAttendantGroupPage(formData.attendantGroup.id)"
-              >
-                {{ formData.attendantGroup.name }}
-              </ion-input>
+              />
               <ion-spinner v-if="formData.attendantGroup.isUpdating" />
               <ion-icon
                 v-else-if="canEditAttendantGroup"
@@ -277,11 +290,12 @@
             <div v-for="timeSlot in attendantSchedule" :key="timeSlot.id">
               <!-- Attendant Game (edit mode) -->
               <ion-item v-if="formData.attendantGames.isEditing" lines="full">
-                <ion-label position="stacked" color="primary"> Épreuve {{ timeSlot.name }} </ion-label>
                 <ion-select
                   v-model="formData.attendantGames.ids[timeSlot.id]"
                   cancel-text="Annuler"
                   interface="action-sheet"
+                  :label="`Épreuve ${timeSlot.name}`"
+                  label-placement="stacked"
                   @ion-change="setGame(timeSlot.id)"
                   @ion-cancel="resetFormData()"
                 >
@@ -298,28 +312,25 @@
               </ion-item>
               <!-- Attendant Game (read mode) -->
               <ion-item v-else lines="full">
-                <ion-label
-                  position="stacked"
-                  color="primary"
-                  @click="goToGamePage(formData.attendantGames.ids[timeSlot.id])"
-                >
-                  Épreuve {{ timeSlot.name }}
-                </ion-label>
                 <ion-input
                   v-if="timeSlot.id in formData.attendantGames.names"
                   type="text"
                   :readonly="true"
                   inputmode="none"
+                  :label="`Épreuve ${timeSlot.name}`"
+                  label-placement="stacked"
+                  :value="`${formData.attendantGames.ids[timeSlot.id]} ${formData.attendantGames.names[timeSlot.id]}`"
                   @click="goToGamePage(formData.attendantGames.ids[timeSlot.id])"
-                >
-                  <span>
-                    {{ formData.attendantGames.ids[timeSlot.id] }}
-                    {{ formData.attendantGames.names[timeSlot.id] }}
-                  </span>
-                </ion-input>
-                <ion-input v-else type="text" :readonly="true" inputmode="none">
-                  Pas d'épreuve sélectionnée
-                </ion-input>
+                />
+                <ion-input
+                  v-else
+                  type="text"
+                  :readonly="true"
+                  inputmode="none"
+                  :label="`Épreuve ${timeSlot.name}`"
+                  label-placement="stacked"
+                  value="Pas d'épreuve sélectionnée"
+                />
                 <ion-spinner v-if="formData.attendantGames.isUpdating" />
                 <ion-icon
                   v-else-if="canEditGames"
@@ -334,10 +345,15 @@
 
           <!-- email -->
           <ion-item v-if="canSeeEmail" lines="full">
-            <ion-label position="stacked" color="primary"> Adresse email </ion-label>
-            <ion-input v-if="userProfile" type="text" :readonly="true" inputmode="none">
-              {{ userProfile.email }}
-            </ion-input>
+            <ion-input
+              v-if="userProfile"
+              type="text"
+              :readonly="true"
+              inputmode="none"
+              label="Adresse email"
+              label-placement="stacked"
+              :value="userProfile.email"
+            />
             <p v-else class="field-error">
               Erreur: impossible de charger l'adresse email
             </p>
@@ -378,7 +394,6 @@ import {
   IonIcon,
   IonInput,
   IonItem,
-  IonLabel,
   IonList,
   IonPage,
   IonRow,

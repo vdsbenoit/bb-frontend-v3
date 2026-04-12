@@ -52,7 +52,12 @@
                   <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">
                     {{ game.id }}
                   </ion-badge>
-                  <ion-input v-model="newGameName" type="text" @keyup.enter="updateGameName()" />
+                  <ion-input
+                    v-model="newGameName"
+                    type="text"
+                    label="Nom de l'épreuve"
+                    @keyup.enter="updateGameName()"
+                  />
                   <ion-button color="success" @click="updateGameName()">
                     <ion-icon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp" />
                   </ion-button>
@@ -66,9 +71,7 @@
                   <ion-badge slot="start" class="ion-no-margin ion-margin-end" color="medium">
                     {{ game.id }}
                   </ion-badge>
-                  <ion-input type="text" :readonly="true">
-                    {{ game.name }}
-                  </ion-input>
+                  <ion-input type="text" :readonly="true" label="Nom de l'épreuve" :value="game.name" />
                   <ion-spinner v-if="isUpdating && game.id === editedGameId" slot="end" />
                   <ion-icon v-else slot="end" :ios="pencilOutline" :md="pencilSharp" @click="editGame(game)" />
                 </ion-item>
