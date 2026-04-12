@@ -18,15 +18,15 @@ Create a UI tool to add/remove games and increment/decrement the value by 2.
 
 Info box: this settings cannot be modified later on.
 
-| Parameter           | Description                                                | Example |
-| ------------------- | ---------------------------------------------------------- | ------- |
-| `nbGamesPerCircuit` | Number of games a player plays during the day. Must be odd | 17      |
+| Parameter     | Description                                      | Example |
+| ------------- | ------------------------------------------------ | ------- |
+| `nbTimeSlots` | Number of time slots during the day. Must be odd | 17      |
 
-`nbGamesPerCircuit` defines multiple things :
+`nbTimeSlots` (aka `nbGamesPerCircuit`) defines multiple things :
 
 - The number of games a team plays during the day
-- The number of games per circuit
-- The number of teams per circuit (2 x `nb_games`)
+- The number of games per circuit : `nbTimeSlots` - `nbBreaks`
+- The number of teams per circuit : 2 x (`nbTimeSlots` - `nbBreaks`)
 
 According to `nbGamesPerCircuit` value, create a list of time slots.
 
@@ -42,15 +42,9 @@ The user needs to create a player group category. For instance `Lutins`.
 
 Info box : inform the user that the players only play against people from the same groups type.
 
-The user can either <u>create new player group category</u> or <u>load the settings from an existing player group category</u>.
+The user can either <u>create new player group category</u> or <u>duplicate the settings from an existing player group category</u>.
 
-A group category comes with some dedicated parameters :
-
-| Parameter           | Description                        | Example  |
-| ------------------- | ---------------------------------- | -------- |
-| `name`              | Name of the player group category  | `Lutins` |
-| `minPlayersPerTeam` | Minimum number of players per team | 3        |
-| `maxPlayersPerTeam` | Maximum number of players per team | 12       |
+Then, the user needs to enter a name for the group category (e.g. `Lutins`)
 
 Then, the user can either add groups one by one or load a batch through a a csv file.
 
@@ -63,6 +57,23 @@ Each group must have these fields:
 | Name      | Nom de la section   | Louveteaux Férao |
 | nbPlayers | Nombre d'animés     | 30               |
 | nbLeaders | Nombre de chefs     | 6                |
+
+Then, the user is invited to move 2 sliders :
+
+| Parameter           | Description                        | Example |
+| ------------------- | ---------------------------------- | ------- |
+| `minPlayersPerTeam` | Minimum number of players per team | 3       |
+| `maxPlayersPerTeam` | Maximum number of players per team | 12      |
+
+According to these value, some values are computed:
+
+- number of circuits (mentioning how many games per circuit)
+- number of teams
+- average number of members per team
+- number of members in the biggest team
+- number of members in the smaller team
+
+Or an error if the configuration is not possible, with a hint to fix it.
 
 Once all the groups have been defined, the user can click a button `Create teams, games & circuits`
 
