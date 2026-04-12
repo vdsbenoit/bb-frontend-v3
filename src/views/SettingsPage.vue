@@ -110,12 +110,12 @@ async function setCanSetAnyScores(event: any) {
         <IonCardHeader>
           <IonCardTitle>Utilisateurs</IonCardTitle>
         </IonCardHeader>
-        <IonCardContent class="ion-no-padding">
+        <IonCardContent class="ion-no-padding ion-padding-vertical">
           <IonList>
             <IonItem router-link="/new-users" router-direction="forward" button>
               <IonLabel>Nouveaux utilisateurs</IonLabel>
             </IonItem>
-            <IonItem router-link="/login-users" router-direction="forward" button class="ion-text-wrap" lines="none">
+            <IonItem router-link="/login-users" router-direction="forward" button class="ion-text-wrap">
               <IonLabel>Utilisateurs récemment connectés</IonLabel>
             </IonItem>
           </IonList>
@@ -125,7 +125,7 @@ async function setCanSetAnyScores(event: any) {
         <IonCardHeader>
           <IonCardTitle>Paramètres généraux</IonCardTitle>
         </IonCardHeader>
-        <IonCardContent class="ion-no-padding">
+        <IonCardContent class="ion-no-padding ion-padding-vertical">
           <div v-if="isLoadingAppSettings" class="ion-text-center" style="background: transparent">
             <IonSpinner />
           </div>
@@ -200,6 +200,20 @@ async function setCanSetAnyScores(event: any) {
                 <p>Ne pas tenir compte des inscriptions aux épreuves</p>
               </IonLabel>
               <IonToggle slot="end" :checked="appSettings.canSetAnyScores" @ion-change="setCanSetAnyScores" />
+            </IonItem>
+          </IonList>
+        </IonCardContent>
+      </IonCard>
+      <IonCard>
+        <IonCardHeader>
+          <IonCardTitle color="danger">
+            Danger Zone
+          </IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent class="ion-no-padding ion-padding-vertical">
+          <IonList>
+            <IonItem router-link="/reset-app" router-direction="forward" button>
+              <IonLabel>Réinitialiser l'application</IonLabel>
             </IonItem>
           </IonList>
         </IonCardContent>
