@@ -25,7 +25,7 @@ import { MATCHES_COLLECTION_REF } from '@/constants'
 import { firebaseConfig } from './firebaseConfig'
 
 export const app = initializeApp(firebaseConfig)
-const dbId = process.env.NODE_ENV === 'production' ? '(default)' : 'development'
+const dbId = import.meta.env.PROD ? '(default)' : 'development'
 export const db = getFirestore(app, dbId)
 const auth = getAuth(app)
 

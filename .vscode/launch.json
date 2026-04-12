@@ -7,12 +7,9 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Ionic-vue / Webpack / Chrome",
+      "name": "Ionic-vue / Vite / Chrome",
       "url": "http://localhost:8100",
-      "webRoot": "${workspaceFolder}/src",
-      "sourceMapPathOverrides": {
-        "webpack:///src/*": "${webRoot}/*"
-      },
+      "webRoot": "${workspaceFolder}",
       "preLaunchTask": "start ionic dev server",
       "postDebugTask": "kill ionic"
     }

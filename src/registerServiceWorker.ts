@@ -1,27 +1,24 @@
-/* tslint:disable-next-line */
-import { register } from 'register-service-worker'
 import semver from 'semver'
+import { registerSW } from 'virtual:pwa-register'
 import { buildInfo } from '@/app/buildinfo'
 
 import { confirmPopup, errorPopup } from './utils/popup'
 
-if (process.env.NODE_ENV === 'production') {
-  register(`${process.env.BASE_URL}service-worker.js`, {
-    ready() {
-      console.log(
-        'App is being served from cache by a service worker.\n' + 'For more details, visit https://goo.gl/AFskqB',
-      )
-    },
-    registered() {
-      console.log('Service worker has been registered.')
-    },
-    cached() {
+if (import.meta.env.PROD) {
+  const updateServiceWorker = registerSW({
+    immediate: true,
+    onOfflineReady() {
       console.log('Content has been cached for offline use.')
     },
-    updatefound() {
-      console.log('Updated found')
+    onRegisteredSW(swUrl: string, registration: ServiceWorkerRegistration | undefined) {
+      console.log(`Service worker has been registered at ${swUrl}.`)
+      if (registration) {
+        setInterval(() => {
+          void registration.update()
+        }, 60 * 60 * 1000)
+      }
     },
-    updated() {
+    onNeedRefresh() {
       const lastUpdate = localStorage.getItem('lastUpdateRefresh')
       if (!lastUpdate || semver.gt(buildInfo.buildVersion, lastUpdate)) {
         localStorage.setItem('lastUpdateRefresh', buildInfo.buildVersion)
@@ -29,8 +26,8 @@ if (process.env.NODE_ENV === 'production') {
           `Elle ne sera appliquée qu'après avoir fermé redémarré l'app. Veux-tu le faire maintenant ?<br><br>
            Si ce popup apparait à chaque ouverture de l'app, clique sur non et ferme l'onglet ou le navigateur.`,
           () => {
-            window.location.reload()
-            setTimeout(() => {
+            void updateServiceWorker()
+            window.setTimeout(() => {
               void errorPopup(
                 'Ton navigateur ne veut visiblement pas rafraischir l\'app. Fais le manuellement pour appliquer la mise à jour.',
               )
@@ -41,10 +38,7 @@ if (process.env.NODE_ENV === 'production') {
         )
       }
     },
-    offline() {
-      console.log('No internet connection found. App is running in offline mode.')
-    },
-    error(error: any) {
+    onRegisterError(error: unknown) {
       console.error('Error during service worker registration:', error)
     },
   })
