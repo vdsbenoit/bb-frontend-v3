@@ -168,7 +168,7 @@ async function signInWithClipboard() {
       void errorPopup('Copie le lien qui t\'as été envoyé par email', 'Le lien dans le presse-papier n\'est pas valide')
       return
     }
-    await signIn(clipboardText)
+    await signIn(sanitizedLink)
   } catch (error: any) {
     if (error.name === 'NotAllowedError') {
       void errorPopup('Tu dois authoriser l\'accès au presse-papier', 'Impossible de lire le presse-papier')
