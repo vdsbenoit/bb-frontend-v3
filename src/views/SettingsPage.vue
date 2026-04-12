@@ -7,7 +7,6 @@ import {
   IonCardTitle,
   IonContent,
   IonIcon,
-  IonInput,
   IonItem,
   IonLabel,
   IonList,
@@ -17,7 +16,7 @@ import {
   IonToggle,
   useIonRouter,
 } from '@ionic/vue'
-import { checkmarkOutline, checkmarkSharp } from 'ionicons/icons'
+import { addOutline, removeOutline } from 'ionicons/icons'
 import { reactive, watch } from 'vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import RefresherComponent from '@/components/RefresherComponent.vue'
@@ -29,8 +28,8 @@ import { loadingPopup } from '@/utils/popup'
 
 const formData = reactive({
   maxGameAttendants: {
-    isEditting: false,
     value: 2,
+    isUpdating: false,
   },
 })
 
@@ -45,11 +44,10 @@ watch(errorLoadingAppSettings, (error) => {
 })
 /**
  * Update formData with the current appSettings values
- * Does not update the form data if the user is editting the field
  */
 function resetFormData() {
   if (!appSettings.value) return
-  if (!formData.maxGameAttendants.isEditting) formData.maxGameAttendants.value = appSettings.value.maxGameAttendants
+  formData.maxGameAttendants.value = appSettings.value.maxGameAttendants
 }
 // Update the form data when the appSettings object is updated
 watch(appSettings, (newAppSettings) => {
@@ -60,11 +58,21 @@ watch(appSettings, (newAppSettings) => {
 
 // Methods
 
-async function setMaxAttendants() {
-  const loading = await loadingPopup()
-  await updateAppSettings({ maxGameAttendants: formData.maxGameAttendants.value })
-  formData.maxGameAttendants.isEditting = false
-  await loading.dismiss()
+async function updateMaxAttendants(step: number) {
+  if (formData.maxGameAttendants.isUpdating || !appSettings.value) return
+  const nextValue = Math.max(1, formData.maxGameAttendants.value + step)
+  if (nextValue === formData.maxGameAttendants.value) return
+
+  formData.maxGameAttendants.value = nextValue
+  formData.maxGameAttendants.isUpdating = true
+  try {
+    await updateAppSettings({ maxGameAttendants: nextValue })
+  } catch (error) {
+    console.error('Error updating max game attendants:', error)
+    resetFormData()
+  } finally {
+    formData.maxGameAttendants.isUpdating = false
+  }
 }
 async function freezeScores(event: any) {
   const loading = await loadingPopup()
@@ -96,7 +104,7 @@ async function setCanSetAnyScores(event: any) {
 <template>
   <IonPage>
     <HeaderComponent page-title="Paramètres" />
-    <IonContent :fullscreen="true" class="ion-padding">
+    <IonContent :fullscreen="true">
       <RefresherComponent />
       <IonCard>
         <IonCardHeader>
@@ -136,53 +144,62 @@ async function setCanSetAnyScores(event: any) {
             <p>Retour à <a @click="router.back()">la page précédente</a></p>
           </div>
           <IonList v-else>
-            <IonItem v-if="formData.maxGameAttendants.isEditting">
-              <!-- todo add keyup event handler -->
-              <IonInput
-                slot="start"
-                v-model="formData.maxGameAttendants.value"
-                name="maxGameAttendants"
-                type="number"
-                autocorrect="off"
-                label="Max animateurs par épreuve"
-              />
-              <IonButton slot="end" color="success" @click="setMaxAttendants">
-                <IonIcon slot="icon-only" :ios="checkmarkOutline" :md="checkmarkSharp" />
-              </IonButton>
-            </IonItem>
-            <IonItem v-else @click="formData.maxGameAttendants.isEditting = true">
-              <IonInput
-                slot="end"
-                name="maxGameAttendants"
-                type="number"
-                :readonly="true"
-                inputmode="none"
-                label="Max animateurs par épreuve"
-                :value="appSettings.maxGameAttendants"
-              />
+            <IonItem>
+              <IonLabel>Max animateurs par épreuve</IonLabel>
+              <div slot="end" class="stepper">
+                <IonButton
+                  fill="outline"
+                  size="small"
+                  color="medium"
+                  :disabled="formData.maxGameAttendants.value <= 1 || formData.maxGameAttendants.isUpdating"
+                  @click="updateMaxAttendants(-1)"
+                >
+                  <IonIcon slot="icon-only" :icon="removeOutline" />
+                </IonButton>
+                <div class="stepper-value">
+                  {{ formData.maxGameAttendants.value }}
+                </div>
+                <IonButton
+                  fill="outline"
+                  size="small"
+                  color="medium"
+                  :disabled="formData.maxGameAttendants.isUpdating"
+                  @click="updateMaxAttendants(1)"
+                >
+                  <IonIcon slot="icon-only" :icon="addOutline" />
+                </IonButton>
+              </div>
             </IonItem>
             <IonItem>
               <IonLabel>Geler les scores</IonLabel>
-              <IonToggle :checked="!appSettings.canSetScores" @ion-change="freezeScores" />
+              <IonToggle slot="end" :checked="!appSettings.canSetScores" @ion-change="freezeScores" />
             </IonItem>
             <IonItem>
               <IonLabel class="ion-text-wrap"> Rendre les classements publiques </IonLabel>
-              <IonToggle :checked="appSettings.isRankingPublic" @ion-change="showRanking" />
+              <IonToggle slot="end" :checked="appSettings.isRankingPublic" @ion-change="showRanking" />
             </IonItem>
             <IonItem>
               <IonLabel class="ion-text-wrap"> Inscriptions aux épreuves </IonLabel>
-              <IonToggle :checked="appSettings.isAttendantRegistrationOpen" @ion-change="setAttendantRegistration" />
+              <IonToggle
+                slot="end"
+                :checked="appSettings.isAttendantRegistrationOpen"
+                @ion-change="setAttendantRegistration"
+              />
             </IonItem>
             <IonItem>
               <IonLabel class="ion-text-wrap"> Afficher la disponibilités des épreuves </IonLabel>
-              <IonToggle :checked="appSettings.isGameAvailabilitiesDisplayed" @ion-change="setGameAvailabilites" />
+              <IonToggle
+                slot="end"
+                :checked="appSettings.isGameAvailabilitiesDisplayed"
+                @ion-change="setGameAvailabilites"
+              />
             </IonItem>
             <IonItem lines="none">
               <IonLabel class="ion-text-wrap">
                 <h2>Autoriser l'enregistrement de scores partout</h2>
                 <p>Ne pas tenir compte des inscriptions aux épreuves</p>
               </IonLabel>
-              <IonToggle :checked="appSettings.canSetAnyScores" @ion-change="setCanSetAnyScores" />
+              <IonToggle slot="end" :checked="appSettings.canSetAnyScores" @ion-change="setCanSetAnyScores" />
             </IonItem>
           </IonList>
         </IonCardContent>
@@ -192,8 +209,17 @@ async function setCanSetAnyScores(event: any) {
 </template>
 
 <style scoped>
-.fixedLabel {
-  /* width: 100%; */
-  min-width: 30% !important;
+.stepper {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.stepper-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 2ch;
+  padding: 0 4px;
 }
 </style>
