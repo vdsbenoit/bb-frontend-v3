@@ -1,4 +1,5 @@
 import type { AppSettings, AttendantTimeSlot } from '@/types'
+import { getDoc, updateDoc } from 'firebase/firestore'
 import {
   APP_COLLECTION_NAME,
   APP_CONFIG_DOC_NAME,
@@ -10,7 +11,6 @@ import {
   USER_PROFILES_GAMES_KEY,
 } from '@/constants'
 import { addToDocArray, generateRandomId, updateFieldInCollection } from '@/services/firebase'
-import { getDoc, updateDoc } from 'firebase/firestore'
 
 // Getters
 

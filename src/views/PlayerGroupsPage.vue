@@ -222,16 +222,6 @@
 </template>
 
 <script setup lang="ts">
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import InfoCardComponent from '@/components/InfoCardComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig } from '@/composables/app'
-import { usePlayerGroup, usePlayerGroups } from '@/composables/playerGroup'
-import { useCanSeeModerationStuff, useCanSeeRanking } from '@/composables/rights'
-import { useCurrentUserProfile, useMembersOfGroup } from '@/composables/userProfile'
-import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, USER_ROLES } from '@/constants'
-import { updateGroupMeanScore } from '@/utils/playerGroup'
-import { errorPopup, loadingPopup } from '@/utils/popup'
 import {
   IonBadge,
   IonButton,
@@ -257,6 +247,16 @@ import {
 import { useRouteParams } from '@vueuse/router'
 import { arrowUpOutline, arrowUpSharp } from 'ionicons/icons'
 import { computed, ref, watch, watchEffect } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import InfoCardComponent from '@/components/InfoCardComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig } from '@/composables/app'
+import { usePlayerGroup, usePlayerGroups } from '@/composables/playerGroup'
+import { useCanSeeModerationStuff, useCanSeeRanking } from '@/composables/rights'
+import { useCurrentUserProfile, useMembersOfGroup } from '@/composables/userProfile'
+import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, USER_ROLES } from '@/constants'
+import { updateGroupMeanScore } from '@/utils/playerGroup'
+import { errorPopup, loadingPopup } from '@/utils/popup'
 
 // reactive data
 

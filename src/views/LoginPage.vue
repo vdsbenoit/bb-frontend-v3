@@ -46,12 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useCurrentUserProfile } from '@/composables/userProfile'
-import { USER_ROLES } from '@/constants'
-import { processSignInLink, sendSignInEmail } from '@/utils/auth'
-import { errorPopup, infoPopup, toastPopup } from '@/utils/popup'
 import {
   IonButton,
   IonCheckbox,
@@ -68,6 +62,12 @@ import {
 } from '@ionic/vue'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, onMounted, ref } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useCurrentUserProfile } from '@/composables/userProfile'
+import { USER_ROLES } from '@/constants'
+import { processSignInLink, sendSignInEmail } from '@/utils/auth'
+import { errorPopup, infoPopup, toastPopup } from '@/utils/popup'
 
 const router = useIonRouter()
 const userProfile = useCurrentUserProfile()

@@ -1,4 +1,5 @@
 import type { AttendantGroup, PlayerGroup, PlayerTeam, UserProfile } from '@/types'
+import { doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import {
   DEFAULT_GROUP_ID,
   GROUPS_COLLECTION_NAME,
@@ -7,7 +8,6 @@ import {
   USER_PROFILES_COLLECTION_REF,
 } from '@/constants'
 import { incrementDocField } from '@/services/firebase'
-import { doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 
 // Getters
 

@@ -266,21 +266,6 @@
 
 <script setup lang="ts">
 import type { AttendantTimeSlot, VueFireUserProfile } from '@/types'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import MyActionSheetButton from '@/components/MyActionSheetButton.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig, useAppSettings } from '@/composables/app'
-import { useAttendantGroups } from '@/composables/attendantGroup'
-import { useGame } from '@/composables/game'
-import { useGameMatches } from '@/composables/match'
-import { useCanEditGames, useCanRegister, useCanSeeModerationStuff } from '@/composables/rights'
-import { useCurrentUserProfile, useMembersOfGroup } from '@/composables/userProfile'
-import { DEFAULT_GAME_ID, DEFAULT_GROUP_ID, USER_ROLES } from '@/constants'
-import { addAttendant, removeAttendant, setGameNoScores } from '@/utils/game'
-import { setMatchNoScores } from '@/utils/match'
-import { confirmPopup, errorPopup, toastPopup } from '@/utils/popup'
-import { canBeRegistered } from '@/utils/rights'
-import { getRoleByValue, getUserName } from '@/utils/userProfile'
 import {
   IonButton,
   IonCard,
@@ -315,6 +300,21 @@ import {
   peopleSharp,
 } from 'ionicons/icons'
 import { computed, onMounted, reactive, ref, toRef, toValue, watch } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import MyActionSheetButton from '@/components/MyActionSheetButton.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig, useAppSettings } from '@/composables/app'
+import { useAttendantGroups } from '@/composables/attendantGroup'
+import { useGame } from '@/composables/game'
+import { useGameMatches } from '@/composables/match'
+import { useCanEditGames, useCanRegister, useCanSeeModerationStuff } from '@/composables/rights'
+import { useCurrentUserProfile, useMembersOfGroup } from '@/composables/userProfile'
+import { DEFAULT_GAME_ID, DEFAULT_GROUP_ID, USER_ROLES } from '@/constants'
+import { addAttendant, removeAttendant, setGameNoScores } from '@/utils/game'
+import { setMatchNoScores } from '@/utils/match'
+import { confirmPopup, errorPopup, toastPopup } from '@/utils/popup'
+import { canBeRegistered } from '@/utils/rights'
+import { getRoleByValue, getUserName } from '@/utils/userProfile'
 
 // reactive data
 

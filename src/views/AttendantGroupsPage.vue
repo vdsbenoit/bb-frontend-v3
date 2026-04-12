@@ -162,13 +162,6 @@
 
 <script setup lang="ts">
 import type { UserProfile } from '@/types'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig } from '@/composables/app'
-import { useAttendantGroup, useAttendantGroups } from '@/composables/attendantGroup'
-import { useCurrentUserProfile, useGroupApplicants, useMembersOfGroup } from '@/composables/userProfile'
-import { DEFAULT_GROUP_ID, GROUP_ROLES, USER_ROLES } from '@/constants'
-import { getUserName } from '@/utils/userProfile'
 import {
   IonBadge,
   IonCard,
@@ -193,6 +186,13 @@ import {
 import { useRouteParams } from '@vueuse/router'
 import { arrowUpOutline, arrowUpSharp } from 'ionicons/icons'
 import { computed, watch } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig } from '@/composables/app'
+import { useAttendantGroup, useAttendantGroups } from '@/composables/attendantGroup'
+import { useCurrentUserProfile, useGroupApplicants, useMembersOfGroup } from '@/composables/userProfile'
+import { DEFAULT_GROUP_ID, GROUP_ROLES, USER_ROLES } from '@/constants'
+import { getUserName } from '@/utils/userProfile'
 
 // composables
 

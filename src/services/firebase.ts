@@ -1,5 +1,4 @@
 import type { User } from 'firebase/auth'
-import { MATCHES_COLLECTION_REF } from '@/constants'
 import { initializeApp } from 'firebase/app'
 import {
   getAuth,
@@ -22,6 +21,7 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore'
+import { MATCHES_COLLECTION_REF } from '@/constants'
 import { firebaseConfig } from './firebaseConfig'
 
 export const app = initializeApp(firebaseConfig)

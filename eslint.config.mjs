@@ -16,7 +16,7 @@ export default antfu(
       quotes: 'single',
       semi: false,
     },
-    ignores: ['tests/*'],
+    ignores: ['tests/*', 'src/app/buildinfo.ts', 'dev-notes.md', 'todo.md'],
   },
   {
     files: ['**/*.ts', '**/*.vue'],

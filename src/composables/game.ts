@@ -1,9 +1,9 @@
-import type { Game } from '@/types'
 import type { MaybeRefOrGetter } from 'vue'
-import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID, GAMES_COLLECTION_REF } from '@/constants'
+import type { Game } from '@/types'
 import { doc, orderBy, query, where } from 'firebase/firestore'
 import { computed, toValue } from 'vue'
 import { useCollection, useDocument } from 'vuefire'
+import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID, GAMES_COLLECTION_REF } from '@/constants'
 
 export function useGame(rGameId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {

@@ -1,5 +1,9 @@
-import type { RefUserProfile, UserProfile } from '@/types'
 import type { MaybeRefOrGetter } from 'vue'
+import type { RefUserProfile, UserProfile } from '@/types'
+import { Timestamp } from '@firebase/firestore'
+import { deleteUser } from 'firebase/auth'
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { toValue } from 'vue'
 import {
   DEFAULT_GROUP_ID,
   DEFAULT_TEAM_ID,
@@ -9,10 +13,6 @@ import {
   USER_ROLES,
 } from '@/constants'
 import { db, fbSignOut, getAuthInstance } from '@/services/firebase'
-import { Timestamp } from '@firebase/firestore'
-import { deleteUser } from 'firebase/auth'
-import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
-import { toValue } from 'vue'
 
 // getters
 

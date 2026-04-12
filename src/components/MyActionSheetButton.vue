@@ -8,9 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import { toastPopup } from '@/utils/popup'
 import { actionSheetController, IonButton, IonSpinner } from '@ionic/vue'
 import { defineProps, ref } from 'vue'
+import { toastPopup } from '@/utils/popup'
 
 const props = defineProps<{
   actionSheetHeader?: string

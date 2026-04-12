@@ -1,9 +1,9 @@
-import type { PlayerGroup } from '@/types'
 import type { MaybeRefOrGetter } from 'vue'
-import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, GROUPS_COLLECTION_REF } from '@/constants'
+import type { PlayerGroup } from '@/types'
 import { doc, limit as fbLimit, orderBy, query, where } from 'firebase/firestore'
 import { computed, toValue } from 'vue'
 import { useCollection, useDocument } from 'vuefire'
+import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, GROUPS_COLLECTION_REF } from '@/constants'
 
 export function usePlayerGroup(rGroupId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {

@@ -32,10 +32,6 @@
 
 <script lang="ts" setup>
 import type { VueFireUserProfile } from '@/types'
-import { useCurrentUserProfile, useGroupApplicants } from '@/composables/userProfile'
-import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from '@/constants'
-import { choicePopup, errorPopup, textInputPopup } from '@/utils/popup'
-import { getRoleByValue, getUserName, updateUserProfile } from '@/utils/userProfile'
 import {
   IonBadge,
   IonCard,
@@ -49,6 +45,10 @@ import {
   IonText,
 } from '@ionic/vue'
 import { defineEmits, defineProps, watch } from 'vue'
+import { useCurrentUserProfile, useGroupApplicants } from '@/composables/userProfile'
+import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from '@/constants'
+import { choicePopup, errorPopup, textInputPopup } from '@/utils/popup'
+import { getRoleByValue, getUserName, updateUserProfile } from '@/utils/userProfile'
 
 const props = defineProps<{
   attendantGroupId: string

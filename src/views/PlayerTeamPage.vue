@@ -162,16 +162,6 @@
 </template>
 
 <script setup lang="ts">
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig, useAppSettings } from '@/composables/app'
-import { useTeamMatches } from '@/composables/match'
-import { usePlayerGroup } from '@/composables/playerGroup'
-import { useTeam } from '@/composables/team'
-import { useCurrentUserProfile } from '@/composables/userProfile'
-import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, USER_ROLES } from '@/constants'
-import { errorPopup, toastPopup } from '@/utils/popup'
-import { updateUserProfile } from '@/utils/userProfile'
 import {
   IonAvatar,
   IonBadge,
@@ -209,6 +199,16 @@ import {
   trophySharp,
 } from 'ionicons/icons'
 import { computed, onMounted, ref, watch } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig, useAppSettings } from '@/composables/app'
+import { useTeamMatches } from '@/composables/match'
+import { usePlayerGroup } from '@/composables/playerGroup'
+import { useTeam } from '@/composables/team'
+import { useCurrentUserProfile } from '@/composables/userProfile'
+import { DEFAULT_GROUP_ID, DEFAULT_TEAM_ID, USER_ROLES } from '@/constants'
+import { errorPopup, toastPopup } from '@/utils/popup'
+import { updateUserProfile } from '@/utils/userProfile'
 
 // reactive data
 

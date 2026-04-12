@@ -12,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import HeaderComponent from '@/components/HeaderComponent.vue'
 import { IonContent, IonPage } from '@ionic/vue'
 import { useRouter } from 'vue-router'
+import HeaderComponent from '@/components/HeaderComponent.vue'
 
 const router = useRouter()
 </script>

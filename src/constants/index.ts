@@ -1,5 +1,5 @@
-import { db } from '@/services/firebase'
 import { collection, doc } from 'firebase/firestore'
+import { db } from '@/services/firebase'
 
 // users
 

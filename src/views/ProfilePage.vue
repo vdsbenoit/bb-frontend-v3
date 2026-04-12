@@ -369,26 +369,6 @@
 
 <script setup lang="ts">
 import type { VueFireGame } from '@/types'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig, useAppSettings } from '@/composables/app'
-import { useAttendantGroups } from '@/composables/attendantGroup'
-import { useGames } from '@/composables/game'
-import { usePlayerGroup, usePlayerGroups } from '@/composables/playerGroup'
-import { useEditProfileRights } from '@/composables/rights'
-import { useCurrentUserProfile, useUserProfile } from '@/composables/userProfile'
-import {
-  DEFAULT_GAME_ID,
-  DEFAULT_GROUP_CATEGORY_ID,
-  DEFAULT_GROUP_ID,
-  DEFAULT_TEAM_ID,
-  DEFAULT_USER_ID,
-  DEFAULT_USER_ROLE_VALUE,
-  USER_ROLES,
-} from '@/constants'
-import { addAttendant, removeAttendant } from '@/utils/game'
-import { confirmPopup, errorPopup, infoPopup, loadingPopup, toastPopup } from '@/utils/popup'
-import { getRoleByValue, removeFirebaseAccount, signOut, updateUserProfile } from '@/utils/userProfile'
 import {
   IonButton,
   IonCard,
@@ -411,6 +391,26 @@ import DOMPurify from 'dompurify'
 import { checkmarkOutline, checkmarkSharp, closeOutline, closeSharp, pencilOutline, pencilSharp } from 'ionicons/icons'
 import { computed, reactive, ref, watch, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig, useAppSettings } from '@/composables/app'
+import { useAttendantGroups } from '@/composables/attendantGroup'
+import { useGames } from '@/composables/game'
+import { usePlayerGroup, usePlayerGroups } from '@/composables/playerGroup'
+import { useEditProfileRights } from '@/composables/rights'
+import { useCurrentUserProfile, useUserProfile } from '@/composables/userProfile'
+import {
+  DEFAULT_GAME_ID,
+  DEFAULT_GROUP_CATEGORY_ID,
+  DEFAULT_GROUP_ID,
+  DEFAULT_TEAM_ID,
+  DEFAULT_USER_ID,
+  DEFAULT_USER_ROLE_VALUE,
+  USER_ROLES,
+} from '@/constants'
+import { addAttendant, removeAttendant } from '@/utils/game'
+import { confirmPopup, errorPopup, infoPopup, loadingPopup, toastPopup } from '@/utils/popup'
+import { getRoleByValue, removeFirebaseAccount, signOut, updateUserProfile } from '@/utils/userProfile'
 
 // reactive form data
 const formData = reactive({

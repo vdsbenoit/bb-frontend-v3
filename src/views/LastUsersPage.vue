@@ -34,11 +34,6 @@
 <script setup lang="ts">
 import type { AlertInput } from '@ionic/vue'
 import type { FirestoreError } from 'firebase/firestore'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useLastUsers } from '@/composables/userProfile'
-import { toastPopup } from '@/utils/popup'
-import { getRoleByValue, getUserName } from '@/utils/userProfile'
 import {
   alertController,
   IonButton,
@@ -53,6 +48,11 @@ import {
 } from '@ionic/vue'
 import { settingsOutline, settingsSharp } from 'ionicons/icons'
 import { computed, ref, watch } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useLastUsers } from '@/composables/userProfile'
+import { toastPopup } from '@/utils/popup'
+import { getRoleByValue, getUserName } from '@/utils/userProfile'
 
 const props = defineProps({
   order: {

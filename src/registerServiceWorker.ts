@@ -1,7 +1,7 @@
-import { buildInfo } from '@/app/buildinfo'
 /* tslint:disable-next-line */
 import { register } from 'register-service-worker'
 import semver from 'semver'
+import { buildInfo } from '@/app/buildinfo'
 
 import { confirmPopup, errorPopup } from './utils/popup'
 

@@ -99,15 +99,6 @@
 
 <script setup lang="ts">
 import type { VueFireGame } from '@/types'
-import GameAvailabilities from '@/components/GameAvailabilities.vue'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig, useAppSettings } from '@/composables/app'
-import { useCircuitGames } from '@/composables/game'
-import { useCanEditGames } from '@/composables/rights'
-import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID } from '@/constants'
-import { setGameName } from '@/utils/game'
-import { toastPopup } from '@/utils/popup'
 import {
   IonBadge,
   IonButton,
@@ -136,6 +127,15 @@ import {
   pencilSharp,
 } from 'ionicons/icons'
 import { computed, ref, watch } from 'vue'
+import GameAvailabilities from '@/components/GameAvailabilities.vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig, useAppSettings } from '@/composables/app'
+import { useCircuitGames } from '@/composables/game'
+import { useCanEditGames } from '@/composables/rights'
+import { DEFAULT_CIRCUIT_VALUE, DEFAULT_GAME_ID } from '@/constants'
+import { setGameName } from '@/utils/game'
+import { toastPopup } from '@/utils/popup'
 
 // reactive data
 const editMode = ref(false)

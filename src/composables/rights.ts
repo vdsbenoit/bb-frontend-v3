@@ -1,7 +1,7 @@
 import type { RefGame, RefUserProfile } from '@/types'
+import { computed, reactive, watchEffect } from 'vue'
 import { useCurrentUserProfile } from '@/composables/userProfile'
 import { DEFAULT_GROUP_ID, USER_ROLES } from '@/constants'
-import { computed, reactive, watchEffect } from 'vue'
 import { useAppSettings } from './app'
 
 export function useCanSeeRanking() {

@@ -62,11 +62,6 @@
 
 <script setup lang="ts">
 import type { Match } from '@/types'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig } from '@/composables/app'
-import { useTimeMatches } from '@/composables/match'
-import { DEFAULT_TIME_VALUE } from '@/constants'
 import {
   IonBadge,
   IonContent,
@@ -89,6 +84,11 @@ import {
   closeCircleSharp,
 } from 'ionicons/icons'
 import { computed, ref, watch } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig } from '@/composables/app'
+import { useTimeMatches } from '@/composables/match'
+import { DEFAULT_TIME_VALUE } from '@/constants'
 
 // reactive data
 const selectedTime = ref(DEFAULT_TIME_VALUE)

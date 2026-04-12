@@ -1,9 +1,9 @@
-import type { PlayerTeam } from '@/types'
 import type { MaybeRefOrGetter } from 'vue'
-import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_TEAM_ID, TEAMS_COLLECTION_REF } from '@/constants'
+import type { PlayerTeam } from '@/types'
 import { doc, limit as fbLimit, orderBy, query, where } from 'firebase/firestore'
 import { computed, toValue } from 'vue'
 import { useCollection, useDocument } from 'vuefire'
+import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_TEAM_ID, TEAMS_COLLECTION_REF } from '@/constants'
 
 // Composables
 

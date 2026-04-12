@@ -1,10 +1,10 @@
-import type { UserProfile } from '@/types'
 import type { MaybeRefOrGetter } from 'vue'
-import { DEFAULT_GROUP_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_REF } from '@/constants'
-import { getRoleByValue } from '@/utils/userProfile'
+import type { UserProfile } from '@/types'
 import { doc, limit as fbLimit, orderBy, query, where } from 'firebase/firestore'
 import { computed, toValue } from 'vue'
 import { useCollection, useCurrentUser, useDocument } from 'vuefire'
+import { DEFAULT_GROUP_ID, DEFAULT_USER_ID, USER_PROFILES_COLLECTION_REF } from '@/constants'
+import { getRoleByValue } from '@/utils/userProfile'
 import { useAcceptApplicantRights } from './rights'
 
 export function useUserProfile(rUid: MaybeRefOrGetter<string>) {

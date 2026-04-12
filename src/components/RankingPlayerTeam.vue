@@ -63,8 +63,6 @@
 </template>
 
 <script setup lang="ts">
-import { useTopTeams } from '@/composables/team'
-import { errorPopup } from '@/utils/popup'
 import {
   IonBadge,
   IonCard,
@@ -77,6 +75,8 @@ import {
   IonText,
 } from '@ionic/vue'
 import { defineProps, watch } from 'vue'
+import { useTopTeams } from '@/composables/team'
+import { errorPopup } from '@/utils/popup'
 
 const props = defineProps<{
   groupCategoryId: string

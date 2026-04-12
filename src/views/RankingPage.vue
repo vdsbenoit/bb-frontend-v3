@@ -41,13 +41,6 @@
 
 <script setup lang="ts">
 import type { AlertInput } from '@ionic/vue'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RankingPlayerGroup from '@/components/RankingPlayerGroup.vue'
-import RankingPlayerTeam from '@/components/RankingPlayerTeam.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig } from '@/composables/app'
-import { useCurrentUserProfile } from '@/composables/userProfile'
-import { USER_ROLES } from '@/constants'
 import {
   alertController,
   IonButton,
@@ -65,6 +58,13 @@ import {
 } from '@ionic/vue'
 import { settingsOutline, settingsSharp } from 'ionicons/icons'
 import { computed, ref } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RankingPlayerGroup from '@/components/RankingPlayerGroup.vue'
+import RankingPlayerTeam from '@/components/RankingPlayerTeam.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig } from '@/composables/app'
+import { useCurrentUserProfile } from '@/composables/userProfile'
+import { USER_ROLES } from '@/constants'
 
 // reactive data
 

@@ -14,9 +14,9 @@
 
 <script lang="ts" setup>
 import type { Game } from '@/types'
-import { useAppConfig, useAppSettings } from '@/composables/app'
 import { IonBadge } from '@ionic/vue'
 import { computed, defineProps } from 'vue'
+import { useAppConfig, useAppSettings } from '@/composables/app'
 
 // Props
 

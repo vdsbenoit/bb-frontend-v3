@@ -66,6 +66,8 @@
 </template>
 
 <script setup lang="ts">
+import { IonCol, IonContent, IonGrid, IonPage, IonRow } from '@ionic/vue'
+import { computed } from 'vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import InfoCardComponent from '@/components/InfoCardComponent.vue'
 import RefresherComponent from '@/components/RefresherComponent.vue'
@@ -73,8 +75,6 @@ import TileCol from '@/components/TileCol.vue'
 import { useAppConfig, useAppSettings } from '@/composables/app'
 import { useApplicants, useCurrentUserProfile } from '@/composables/userProfile'
 import { USER_ROLES } from '@/constants'
-import { IonCol, IonContent, IonGrid, IonPage, IonRow } from '@ionic/vue'
-import { computed } from 'vue'
 
 // Composables
 

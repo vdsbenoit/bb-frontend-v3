@@ -1,6 +1,6 @@
+import { Timestamp } from 'firebase/firestore'
 import { fbSendSignInEmail, fbSignInWithEmailLink } from '@/services/firebase'
 import { choicePopup, loadingPopup } from '@/utils/popup'
-import { Timestamp } from 'firebase/firestore'
 import { createUserProfile, getUserProfile, updateUserProfile } from './userProfile'
 
 export async function sendSignInEmail(email: string, redirectUrl: string) {

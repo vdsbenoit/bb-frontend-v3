@@ -1,5 +1,5 @@
-import { MATCHES_COLLECTION_REF } from '@/constants'
 import { doc, updateDoc } from 'firebase/firestore'
+import { MATCHES_COLLECTION_REF } from '@/constants'
 
 // Setters
 

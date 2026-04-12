@@ -1,5 +1,8 @@
-import type { Match } from '@/types'
 import type { MaybeRefOrGetter } from 'vue'
+import type { Match } from '@/types'
+import { doc, orderBy, query, where } from 'firebase/firestore'
+import { computed, toValue } from 'vue'
+import { useCollection, useDocument } from 'vuefire'
 import {
   DEFAULT_GAME_ID,
   DEFAULT_MATCH_ID,
@@ -7,9 +10,6 @@ import {
   DEFAULT_TIME_VALUE,
   MATCHES_COLLECTION_REF,
 } from '@/constants'
-import { doc, orderBy, query, where } from 'firebase/firestore'
-import { computed, toValue } from 'vue'
-import { useCollection, useDocument } from 'vuefire'
 
 export function useMatch(rId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {

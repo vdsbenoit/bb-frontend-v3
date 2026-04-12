@@ -62,6 +62,9 @@
 
 <script setup lang="ts">
 import type { AlertInput } from '@ionic/vue'
+import { alertController, IonButton, IonContent, IonIcon, IonPage, IonSpinner, IonText } from '@ionic/vue'
+import { settingsOutline, settingsSharp } from 'ionicons/icons'
+import { computed, ref, watch } from 'vue'
 import ApplicantCard from '@/components/ApplicantCard.vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import RefresherComponent from '@/components/RefresherComponent.vue'
@@ -69,9 +72,6 @@ import { useAttendantGroup, useAttendantGroups } from '@/composables/attendantGr
 import { useCanSeeModerationStuff } from '@/composables/rights'
 import { useCurrentUserProfile } from '@/composables/userProfile'
 import { DEFAULT_GROUP_ID } from '@/constants'
-import { alertController, IonButton, IonContent, IonIcon, IonPage, IonSpinner, IonText } from '@ionic/vue'
-import { settingsOutline, settingsSharp } from 'ionicons/icons'
-import { computed, ref, watch } from 'vue'
 
 // reactive data
 

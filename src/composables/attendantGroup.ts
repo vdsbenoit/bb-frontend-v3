@@ -1,9 +1,9 @@
-import type { AttendantGroup, RefUserProfile } from '@/types'
 import type { MaybeRefOrGetter } from 'vue'
-import { DEFAULT_GROUP_ID, GROUP_ROLES, GROUPS_COLLECTION_REF } from '@/constants'
+import type { AttendantGroup, RefUserProfile } from '@/types'
 import { doc, documentId, orderBy, query, where } from 'firebase/firestore'
 import { computed, toValue } from 'vue'
 import { useCollection, useDocument } from 'vuefire'
+import { DEFAULT_GROUP_ID, GROUP_ROLES, GROUPS_COLLECTION_REF } from '@/constants'
 
 export function useAttendantGroup(rGroupId: MaybeRefOrGetter<string>) {
   const dbRef = computed(() => {

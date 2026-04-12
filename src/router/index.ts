@@ -1,10 +1,10 @@
 import type { RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory } from '@ionic/vue-router'
+import { getCurrentUser } from 'vuefire'
 import { USER_ROLES } from '@/constants'
 import { isRankingPublic } from '@/utils/app'
 import { getRoleByValue, getUserProfile } from '@/utils/userProfile'
 import OnboardingPage from '@/views/OnboardingPage.vue'
-import { createRouter, createWebHistory } from '@ionic/vue-router'
-import { getCurrentUser } from 'vuefire'
 import { toastPopup } from '../utils/popup'
 import HomePageVue from '../views/HomePage.vue'
 

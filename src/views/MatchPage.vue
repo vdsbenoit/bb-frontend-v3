@@ -199,19 +199,6 @@
 
 <script setup lang="ts">
 import type { FirestoreError } from 'firebase/firestore'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig, useAppSettings } from '@/composables/app'
-import { useGame } from '@/composables/game'
-import { useMatch } from '@/composables/match'
-import { useCanSeeModerationStuff, useEditScoreRights } from '@/composables/rights'
-import { useTeam } from '@/composables/team'
-import { useCurrentUserProfile, useUserProfile } from '@/composables/userProfile'
-import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID } from '@/constants'
-import { resetMatchScore, setMatchDraw, setMatchScore } from '@/utils/match'
-import { addGroupDraw, addGroupWin, removeGroupDraw, removeGroupWin } from '@/utils/playerGroup'
-import { choicePopup, errorPopup, toastPopup } from '@/utils/popup'
-import { addTeamDraw, addTeamWin, removeTeamDraw, removeTeamWin } from '@/utils/team'
 import {
   IonButton,
   IonCard,
@@ -236,6 +223,19 @@ import {
 import { useRouteParams } from '@vueuse/router'
 import { closeOutline, closeSharp, trophyOutline, trophySharp } from 'ionicons/icons'
 import { computed, onMounted, ref, watch } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig, useAppSettings } from '@/composables/app'
+import { useGame } from '@/composables/game'
+import { useMatch } from '@/composables/match'
+import { useCanSeeModerationStuff, useEditScoreRights } from '@/composables/rights'
+import { useTeam } from '@/composables/team'
+import { useCurrentUserProfile, useUserProfile } from '@/composables/userProfile'
+import { DEFAULT_GAME_ID, DEFAULT_MATCH_ID, DEFAULT_TEAM_ID, DEFAULT_USER_ID } from '@/constants'
+import { resetMatchScore, setMatchDraw, setMatchScore } from '@/utils/match'
+import { addGroupDraw, addGroupWin, removeGroupDraw, removeGroupWin } from '@/utils/playerGroup'
+import { choicePopup, errorPopup, toastPopup } from '@/utils/popup'
+import { addTeamDraw, addTeamWin, removeTeamDraw, removeTeamWin } from '@/utils/team'
 
 // Composables
 

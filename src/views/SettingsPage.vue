@@ -91,11 +91,6 @@
 </template>
 
 <script setup lang="ts">
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppSettings } from '@/composables/app'
-import { updateAppSettings } from '@/utils/app'
-import { loadingPopup } from '@/utils/popup'
 import {
   IonButton,
   IonCard,
@@ -116,6 +111,11 @@ import {
 } from '@ionic/vue'
 import { checkmarkOutline, checkmarkSharp } from 'ionicons/icons'
 import { reactive, watch } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppSettings } from '@/composables/app'
+import { updateAppSettings } from '@/utils/app'
+import { loadingPopup } from '@/utils/popup'
 
 // reactive data
 

@@ -93,16 +93,6 @@
 <script setup lang="ts">
 import type { UserProfile } from '@/types'
 import type { Group } from '@/types/Group'
-import HeaderComponent from '@/components/HeaderComponent.vue'
-import RefresherComponent from '@/components/RefresherComponent.vue'
-import { useAppConfig } from '@/composables/app'
-import { useAttendantGroups } from '@/composables/attendantGroup'
-import { usePlayerGroups } from '@/composables/playerGroup'
-import { useCurrentUserProfile } from '@/composables/userProfile'
-import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_USER_ROLE_VALUE, USER_ROLES } from '@/constants'
-import { getGroup } from '@/utils/playerGroup'
-import { confirmPopup, errorPopup, toastPopup } from '@/utils/popup'
-import { updateUserProfile } from '@/utils/userProfile'
 import {
   IonButton,
   IonCard,
@@ -122,6 +112,16 @@ import {
 import DOMPurify from 'dompurify'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import RefresherComponent from '@/components/RefresherComponent.vue'
+import { useAppConfig } from '@/composables/app'
+import { useAttendantGroups } from '@/composables/attendantGroup'
+import { usePlayerGroups } from '@/composables/playerGroup'
+import { useCurrentUserProfile } from '@/composables/userProfile'
+import { DEFAULT_GROUP_CATEGORY_ID, DEFAULT_GROUP_ID, DEFAULT_USER_ROLE_VALUE, USER_ROLES } from '@/constants'
+import { getGroup } from '@/utils/playerGroup'
+import { confirmPopup, errorPopup, toastPopup } from '@/utils/popup'
+import { updateUserProfile } from '@/utils/userProfile'
 
 const router = useRouter()
 

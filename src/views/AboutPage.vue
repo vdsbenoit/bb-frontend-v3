@@ -55,10 +55,10 @@
 </template>
 
 <script setup lang="ts">
-import { buildInfo } from '@/app/buildinfo'
-import HeaderComponent from '@/components/HeaderComponent.vue'
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage } from '@ionic/vue'
 import { informationCircleOutline, pin, trophyOutline } from 'ionicons/icons'
+import { buildInfo } from '@/app/buildinfo'
+import HeaderComponent from '@/components/HeaderComponent.vue'
 
 const buildDate = new Date(buildInfo.buildDate).toLocaleString('fr-BE')
 </script>

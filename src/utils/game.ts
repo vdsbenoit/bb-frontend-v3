@@ -1,8 +1,8 @@
 import type { Game } from '@/types'
+import { deleteField, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { DEFAULT_GAME_ID, GAMES_COLLECTION_NAME, GAMES_COLLECTION_REF, USER_PROFILES_COLLECTION_REF } from '@/constants'
 import { addToDocArray, removeFromDocArray, updateGameNameInMatches } from '@/services/firebase'
 import { updateUserProfile } from '@/utils/userProfile'
-import { deleteField, doc, getDoc, updateDoc } from 'firebase/firestore'
 
 // Getters
 
