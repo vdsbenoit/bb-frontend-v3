@@ -44,7 +44,7 @@ import {
   IonSpinner,
   IonText,
 } from '@ionic/vue'
-import { defineEmits, defineProps, watch } from 'vue'
+import { watch } from 'vue'
 import { useCurrentUserProfile, useGroupApplicants } from '@/composables/userProfile'
 import { DEFAULT_USER_ROLE_VALUE, USER_ROLES } from '@/constants'
 import { choicePopup, errorPopup, textInputPopup } from '@/utils/popup'
@@ -119,11 +119,11 @@ function badgeColor(user: VueFireUserProfile) {
 
 function handleRequest(applicant: VueFireUserProfile) {
   if (!currentUser.value) {
-    errorPopup('Impossible de récupérer les informations de l\'utilisateur actuel')
+    void errorPopup('Impossible de récupérer les informations de l\'utilisateur actuel')
     return
   }
   if (!applicant.requestedRole) {
-    errorPopup(`requestedRole n'est pas défini pour ${getUserName(applicant)}`)
+    void errorPopup(`requestedRole n'est pas défini pour ${getUserName(applicant)}`)
     return
   }
   let message = ''
@@ -136,13 +136,13 @@ function handleRequest(applicant: VueFireUserProfile) {
     comme <b>${getRoleByValue(applicant.requestedRole)}</b> de la Baden Battle.`
   }
   if (!message) {
-    errorPopup(`Ce rôle n'existe pas (${applicant.requestedRole})`)
+    void errorPopup(`Ce rôle n'existe pas (${applicant.requestedRole})`)
     return
   }
   const choices = ['Accepter', 'Refuser', 'Annuler']
   const reasonMessage = `Pourquoi refuse-tu la demande de ${getUserName(applicant)} ?`
-  const acceptHandler = () => {
-    updateUserProfile(applicant.id, {
+  const acceptHandler = async () => {
+    await updateUserProfile(applicant.id, {
       role: applicant.requestedRole,
       groupId: applicant.requestedGroupId,
       groupName: applicant.requestedGroupName,
@@ -151,9 +151,9 @@ function handleRequest(applicant: VueFireUserProfile) {
       rejectionReason: '',
     })
   }
-  const rejectHandler = (reason: string) => {
+  const rejectHandler = async (reason: string) => {
     const fullReason = `${getUserName(currentUser)} (${getRoleByValue(currentUser.value?.role ?? -1)}) dit : ${reason}`
-    updateUserProfile(applicant.id, {
+    await updateUserProfile(applicant.id, {
       requestedRole: -1,
       requestedGroupId: '',
       rejectionReason: fullReason,
@@ -163,16 +163,16 @@ function handleRequest(applicant: VueFireUserProfile) {
   const choicePopupHandler = (choice: string) => {
     switch (choice) {
       case 'Accepter':
-        acceptHandler()
+        void acceptHandler()
         break
       case 'Refuser':
-        textInputPopup(reasonMessage, rejectHandler, 'Raison', 'Brève explication')
+        void void textInputPopup(reasonMessage, rejectHandler, 'Raison', 'Brève explication')
         break
       default:
         break
     }
   }
-  choicePopup('Continuer?', choices, choicePopupHandler, '', message)
+  void void choicePopup('Continuer?', choices, choicePopupHandler, '', message)
 }
 </script>
 

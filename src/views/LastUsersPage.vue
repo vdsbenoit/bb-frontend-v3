@@ -80,7 +80,7 @@ const {
 
 watch(errorLoadingUsers, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup('Erreur lors du chargement des utilisateurs')
+    void toastPopup('Erreur lors du chargement des utilisateurs')
     console.error(`Error loading users: ${error.message}`)
   }
 })

@@ -656,16 +656,16 @@ watchEffect(() => {
 // Go to pages
 
 function goToPlayerGroupPage(groupId: string) {
-  if (groupId !== DEFAULT_GROUP_ID) router.push(`/player-group/${groupId}`)
+  if (groupId !== DEFAULT_GROUP_ID) void router.push(`/player-group/${groupId}`)
 }
 function goToAttendantGroupPage(groupId: string) {
-  if (groupId !== DEFAULT_GROUP_ID) router.push(`/attendant-group/${groupId}`)
+  if (groupId !== DEFAULT_GROUP_ID) void router.push(`/attendant-group/${groupId}`)
 }
 function goToTeamPage(teamId: string) {
-  if (teamId !== DEFAULT_TEAM_ID) router.push(`/team/${teamId}`)
+  if (teamId !== DEFAULT_TEAM_ID) void router.push(`/team/${teamId}`)
 }
 function goToGamePage(gameId: string) {
-  if (gameId !== DEFAULT_GAME_ID) router.push(`/game/${gameId}`)
+  if (gameId !== DEFAULT_GAME_ID) void router.push(`/game/${gameId}`)
 }
 
 // Setters
@@ -687,14 +687,14 @@ function goToGamePage(gameId: string) {
  */
 async function setName() {
   if (!formData.name.value) {
-    toastPopup('Erreur : aucun nom n\'a été entré')
+    void toastPopup('Erreur : aucun nom n\'a été entré')
     resetFormData()
     return
   }
   formData.name.isEditing = false
   formData.name.isUpdating = true
   await updateUserProfile(userId.value, { name: DOMPurify.sanitize(formData.name.value) }).catch((error) => {
-    errorPopup(error.message, `Le n'a pas pu être mis à jour`)
+    void errorPopup(error.message, `Le n'a pas pu être mis à jour`)
   })
   resetFormData()
 }
@@ -707,17 +707,17 @@ async function setName() {
  */
 async function setRole() {
   if (!formData.role.value || formData.role.value === DEFAULT_USER_ROLE_VALUE) {
-    toastPopup('Erreur : aucun rôle n\'a été sélectionné')
+    void toastPopup('Erreur : aucun rôle n\'a été sélectionné')
     resetFormData()
     return
   }
   if (!userProfile.value) {
-    errorPopup('Le profil de l\'utilisateur n\'a pas été chargé')
+    void errorPopup('Le profil de l\'utilisateur n\'a pas été chargé')
     resetFormData()
     return
   }
   if (userProfile.value.role === USER_ROLES.Participant && formData.role.value > USER_ROLES.Participant) {
-    errorPopup(
+    void errorPopup(
       'Pour cela, il faut supprimer et recréer l\'utilisateur',
       'Il n\'est pas possible de changer le rôle d\'un participant',
     )
@@ -725,7 +725,7 @@ async function setRole() {
     return
   }
   if (userProfile.value.role >= USER_ROLES.Animateur && formData.role.value < USER_ROLES.Animateur) {
-    errorPopup(
+    void errorPopup(
       'Pour cela, il faut supprimer et recréer l\'utilisateur',
       'Il n\'est pas possible de rétrograder un utilisateur au role de participant',
     )
@@ -745,11 +745,11 @@ async function setRole() {
       try {
         await removeAttendant(game.id, userProfile.value.id, timeSlotId)
       } catch (error: any) {
-        errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${game}`)
+        void errorPopup(error.message, `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${game}`)
         resetFormData()
         throw error
       }
-      toastPopup('L\'utilisateur a été désinscrit de ses épreuves car son nouveau rôles n\'est plus dans l\'animation')
+      void toastPopup('L\'utilisateur a été désinscrit de ses épreuves car son nouveau rôles n\'est plus dans l\'animation')
     }
   }
   console.log('ROLE 2', formData.role.value)
@@ -759,9 +759,9 @@ async function setRole() {
       groupId: DEFAULT_GROUP_ID,
       groupName: '',
     })
-    infoPopup('Tu dois à présent re-configurer la section de l\'utilisateur', 'Attention')
+    void infoPopup('Tu dois à présent re-configurer la section de l\'utilisateur', 'Attention')
   } catch (error: any) {
-    errorPopup(error.message, `Le rôle n'a pas pu être mis à jour`)
+    void errorPopup(error.message, `Le rôle n'a pas pu être mis à jour`)
     resetFormData()
     throw error
   }
@@ -792,11 +792,11 @@ async function setPlayerGroup() {
       teamId: DEFAULT_TEAM_ID,
     })
   } catch (error: any) {
-    errorPopup(error.message, `La section n'a pas pu être mise à jour`)
+    void errorPopup(error.message, `La section n'a pas pu être mise à jour`)
     resetFormData()
     throw error
   }
-  toastPopup('Vu que la section a changé, l\'équipe a été effacée du profil')
+  void toastPopup('Vu que la section a changé, l\'équipe a été effacée du profil')
   resetFormData()
 }
 
@@ -805,7 +805,7 @@ async function setPlayerGroup() {
  */
 async function setTeam() {
   if (formData.team.value === DEFAULT_TEAM_ID) {
-    toastPopup('Erreur : aucune équipe n\'a été sélectionnée')
+    void toastPopup('Erreur : aucune équipe n\'a été sélectionnée')
     resetFormData()
     return
   }
@@ -814,7 +814,7 @@ async function setTeam() {
   try {
     await updateUserProfile(userId.value, { teamId: formData.team.value })
   } catch (error: any) {
-    errorPopup(error.message, `L'équipe n'a pas pu être mise à jour`)
+    void errorPopup(error.message, `L'équipe n'a pas pu être mise à jour`)
     resetFormData()
     throw error
   }
@@ -826,7 +826,7 @@ async function setTeam() {
  */
 async function setAttendantGroup() {
   if (formData.attendantGroup.id === DEFAULT_GROUP_ID) {
-    toastPopup('Erreur : aucune section n\'a été sélectionnée')
+    void toastPopup('Erreur : aucune section n\'a été sélectionnée')
     resetFormData()
     return
   }
@@ -834,7 +834,7 @@ async function setAttendantGroup() {
   formData.attendantGroup.isUpdating = true
   const selectedGroup = attendantGroups.value.find(group => group.id === formData.attendantGroup.id)
   if (!selectedGroup) {
-    errorPopup('La section n\'a pas été trouvée')
+    void errorPopup('La section n\'a pas été trouvée')
     resetFormData()
     return
   }
@@ -844,7 +844,7 @@ async function setAttendantGroup() {
       groupName: selectedGroup.name,
     })
   } catch (error: any) {
-    errorPopup(error.message, `La section n'a pas pu être mise à jour`)
+    void errorPopup(error.message, `La section n'a pas pu être mise à jour`)
     resetFormData()
     throw error
   }
@@ -857,12 +857,12 @@ async function setAttendantGroup() {
  */
 async function setGame(timeSlotId: string) {
   if (!formData.attendantGames.ids[timeSlotId]) {
-    toastPopup('Erreur : aucun jeu n\'a été sélectionné')
+    void toastPopup('Erreur : aucun jeu n\'a été sélectionné')
     resetFormData()
     return
   }
   if (!userProfile.value) {
-    errorPopup('Le profil de l\'utilisateur n\'a pas été chargé')
+    void errorPopup('Le profil de l\'utilisateur n\'a pas été chargé')
     resetFormData()
     return
   }
@@ -873,7 +873,7 @@ async function setGame(timeSlotId: string) {
   if (userProfile.value.games && userProfile.value.games[timeSlotId]) {
     // if the user is already registered to this game, cancel the operation and notify the user
     if (userProfile.value.games[timeSlotId].id === formData.attendantGames.ids[timeSlotId]) {
-      toastPopup('L\'utilisateur est déjà inscrit à cette épreuve')
+      void toastPopup('L\'utilisateur est déjà inscrit à cette épreuve')
       resetFormData()
       return
     }
@@ -881,7 +881,7 @@ async function setGame(timeSlotId: string) {
     try {
       await removeAttendant(userProfile.value.games[timeSlotId].id, userProfile.value.id, timeSlotId)
     } catch (error: any) {
-      errorPopup(
+      void errorPopup(
         error.message,
         `Erreur lors du désenregistrement de l'utilisateur à l'épreuve ${userProfile.value.games[timeSlotId]}`,
       )
@@ -892,7 +892,7 @@ async function setGame(timeSlotId: string) {
   try {
     await addAttendant(formData.attendantGames.ids[timeSlotId], userProfile.value.id, timeSlotId)
   } catch (error: any) {
-    errorPopup(
+    void errorPopup(
       error.message,
       `Erreur lors de l'enregistrement de l'utilisateur à l'épreuve ${formData.attendantGames.ids[timeSlotId]}`,
     )
@@ -917,24 +917,24 @@ async function resetOnboarding() {
       hasDoneOnboarding: false,
     })
   } catch (error: any) {
-    errorPopup(error.message, `L'onboarding n'a pas pu être réinitialisée`)
+    void errorPopup(error.message, `L'onboarding n'a pas pu être réinitialisée`)
   }
-  loading.dismiss()
+  await loading.dismiss()
 }
 
 /**
  * Log out the user
  */
 function logOut() {
-  confirmPopup('Es-tu certain.e de vouloir te déconnecter ?', async () => {
+  void confirmPopup('Es-tu certain.e de vouloir te déconnecter ?', async () => {
     const loading = await loadingPopup('Déconnexion')
     try {
       await signOut()
-      router.replace('/home')
+      void router.replace('/home')
     } catch (error: any) {
-      errorPopup(error.message, `Une erreur est survenue durant la déconnexion`)
+      void errorPopup(error.message, `Une erreur est survenue durant la déconnexion`)
     }
-    loading.dismiss()
+    await loading.dismiss()
   })
 }
 
@@ -943,7 +943,7 @@ async function removeAccount() {
   const confirmMessage = 'Cette opération supprimera toutes les données liées au profil'
   const removeAccountHandler = async () => {
     if (!userProfile.value) {
-      errorPopup('Le profil de l\'utilisateur n\'a pas été chargé')
+      void errorPopup('Le profil de l\'utilisateur n\'a pas été chargé')
       return
     }
     const wasOwnProfile = isOwnProfile.value
@@ -953,7 +953,7 @@ async function removeAccount() {
         try {
           await removeAttendant(game.id, userProfile.value.id, timeSlotId)
         } catch (error: any) {
-          errorPopup(
+          void errorPopup(
             error.message,
             `Erreur lors du désenregistrement de l'utilisateur ${userProfile.value.id} à l'épreuve ${game}`,
           )
@@ -963,15 +963,15 @@ async function removeAccount() {
     try {
       await removeFirebaseAccount(userProfile.value.id)
     } catch (error: any) {
-      errorPopup(error.message, `Erreur Lors de la suppression de l'utilisateur ${userProfile.value.email}`)
+      void errorPopup(error.message, `Erreur Lors de la suppression de l'utilisateur ${userProfile.value.email}`)
     }
     if (wasOwnProfile) {
       await signOut()
-      router.replace('/home')
+      void router.replace('/home')
     }
-    loading.dismiss()
+    await loading.dismiss()
   }
-  confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle)
+  void confirmPopup(confirmMessage, removeAccountHandler, null, confirmTitle)
 }
 </script>
 

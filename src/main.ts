@@ -37,9 +37,9 @@ const app = createApp(App)
 globalFirestoreOptions.maxRefDepth = 1
 
 app.use(router)
-router.isReady().then(() => {
+void router.isReady().then(() => {
   app.mount('#app')
 })
 
 // Call the element loader after the platform has been bootstrapped
-defineCustomElements(window)
+void defineCustomElements(window)

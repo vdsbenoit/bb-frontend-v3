@@ -246,7 +246,7 @@ watch([errorLoadingTeam, errorLoadingPlayerGroup, errorLoadingMatches], (errors)
 onMounted(() => {
   if (teamId.value === DEFAULT_TEAM_ID) {
     const msg = 'Team ID missing from the url'
-    toastPopup(msg)
+    void toastPopup(msg)
     console.error(msg)
   }
 })
@@ -304,43 +304,43 @@ function getMatchStatusIcon(time: number) {
 async function registerPlayer() {
   if (!team.value) {
     const message = 'Impossible de s\'inscrire. Aucune équipe n\'est chargée'
-    toastPopup(message)
+    void toastPopup(message)
     console.error(message)
     return
   }
   if (!user.value) {
     const message = 'Impossible de s\'inscrire. Aucun utilisateur n\'est connecté'
-    toastPopup(message)
+    void toastPopup(message)
     console.error(message)
     return
   }
 
   try {
     await updateUserProfile(user.value.id, { teamId: team.value.id })
-    toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`)
+    void toastPopup(`L'équipe ${team.value.id} a été enregistrée comme ton équipe`)
   } catch (e) {
-    errorPopup(`Une erreur s'est produite lors de la modification de ton profil`)
+    void errorPopup(`Une erreur s'est produite lors de la modification de ton profil`)
     console.error(e)
   }
 }
 async function unRegisterPlayer() {
   if (!team.value) {
     const message = 'Impossible de s\'inscrire. Aucune équipe n\'est chargée'
-    toastPopup(message)
+    void toastPopup(message)
     console.error(message)
     return
   }
   if (!user.value) {
     const message = 'Impossible de s\'inscrire. Aucun utilisateur n\'est connecté'
-    toastPopup(message)
+    void toastPopup(message)
     console.error(message)
     return
   }
   try {
-    updateUserProfile(user.value.id, { teamId: DEFAULT_TEAM_ID })
-    toastPopup(`Tu es désincrit.e de cette équipe`)
+    await updateUserProfile(user.value.id, { teamId: DEFAULT_TEAM_ID })
+    void toastPopup(`Tu es désincrit.e de cette équipe`)
   } catch (e) {
-    errorPopup(`Une erreur s'est produite lors de la modification de ton profil`)
+    void errorPopup(`Une erreur s'est produite lors de la modification de ton profil`)
     console.error(e)
   }
 }

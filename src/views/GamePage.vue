@@ -378,7 +378,7 @@ watch([errorLoadingGame, errorLoadingMatches, errorLoadingAttendantGroups, error
 onMounted(() => {
   if (gameId.value === DEFAULT_GAME_ID) {
     const msg = 'Game ID missing from the url'
-    toastPopup(msg)
+    void toastPopup(msg)
     console.error(msg)
   }
 })
@@ -474,25 +474,25 @@ async function register(result: any, payload: any) {
         : `${getUserName(_targetUser)} est déjà inscrit.e à l'épreuve ${currentGameId} au timing ${
           _timeSlot.name
         }. Le/la désincrire ?`
-      confirmPopup(
+      void confirmPopup(
         message,
         async () => {
           await removeAttendant(currentGameId, _targetUser.id, _timeSlot.id).then(() => {
-            toastPopup(`Désinscription à l'épreuve ${currentGameId} effectuée`)
+            void toastPopup(`Désinscription à l'épreuve ${currentGameId} effectuée`)
           })
           await addAttendant(_game.id, _targetUser.id, _timeSlot.id).then(() => {
-            toastPopup('Responsables mis à jour')
+            void toastPopup('Responsables mis à jour')
           })
         },
-        () => toastPopup('Enregistrement annulé'),
+        () => void toastPopup('Enregistrement annulé'),
       )
     } else {
       await addAttendant(_game.id, _targetUser.id, _timeSlot.id).then(() => {
-        toastPopup('Responsables mis à jour')
+        void toastPopup('Responsables mis à jour')
       })
     }
   } catch (e: any) {
-    toastPopup(e.message)
+    void toastPopup(e.message)
     console.error(e)
   }
 }
@@ -502,11 +502,11 @@ async function register(result: any, payload: any) {
  */
 async function unregister() {
   // arguments checks
-  if (!currentUser.value) return errorPopup('Current user data not found')
+  if (!currentUser.value) return void errorPopup('Current user data not found')
 
   for (const timeSlot of attendantSchedule.value) {
     await removeAttendant(gameId.value, currentUser.value.id, timeSlot.id).then(() => {
-      toastPopup(`Désinscription à l'épreuve ${gameId.value} effectuée`)
+      void toastPopup(`Désinscription à l'épreuve ${gameId.value} effectuée`)
     })
   }
 }
@@ -530,7 +530,7 @@ function goToProfile(uid: string) {
 
 async function toggleNoScores() {
   if (!game.value) {
-    toastPopup('Game is undefined')
+    void toastPopup('Game is undefined')
     console.error('Cannot toggle no scores, game is undefined', game)
     return
   }
@@ -540,10 +540,10 @@ async function toggleNoScores() {
   promises.push(
     setGameNoScores(gameId.value, newValue)
       .then(() => {
-        toastPopup(`Les scores de l'épreuve ${gameId.value} ont été ${newValue ? 'activés' : 'désactivés'}`)
+        void toastPopup(`Les scores de l'épreuve ${gameId.value} ont été ${newValue ? 'activés' : 'désactivés'}`)
       })
       .catch((e) => {
-        errorPopup(`Impossible de ${newValue ? 'réactiver' : 'désactiver'} les scores de l'épreuve ${gameId.value}`)
+        void errorPopup(`Impossible de ${newValue ? 'réactiver' : 'désactiver'} les scores de l'épreuve ${gameId.value}`)
         console.error(`Error : cannot update game ${gameId.value} `, e)
       }),
   )

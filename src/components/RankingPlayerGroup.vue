@@ -74,7 +74,7 @@ import {
   IonSpinner,
   IonText,
 } from '@ionic/vue'
-import { defineProps, watch } from 'vue'
+import { watch } from 'vue'
 import { useTopPlayerGroups } from '@/composables/playerGroup'
 import { errorPopup } from '@/utils/popup'
 
@@ -88,7 +88,7 @@ const props = defineProps<{
 const { data: groups, pending: isLoading, error: errorLoading } = useTopPlayerGroups(props.groupCategoryId, props.limit)
 watch(errorLoading, (error) => {
   if (error) {
-    errorPopup('Erreur lors du chargement des sections')
+    void errorPopup('Erreur lors du chargement des sections')
     console.error('Error loading player groups:', error)
   }
 })

@@ -239,15 +239,15 @@ function processForm(groupData: Group) {
   if (!currentUser.value) return errorPopup('currentUser not found', 'Impossible de mettre à jour le profil')
   updateUserProfile(currentUser.value.id, newProfile)
     .then(() => {
-      toastPopup('Ton profil a été mis à jour')
+      void toastPopup('Ton profil a été mis à jour')
       isUpdatingProfile.value = false
     })
     .catch((error: any) => {
-      errorPopup(error.message, `Le profile n'a pas pu être mis à jour`)
+      void errorPopup(error.message, `Le profile n'a pas pu être mis à jour`)
       isUpdatingProfile.value = false
     })
     .finally(() => {
-      router.replace({ name: 'home' })
+      void router.replace({ name: 'home' })
     })
   console.log('Profile udpated', newProfile)
 }

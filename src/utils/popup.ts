@@ -83,8 +83,8 @@ export async function loadingPopup(message = 'Chargement', timeout = 60000) {
     message,
     duration: timeout,
   })
-  setTimeout(() => loading.dismiss(), timeout)
-  loading.present()
+  setTimeout(() => void loading.dismiss(), timeout)
+  void loading.present()
   return loading
 }
 

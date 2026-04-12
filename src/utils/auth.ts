@@ -51,14 +51,14 @@ export async function processSignInLink(href: string) {
         await updateUserProfile(response.user.uid as string, { lastLogin: Timestamp.now() })
       }
       window.localStorage.removeItem('emailForSignIn')
-      loading.dismiss()
+      await loading.dismiss()
       return true
     } else {
-      loading.dismiss()
+      await loading.dismiss()
       return false
     }
   } catch (e: any) {
-    loading.dismiss()
+    await loading.dismiss()
     if (e.code === 'auth/invalid-action-code') {
       throw new Error(`Le lien que tu viens d'utiliser n'est plus valide. <br/><br/>
         Clique sur le lien du dernier email que tu as reçu ou réessaie la procédure d'inscription depuis le début.`)

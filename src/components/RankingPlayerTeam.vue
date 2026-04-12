@@ -74,7 +74,7 @@ import {
   IonSpinner,
   IonText,
 } from '@ionic/vue'
-import { defineProps, watch } from 'vue'
+import { watch } from 'vue'
 import { useTopTeams } from '@/composables/team'
 import { errorPopup } from '@/utils/popup'
 
@@ -88,7 +88,7 @@ const props = defineProps<{
 const { data: teams, pending: isLoading, error: errorLoading } = useTopTeams(props.groupCategoryId, props.limit)
 watch(errorLoading, (error) => {
   if (error) {
-    errorPopup('Erreur lors du chargement des équipes')
+    void errorPopup('Erreur lors du chargement des équipes')
     console.error('Error loading teams:', error)
   }
 })

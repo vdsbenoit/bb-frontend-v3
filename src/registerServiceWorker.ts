@@ -25,13 +25,13 @@ if (process.env.NODE_ENV === 'production') {
       const lastUpdate = localStorage.getItem('lastUpdateRefresh')
       if (!lastUpdate || semver.gt(buildInfo.buildVersion, lastUpdate)) {
         localStorage.setItem('lastUpdateRefresh', buildInfo.buildVersion)
-        confirmPopup(
+        void confirmPopup(
           `Elle ne sera appliquée qu'après avoir fermé redémarré l'app. Veux-tu le faire maintenant ?<br><br>
            Si ce popup apparait à chaque ouverture de l'app, clique sur non et ferme l'onglet ou le navigateur.`,
           () => {
             window.location.reload()
             setTimeout(() => {
-              errorPopup(
+              void errorPopup(
                 'Ton navigateur ne veut visiblement pas rafraischir l\'app. Fais le manuellement pour appliquer la mise à jour.',
               )
             }, 1000)

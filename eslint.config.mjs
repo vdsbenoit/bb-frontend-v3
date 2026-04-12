@@ -56,4 +56,18 @@ export default antfu(
       'vue/singleline-html-element-content-newline': ['error', { externalIgnores: ['IonLabel'] }],
     },
   },
+  // TypeScript rules
+  {
+    files: ['src/**/*.ts', 'src/**/*.vue'],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off', // from Ionic template
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+    },
+  },
 )

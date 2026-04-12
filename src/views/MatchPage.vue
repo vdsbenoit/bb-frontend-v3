@@ -264,7 +264,7 @@ const isResettingScore = ref(false)
 onMounted(() => {
   if (matchId.value === DEFAULT_MATCH_ID) {
     const msg = 'Match ID missing from the url'
-    toastPopup(msg)
+    void toastPopup(msg)
     console.error(msg)
   }
 })
@@ -303,16 +303,16 @@ async function winHandler(winnerTeamId: string) {
   if (!userProfile.value) {
     isSettingScore.value = false
     console.error(`userProfile is undefined`)
-    return errorPopup('L\'utilisateur n\'est pas connecté')
+    return void errorPopup('L\'utilisateur n\'est pas connecté')
   }
   if (!match.value) {
     isSettingScore.value = false
     console.error(`match is undefined`)
-    return errorPopup('Le match n\'a pas encore été chargé')
+    return void errorPopup('Le match n\'a pas encore été chargé')
   }
   if (match.value.winnerTeamId === winnerTeamId) {
     isSettingScore.value = false
-    return errorPopup(`L'équipe ${winnerTeamId} est déjà enregistrée comme gagnante`)
+    return void errorPopup(`L'équipe ${winnerTeamId} est déjà enregistrée comme gagnante`)
   }
   let winningGroupId: string
   let losingGroupId: string
@@ -322,7 +322,7 @@ async function winHandler(winnerTeamId: string) {
   if (!firstPlayer.value || !secondPlayer.value) {
     isSettingScore.value = false
     console.error(`firstPlayer or secondPlayer is undefined`, firstPlayer.value, secondPlayer.value)
-    return errorPopup(`Le match n'a pas encore été chargé`)
+    return void errorPopup(`Le match n'a pas encore été chargé`)
   }
   if (firstPlayer.value.id === winnerTeamId) {
     winningGroupId = firstPlayer.value.groupId
@@ -350,9 +350,9 @@ async function winHandler(winnerTeamId: string) {
     promises.push(setMatchScore(matchId.value, winnerTeamId, loser, userProfile.value.id))
 
     await Promise.all(promises)
-    toastPopup('Le score a été enregistré')
+    void toastPopup('Le score a été enregistré')
   } catch (error: any) {
-    errorPopup('Veuillez contacter l\'administrateur de l\'app', `L'enregistrement du score a échoué`)
+    void errorPopup('Veuillez contacter l\'administrateur de l\'app', `L'enregistrement du score a échoué`)
     console.error('Cannot set score.', error.message)
   }
   isSettingScore.value = false
@@ -361,22 +361,22 @@ async function drawHandler() {
   if (!userProfile.value) {
     isSettingScore.value = false
     console.error(`userProfile is undefined`)
-    return errorPopup('L\'utilisateur n\'est pas connecté')
+    return void errorPopup('L\'utilisateur n\'est pas connecté')
   }
   if (!match.value) {
     isSettingScore.value = false
     console.error(`match is undefined`)
-    return errorPopup('Le match n\'a pas encore été chargé')
+    return void errorPopup('Le match n\'a pas encore été chargé')
   }
   if (match.value.draw) {
     isSettingScore.value = false
-    return errorPopup('Ce duel est déjà enregistré comme égalité')
+    return void errorPopup('Ce duel est déjà enregistré comme égalité')
   }
   const promises = []
   if (!firstPlayer.value || !secondPlayer.value) {
     isSettingScore.value = false
     console.error(`firstPlayer or secondPlayer is undefined`, firstPlayer.value, secondPlayer.value)
-    return errorPopup(`Le match n'a pas encore été chargé`)
+    return void errorPopup(`Le match n'a pas encore été chargé`)
   }
   try {
     if (match.value.winnerTeamId) {
@@ -392,9 +392,9 @@ async function drawHandler() {
     promises.push(setMatchDraw(matchId.value, userProfile.value.id))
 
     await Promise.all(promises)
-    toastPopup('Le score a été enregistré')
+    void toastPopup('Le score a été enregistré')
   } catch (error: any) {
-    errorPopup(error.message, `L'enregistrement du score a échoué`)
+    void errorPopup(error.message, `L'enregistrement du score a échoué`)
     console.log(error)
   }
   isSettingScore.value = false
@@ -407,18 +407,18 @@ function setScore() {
     return errorPopup('Le match n\'a pas encore été chargé')
   }
   if (!appSettings.value?.canSetScores) {
-    errorPopup('Il n\'est pas ou plus possible d\'enregistrer des scores')
+    void errorPopup('Il n\'est pas ou plus possible d\'enregistrer des scores')
     return
   }
   isSettingScore.value = true
-  choicePopup(
+  void choicePopup(
     'Est-ce une victoire ?',
     ['Victoire', 'Égalité'],
     (choice: string) => {
       if (choice === 'Égalité') {
-        drawHandler()
+        void drawHandler()
       } else if (choice === 'Victoire') {
-        choicePopup(
+        void choicePopup(
           'Qui est l\'heureux gagnant ?',
           [match.value?.playerTeamIds[0] ?? '', match.value?.playerTeamIds[1] ?? ''],
           winHandler,
@@ -446,11 +446,11 @@ async function resetScore() {
     return errorPopup('L\'utilisateur n\'est pas connecté')
   }
   if (!appSettings.value?.canSetScores) {
-    errorPopup('Il n\'est pas ou plus possible de modifier des scores')
+    void errorPopup('Il n\'est pas ou plus possible de modifier des scores')
     return
   }
   if (!match.value.winnerTeamId && !match.value.draw) {
-    errorPopup('Ce duel n\'a pas encore de score')
+    void errorPopup('Ce duel n\'a pas encore de score')
     return
   }
   isResettingScore.value = true
@@ -475,10 +475,10 @@ async function resetScore() {
     }
     promises.push(resetMatchScore(matchId.value, userProfile.value.id))
     await Promise.all(promises)
-    toastPopup('Le score a été réinitialisé')
+    void toastPopup('Le score a été réinitialisé')
     console.log(`Score reset for match ${matchId.value} by ${userProfile.value.id}`)
   } catch (error: any) {
-    errorPopup(error.message, `La réinitialisation du score a échoué`)
+    void errorPopup(error.message, `La réinitialisation du score a échoué`)
     console.log(error)
   }
   isResettingScore.value = false
@@ -503,31 +503,31 @@ function scoreIcon(playerId: string | undefined) {
 
 watch(errorLoadingGame, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup('Erreur lors du chargement du jeu')
+    void toastPopup('Erreur lors du chargement du jeu')
     console.error(`Error loading game: ${error.message}`)
   }
 })
 watch(errorLoadingMatch, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup('Erreur lors du chargement du match')
+    void toastPopup('Erreur lors du chargement du match')
     console.error(`Error loading match: ${error.message}`)
   }
 })
 watch(errorLoadingFirstPlayer, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup('Erreur lors du chargement de l\'équipe 1')
+    void toastPopup('Erreur lors du chargement de l\'équipe 1')
     console.error(`Error loading first player: ${error.message}`)
   }
 })
 watch(errorLoadingSecondPlayer, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup('Erreur lors du chargement de l\'équipe 2')
+    void toastPopup('Erreur lors du chargement de l\'équipe 2')
     console.error(`Error loading second player: ${error.message}`)
   }
 })
 watch(errorLoadingReporter, (error: FirestoreError | undefined) => {
   if (error) {
-    toastPopup('Erreur lors du chargement du modérateur')
+    void toastPopup('Erreur lors du chargement du modérateur')
     console.error(`Error loading reporter: ${error.message}`)
   }
 })

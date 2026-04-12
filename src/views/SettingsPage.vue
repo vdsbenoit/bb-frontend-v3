@@ -162,32 +162,32 @@ async function setMaxAttendants() {
   const loading = await loadingPopup()
   await updateAppSettings({ maxGameAttendants: formData.maxGameAttendants.value })
   formData.maxGameAttendants.isEditting = false
-  loading.dismiss()
+  await loading.dismiss()
 }
 async function freezeScores(event: any) {
   const loading = await loadingPopup()
   await updateAppSettings({ canSetScores: !event.detail.checked })
-  loading.dismiss()
+  await loading.dismiss()
 }
 async function showRanking(event: any) {
   const loading = await loadingPopup()
   await updateAppSettings({ isRankingPublic: event.detail.checked })
-  loading.dismiss()
+  await loading.dismiss()
 }
 async function setAttendantRegistration(event: any) {
   const loading = await loadingPopup()
   await updateAppSettings({ isAttendantRegistrationOpen: event.detail.checked })
-  loading.dismiss()
+  await loading.dismiss()
 }
 async function setGameAvailabilites(event: any) {
   const loading = await loadingPopup()
   await updateAppSettings({ isGameAvailabilitiesDisplayed: event.detail.checked })
-  loading.dismiss()
+  await loading.dismiss()
 }
 async function setCanSetAnyScores(event: any) {
   const loading = await loadingPopup()
   await updateAppSettings({ canSetAnyScores: event.detail.checked })
-  loading.dismiss()
+  await loading.dismiss()
 }
 </script>
 

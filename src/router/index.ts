@@ -157,7 +157,7 @@ router.beforeEach(async (to) => {
     if (to.meta.noAuth) return true
     // else, redirect to login
     console.log('User is not connected, redirecting to login')
-    toastPopup('Tu dois être connecté pour accéder à cette page')
+    void toastPopup('Tu dois être connecté pour accéder à cette page')
     return {
       path: '/login',
       query: {
@@ -171,7 +171,7 @@ router.beforeEach(async (to) => {
   if (to.name === 'guest') return '/home'
   // if the user is connected and try to open the login page, redirect to home
   if (to.name === 'login') {
-    toastPopup('Tu es déjà connecté')
+    void toastPopup('Tu es déjà connecté')
     return '/home'
   }
   if (to.name === 'ranking') {
@@ -189,12 +189,12 @@ router.beforeEach(async (to) => {
     }
   }
   if (!userProfile) {
-    toastPopup('Nous n\'avons pas pu initialiser ton profil. Reconnecte-toi pour reessayer.')
+    void toastPopup('Nous n\'avons pas pu initialiser ton profil. Reconnecte-toi pour reessayer.')
     return '/login'
   }
   if (to.name === 'onboarding') {
     if (userProfile.hasDoneOnboarding) {
-      toastPopup('Tu as déjà fait l\'onboarding')
+      void toastPopup('Tu as déjà fait l\'onboarding')
       return '/home'
     }
   }
@@ -204,7 +204,7 @@ router.beforeEach(async (to) => {
   }
   if (!to.meta.minimumRole) return true
   if (userProfile.role >= +to.meta.minimumRole) return true
-  toastPopup(
+  void toastPopup(
     `Tu n'as pas le droit d'accéder à la page ${to.name?.toString()} 
     avec ton role (${getRoleByValue(userProfile.role)})`,
   )

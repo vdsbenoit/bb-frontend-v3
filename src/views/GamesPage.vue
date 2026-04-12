@@ -204,7 +204,7 @@ function clearEdition() {
 async function updateGameName() {
   isUpdating.value = true
   await setGameName(editedGameId.value, newGameName.value)
-  toastPopup('Le nom du jeu a bien été mis à jour')
+  void toastPopup('Le nom du jeu a bien été mis à jour')
   isUpdating.value = false
   clearEdition()
 }

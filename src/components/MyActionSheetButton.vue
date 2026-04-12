@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { actionSheetController, IonButton, IonSpinner } from '@ionic/vue'
-import { defineProps, ref } from 'vue'
+import { ref } from 'vue'
 import { toastPopup } from '@/utils/popup'
 
 const props = defineProps<{
@@ -57,7 +57,7 @@ async function presentActionSheet() {
       await props.callback(result, props.payload)
     } catch (e: any) {
       console.error('Cannot process action sheet callback function', e)
-      toastPopup(e.message)
+      void toastPopup(e.message)
     }
     isProcessing.value = false
   } else {

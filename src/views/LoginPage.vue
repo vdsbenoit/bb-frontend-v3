@@ -83,7 +83,7 @@ const isValidating = ref(false)
 // Watcher
 onMounted(() => {
   if (mode.value && mode.value === 'signIn') {
-    signIn(window.location.href)
+    void signIn(window.location.href)
   }
 })
 
@@ -108,9 +108,9 @@ async function sendEmail() {
   try {
     await sendSignInEmail(email.value, `https://${location.host}${redirect.value}`)
     isEmailSent.value = true
-    toastPopup('On t\'a envoyé un email<br/>Clique sur le lien qui s\'y trouve pour te connecter', 20000)
+    void toastPopup('On t\'a envoyé un email<br/>Clique sur le lien qui s\'y trouve pour te connecter', 20000)
   } catch (error: any) {
-    errorPopup(error.message, `Impossible de se connecter`)
+    void errorPopup(error.message, `Impossible de se connecter`)
   }
   isSendingEmail.value = false
 }
@@ -124,7 +124,7 @@ async function signIn(href: string) {
       router.replace('/home')
     }
   } catch (error: any) {
-    errorPopup(error.message)
+    void errorPopup(error.message)
   }
 }
 
@@ -155,7 +155,7 @@ function sanitizeClipboardContent(input: string): string | null {
 async function signInWithClipboard() {
   // Ensure the Clipboard API is supported
   if (!navigator.clipboard) {
-    errorPopup('Cette fonctionnalité n\'est pas supportée')
+    void errorPopup('Cette fonctionnalité n\'est pas supportée')
     return
   }
 
@@ -165,16 +165,16 @@ async function signInWithClipboard() {
     const sanitizedLink = sanitizeClipboardContent(clipboardText)
     if (!sanitizedLink) {
       console.error('Invalid link from clipboard : ', sanitizedLink)
-      errorPopup('Copie le lien qui t\'as été envoyé par email', 'Le lien dans le presse-papier n\'est pas valide')
+      void errorPopup('Copie le lien qui t\'as été envoyé par email', 'Le lien dans le presse-papier n\'est pas valide')
       return
     }
-    signIn(clipboardText)
+    await signIn(clipboardText)
   } catch (error: any) {
     if (error.name === 'NotAllowedError') {
-      errorPopup('Tu dois authoriser l\'accès au presse-papier', 'Impossible de lire le presse-papier')
+      void errorPopup('Tu dois authoriser l\'accès au presse-papier', 'Impossible de lire le presse-papier')
       // request permission again
     } else {
-      errorPopup('Assure-toi que le lien a bien été copié', 'Impossible de lire le presse-papier')
+      void errorPopup('Assure-toi que le lien a bien été copié', 'Impossible de lire le presse-papier')
     }
   }
 }
@@ -193,7 +193,7 @@ function showPrivacyNotice() {
   Cette application est la propriété de Benoit Vander Stappen. 
   Pour toute question relative à ces conditions, veuillez le contacter sur <a href="mailto:vdsbenoit@gmail.com"> son adresse email</a>.  
   `
-  infoPopup(privacyNotice, 'Vie privée & utilisation des données')
+  void infoPopup(privacyNotice, 'Vie privée & utilisation des données')
 }
 </script>
 

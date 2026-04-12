@@ -323,7 +323,7 @@ const canSelectTeam = computed(() => {
 
 async function computeMeanScore() {
   if (!selectedGroupId.value || selectedGroupId.value === DEFAULT_GROUP_ID) {
-    errorPopup('Aucune section sélectionnée', 'Erreur lors du calcul du score moyen')
+    void errorPopup('Aucune section sélectionnée', 'Erreur lors du calcul du score moyen')
     return
   }
   const loading = await loadingPopup('Calcul du score moyen en cours...')
@@ -331,9 +331,9 @@ async function computeMeanScore() {
     await updateGroupMeanScore(selectedGroupId.value)
   } catch (error: any) {
     console.error(error)
-    errorPopup(error.message, 'Erreur lors du calcul du score moyen')
+    void errorPopup(error.message, 'Erreur lors du calcul du score moyen')
   }
-  loading.dismiss()
+  await loading.dismiss()
 }
 </script>
 
